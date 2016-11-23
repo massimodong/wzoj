@@ -7,6 +7,7 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
@@ -32,6 +33,8 @@ class AuthController extends Controller
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
+    protected $redirectPath = '/';
+    protected $username = 'name';
 
     /**
      * Get a validator for an incoming registration request.
@@ -44,6 +47,7 @@ class AuthController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:255|unique:users',
             'email' => 'required|email|max:255|unique:users',
+	    'token' => 'required|invitation',
             'password' => 'required|confirmed|min:6',
         ]);
     }
@@ -55,15 +59,50 @@ class AuthController extends Controller
      * @return User
      */
     protected function create(array $data)
-    {
-        return User::create([
+    {   
+	$invitation = \App\Invitation::where('token',$data['token'])->firstOrFail();
+	if($invitation->remaining == 0){
+		abort(503);
+	}else if($invitation->remaining > 0){
+		$invitation->remaining--;
+		$invitation->save();
+	}
+        $newuser = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-	    'fullname' => $data['fullname'],
-	    'fullname_lock' => $data['fullname_lock'],
-	    'class' => $data['class'],
-	    'class_lock' => $data['class_lock'],
             'password' => bcrypt($data['password']),
         ]);
+	if($invitation->fullname <> ''){
+		$newuser->fullname=$invitation->fullname;
+		$newuser->fullname_lock = true;
+	}else{
+		$newuser['fullname']=$data['fullname'];
+	}
+
+	if($invitation->class <> ''){
+		$newuser->class=$invitation->class;
+		$newuser->class_lock = true;
+	}else{
+		$newuser->class=$data['class'];
+	}
+
+	$newuser->save();
+
+	return $newuser;
+    }
+
+    public function oj_getRegister(Request $request){
+	    if(isset($request->token)){
+		    $invitation = \App\Invitation::where('token',$request->token)
+			    ->where('remaining' , '<>' , 0)
+			    ->first();
+		    if($invitation == NULL) return redirect('/auth/register');
+		    return view('auth.register',['invitation'=>$invitation]);
+	    }else{
+		    $invitations = \App\Invitation::where('private' , false)
+			    ->where('remaining' , '<>' , 0)
+			    ->get();
+		    return view('auth.choose_register_token',['invitations'=>$invitations]);
+	    }
     }
 }

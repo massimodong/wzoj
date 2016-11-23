@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Validator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+	    //check if the invitation is available
+	    Validator::extend('invitation',function($attribute, $value, $parameters, $validator){
+			    $invitation = \App\Invitation::where('token',$value)->first();
+			    if($invitation == NULL) return false;
+			    return $invitation->remaining != 0;
+	    });
     }
 
     /**
