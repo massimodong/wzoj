@@ -16,7 +16,7 @@
 @show
 
 @if (Auth::check())
-	current user:{{Auth::user()->fullname}}
+	current user:<a href='/users/{{Auth::user()->id}}'>{{Auth::user()->fullname}}</a>
 @endif
 
 <hr />
