@@ -25,3 +25,5 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 Route::get('users/{id}','UserController@getId');
 Route::post('users/{id}','UserController@postId')->middleware('auth');
+
+Route::controller('admin','AdminController');

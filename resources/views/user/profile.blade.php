@@ -42,4 +42,11 @@ class:
 
 </form>
 
+
+<hr />
+<h3>groups</h3>
+@foreach ($user->groups as $group)
+	<p>group:{{$group->name}}</p>
+@endforeach
+
 @endsection

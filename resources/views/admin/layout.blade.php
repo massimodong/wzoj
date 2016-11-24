@@ -1,7 +1,7 @@
 <html>
 
 <head>
-<title>@yield('title')</title>
+<title>admin - @yield('title')</title>
 </head>
 
 <body>
@@ -13,15 +13,15 @@
 <p><a href='/auth/login'>login</a></p>
 @endif
 <p><a href='/auth/register'>Register</a></p>
+
+<hr />
+<p><a href='/admin/groups'>groups</a></p>
+<p><a href='/admin/invitations'>invitations</a></p>
 @show
 
 @if (Auth::check())
 	current user:<a href='/users/{{Auth::user()->id}}'>{{Auth::user()->fullname}}</a>
-	@if (Auth::user()->has_role('admin'))
-		<p><a href='/admin'>admin</a></p>
-	@endif
 @endif
-
 
 <hr />
 
@@ -39,6 +39,8 @@
 	</div>
 	<hr />
 @endif
+
+<h3>Admin Page</h3>
 
 <div>
 @yield ('content')
