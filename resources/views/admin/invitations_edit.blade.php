@@ -32,7 +32,20 @@ remaining:<br>
 
 <h3>Add in Groups:</h3>
 @foreach ($invitation->groups as $group)
-	<p>{{$group->name}}</p>
+	<p>
+{{$group->name}}
+<form action='/admin/invitations/{{$invitation->id}}/{{$group->id}}' method='POST'>
+{{csrf_field()}}
+{{method_field('DELETE')}}
+<button>delete</button>
+</form>
+	</p>
 @endforeach
+
+<form method='POST'>
+{{csrf_field()}}
+add group:<input type='text' name='group_id'>
+<button>submit</button>
+</form>
 
 @endsection

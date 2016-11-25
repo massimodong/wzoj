@@ -74,10 +74,20 @@ class AdminController extends Controller
 		}
 	}
 
-	public function postInvitations(){
-		$invitation = new \App\Invitation;
-		$invitation->save();
-		return redirect('/admin/invitations/'.$invitation->id);
+	public function postInvitations(Request $request,$id = -1){
+		if($id == -1){
+			$invitation = new \App\Invitation;
+			$invitation->save();
+			return redirect('/admin/invitations/'.$invitation->id);
+		}else{
+			$invitation = \App\Invitation::findOrFail($id);
+			$this->validate($request,[
+					'group_id' => 'required|exists:groups,id|unique:group_invitation,group_id,NULL,id,invitation_id,'.$id,
+			]);
+
+			$invitation->groups()->attach($request->group_id);
+			return back();
+		}
 	}
 
 	public function putInvitations($id,Request $request){
@@ -95,6 +105,12 @@ class AdminController extends Controller
 		$invitation->private     = $request->private;
 
 		$invitation->save();
+		return back();
+	}
+
+	public function deleteInvitations($iid,$gid){
+		$invitation = \App\Invitation::findOrFail($iid);
+		$invitation->groups()->detach($gid);
 		return back();
 	}
 }
