@@ -45,8 +45,10 @@ class AuthController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255|unique:users',
+            'name' => 'required|min:3|max:255|unique:users',
             'email' => 'required|email|max:255|unique:users',
+	    'fullname' => 'max:255',
+	    'class' => 'max:255',
 	    'token' => 'required|invitation',
             'password' => 'required|confirmed|min:6',
         ]);
@@ -87,6 +89,10 @@ class AuthController extends Controller
 	}
 
 	$newuser->save();
+
+	foreach($invitation->groups as $group){
+		$newuser->groups()->attach($group->id);
+	}
 
 	return $newuser;
     }

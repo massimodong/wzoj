@@ -27,22 +27,41 @@ class AdminController extends Controller
 		}
 	}
 
-	public function postGroups($id,Request $request){
+	public function postGroups(Request $request , $id = -1){
+		if($id==-1){
+			$group = new \App\Group;
+			$group->save();
+			return redirect('/admin/groups/'.$group->id);
+		}else{
+			$group = \App\Group::findOrFail($id);
+
+			$this->validate($request,[
+					'user_id' => 'required|exists:users,id|unique:group_user,user_id,NULL,id,group_id,'.$id,
+			]);
+
+			$group->users()->attach($request->user_id);
+			return back();
+		}
+	}
+
+	public function putGroups(Request $request,$id){
 		$group = \App\Group::findOrFail($id);
-
-		$this->validate($request,[
-			'user_id' => 'required|exists:users,id|unique:group_user,user_id,NULL,id,group_id,'.$id,
-		]);
-
-		$group->users()->attach($request->user_id);
+		$group->name = $request->name;
+		$group->save();
 		return back();
 	}
 
-	public function deleteGroups($gid,$uid){
-		$group = \App\Group::findOrFail($gid);
+	public function deleteGroups($gid,$uid = -1){
+		if($uid == -1){
+			$group = \App\Group::findOrFail($gid);
+			$group->delete();
+			return redirect('/admin/groups');
+		}else{
+			$group = \App\Group::findOrFail($gid);
 
-		$group->users()->detach($uid);
-		return back();
+			$group->users()->detach($uid);
+			return back();
+		}
 	}
 
 	public function getInvitations($id = -1){
@@ -55,7 +74,13 @@ class AdminController extends Controller
 		}
 	}
 
-	public function postInvitations($id,Request $request){
+	public function postInvitations(){
+		$invitation = new \App\Invitation;
+		$invitation->save();
+		return redirect('/admin/invitations/'.$invitation->id);
+	}
+
+	public function putInvitations($id,Request $request){
 		$invitation = \App\Invitation::findOrFail($id);
 		$this->validate($request,[
 			'remaining' => 'required|integer',

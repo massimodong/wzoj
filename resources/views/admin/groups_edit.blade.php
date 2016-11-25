@@ -6,9 +6,12 @@ group {{$group->name}}
 
 @section ('content')
 
-<p>
-<h4>Group Name:</h4>{{$group->name}}
-</p>
+<form method='POST'>
+{{csrf_field()}}
+{{method_field('PUT')}}
+<input type='text' name='name' value='{{$group->name}}'>
+<button>change</button>
+</form>
 
 <p>
 <h4>Users:</h4>
@@ -27,6 +30,12 @@ group {{$group->name}}
 {{csrf_field()}}
 Add member:<input type='text' name='user_id'>
 <button type='submit'>submit</button>
+</form>
+
+<form method='POST'>
+{{csrf_field()}}
+{{method_field('DELETE')}}
+<button>delete</button>
 </form>
 
 @endsection

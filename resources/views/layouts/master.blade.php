@@ -5,10 +5,15 @@
 </head>
 
 <body>
+<h2>{{ojoption('site_name')}}</h2>
+
 @section ('sidebar')
 <p><a href='/'>home</a></p>
 @if (Auth::check()) 
-<p><a href='/auth/logout'>logout</a></p>
+<form action='/auth/logout' method='POST'>
+{{csrf_field()}}
+<button>logout</button>
+</form>
 @else
 <p><a href='/auth/login'>login</a></p>
 @endif

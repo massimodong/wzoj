@@ -8,6 +8,7 @@
 
 <form method='POST'>
 {{csrf_field()}}
+{{method_field('PUT')}}
 Description:<br>
 <textarea name='description'>{{$invitation->description}}</textarea><br>
 
