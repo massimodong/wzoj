@@ -20,6 +20,7 @@
 <hr />
 <p><a href='/admin/groups'>groups</a></p>
 <p><a href='/admin/invitations'>invitations</a></p>
+<p><a href='/admin/problems'>problems</a></p>
 @show
 
 @if (Auth::check())
@@ -42,8 +43,6 @@
 	</div>
 	<hr />
 @endif
-
-<h3>Admin Page</h3>
 
 <div>
 @yield ('content')
