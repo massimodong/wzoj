@@ -1,0 +1,103 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use DB;
+use App\Problemset;
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+class ProblemsetController extends Controller
+{
+	public function getIndex(){
+		$problemsets = Problemset::all();
+		return view('problemsets.index',['problemsets' => $problemsets]);
+	}
+
+	public function getProblemset($psid,Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		$problems = $problemset->problems()->orderBy('problem_problemset.index','asc');
+
+		$problems = $problems->get();
+
+		return view('problemsets.view_'.$problemset->type,['problemset' => $problemset,'problems' => $problems]);
+	}
+
+	public function getEditProblemset($psid){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$problems = $problemset->problems()->orderBy('problem_problemset.index','asc');
+
+		$problems = $problems->get();
+
+		return view('problemsets.edit',['problemset' => $problemset,'problems' => $problems]);
+	}
+
+	public function getProblem($psid,$pid){
+		$problemset = Problemset::findOrFail($psid);
+		$problem = $problemset->problems()->findOrFail($pid);
+
+		return view('problems.view_'.$problemset->type,['problemset' => $problemset,'problem' => $problem]);
+	}
+
+	public function postProblem($psid,Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$this->validate($request,[
+			'pid' => 'required|exists:problems,id|unique:problem_problemset,problem_id,NULL,id,problemset_id,'.$psid,
+		]);
+
+		$newindex = DB::table('problem_problemset')->max('index')+1;
+		$problemset->problems()->attach($request->pid,['index' => $newindex]);
+		return back();
+	}
+
+	public function putProblem($psid,$pid,Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$problem = $problemset->problems()->findOrFail($pid);
+		$this->validate($request,[
+			'newindex' => 'exists:problem_problemset,index,problemset_id,'.$psid,
+		]);
+
+		if(isset($request->newindex) && $request->newindex>0){
+			$index = $problem->pivot->index;
+			if($request->newindex > $index){
+				$problemset->problems()->detach($pid);
+				DB::table('problem_problemset')->where('problemset_id',$psid)
+					->where('index','>',$index)
+					->where('index','<=',$request->newindex)
+					->decrement('index',1);
+				$problemset->problems()->attach($pid,['index' => $request->newindex]);
+			}else if($request->newindex < $index){
+				$problemset->problems()->detach($pid);
+				DB::table('problem_problemset')->where('problemset_id',$psid)
+					->where('index','<',$index)
+					->where('index','>=',$request->newindex)
+					->increment('index',1);
+				$problemset->problems()->attach($pid,['index' => $request->newindex]);
+			}
+		}
+
+		return back();
+	}
+
+	public function deleteProblem($psid,$pid){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$index = $problemset->problems()->findOrFail($pid)->pivot->index;
+
+		$problemset->problems()->detach($pid);
+
+		DB::table('problem_problemset')->where('problemset_id',$psid)
+			->where('index','>',$index)
+			->decrement('index',1);
+		return back();
+	}
+}

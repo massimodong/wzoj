@@ -9,6 +9,8 @@
 
 @section ('sidebar')
 <p><a href='/'>home</a></p>
+<p><a href='/s'>problemsets</a></p>
+
 @if (Auth::check()) 
 <form action='/auth/logout' method='POST'>
 {{csrf_field()}}

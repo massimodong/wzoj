@@ -10,4 +10,8 @@ class Problem extends Model
 	use SoftDeletes;
 	protected $guarded = ['id','created_at','updated_at','deleted_at'];
 	protected $dates = ['deleted_at'];
+
+	public function problemsets(){
+		return $this->belongsToMany('App\Problemset')->withPivot('index');
+	}
 }
