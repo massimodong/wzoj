@@ -25,6 +25,12 @@ class ProblemsetController extends Controller
 		return view('problemsets.view_'.$problemset->type,['problemset' => $problemset,'problems' => $problems]);
 	}
 
+	public function postNewProblemset(){
+		$this->authorize('create',Problemset::class);
+		$problemset = Problemset::create(['name'=>'problemset name','type'=>'set','public'=>'1']);
+		return redirect('/s/'.$problemset->id.'/edit');
+	}
+
 	public function getEditProblemset($psid){
 		$problemset = Problemset::findOrFail($psid);
 		$this->authorize('update',$problemset);
@@ -36,6 +42,32 @@ class ProblemsetController extends Controller
 		return view('problemsets.edit',['problemset' => $problemset,'problems' => $problems]);
 	}
 
+	public function putProblemset($psid,Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$this->validate($request,[
+			'name' => 'required|max:255',
+			'type' => 'required|in:set,oi,acm,apio',
+			'public' => 'in:1',
+		]);
+
+		$newval = $request->all();
+		if(!isset($newval['public'])) $newval['public'] = 0;
+
+		$problemset->update($newval);
+		return back();
+	}
+
+	public function deleteProblemset($psid){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$problemset->delete();
+		return redirect('/s');
+	}
+
+	//problems
 	public function getProblem($psid,$pid){
 		$problemset = Problemset::findOrFail($psid);
 		$problem = $problemset->problems()->findOrFail($pid);
@@ -51,7 +83,8 @@ class ProblemsetController extends Controller
 			'pid' => 'required|exists:problems,id|unique:problem_problemset,problem_id,NULL,id,problemset_id,'.$psid,
 		]);
 
-		$newindex = DB::table('problem_problemset')->max('index')+1;
+		$newindex = DB::table('problem_problemset')->where('problemset_id',$psid)
+			->max('index')+1;
 		$problemset->problems()->attach($request->pid,['index' => $newindex]);
 		return back();
 	}

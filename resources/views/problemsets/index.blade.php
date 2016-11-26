@@ -15,4 +15,11 @@ problemsets
 </p>
 @endforeach
 
+@can ('create',App\Problemset::class)
+<form method='POST'>
+{{csrf_field()}}
+<button>new problemset</button>
+</form>
+@endcan
+
 @endsection

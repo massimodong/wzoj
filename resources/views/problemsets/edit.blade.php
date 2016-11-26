@@ -7,8 +7,17 @@ set {{$problemset->name}}
 @section ('content')
 
 <div>
-<h3>description:</h3>
-{{$problemset->description}}
+<form action='/s/{{$problemset->id}}' method='POST'>
+{{csrf_field()}}
+{{method_field('PUT')}}
+
+<p>name:<input name='name' value='{{$problemset->name}}'></p>
+<p>type:<input name='type' value='{{$problemset->type}}'></p>
+<p><input type='checkbox' name='public' value='1' {{$problemset->public?"checked":""}}>public</p>
+<p><textarea name='description'>{{$problemset->description}}</textarea></p>
+
+<button>submit</button>
+</form>
 </div>
 
 <div>
@@ -35,6 +44,12 @@ set {{$problemset->name}}
 {{csrf_field()}}
 <input name='pid'>
 <button>new problem</button>
+</form>
+
+<form action='/s/{{$problemset->id}}' method='POST'>
+{{csrf_field()}}
+{{method_field('DELETE')}}
+<button>delete problemset</button>
 </form>
 
 @endsection

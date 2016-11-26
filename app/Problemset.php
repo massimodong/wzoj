@@ -9,6 +9,7 @@ class Problemset extends Model
 {
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
+	protected $fillable = ['name','type','public','description'];
 
 	public function problems(){
 		return $this->belongsToMany('App\Problem')->withPivot('index');

@@ -28,9 +28,12 @@ Route::post('users/{id}','UserController@postId')->middleware('auth');
 
 //problemsets
 Route::get('s','ProblemsetController@getIndex');
+Route::post('s','ProblemsetController@postNewProblemset');
 Route::get('s/{psid}','ProblemsetController@getProblemset');
 Route::get('s/{psid}/edit','ProblemsetController@getEditProblemset');
-
+Route::put('s/{psid}','ProblemsetController@putProblemset');
+Route::delete('s/{psid}','ProblemsetController@deleteProblemset');
+	//problems
 Route::get('s/{psid}/{pid}','ProblemsetController@getProblem');
 Route::post('s/{psid}','ProblemsetController@postProblem');
 Route::put('s/{psid}/{pid}','ProblemsetController@putProblem');
