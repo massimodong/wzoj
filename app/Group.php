@@ -17,4 +17,7 @@ class Group extends Model
 	public function invitations(){
 		return $this->belongsToMany('App\Invitation');
 	}
+	public function problemsets(){
+		return $this->belongsToMany('App\Problemset');
+	}
 }

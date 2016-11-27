@@ -8,6 +8,11 @@ problemsets
 
 @foreach ($problemsets as $problemset)
 <p>
+@if ($problemset->type === 'oi')
+{{$problemset->contest_start_at}} to {{$problemset->contest_end_at}}
+@endif
+
+{{$problemset->type}}
 <a href='/s/{{$problemset->id}}'>{{$problemset->name}}</a>
 @can ('update',$problemset)
 <a href='/s/{{$problemset->id}}/edit'>edit</a>

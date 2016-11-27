@@ -52,4 +52,9 @@ set {{$problemset->name}}
 <button>delete problemset</button>
 </form>
 
+<hr>
+<h3>groups</h3>
+@foreach ($problemset->groups as $group)
+{{$group->name}}
+@endforeach
 @endsection

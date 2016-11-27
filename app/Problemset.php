@@ -9,9 +9,13 @@ class Problemset extends Model
 {
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
-	protected $fillable = ['name','type','public','description'];
+	protected $fillable = ['name','type','public','description','contest_start_at','contest_end_at'];
 
 	public function problems(){
 		return $this->belongsToMany('App\Problem')->withPivot('index');
+	}
+
+	public function groups(){
+		return $this->belongsToMany('App\Group');
 	}
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Gate;
+
 use DB;
 use App\Problemset;
 use App\Http\Requests;
@@ -12,15 +14,27 @@ use App\Http\Controllers\Controller;
 class ProblemsetController extends Controller
 {
 	public function getIndex(){
-		$problemsets = Problemset::all();
+		$allproblemsets = Problemset::all();
+		$problemsets=[];
+		foreach($allproblemsets as $problemset){
+			if($problemset->public || Gate::allows('view',$problemset)){
+				array_push($problemsets,$problemset);
+			}
+		}
 		return view('problemsets.index',['problemsets' => $problemsets]);
 	}
 
 	public function getProblemset($psid,Request $request){
 		$problemset = Problemset::findOrFail($psid);
-		$problems = $problemset->problems()->orderBy('problem_problemset.index','asc');
-
-		$problems = $problems->get();
+		if(!$problemset->public){
+			$this->authorize('view',$problemset);
+		}
+		if(ojCanViewProblems($problemset)){
+			$problems = $problemset->problems()->orderBy('problem_problemset.index','asc');
+			$problems = $problems->get();
+		}else{
+			$problems = [];
+		}
 
 		return view('problemsets.view_'.$problemset->type,['problemset' => $problemset,'problems' => $problems]);
 	}
@@ -70,7 +84,12 @@ class ProblemsetController extends Controller
 	//problems
 	public function getProblem($psid,$pid){
 		$problemset = Problemset::findOrFail($psid);
+		if(!$problemset->public){
+			$this->authorize('view',$problemset);
+		}
+
 		$problem = $problemset->problems()->findOrFail($pid);
+		if(!ojCanViewProblems($problemset)) return redirect('/s/'.$psid);
 
 		return view('problems.view_'.$problemset->type,['problemset' => $problemset,'problem' => $problem]);
 	}
