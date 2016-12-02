@@ -152,4 +152,17 @@ class ProblemsetController extends Controller
 			->decrement('index',1);
 		return back();
 	}
+
+	public function getSubmit($psid,$pid){
+		$problemset = Problemset::findOrFail($psid);
+		if(!$problemset->public){
+			$this->authorize('view',$problemset);
+		}
+		$problem = $problemset->problems()->findOrFail($pid);
+		if(ojCanViewProblems($problemset)){
+			return view('problems.submit',['problemset' => $problemset, 'problem' => $problem]);
+		}else{
+			return redirect('/');
+		}
+	}
 }

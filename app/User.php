@@ -48,4 +48,8 @@ class User extends Model implements AuthenticatableContract,
     public function has_role($role){
 	    return $this->roles()->where('name',$role)->count()>0;
     }
+
+    public function solutions(){
+	    return $this->hasMany('App\Solution');
+    }
 }

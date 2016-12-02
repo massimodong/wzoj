@@ -18,4 +18,8 @@ class Problemset extends Model
 	public function groups(){
 		return $this->belongsToMany('App\Group');
 	}
+
+	public function solutions(){
+		return $this->hasMany('App\Solution');
+	}
 }

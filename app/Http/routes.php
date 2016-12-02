@@ -38,5 +38,8 @@ Route::get('s/{psid}/{pid}','ProblemsetController@getProblem');
 Route::post('s/{psid}','ProblemsetController@postProblem');
 Route::put('s/{psid}/{pid}','ProblemsetController@putProblem');
 Route::delete('s/{psid}/{pid}','ProblemsetController@deleteProblem');
+Route::get('s/{psid}/{pid}/submit','ProblemsetController@getSubmit');
+
+Route::resource('solutions','SolutionController');
 
 Route::controller('admin','AdminController');
