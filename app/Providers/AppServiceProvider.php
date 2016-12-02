@@ -20,6 +20,10 @@ class AppServiceProvider extends ServiceProvider
 			    if($invitation == NULL) return false;
 			    return $invitation->remaining != 0;
 	    });
+
+	    $this->publishes([
+			    'vendor/twbs/bootstrap' => public_path('vendor/bootstrap'),
+	    ],'wzoj');
     }
 
     /**
