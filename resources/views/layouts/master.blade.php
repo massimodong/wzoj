@@ -81,6 +81,15 @@
       </div>
     </nav>
 
+    <div class="container">
+    @foreach ($errors->all() as $error)
+	<div class="alert alert-warning alert-dismissable">
+	    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+	    {{$error}}
+        </div>
+    @endforeach
+    </div>
+
 
     <div class="container">
     	@yield ('content')
