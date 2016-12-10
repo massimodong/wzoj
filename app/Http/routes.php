@@ -43,4 +43,5 @@ Route::get('s/{psid}/{pid}/submit','ProblemsetController@getSubmit');
 Route::resource('solutions','SolutionController');
 
 Route::controller('ajax','AjaxController');
+Route::controller('judger','JudgerController');
 Route::controller('admin','AdminController');
