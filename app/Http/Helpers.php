@@ -5,6 +5,7 @@ define('SL_PENDING_REJUDGING' , 1);
 define('SL_COMPILING' , 2);
 define('SL_RUNNING' , 3);
 define('SL_JUDGED' , 4);
+define('SL_CANCELED' ,5);
 
 function ojoption($name){
 	return \App\Option::where('name',$name)->first()->value;

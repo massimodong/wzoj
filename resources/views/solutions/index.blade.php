@@ -7,7 +7,8 @@ solutions
 @section ('content')
 
 @foreach ($solutions as $solution)
-{{$solution->user->name}}:<a href='/solutions/{{$solution->id}}'>{{$solution->problem->name}}<br></a>
+{{$solution->user->name}}:<a href='/solutions/{{$solution->id}}'>{{$solution->problem->name}}</a>
+status:{{$solution->status}}<br>
 @endforeach
 
 @endsection
