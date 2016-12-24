@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 use App\Solution;
 use App\Problem;
+use App\Testcase;
 
 class JudgerController extends Controller
 {
@@ -38,6 +39,10 @@ class JudgerController extends Controller
 			$solution->sim_id = NULL;
 			$solution->judger_id = $request->user()->id;
 			$solution->save();
+
+			foreach($solution->testcases as $testcase){
+				$testcase->delete();
+			}
 			return response()->json(["ok" => true]);
 		}else{
 			return response()->json(["ok" => false]);
@@ -79,5 +84,40 @@ class JudgerController extends Controller
 		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
 		return response()->json(["ok" => true]);
+	}
+	public function postFinishJudging(Request $request){
+		$this->validate($request,[
+			"solution_id" => "required|integer",
+		]);
+		$solution = Solution::findOrFail($request->solution_id);
+
+		$cnt_testcases = 0;
+		$time_used = 0;
+		$memory_used = 0;
+		$score = 0;
+
+		foreach($solution->testcases as $testcase){
+			++$cnt_testcases;
+			$time_used = max($time_used, $testcase->time_used);
+			$memory_used = max($memory_used, $testcase->memory_used);
+			$score += $testcase->score;
+		}
+
+		if($cnt_testcases){
+			$score /= $cnt_testcases;
+		}else{
+			$score = 0;
+		}
+
+		$solution->time_used = $time_used;
+		$solution->memory_used = $memory_used;
+		$solution->status = SL_JUDGED;
+		$solution->score = $score;
+		$solution->judged_at = date('Y-m-d H:i:s');
+		
+		$solution->save();
+	}
+	public function postPostTestcase(Request $request){
+		$testcase = Testcase::create($request->all());
 	}
 }
