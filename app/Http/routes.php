@@ -44,4 +44,34 @@ Route::resource('solutions','SolutionController');
 
 Route::controller('ajax','AjaxController');
 Route::controller('judger','JudgerController');
-Route::controller('admin','AdminController');
+
+Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
+		Route::get('/', 'AdminHomeController@index');
+		//groups
+		Route::get('groups', 'AdminGroupController@getGroups');
+		Route::get('groups/{id}', 'AdminGroupController@getGroups');
+		Route::post('groups', 'AdminGroupController@postGroups');
+		Route::post('groups/{id}', 'AdminGroupController@postGroups');
+		Route::put('groups/{id}', 'AdminGroupController@putGroups');
+		Route::delete('groups/{gid}', 'AdminGroupController@deleteGroups');
+		Route::delete('groups/{gid}/{uid}', 'AdminGroupController@deleteGroups');
+
+		//invitations
+		Route::get('invitations', 'AdminInvitationController@getInvitations');
+		Route::get('invitations/{id}', 'AdminInvitationController@getInvitations');
+		Route::post('invitations', 'AdminInvitationController@postInvitations');
+		Route::post('invitations/{id}', 'AdminInvitationController@postInvitations');
+		Route::put('invitations/{id}', 'AdminInvitationController@putInvitations');
+		Route::delete('invitations/{iid}/{gid}', 'AdminInvitationController@deleteInvitations');
+
+		//problems
+		Route::get('problems', 'AdminProblemController@getProblems');
+		Route::get('problems/{id}', 'AdminProblemController@getProblems');
+		Route::post('problems', 'AdminProblemController@postProblems');
+		Route::put('problems/{id}', 'AdminProblemController@putProblems');
+		Route::delete('problems/{id}', 'AdminProblemController@deleteProblems');
+
+		//import problems
+		Route::get('import-problems', 'AdminImportProblemsController@getImportProblems');
+		Route::post('import-problems', 'AdminImportProblemsController@postImportProblems');
+});
