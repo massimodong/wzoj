@@ -16,7 +16,7 @@ tinymce.init({
 
 	    xhr = new XMLHttpRequest();
 	    xhr.withCredentials = false;
-	    xhr.open('POST', '/images');
+	    xhr.open('POST', '/files');
 
 	    xhr.onload = function() {
 		    var json;

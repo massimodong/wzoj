@@ -45,6 +45,9 @@ Route::resource('solutions','SolutionController');
 Route::controller('ajax','AjaxController');
 Route::controller('judger','JudgerController');
 
+Route::get('files/{user_id}/{name}','FileController@showfile');
+Route::resource('files','FileController');
+
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 		Route::get('/', 'AdminHomeController@index');
 		//groups

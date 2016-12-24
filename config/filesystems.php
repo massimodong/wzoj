@@ -53,6 +53,11 @@ return [
 	    'root'   => env('OJ_DATA'),
 	],
 
+	'files' => [
+	    'driver' => 'local',
+	    'root' => storage_path('app').'/files',
+	],
+
         'ftp' => [
             'driver'   => 'ftp',
             'host'     => 'ftp.example.com',
