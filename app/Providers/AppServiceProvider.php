@@ -23,6 +23,7 @@ class AppServiceProvider extends ServiceProvider
 
 	    $this->publishes([
 			    'vendor/twbs/bootstrap' => public_path('vendor/bootstrap'),
+			    'vendor/tinymce/tinymce' => public_path('vendor/tinymce'),
 	    ],'wzoj');
     }
 

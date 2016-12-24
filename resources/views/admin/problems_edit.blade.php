@@ -21,13 +21,13 @@ timelimit:<input name='timelimit' value='{{$problem->timelimit}}'><br>
 memorylimit:<input name='memorylimit' value='{{$problem->memorylimit}}'><br>
 
 description:<br>
-<textarea name='description'>{{$problem->description}}</textarea><br>
+<textarea class='ojeditor' name='description'>{{$problem->description}}</textarea><br>
 
 inputformat:<br>
-<textarea name='inputformat'>{{$problem->inputformat}}</textarea><br>
+<textarea class='ojeditor' name='inputformat'>{{$problem->inputformat}}</textarea><br>
 
 outputformat:<br>
-<textarea name='outputformat'>{{$problem->outputformat}}</textarea><br>
+<textarea class='ojeditor' name='outputformat'>{{$problem->outputformat}}</textarea><br>
 
 sampleinput:<br>
 <textarea name='sampleinput'>{{$problem->sampleinput}}</textarea><br>
@@ -36,7 +36,7 @@ sampleoutput:<br>
 <textarea name='sampleoutput'>{{$problem->sampleoutput}}</textarea><br>
 
 hint:<br>
-<textarea name='hint'>{{$problem->hint}}</textarea><br>
+<textarea class='ojeditor' name='hint'>{{$problem->hint}}</textarea><br>
 
 source:<input name='source' value='{{$problem->source}}'><br>
 

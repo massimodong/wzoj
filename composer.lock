@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "20870817aa1674529c1cec83c1dbc107",
-    "content-hash": "2eeaf0321e65d13359cf719f6b52366d",
+    "hash": "8c3dc72cca834835de8ab482815020ef",
+    "content-hash": "798a64b286c8c28aec1ce990441fd11d",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -2006,6 +2006,52 @@
                 "dump"
             ],
             "time": "2016-10-06 08:40:01"
+        },
+        {
+            "name": "tinymce/tinymce",
+            "version": "4.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tinymce/tinymce-dist.git",
+                "reference": "d9f914960a296b06a47ac0c9f3a027c6c4523f7b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tinymce/tinymce-dist/zipball/d9f914960a296b06a47ac0c9f3a027c6c4523f7b",
+                "reference": "d9f914960a296b06a47ac0c9f3a027c6c4523f7b",
+                "shasum": ""
+            },
+            "type": "component",
+            "extra": {
+                "component": {
+                    "scripts": [
+                        "tinymce.js",
+                        "plugins/*/plugin.js",
+                        "themes/*/theme.js"
+                    ],
+                    "files": [
+                        "tinymce.min.js",
+                        "plugins/*/plugin.min.js",
+                        "themes/*/theme.min.js",
+                        "skins/**"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1"
+            ],
+            "description": "Web based JavaScript HTML WYSIWYG editor control.",
+            "homepage": "http://www.tinymce.com",
+            "keywords": [
+                "editor",
+                "html",
+                "javascript",
+                "richtext",
+                "tinymce",
+                "wysiwyg"
+            ],
+            "time": "2016-12-07 07:02:09"
         },
         {
             "name": "twbs/bootstrap",
