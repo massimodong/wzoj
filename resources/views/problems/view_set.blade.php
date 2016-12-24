@@ -1,13 +1,19 @@
 @extends ('layouts.master')
 
 @section ('title')
-problem {{$problem->name}}
+{{$problem->name}}
+@endsection
+
+@section ('sidebar')
+@parent
+<li id='submit_sidebar'><a href='/s/{{$problemset->id}}/{{$problem->id}}/submit'>submit</a></li>
 @endsection
 
 @section ('content')
 
 @include ('layouts.showproblem')
 
-<p><a href='./{{$problem->id}}/submit'>submit</a></p>
-
+<div class="col-lg-12">
+<a href='/s/{{$problemset->id}}/{{$problem->id}}/submit'><button type="button" class="btn btn-info">submit</button></a>
+</div>
 @endsection

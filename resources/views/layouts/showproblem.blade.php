@@ -1,42 +1,45 @@
-<div>
-<h3>{{$problem->name}}</h3>
+<div class="col-lg-12">
+<h1>{{$problem->name}}</h1>
 
 <small>
-@if ($problem->type == 1)
-	std
-@elseif ($problem->type == 2)
-	inter
+@if ($problem->type == 2)
+	interaction
 @elseif ($problem->type == 3)
-	answer
+	submit answer
 @endif
 
 @if ($problem->spj)
 	spj
 @endif
 
-{{$problem->timelimit}}ms
-
-{{$problem->memorylimit}}mb
 </small>
 
+<hr>
 
-<h4>description:</h4>
-{{$problem->description}}
+{!! Purifier::clean($problem->description) !!}
 
-<h4>input:</h4>
-{{$problem->inputformat}}
+<h3>input:</h3>
+{!! Purifier::clean($problem->inputformat) !!}
 
-<h4>output:</h4>
-{{$problem->outputformat}}
+<h3>output:</h3>
+{!! Purifier::clean($problem->outputformat) !!}
 
-<h4>sample in:</h4>
+<h3>samplein:</h3>
+<pre>
 {{$problem->sampleinput}}
+</pre>
 
-<h4>sample out:</h4>
+<h3>sampleout:</h3>
+<pre>
 {{$problem->sampleoutput}}
+</pre>
 
-<h4>hint:</h4>
-{{$problem->hint}}
+<h3>hint:</h3>
+{!! Purifier::clean($problem->hint) !!}
+
+<h3>Limits</h3>
+timelimit:{{$problem->timelimit}}s<br>
+memorylimit:{{$problem->memorylimit}}MB<br>
 
 <hr>
 <p>from:{{$problem->source}}</p>
