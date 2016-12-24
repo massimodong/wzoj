@@ -8,7 +8,7 @@ solutions
 
 @foreach ($solutions as $solution)
 {{$solution->user->name}}:<a href='/solutions/{{$solution->id}}'>{{$solution->problem->name}}</a>
-status:{{$solution->status}}<br>
+status:{{$solution->status}} score:{{$solution->score}}<br>
 @endforeach
 
 @endsection

@@ -48,6 +48,11 @@ return [
             'root'   => storage_path('app'),
         ],
 
+	'data' => [
+	    'driver' => 'local',
+	    'root'   => env('OJ_DATA'),
+	],
+
         'ftp' => [
             'driver'   => 'ftp',
             'host'     => 'ftp.example.com',
