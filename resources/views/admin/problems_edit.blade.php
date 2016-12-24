@@ -1,7 +1,12 @@
 @extends ('admin.layout')
 
 @section ('title')
-problem - {{$problem->name}}
+{{$problem->name}}
+@endsection
+
+@section ('sidebar')
+@parent
+<li><a href='#' onclick="sendForm($('#problem_form')); return false;"> save</a></li>
 @endsection
 
 @section ('content')
@@ -9,7 +14,7 @@ problem - {{$problem->name}}
 <p><a href='/admin/problems/{{$problem->id}}?preview'>preview</a></p>
 <hr>
 
-<form method='POST'>
+<form method='POST' id='problem_form'>
 {{csrf_field()}}
 {{method_field('PUT')}}
 

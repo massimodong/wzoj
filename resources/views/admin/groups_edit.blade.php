@@ -6,7 +6,7 @@ group {{$group->name}}
 
 @section ('content')
 
-<form method='POST'>
+<form method='POST' id='group_form'>
 {{csrf_field()}}
 {{method_field('PUT')}}
 <input type='text' name='name' value='{{$group->name}}'>

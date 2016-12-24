@@ -30,6 +30,7 @@
     var csrf_token = '{{csrf_token()}}'
     </script>
 
+    <script src='/include/js/common.js'></script>
 </head>
 
 <body>
@@ -49,6 +50,11 @@
                 <a class="navbar-brand" href="/">{{ojoption('site_name')}}</a>
             </div>
             <!-- Top Menu Items -->
+	    <ul class="nav navbar-nav">
+		@section ('sidebar')
+	    	<li><a>|</a></li>
+		@show
+	    </ul>
             <ul class="nav navbar-right top-nav">
                 <li>
                     <a> {{Auth::user()->fullname}} </a>

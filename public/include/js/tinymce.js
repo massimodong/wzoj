@@ -10,6 +10,11 @@ tinymce.init({
 	    paste_data_images: true,
 	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style]',
 	    imagetools_cors_hosts: [''],
+	    setup: function (editor) {
+		    editor.on('change', function () {
+			    tinymce.triggerSave();
+		    });
+	    },
 	    images_upload_handler: function (blobInfo, success, failure) {
 
 	    var xhr, formData;
