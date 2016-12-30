@@ -85,6 +85,16 @@
 
         <div id="page-wrapper" style="min-height: 600px;">
 
+	    <div id="alerts">
+	        @foreach ($errors->all() as $error)
+	    	    <div class="alert alert-warning alert-dismissable">
+		    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+		     {{$error}}
+		    </div>
+		@endforeach
+	    </div>
+	    <!-- alerts -->
+
             <div class="container-fluid">
 
                 <!-- Page Heading -->

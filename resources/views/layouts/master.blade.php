@@ -82,7 +82,7 @@
       </div>
     </nav>
 
-    <div class="container">
+    <div id="alerts" class="container">
     @foreach ($errors->all() as $error)
 	<div class="alert alert-warning alert-dismissable">
 	    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
