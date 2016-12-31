@@ -101,6 +101,11 @@
 	{{csrf_field()}}
     </form>
 
+    <footer class="footer">
+        <div class="container">
+	    <p class="text-muted">Copyright 2016 <a href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a></p>
+	</div>
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
