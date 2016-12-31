@@ -10,6 +10,7 @@ return [
     'home' => '主页',
     'problemsets' => '活动',
     'solutions' => '状态',
+    'solution' => '提交状态',
     'account' => '账户',
     'login' => '登录',
     'logout' => '登出',
@@ -20,6 +21,8 @@ return [
     'edit' => '编辑',
     'description' => '说明',
     'save' => '保存',
+    'index' => '序号',
+    'operations' => '操作',
 
     'user' => '用户',
     'problem' => '题目',
@@ -38,6 +41,8 @@ return [
     'solution_status_3' => '正在运行',
     'solution_status_4' => '评测完成',
     'solution_status_5' => '取消',
+    'verdict' => '结果',
+    'checklog' => '比较日志',
 
     'name' => '名称',
     'type' => '类型',

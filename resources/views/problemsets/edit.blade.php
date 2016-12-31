@@ -11,7 +11,7 @@
 
 @section ('content')
 
-<div class=''>
+<div>
     <form class='form-horizontal' id='problemset_form' action='/s/{{$problemset->id}}' method='POST'>
     {{csrf_field()}}
     {{method_field('PUT')}}
@@ -44,24 +44,38 @@
     </form>
 </div>
 
-<div>
-<h3>problems</h3>
-@foreach ($problems as $problem)
-	<p>
-	<a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->pivot->index}}:{{$problem->name}}</a>
-	<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST'>
-	{{csrf_field()}}
-	{{method_field('PUT')}}
-	<input name='newindex'><button>move to</button>
-	</form>
+<div class="col-lg-12">
+<h1>problems</h1>
+<table class="table table-striped">
+    <thead>
+        <tr>
+	    <th>{{trans('wzoj.index')}}</th>
+	    <th>{{trans('wzoj.problem')}}</th>
+	    <th>{{trans('wzoj.operations')}}</th>
+	</tr>
+    </thead>
+    <tbody>
+    @foreach ($problems as $problem)
+	<tr>
+	    <th>{{$problem->pivot->index}}</th>
+	    <th><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></th>
+	    <th>
+		<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST'>
+		{{csrf_field()}}
+		{{method_field('PUT')}}
+		<input name='newindex'><button>move to</button>
+		</form>
 
-	<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST'>
-	{{csrf_field()}}
-	{{method_field('DELETE')}}
-	<button>delete</button>
-	</form>
-	</p>
-@endforeach
+		<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST'>
+		{{csrf_field()}}
+		{{method_field('DELETE')}}
+		<button>delete</button>
+		</form>
+	    </th>
+	</tr>
+    @endforeach
+    <tbody>
+</table>
 </div>
 
 <form action='/s/{{$problemset->id}}' method='POST'>
