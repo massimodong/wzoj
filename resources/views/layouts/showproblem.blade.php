@@ -3,7 +3,7 @@
 
 <small>
 @if ($problem->type == 2)
-	interaction
+	interactive
 @elseif ($problem->type == 3)
 	submit answer
 @endif

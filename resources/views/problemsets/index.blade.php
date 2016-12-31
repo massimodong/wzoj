@@ -17,24 +17,22 @@
 <table class="table table-striped">
 <thead>
     <tr>
-    	<th>id</th>
-	<th>name</th>
-	<th>type</th>
-	<th>contest_start_at</th>
-	<th>contest_end_at</th>
-	<th>public</th>
+	<th>{{trans('wzoj.name')}}</th>
+	<th>{{trans('wzoj.type')}}</th>
+	<th>{{trans('wzoj.contest_start_at')}}</th>
+	<th>{{trans('wzoj.contest_end_at')}}</th>
+	<th>{{trans('wzoj.public')}}</th>
     </tr>
 </thead>
 @foreach ($problemsets as $problemset)
     <tr>
-    	<td>{{$problemset->id}}</td>
 	<td>
 	    <a href='/s/{{$problemset->id}}'> {{$problemset->name}} </a>
 	    @can ('update',$problemset)
-	    <a href='/s/{{$problemset->id}}/edit'> [edit] </a>
+	    <a href='/s/{{$problemset->id}}/edit'> [{{trans('wzoj.edit')}}] </a>
 	    @endcan
 	</td>
-	<td>{{$problemset->type}}</td>
+	<td>{{trans('wzoj.problem_type_'.$problemset->type)}}</td>
 	@if ($problemset->type === 'oi')
 	<td>{{$problemset->contest_start_at}}</td>
 	<td>{{$problemset->contest_end_at}}</td>

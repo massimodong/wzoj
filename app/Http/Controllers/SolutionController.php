@@ -18,10 +18,49 @@ class SolutionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    const PAGE_LIMIT = 20;
+    public function index(Request $request)
     {
-	    $solutions = Solution::all();
-	    return view('solutions.index',['solutions' => $solutions]);
+	    $this->validate($request, [
+		    'top' => 'integer',
+	    ]);
+	    $max_id = Solution::max('id');
+	    if(isset($request->top)){
+		    $top = $request->top;
+	    }else{
+		    $top = $max_id;
+	    }
+
+	    $solutions = Solution::where('id', '<>', 0);
+	    //todo limits
+
+	    //get prev top
+	    $prev_url = '';
+	    if($top <> $max_id){
+		$tq = clone $solutions;
+	    	$prev = $tq->where('id', '>=', $top)->orderBy('id', 'asc')->skip(self::PAGE_LIMIT)->first();
+		if($prev){
+			$prev_top = $prev->id;
+		}else{
+			$prev_top = $max_id;
+		}
+		$prev_url = '/solutions?top='.$prev_top;
+	    }
+	    //echo "prev_url:".$prev_url."<br>";
+
+	    //get next top
+	    $next_url = '';
+	    $tq = clone $solutions;
+	    $next = $tq->where('id', '<=', $top)->orderBy('id', 'desc')->skip(self::PAGE_LIMIT)->first();
+	    if($next){
+		    $next_url = '/solutions?top='.$next->id;
+	    }
+	    //echo "next_url:".$next_url."<br>";
+
+	    $solutions = $solutions->where('id', '<=', $top)->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
+	    return view('solutions.index',['solutions' => $solutions,
+	    				'prev_url' => $prev_url,
+	    				'next_url' => $next_url]);
     }
 
     /**
@@ -54,6 +93,9 @@ class SolutionController extends Controller
 	    }
 
 	    $solution = $request->user()->solutions()->create($request->all());
+
+	    $solution->code_length = strlen($solution->code);
+	    $solution->save();
 
 	    return redirect('/solutions/'.$solution->id);
     }

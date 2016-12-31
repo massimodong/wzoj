@@ -51,9 +51,9 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
 	  @section ('sidebar')
-            <li id='home_sidebar'><a href="/">Home</a></li>
-            <li id='problemsets_sidebar'><a href="/s">problemsets</a></li>
-            <li id='solutions_sidebar'><a href="/solutions">solutions</a></li>
+            <li id='home_sidebar'><a href="/"> {{trans('wzoj.home')}} </a></li>
+            <li id='problemsets_sidebar'><a href="/s"> {{trans('wzoj.problemsets')}} </a></li>
+            <li id='solutions_sidebar'><a href="/solutions"> {{trans('wzoj.solutions')}} </a></li>
           @show
           </ul>
           <ul class="nav navbar-nav navbar-right">
@@ -61,19 +61,19 @@
 	      <li class="dropdown">
 	        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->fullname}} <span class="caret"></span></a>
 		<ul class="dropdown-menu">
-		  <li><a href="/users/{{Auth::user()->id}}">profile</a></li>
+		  <li><a href="/users/{{Auth::user()->id}}"> {{trans('wzoj.profile')}} </a></li>
 		  @if (Auth::user()->has_role('admin'))
-		  <li><a href="/admin">admin</a></li>
+		  <li><a href="/admin"> {{trans('wzoj.admin')}} </a></li>
 		  @endif
-		  <li><a href="#" onclick="document.forms['logout_form'].submit();return false;">logout</a></li>
+		  <li><a href="#" onclick="document.forms['logout_form'].submit();return false;"> {{trans('wzoj.logout')}} </a></li>
 		</ul>
 	      </li>
 	    @else
 	      <li class="dropdown">
-	        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account <span class="caret"></span></a>
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {{trans('wzoj.account')}} <span class="caret"></span></a>
 		<ul class="dropdown-menu">
-		  <li><a href="/auth/login">login</a></li>
-		  <li><a href="/auth/register">register</a></li>
+		  <li><a href="/auth/login"> {{trans('wzoj.login')}} </a></li>
+		  <li><a href="/auth/register"> {{trans('wzoj.register')}} </a></li>
 		</ul>
 	      </li>
 	    @endif
@@ -110,6 +110,9 @@
     <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/vendor/bootstrap/docs/assets/js/ie10-viewport-bug-workaround.js"></script>
+    <!-- tinymce -->
+    <script src='/vendor/tinymce/tinymce.min.js'></script>
+    <script src='/include/js/tinymce.js'></script>
     @yield ('scripts')
   </body>
 </html>
