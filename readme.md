@@ -1,5 +1,5 @@
 ##WZOJ在线评测系统
-
+本项目评测机：[wzoj-judger](https://github.com/massimodong/wzoj-judger)
 开发中
 ## Laravel PHP Framework
 
