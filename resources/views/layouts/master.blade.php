@@ -20,6 +20,7 @@
 
     <!-- Custom styles for this template -->
     <link href="/include/css/common.css" rel="stylesheet">
+    <link href="/include/css/syntaxhighlighter.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -30,7 +31,10 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <script src='/include/js/lang/zh.js'></script>
     <script src='/include/js/common.js'></script>
+    <script src='/include/js/solution.js'></script>
+    <script src='/include/js/syntaxhighlighter.js'></script>
     @show
   </head>
 

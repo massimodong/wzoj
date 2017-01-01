@@ -43,6 +43,10 @@ return [
     'solution_status_5' => '取消',
     'verdict' => '结果',
     'checklog' => '比较日志',
+    'code' => '代码',
+
+    'compile_error' => '编译错误',
+    'testcases' => '测试点',
 
     'name' => '名称',
     'type' => '类型',

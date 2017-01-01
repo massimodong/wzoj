@@ -32,3 +32,17 @@ function sendForm(form){
 			$.each(data.responseJSON, alertEach);
 		});
 }
+
+function showOrHideCode(){
+	if(typeof showOrHideCode.show == 'undefined'){
+		showOrHideCode.show = 1;
+	}
+	showOrHideCode.show = 1 - showOrHideCode.show; //reverse
+	if(showOrHideCode.show == 1){
+		$('#code_pre').css('display', 'block');
+		$('#code_button').html('—');
+	}else{
+		$('#code_pre').css('display', 'none');
+		$('#code_button').html('+');
+	}
+}

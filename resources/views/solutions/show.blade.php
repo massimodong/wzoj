@@ -55,7 +55,29 @@
     </tr>
 </tbody>
 </table>
+<hr>
 
+@can ('view_code', $solution)
+<h3>{{trans('wzoj.code')}}</h3>
+<button id='code_button' type="button" class="btn btn-xs btn-default" onclick="showOrHideCode();return false;" >—</button>
+<pre id='code_pre' class="brush: 
+
+@if ($solution->lang <= 1)
+	c++
+@else
+	pascal
+@endif
+
+" style="display:block;">{{$solution->code}}</pre>
+@endcan
+
+@if (isset($solution->ce))
+	<h3>{{trans('wzoj.compile_error')}}</h3>
+	<pre>{{$solution->ce}}</pre>
+	<hr>
+@endif
+
+<h3>{{trans('wzoj.testcases')}}</h3>
 <table class="table table-striped">
 <thead>
     <tr>
@@ -82,4 +104,12 @@
 </table>
 
 </div>
+@endsection
+
+@section ('scripts')
+<script>
+$( document ).ready(function() {
+	showOrHideCode();
+});
+</script>
 @endsection

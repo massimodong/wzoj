@@ -109,7 +109,7 @@ class SolutionController extends Controller
     public function show($id)
     {
 	    $solution = Solution::findOrFail($id);
-	    $this->authorize('view',$solution);
+	    //$this->authorize('view',$solution);
 	    return view('solutions.show',['solution'=>$solution]);
     }
 

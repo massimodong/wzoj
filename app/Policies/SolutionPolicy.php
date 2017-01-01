@@ -27,12 +27,17 @@ class SolutionPolicy
     }
 
     public function view(User $user,Solution $solution){
-	    return $solution->user_id == $user->id;
+	    return true;
+	    //return $solution->user_id == $user->id;
     }
 
     public function judge(User $user,$solution){
 	    if($user->has_role('judger')){
 		    return true;
 	    }
+    }
+
+    public function view_code(User $user, Solution $solution){
+	    return $solution->user_id == $user->id;
     }
 }
