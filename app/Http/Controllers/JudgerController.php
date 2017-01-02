@@ -81,6 +81,7 @@ class JudgerController extends Controller
 		$solution->memory_used = $request->memory_used;
 		$solution->status = $request->status;
 		$solution->score = $request->score;
+		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
 		return response()->json(["ok" => true]);

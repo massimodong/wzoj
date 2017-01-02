@@ -46,9 +46,12 @@
 	@if ($solution->status > SL_RUNNING)
 	    {{trans('wzoj.solution_status_'.$solution->status)}}
 	@elseif ($solution->status == SL_RUNNING)
-	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1'></div>
-	@else
+	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}'></div>
+	@elseif ($solution->status == SL_PENDING)
 	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1'>
+	    {{trans('wzoj.solution_status_'.$solution->status)}}</div>
+	@elseif ($solution->status == SL_COMPILING)
+	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}'>
 	    {{trans('wzoj.solution_status_'.$solution->status)}}</div>
 	@endif
 	</td>
@@ -86,8 +89,11 @@ jQuery(document).ready(function($) {
 	});
 	$.each($('.judging-solution'), function(key, value){
 		var t = $('#'+value.id);
-		animateJudging(t, fillTable);
+		if(typeof t.data('waiting') == 'undefined'){
+			animateJudging(t, fillTable);
+		}
 	});
+	updatePendings(fillTable);
 });
 </script>
 @endsection

@@ -44,7 +44,8 @@ class AjaxController extends Controller
 			$last_tid = $request->last_tid;
 		}
 
-		return response()->json(['testcases' => $solution->testcases()->where('id', '>', $last_tid)->get()]);
+		return response()->json(['testcases' => $solution->testcases()->where('id', '>', $last_tid)->get(),
+					'cnt_testcases' => $solution->cnt_testcases]);//total testcases
 	}
 
 	public function getSolutionStatus(Request $request){
@@ -64,5 +65,10 @@ class AjaxController extends Controller
 					 'time_used' => $solution->time_used,
 					 'memory_used' => $solution->memory_used,
 					 'judged_at' => $solution->judged_at]);
+	}
+
+	public function getSolutionsJudging(){
+		$solutions = \App\Solution::where('status', SL_COMPILING)->orWhere('status', SL_RUNNING)->get(['id']);
+		return response()->json(['solutions' => $solutions]);
 	}
 }
