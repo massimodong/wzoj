@@ -30,6 +30,7 @@ Route::post('users/{id}','UserController@postId')->middleware('auth');
 Route::get('s','ProblemsetController@getIndex');
 Route::post('s','ProblemsetController@postNewProblemset');
 Route::get('s/{psid}','ProblemsetController@getProblemset');
+Route::get('s/{psid}/ranklist','ProblemsetController@getRanklist');
 Route::get('s/{psid}/edit','ProblemsetController@getEditProblemset');
 Route::put('s/{psid}','ProblemsetController@putProblemset');
 Route::delete('s/{psid}','ProblemsetController@deleteProblemset');

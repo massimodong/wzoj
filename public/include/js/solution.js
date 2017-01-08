@@ -83,13 +83,18 @@ function work( s, done){
 			}
 		}
 
-		if(st == 3){
+		if(s.length == 0){
+			return;
+		}else if(st == 3){
 			setTimeout(work.bind(this, s, done), s.data('wait_time'));
 		}else{
 			//finish running
 			if(s.data('running') == 1){
 				s.data('running', 0);
 				setTimeout(done.bind(this, s), 300);
+			}
+			if(typeof s.data('waiting') == 'undefined' || s.data('waiting') == 0){
+				s.data('waiting', 1);
 			}
 		}
 	});

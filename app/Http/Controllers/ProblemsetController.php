@@ -39,6 +39,23 @@ class ProblemsetController extends Controller
 		return view('problemsets.view_'.$problemset->type,['problemset' => $problemset,'problems' => $problems]);
 	}
 
+	public function getRanklist($psid, Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		//ranklist requires no authorization
+		switch($problemset->type){
+			case 'set':
+				//no ranklist for SET
+				return redirect('/s/'.$psid);
+				break;
+			case 'oi':
+				return view('problemsets.ranklist_oi', ['problemset' => $problemset]);
+				break;
+			default:
+				abort(503);
+				break;
+		}
+	}
+
 	public function postNewProblemset(){
 		$this->authorize('create',Problemset::class);
 		$problemset = Problemset::create(['name'=>'problemset name','type'=>'set','public'=>'1']);
@@ -155,9 +172,7 @@ class ProblemsetController extends Controller
 
 	public function getSubmit($psid,$pid){
 		$problemset = Problemset::findOrFail($psid);
-		if(!$problemset->public){
-			$this->authorize('view',$problemset);
-		}
+		$this->authorize('view',$problemset);
 		$problem = $problemset->problems()->findOrFail($pid);
 		if(ojCanViewProblems($problemset)){
 			return view('problems.submit',['problemset' => $problemset, 'problem' => $problem]);

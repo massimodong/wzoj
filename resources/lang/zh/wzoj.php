@@ -7,6 +7,7 @@ return [
     | Wzoj Language File
     |--------------------------------------------------------------------------
     */
+    'class' => '班级',
     'home' => '主页',
     'problemsets' => '活动',
     'solutions' => '状态',
@@ -63,4 +64,6 @@ return [
     'prevpage' => '上一页',
     'nextpage' => '下一页',
     'bottompage' => '尾页',
+
+    'ranklist' => '排名',
 ];

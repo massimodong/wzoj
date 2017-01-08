@@ -1,22 +1,35 @@
 @extends ('layouts.master')
 
 @section ('title')
-set {{$problemset->name}}
+{{$problemset->name}}
 @endsection
 
 @section ('content')
 
-<h3>(set)</h3>
-<div>
-<h3>description:</h3>
-{{$problemset->description}}
-</div>
+<h1 class='page-header text-center'>{{$problemset->name}}</h1>
 
-<div>
-<h3>problems</h3>
-@foreach ($problems as $problem)
-	<p><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->pivot->index}}:{{$problem->name}}</a></p>
-@endforeach
+<div id="home" class="tab-pane fade in active">
+  {!! Purifier::clean($problemset->description) !!}
+
+  <table class="table table-striped">
+  <thead>
+    <tr>
+      <th style='width:5%'>{{trans('wzoj.index')}}</th>
+      <th>{{trans('wzoj.name')}}</th>
+      <th style='width:13%'>{{trans('wzoj.source')}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach ($problems as $problem)
+    <tr>
+      <td>{{$problem->pivot->index}}</td>
+      <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></td>
+      <td>{{$problem->source}}</td>
+    </tr>
+    @endforeach
+  </tbody>
+  </table>
 </div>
+<!-- home -->
 
 @endsection

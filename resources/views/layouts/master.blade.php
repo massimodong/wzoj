@@ -122,6 +122,7 @@
     <!-- tinymce -->
     <script src='/vendor/tinymce/tinymce.min.js'></script>
     <script src='/include/js/tinymce.js'></script>
+    <script src='/include/js/isotope.pkgd.min.js'></script>
     @yield ('scripts')
   </body>
 </html>
