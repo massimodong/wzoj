@@ -53,7 +53,9 @@ class AjaxController extends Controller
 			'solution_id' => 'required|integer',
 		]);
 		$solution = \App\Solution::findOrFail($request->solution_id);
-		return response()->json(['status' => $solution->status]);
+		return response()->json(['status' => $solution->status,
+					'score' => $solution->score,
+					'ce' => isset($solution->ce)]);
 	}
 
 	public function getSolutionResult(Request $request){
@@ -69,6 +71,18 @@ class AjaxController extends Controller
 
 	public function getSolutionsJudging(){
 		$solutions = \App\Solution::where('status', SL_COMPILING)->orWhere('status', SL_RUNNING)->get(['id']);
+		return response()->json(['solutions' => $solutions]);
+	}
+
+	public function getProblemsetSolutions(Request $request){
+		$this->validate($request, [
+			'problemset_id' => 'required|integer',
+			'top' => 'required|integer',
+		]);
+		$problemset = \App\Problemset::findOrFail($request->problemset_id);
+		$solutions = $problemset->solutions()->where('id', '>', $request->top)
+			->public()
+			->get();
 		return response()->json(['solutions' => $solutions]);
 	}
 }

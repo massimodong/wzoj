@@ -42,6 +42,14 @@ class ProblemsetController extends Controller
 	public function getRanklist($psid, Request $request){
 		$problemset = Problemset::findOrFail($psid);
 		//ranklist requires no authorization
+
+		//todo :Pick the last solution for each user/problem
+		$solutions = $problemset->solutions()->with('user')->get();
+
+		return  view('problemsets.ranklist', ['problemset' => $problemset,
+						'solutions'  => $solutions,
+						'last_solution_id' => $problemset->solutions()->max('id')]);
+		/*
 		switch($problemset->type){
 			case 'set':
 				//no ranklist for SET
@@ -53,7 +61,7 @@ class ProblemsetController extends Controller
 			default:
 				abort(503);
 				break;
-		}
+		}*/
 	}
 
 	public function postNewProblemset(){

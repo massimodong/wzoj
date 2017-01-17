@@ -4,6 +4,12 @@
 set {{$problemset->name}}
 @endsection
 
+@section ('sidebar')
+<li id='home_sidebar'><a href="/"> {{trans('wzoj.home')}} </a></li>
+<li id='problems_sidebar'><a href="/s/{{$problemset->id}}"> {{trans('wzoj.problem')}} </a></li>
+<li id='solutions_sidebar'><a href="/solutions?problemset_id={{$problemset->id}}"> {{trans('wzoj.solutions')}} </a></li>
+@endsection
+
 @section ('content')
 
 <h3>(oi)</h3>

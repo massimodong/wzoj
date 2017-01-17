@@ -78,6 +78,9 @@
                     <li id='import-problems_sidebar'>
                         <a href="/admin/import-problems"> Import-Problems</a>
                     </li>
+		    <li id='problem-rejudge'>
+		    	<a href="/admin/problem-rejudge"> Problem-rejudge</a>
+		    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

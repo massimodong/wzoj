@@ -34,6 +34,7 @@
     <script src='/include/js/lang/zh.js'></script>
     <script src='/include/js/common.js'></script>
     <script src='/include/js/solution.js'></script>
+    <script src='/include/js/ranklist.js'></script>
     <script src='/include/js/syntaxhighlighter.js'></script>
     @show
   </head>

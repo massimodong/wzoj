@@ -93,6 +93,12 @@ function work( s, done){
 				s.data('running', 0);
 				setTimeout(done.bind(this, s), 300);
 			}
+
+			if(solution[0].ce){
+				s.data('ce', true);
+			}
+			s.data('score', solution[0].score);
+
 			if(typeof s.data('waiting') == 'undefined' || s.data('waiting') == 0){
 				s.data('waiting', 1);
 			}
@@ -105,6 +111,8 @@ function animateJudging( s ,done){
 	s.data('t_id', 0); //last testcase_id
 	s.data('index', -1); //index of current testcase
 	s.data('wait_time', 200); //time used by last testcase
+	s.data('score', 0);//score
+	s.data('ce', false);//compile error
 	work(s, done);
 }
 

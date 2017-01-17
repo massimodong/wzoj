@@ -78,4 +78,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 		//import problems
 		Route::get('import-problems', 'AdminImportProblemsController@getImportProblems');
 		Route::post('import-problems', 'AdminImportProblemsController@postImportProblems');
+
+		//problem rejudge
+		Route::get('problem-rejudge', 'AdminProblemRejudgeController@getProblemRejudge');
+		Route::post('problem-rejudge', 'AdminProblemRejudgeController@postProblemRejudge');
 });

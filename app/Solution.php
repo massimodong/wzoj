@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+use DB;
+
 class Solution extends Model
 {
 	protected $guarded = ['id','created_at','updated_at'];
@@ -21,5 +23,17 @@ class Solution extends Model
 
 	public function testcases(){
 		return $this->hasMany('App\Testcase');
+	}
+
+	//public part of the solutions
+	public function scopePublic($query){
+		$query->select(['id', 'user_id', 'problem_id', 'score', 'status', 'time_used', 'memory_used'])
+			->addSelect(DB::raw('ce is NOT NULL as ce'))
+			->with(['user' => function($query){
+				$query->select(['id', 'name', 'fullname', 'class']);
+			  }])
+			->with(['problem' => function($query){
+				$query->select(['id', 'name']);
+			  }]);
 	}
 }
