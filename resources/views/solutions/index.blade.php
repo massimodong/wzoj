@@ -36,7 +36,7 @@
 	<th style='width:12%'>{{trans('wzoj.judged_at')}}</th>
     </tr>
 </thead>
-<tbody>
+<tbody id='solutions-tbody'>
 @foreach ($solutions as $solution)
     <tr id= 'tr-{{$solution->id}}' class='clickable-row' data-href='/solutions/{{$solution->id}}'>
         <td>{{$solution->id}}</td>
@@ -79,9 +79,7 @@
 @section ('scripts')
 <script>
 jQuery(document).ready(function($) {
-	$(".clickable-row").click(function() {
-		window.document.location = $(this).data("href");
-	});
+	solutions_update({{$last_solution_id}});
 	updatePendings(fillTable);
 });
 </script>

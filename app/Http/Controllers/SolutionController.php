@@ -60,7 +60,8 @@ class SolutionController extends Controller
 	    $solutions = $solutions->where('id', '<=', $top)->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
 	    return view('solutions.index',['solutions' => $solutions,
 	    				'prev_url' => $prev_url,
-	    				'next_url' => $next_url]);
+	    				'next_url' => $next_url,
+	    				'last_solution_id' => $top]);
     }
 
     /**

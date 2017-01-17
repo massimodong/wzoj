@@ -9,7 +9,7 @@ return [
     */
     'class' => '班级',
     'home' => '主页',
-    'problemsets' => '活动',
+    'problemsets' => '题库',
     'solutions' => '状态',
     'solution' => '提交状态',
     'account' => '账户',

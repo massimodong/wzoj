@@ -85,4 +85,15 @@ class AjaxController extends Controller
 			->get();
 		return response()->json(['solutions' => $solutions]);
 	}
+
+	public function getSolutions(Request $request){
+		$this->validate($request, [
+			'top' => 'required|integer',
+		]);
+
+		$solutions = \App\Solution::where('id', '>', $request->top)
+			->public()
+			->get();
+		return response()->json(['solutions' => $solutions]);
+	}
 }

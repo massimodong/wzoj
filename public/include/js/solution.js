@@ -143,3 +143,49 @@ function fillTable( s ){
 		$('#' + id + ' .solution-judgedat').text(data.judged_at);
 	})
 }
+
+function solutions_update(last_solution_id){
+	$.get('/ajax/solutions', {
+		top: last_solution_id
+	})
+	.done(function(data){
+		$.each(data.solutions, function(key, solution){
+			var row = $("<tr class='clickable-row'></tr>");
+			row.attr('id', 'tr-' + solution.id);
+			row.data('href', '/solutions/' + solution.id);
+			row.append("<td>" + solution.id + "</td>");
+			row.append("<td>" + solution.user.name + "</td>");
+			row.append("<td>" + solution.problem.name + "</td>");
+
+			var soldiv = $("<div class='judging-solution'></div>");
+			soldiv.attr('id', 'solution-' + solution.id);
+			soldiv.data('id', solution.id);
+			soldiv.data('waiting', 1);
+			if(solution.status != 3){//not running
+				soldiv.append(TRANS["solution_status_" + solution.status]);
+			}
+
+			row.append($("<td></td>").append(soldiv));
+			row.append("<td class='solution-score'>" + solution.score + "</td>");
+			row.append("<td class='solution-timeused'>" + solution.time_used + "ms</td>");
+
+			var m = new Number(solution.memory_used / 1024 / 1024);
+			row.append("<td class='solution-memoryused'>" + m.toFixed(2) + "MB</td>");
+
+			row.append("<td>" + LANG[solution.language] + "</td>");
+			row.append("<td>" + solution.code_length +"B</td>");
+
+			row.append("<td>todo</td>");
+			row.append("<td>todo</td>");
+			row.append("<td>" + solution.judged_at + "</td>");
+
+			$('#solutions-tbody').prepend(row);
+
+			last_solution_id = solution.id;
+		});
+		$(".clickable-row").click(function() {
+			window.document.location = $(this).data("href");
+		});
+		setTimeout(solutions_update.bind(this, last_solution_id), 500);
+	});
+}
