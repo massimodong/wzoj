@@ -145,6 +145,7 @@ function fillTable( s ){
 }
 
 function solutions_update(last_solution_id){
+	if(last_solution_id < 0) return;
 	$.get('/ajax/solutions', {
 		top: last_solution_id
 	})

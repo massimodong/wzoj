@@ -9,10 +9,12 @@
 <!-- width for each problem -->
 <style>
 .sortable_list .sortable_list_cell{
-  width: {{(100.0 - 20.0)/count($problemset->problems)}}%;
+  width: {{(100.0 - 20.0)/count($problems)}}%;
 }
 </style>
 @endsection
+
+@include ('layouts.contest_header')
 
 @section ('content')
 
@@ -21,7 +23,7 @@
     <div class='sortable_list_cell' style='width:5%'>{{trans('wzoj.user')}}</div>
     <div class='sortable_list_cell' style='width:10%'>{{trans('wzoj.class')}}</div>
     <div class='sortable_list_cell' style='width:5%'>{{trans('wzoj.score')}}</div>
-    @foreach ($problemset->problems as $problem)
+    @foreach ($problems as $problem)
 	<div class='sortable_list_cell'><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></div>
     @endforeach
   </li>
@@ -37,7 +39,7 @@ var user_template = "<li class='col-lg-12' style='height:40px;'>" +
 			"<div class='rank-user sortable_list_cell' style='width:5%'></div>" +
 			"<div class='rank-class sortable_list_cell' style='width:10%'></div>" +
 			"<div class='rank-score sortable_list_cell' style='width:5%'></div>";
-			@foreach ($problemset->problems as $problem)
+			@foreach ($problems as $problem)
 			user_template += "<div class='problem-{{$problem->id}} sortable_list_cell'></div>"
 			@endforeach
 user_template += '</li>';

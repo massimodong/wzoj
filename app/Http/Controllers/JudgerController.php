@@ -21,7 +21,7 @@ class JudgerController extends Controller
 		return response()->json(['ok' => true]);
 	}
 	public function getPendingSolutions(Request $request){
-		$solutions = Solution::where('status','<=',1)->get();
+		$solutions = Solution::where('status','<=',1)->take(5)->get();
 		return response()->json($solutions);
 	}
 	public function postCheckout(Request $request){

@@ -32,6 +32,13 @@ tr.clickable-row {
   cursor: pointer;
 }
 
+th{
+  text-align: center;
+}
+td{
+  text-align: center;
+}
+
 /*table*/
 table {
   table-layout: fixed;
@@ -52,4 +59,12 @@ table {
 	/*border-right: 1px solid #ccc;*/
 	padding: 3px 5px;
 	text-align: center;
+}
+
+.top-buffer-sm {
+  margin-top: 5px;
+}
+
+textarea {
+  resize: none;
 }

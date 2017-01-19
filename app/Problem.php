@@ -14,4 +14,8 @@ class Problem extends Model
 	public function problemsets(){
 		return $this->belongsToMany('App\Problemset')->withPivot('index');
 	}
+
+	public function scopeOrderByIndex($query){
+		return $query->orderBy('problem_problemset.index','asc');
+	}
 }

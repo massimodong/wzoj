@@ -30,7 +30,7 @@ class ProblemsetController extends Controller
 			$this->authorize('view',$problemset);
 		}
 		if(ojCanViewProblems($problemset)){
-			$problems = $problemset->problems()->orderBy('problem_problemset.index','asc');
+			$problems = $problemset->problems()->orderByIndex();
 			$problems = $problems->get();
 		}else{
 			$problems = [];
@@ -41,12 +41,14 @@ class ProblemsetController extends Controller
 
 	public function getRanklist($psid, Request $request){
 		$problemset = Problemset::findOrFail($psid);
+		$problems = $problemset->problems()->orderByIndex()->get();
 		//ranklist requires no authorization
 
 		//todo :Pick the last solution for each user/problem
 		$solutions = $problemset->solutions()->with('user')->get();
 
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
+						'problems' => $problems,
 						'solutions'  => $solutions,
 						'last_solution_id' => $problemset->solutions()->max('id')]);
 		/*
@@ -178,6 +180,7 @@ class ProblemsetController extends Controller
 		return back();
 	}
 
+	/*
 	public function getSubmit($psid,$pid){
 		$problemset = Problemset::findOrFail($psid);
 		$this->authorize('view',$problemset);
@@ -188,4 +191,5 @@ class ProblemsetController extends Controller
 			return redirect('/');
 		}
 	}
+	*/
 }

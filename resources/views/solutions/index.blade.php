@@ -4,18 +4,27 @@
 {{trans('wzoj.solutions')}}
 @endsection
 
+@if (isset($problemset) && $problemset->type <> 'set')
+    @include ('layouts.contest_header')
+@endif
+
 @section ('content')
 <div class='col-lg-12'>
 
 <div class='pull-right'>
+
+@if ($url_limits <> '')
+[<a href='/solutions?{{$url_limits}}'>{{trans('wzoj.toppage')}}</a>]
+@else
 [<a href='/solutions'>{{trans('wzoj.toppage')}}</a>]
+@endif
 
 @if ($prev_url <> '')
-[<a href='{{$prev_url}}'>{{trans('wzoj.prevpage')}}</a>]
+[<a href='{{$prev_url.$url_limits}}'>{{trans('wzoj.prevpage')}}</a>]
 @endif
 
 @if ($next_url <> '')
-[<a href='{{$next_url}}'>{{trans('wzoj.nextpage')}}</a>]
+[<a href='{{$next_url.$url_limits}}'>{{trans('wzoj.nextpage')}}</a>]
 @endif
 </div>
 
@@ -23,10 +32,10 @@
 <thead>
     <tr>
     	<th style='width:5%'>{{trans('wzoj.id')}}</th>
-	<th style='width:10%'>{{trans('wzoj.user')}}</th>
+	<th style='width:8%'>{{trans('wzoj.user')}}</th>
 	<th style='width:15%'>{{trans('wzoj.problem')}}</th>
 	<th style='width:12%'>{{trans('wzoj.status')}}</th>
-	<th style='width:5%'>{{trans('wzoj.score')}}</th>
+	<th style='width:7%'>{{trans('wzoj.score')}}</th>
 	<th style='width:5%'>{{trans('wzoj.time_used')}}</th>
 	<th style='width:9%'>{{trans('wzoj.memory_used')}}</th>
 	<th style='width:6%'>{{trans('wzoj.language')}}</th>
@@ -50,7 +59,11 @@
 	    {{trans('wzoj.solution_status_'.$solution->status)}}</div>
 	@endif
 	</td>
+	@if ($solution->ce)
+	<td class='solution-score'>{{trans('wzoj.compile_error')}}</td>
+	@else
 	<td class='solution-score'>{{$solution->score}}</td>
+	@endif
 	<td class='solution-timeused'>{{$solution->time_used}}ms</td>
 	<td class='solution-memoryused'>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
 	<td>

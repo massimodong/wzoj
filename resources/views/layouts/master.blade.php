@@ -18,6 +18,8 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="/vendor/bootstrap/docs/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
+    <link href="/vendor/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet">
+
     <!-- Custom styles for this template -->
     <link href="/include/css/common.css" rel="stylesheet">
     <link href="/include/css/syntaxhighlighter.css" rel="stylesheet">
@@ -51,7 +53,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/">{{ojoption('site_name')}}</a>
+          <a class="navbar-brand" href=
+	  @section ('home_href')
+	  "/"
+	  @show
+	  >
+	  @section ('site_title')
+		{{ojoption('site_name')}}
+	  @show
+	  </a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -118,6 +128,9 @@
     <script src="/vendor/bootstrap/docs/assets/js/vendor/jquery.min.js"></script>
     <!-- <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script> -->
     <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- bootstrap-fileinput -->
+    <script src="/vendor/bootstrap-fileinput/js/fileinput.min.js"></script>
+    <script src="/vendor/bootstrap-fileinput/themes/fa/theme.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/vendor/bootstrap/docs/assets/js/ie10-viewport-bug-workaround.js"></script>
     <!-- tinymce -->

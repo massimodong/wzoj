@@ -18,6 +18,11 @@ class SolutionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {   
+	    $this->middleware('auth', ['except' => ['index', 'show']]);
+    }  
+
     const PAGE_LIMIT = 20;
     public function index(Request $request)
     {
@@ -32,7 +37,16 @@ class SolutionController extends Controller
 	    }
 
 	    $solutions = Solution::where('id', '<>', 0);
-	    //todo limits
+	    // limits
+	    $url_limits = '';
+	    $problemset = NULL;
+	    if(isset($request->problemset_id)){
+		    $problemset = Problemset::find($request->problemset_id);
+		    if($problemset){
+			    $solutions = $solutions->where('problemset_id', $problemset->id);
+			    $url_limits.='&problemset_id='.$problemset->id;
+		    }
+	    }
 
 	    //get prev top
 	    $prev_url = '';
@@ -57,11 +71,13 @@ class SolutionController extends Controller
 	    }
 	    //echo "next_url:".$next_url."<br>";
 
-	    $solutions = $solutions->where('id', '<=', $top)->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
+	    $solutions = $solutions->where('id', '<=', $top)->public()->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
 	    return view('solutions.index',['solutions' => $solutions,
 	    				'prev_url' => $prev_url,
 	    				'next_url' => $next_url,
-	    				'last_solution_id' => $top]);
+					'url_limits' => $url_limits,
+	    				'last_solution_id' => isset($request->top)?-1:$top,
+	    				'problemset' => $problemset]);
     }
 
     /**
@@ -93,7 +109,20 @@ class SolutionController extends Controller
 		    return back();
 	    }
 
-	    $solution = $request->user()->solutions()->create($request->all());
+	    $solution_meta = $request->except(['_token', 'srcfile']);
+
+	    if($request->hasFile('srcfile') && $request->file('srcfile')->isValid()){
+		    $file = $request->file('srcfile');
+		    $solution_meta["code"] = file_get_contents($file->getRealPath());
+	    }
+
+	    if(strlen($solution_meta["code"]) <= 10){
+		    return back()
+			    ->withErrors(trans('wzoj.code_too_short'))
+			    ->withInput();
+	    }
+
+	    $solution = $request->user()->solutions()->create($solution_meta);
 
 	    $solution->code_length = strlen($solution->code);
 	    $solution->save();

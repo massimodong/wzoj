@@ -9,7 +9,8 @@
         "laravel/framework": "5.1.*",
         "twbs/bootstrap": "^3.3",
         "mews/purifier": "^2.0",
-        "tinymce/tinymce": "^4.5"
+        "tinymce/tinymce": "^4.5",
+        "kartik-v/bootstrap-fileinput": "@dev"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -24,6 +24,8 @@ return [
     'save' => '保存',
     'index' => '序号',
     'operations' => '操作',
+    'submit' => '提交',
+    'choosefile' => '选择文件',
 
     'user' => '用户',
     'problem' => '题目',
@@ -45,6 +47,7 @@ return [
     'verdict' => '结果',
     'checklog' => '比较日志',
     'code' => '代码',
+    'source' => '来源',
 
     'compile_error' => '编译错误',
     'testcases' => '测试点',
@@ -66,4 +69,6 @@ return [
     'bottompage' => '尾页',
 
     'ranklist' => '排名',
+
+    'code_too_short' => '提交的代码过短!',
 ];
