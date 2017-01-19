@@ -97,6 +97,11 @@ class AuthController extends Controller
 	return $newuser;
     }
 
+    public function getLogin(Request $request){
+	    \Session::put('url.intended', \URL::previous());
+	    return view('auth.login');
+    }
+
     public function oj_getRegister(Request $request){
 	    if(isset($request->token)){
 		    $invitation = \App\Invitation::where('token',$request->token)

@@ -12,7 +12,9 @@
 
 <ul class="nav nav-tabs" id="problemTabs">
   <li class="active"><a data-toggle="tab" href="#problem"> {{trans('wzoj.problem')}} </a></li>
+  @if (Auth::check())
   <li><a data-toggle="tab" href="#submit"> {{trans('wzoj.submit')}} </a></li>
+  @endif
 </ul>
 <div class="tab-content">
   <div id="problem" class="tab-pane fade in active">
