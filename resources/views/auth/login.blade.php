@@ -1,29 +1,26 @@
 @extends ('layouts.master')
 
 @section ('title')
-Login
+{{trans('wzoj.login')}}
 @endsection
 
 @section ('content')
-<form method="POST" action="/auth/login">
+<form method="POST" action="/auth/login" class="form-signin">
 {!! csrf_field() !!}
+<h2 class="form-signin-heading">{{trans('wzoj.please_login')}}</h2>
 
-<div>
-username
-<input type="text" name="name" value="{{ old('name') }}">
+<label for="name" class="sr-only">{{trans('wzoj.username')}}</label>
+<input type="text" name="name" id="name" value="{{old('name')}}" class="form-control" placeholder="{{trans('wzoj.username')}}" required autofocus>
+
+<label for="password" class="sr-only">{{trans('wzoj.password')}}</label>
+<input type="password" name="password" id="password" class="form-control" placeholder="{{trans('wzoj.password')}}" required>
+
+<div class="checkbox">
+  <label>
+    <input type="checkbox" name="remember"> Remember Me
+  </label>
 </div>
 
-<div>
-Password
-<input type="password" name="password" id="password">
-</div>
-
-<div>
-<input type="checkbox" name="remember"> Remember Me
-</div>
-
-<div>
-<button type="submit">Login</button>
-</div>
+<button class="btn btn-lg btn-primary btn-block" type="submit">{{trans('wzoj.login')}}</button>
 </form>
 @endsection

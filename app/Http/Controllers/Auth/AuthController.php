@@ -107,7 +107,9 @@ class AuthController extends Controller
 		    $invitation = \App\Invitation::where('token',$request->token)
 			    ->where('remaining' , '<>' , 0)
 			    ->first();
-		    if($invitation == NULL) return redirect('/auth/register');
+		    if($invitation == NULL) return redirect('/auth/register')
+			    ->withErrors(trans('wzoj.invalid_token'))
+			    ->withInput();
 		    return view('auth.register',['invitation'=>$invitation]);
 	    }else{
 		    $invitations = \App\Invitation::where('private' , false)

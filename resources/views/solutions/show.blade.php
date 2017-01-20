@@ -4,6 +4,10 @@
 {{trans('wzoj.solution')}}
 @endsection
 
+@if ($solution->problemset_id > 0 && $problemset->type <> 'set')
+@include ('layouts.contest_header')
+@endif
+
 @section ('content')
 <div class="col-lg-12">
 
@@ -29,9 +33,17 @@
         <td>{{$solution->id}}</td>
 	<td><a href='/users/{{$solution->user->id}}'>{{$solution->user->name}}</a></td>
 	@if ($solution->problemset_id > 0)
-	    <td><a href='/s/{{$solution->problemset->id}}/{{$solution->problem->id}}'>{{$solution->problem->name}}</a></td>
+	    @if ($problemset->public || Gate::allows('view', $problemset))
+	        <td><a href='/s/{{$solution->problemset->id}}/{{$solution->problem->id}}'>{{$solution->problem->name}}</a></td>
+	    @else
+	        <td>{{$solution->problem->name}}</td>
+	    @endif
 	@else
-	    <td><a href='/admin/problems/{{$solution->problem->id}}'>{{$solution->problem->name}}</a></td>
+	    @if (Auth::check() && Auth::user()->has_role('admin'))
+	        <td><a href='/admin/problems/{{$solution->problem->id}}'>{{$solution->problem->name}}</a></td>
+	    @else
+	        <td>{{$solution->problem->name}}</td>
+	    @endif
 	@endif
 	<td>{{trans('wzoj.solution_status_'.$solution->status)}}</td>
 	<td>{{$solution->score}}</td>
@@ -73,35 +85,39 @@
 
 @if (isset($solution->ce))
 	<h3>{{trans('wzoj.compile_error')}}</h3>
+	@can ('view_code', $solution)
 	<pre>{{$solution->ce}}</pre>
+	@endcan
 	<hr>
-@endif
+@else
 
-<h3>{{trans('wzoj.testcases')}}</h3>
-<table class="table table-striped">
-<thead>
-    <tr>
-    	<th>{{trans('wzoj.name')}}</th>
-	<th>{{trans('wzoj.score')}}</th>
-	<th>{{trans('wzoj.time_used')}}</th>
-	<th>{{trans('wzoj.memory_used')}}</th>
-	<th>{{trans('wzoj.verdict')}}</th>
-	<th>{{trans('wzoj.checklog')}}</th>
-    </tr>
-</thead>
-@foreach ($solution->testcases as $testcase)
-    <tr>
-	<td>{{$testcase->filename}}</td>
-	<td>{{$testcase->score}}</td>
-	<td>{{$testcase->time_used}}ms</td>
-	<td>{{sprintf('%.2f', $testcase->memory_used / 1024 / 1024)}}MB</td>
-	<td>{{$testcase->verdict}}</td>
-	<td>{{$testcase->checklog}}</td>
-    </tr>
-@endforeach
-<tbody>
-</tbody>
+	<h3>{{trans('wzoj.testcases')}}</h3>
+	<table class="table table-striped">
+	<thead>
+	    <tr>
+    		<th>{{trans('wzoj.name')}}</th>
+		<th>{{trans('wzoj.score')}}</th>
+		<th>{{trans('wzoj.time_used')}}</th>
+		<th>{{trans('wzoj.memory_used')}}</th>
+		<th>{{trans('wzoj.verdict')}}</th>
+		<th>{{trans('wzoj.checklog')}}</th>
+ 	   </tr>
+	</thead>
+	<tbody>
+	@foreach ($solution->testcases as $testcase)
+	    <tr>
+		<td>{{$testcase->filename}}</td>
+		<td>{{$testcase->score}}</td>
+		<td>{{$testcase->time_used}}ms</td>
+		<td>{{sprintf('%.2f', $testcase->memory_used / 1024 / 1024)}}MB</td>
+		<td>{{$testcase->verdict}}</td>
+		<td>{{$testcase->checklog}}</td>
+	    </tr>
+	@endforeach
+	</tbody>
 </table>
+
+@endif
 
 </div>
 @endsection

@@ -92,6 +92,9 @@
 @section ('scripts')
 <script>
 jQuery(document).ready(function($) {
+	$(".clickable-row").click(function() {
+		window.document.location = $(this).data("href");
+	});
 	solutions_update({{$last_solution_id}});
 	updatePendings(fillTable);
 });

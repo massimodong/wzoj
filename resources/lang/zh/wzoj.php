@@ -27,6 +27,14 @@ return [
     'submit' => '提交',
     'choosefile' => '选择文件',
 
+    'email' => '邮箱',
+    'username' => '用户名',
+    'fullname' => '姓名',
+    'password' => '密码',
+    'password_confirmation' => '确认密码',
+    'please_login' => '请登录',
+    'register' => '注册',
+
     'user' => '用户',
     'problem' => '题目',
     'status' => '状态',
@@ -71,4 +79,10 @@ return [
     'ranklist' => '排名',
 
     'code_too_short' => '提交的代码过短!',
+
+    'available_tokens' => '请选择注册通道',
+    'invalid_token' => '无效的邀请码!',
+
+    'fill_your_own_token_here' => '在此填入邀请码',
+    'use_your_own_token' => '使用邀请码',
 ];
