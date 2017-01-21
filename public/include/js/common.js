@@ -46,3 +46,16 @@ function showOrHideCode(){
 		$('#code_button').html('+');
 	}
 }
+
+function selectHashTab(){
+	var itemName = window.location.href+'-activeTab';
+	$(document).ready(function() {
+		var activeTab = localStorage.getItem(itemName);
+		if (activeTab) {
+			$("a[href='" + activeTab + "']").tab("show");
+		}
+		$(document.body).on("click", "a[data-toggle]", function(event) {
+			localStorage.setItem(itemName, this.getAttribute("href"));
+		});
+	});
+}

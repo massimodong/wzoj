@@ -17,12 +17,12 @@
   @endif
 </ul>
 <div class="tab-content">
-  <div id="problem" class="tab-pane fade in active">
+  <div id="problem" class="tab-pane in active">
     @include ('layouts.showproblem')
   </div>
   <!-- problem -->
 
-  <div id="submit" class="tab-pane fade">
+  <div id="submit" class="tab-pane">
     <div class="top-buffer-sm"></div>
     <form action='/solutions' method='POST' enctype='multipart/form-data'>
       {{csrf_field()}}
@@ -59,11 +59,7 @@
 @endsection
 
 @section ('scripts')
-@if (count($errors) > 0)
 <script>
-jQuery(document).ready(function($) {
-	$('#problemTabs a[href="#submit"]').tab('show');
-});
+selectHashTab();
 </script>
-@endif
 @endsection

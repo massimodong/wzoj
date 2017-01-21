@@ -24,6 +24,9 @@
     <link href="/include/css/common.css" rel="stylesheet">
     <link href="/include/css/syntaxhighlighter.css" rel="stylesheet">
 
+    <!--Data Tables-->
+    <link href="/include/css/datatables.min.css" rel="stylesheet">
+
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="/vendor/bootstrap/docs/assets/js/ie-emulation-modes-warning.js"></script>
@@ -137,6 +140,8 @@
     <script src='/vendor/tinymce/tinymce.min.js'></script>
     <script src='/include/js/tinymce.js'></script>
     <script src='/include/js/isotope.pkgd.min.js'></script>
+    <!-- Data Tables-->
+    <script src='/include/js/datatables.min.js'></script>
     @yield ('scripts')
   </body>
 </html>

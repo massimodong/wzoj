@@ -9,6 +9,7 @@ return [
     */
     'class' => '班级',
     'home' => '主页',
+    'problemset' => '题库',
     'problemsets' => '题库',
     'solutions' => '状态',
     'solution' => '提交状态',
@@ -26,6 +27,7 @@ return [
     'operations' => '操作',
     'submit' => '提交',
     'choosefile' => '选择文件',
+    'delete' => '删除',
 
     'email' => '邮箱',
     'username' => '用户名',
@@ -37,6 +39,7 @@ return [
 
     'user' => '用户',
     'problem' => '题目',
+    'problems' => '题目',
     'status' => '状态',
     'score' => '分数',
     'time_used' => '耗时',
@@ -85,4 +88,7 @@ return [
 
     'fill_your_own_token_here' => '在此填入邀请码',
     'use_your_own_token' => '使用邀请码',
+
+    'group' => '用户组',
+    'groups' => '用户组',
 ];

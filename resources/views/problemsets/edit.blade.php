@@ -11,7 +11,16 @@
 
 @section ('content')
 
-<div>
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#problemset">{{trans('wzoj.problemset')}}</a></li>
+  <li><a data-toggle="tab" href="#problems">{{trans('wzoj.problems')}}</a></li>
+  <li><a data-toggle="tab" href="#groups">{{trans('wzoj.groups')}}</a></li>
+</ul>
+
+<div class="tab-content">
+<div class="top-buffer-sm"></div>
+
+<div id="problemset" class="tab-pane in active">
     <form class='form-horizontal' id='problemset_form' action='/s/{{$problemset->id}}' method='POST'>
     {{csrf_field()}}
     {{method_field('PUT')}}
@@ -31,7 +40,7 @@
     <div class="form-group">        
           <div class="col-sm-offset-2 col-sm-10">
 	      <div class="checkbox">
-                  <label><input type="checkbox" name='public' value='1' {{$problemset->public?"checked":""}}> public </label>
+                  <label><input type="checkbox" name='public' value='1' {{$problemset->public?"checked":""}}>{{trans('wzoj.public')}}</label>
 	      </div>
 	  </div>
     </div>
@@ -42,14 +51,24 @@
 	  </div>
     </div>
     </form>
-</div>
 
-<div class="col-lg-12">
-<h1>problems</h1>
-<table class="table table-striped">
+    <form action='/s/{{$problemset->id}}' method='POST' class="form-horizontal">
+    {{csrf_field()}}
+    {{method_field('DELETE')}}
+    <div class="form-group"> 
+        <div class="col-sm-offset-2 col-sm-10">
+	    <button type="submit" class="btn btn-danger">{{trans('wzoj.delete')}}</button>
+        </div>
+    </div>
+    </form>
+</div>
+<!-- problemset -->
+
+<div id="problems" class="tab-pane">
+    <table id="problems_table" class="table table-striped">
     <thead>
         <tr>
-	    <th>{{trans('wzoj.index')}}</th>
+	    <th style="width: 5%;">{{trans('wzoj.index')}}</th>
 	    <th>{{trans('wzoj.problem')}}</th>
 	    <th>{{trans('wzoj.operations')}}</th>
 	</tr>
@@ -75,24 +94,35 @@
 	</tr>
     @endforeach
     <tbody>
-</table>
+    </table>
+
+    <form action='/s/{{$problemset->id}}' method='POST'>
+    {{csrf_field()}}
+    <input name='pid'>
+    <button>new problem</button>
+</form>
+
 </div>
+<!-- problems -->
 
-<form action='/s/{{$problemset->id}}' method='POST'>
-{{csrf_field()}}
-<input name='pid'>
-<button>new problem</button>
-</form>
+<div id="groups" class="tab-pane">
+    @foreach ($problemset->groups as $group)
+    {{$group->name}}
+    @endforeach
+</div>
+<!-- groups -->
 
-<form action='/s/{{$problemset->id}}' method='POST'>
-{{csrf_field()}}
-{{method_field('DELETE')}}
-<button>delete problemset</button>
-</form>
+</div>
+<!-- tab-content -->
+@endsection
 
-<hr>
-<h3>groups</h3>
-@foreach ($problemset->groups as $group)
-{{$group->name}}
-@endforeach
+@section ('scripts')
+<script>
+jQuery(document).ready(function($) {
+	$('#problems_table').dataTable({
+		"autoWidth": false
+	});
+});
+selectHashTab();
+</script>
 @endsection
