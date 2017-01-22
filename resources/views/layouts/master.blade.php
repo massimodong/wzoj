@@ -26,7 +26,9 @@
 
     <!--Data Tables-->
     <link href="/include/css/datatables.min.css" rel="stylesheet">
-
+    <!-- bootstrap-select -->
+    <link href="/include/css/bootstrap-select.min.css" rel="stylesheet">
+    
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="/vendor/bootstrap/docs/assets/js/ie-emulation-modes-warning.js"></script>
@@ -142,6 +144,9 @@
     <script src='/include/js/isotope.pkgd.min.js'></script>
     <!-- Data Tables-->
     <script src='/include/js/datatables.min.js'></script>
+    <!-- bootstrap-select -->
+    <script src='/include/js/bootstrap-select.min.js'></script>
+    <script src='/include/js/bootstrap-select-zh_CN.js'></script>
     @yield ('scripts')
   </body>
 </html>

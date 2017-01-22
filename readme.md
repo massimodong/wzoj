@@ -1,6 +1,18 @@
 ##WZOJ在线评测系统
 本项目评测机：[wzoj-judger](https://github.com/massimodong/wzoj-judger)
 开发中
+
+##Thanks:
+[hustoj](https://github.com/zhblue/hustoj)
+[Laravel](https://laravel.com/)
+[jQuery](https://jquery.com/)
+[Bootstrap](http://getbootstrap.com/)
+[HTMLPurifier for Laravel 5](https://github.com/mewebstudio/Purifier)
+[tinymce](https://www.tinymce.com/)
+[Bootstrap File Input](https://github.com/kartik-v/bootstrap-fileinput)
+[DataTables](https://datatables.net/)
+[bootstrap-select](https://silviomoreto.github.io/bootstrap-select/)
+
 ## Laravel PHP Framework
 
 [![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)

@@ -80,7 +80,16 @@ class ProblemsetController extends Controller
 
 		$problems = $problems->get();
 
-		return view('problemsets.edit',['problemset' => $problemset,'problems' => $problems]);
+		$gids = [];
+		foreach($problemset->groups as $group){
+			array_push($gids, $group->id);
+		}
+		$groups = \App\Group::whereNotIn('id', $gids)->get();
+
+		return view('problemsets.edit',[
+				'problemset' => $problemset,
+				'problems' => $problems,
+				'groups' => $groups]);
 	}
 
 	public function putProblemset($psid,Request $request){
@@ -192,4 +201,28 @@ class ProblemsetController extends Controller
 		}
 	}
 	*/
+	
+	//groups
+	public function postGroup($psid, Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$this->validate($request,[ //buggy
+			'gids' => 'exists:groups,id|unique:group_problemset,group_id,NULL,id,problemset_id,'.$psid,
+		]);
+
+		foreach($request->gids as $gid){
+			$problemset->groups()->attach($gid);
+		}
+		return back();
+	}
+
+	public function deleteGroup($psid, $gid){
+		$problemset = Problemset::findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$problemset->groups()->detach($gid);
+
+		return back();
+	}
 }

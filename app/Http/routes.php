@@ -31,7 +31,7 @@ Route::get('s','ProblemsetController@getIndex');
 Route::post('s','ProblemsetController@postNewProblemset');
 Route::get('s/{psid}','ProblemsetController@getProblemset');
 Route::get('s/{psid}/ranklist','ProblemsetController@getRanklist');
-Route::get('s/{psid}/edit','ProblemsetController@getEditProblemset');
+Route::get('s/{psid}/edit','ProblemsetController@getEditProblemset')->middleware('auth');
 Route::put('s/{psid}','ProblemsetController@putProblemset');
 Route::delete('s/{psid}','ProblemsetController@deleteProblemset');
 	//problems
@@ -40,6 +40,9 @@ Route::post('s/{psid}','ProblemsetController@postProblem');
 Route::put('s/{psid}/{pid}','ProblemsetController@putProblem');
 Route::delete('s/{psid}/{pid}','ProblemsetController@deleteProblem');
 //Route::get('s/{psid}/{pid}/submit','ProblemsetController@getSubmit')->middleware('auth');
+	//groups
+Route::post('s/{psid}/groups','ProblemsetController@postGroup');
+Route::delete('s/{psid}/groups/{gid}','ProblemsetController@deleteGroup');
 
 Route::resource('solutions','SolutionController');
 
