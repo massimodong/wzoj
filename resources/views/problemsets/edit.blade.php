@@ -70,7 +70,7 @@
 	<div class="form-group">
 	  <label for="pid" class="sr-only"></label>
 	  <select name="pid" id="pid" class="selectpicker" data-live-search="true" title="{{trans('wzoj.search_problem')}}">
-	  @foreach (\App\Problem::get() as $problem)
+	  @foreach (\App\Problem::orderBy('id', 'desc')->get() as $problem)
 	    <option value="{{$problem->id}}">{{$problem->id}}-{{$problem->name}}</option>
 	  @endforeach
 	  </select>

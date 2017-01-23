@@ -45,7 +45,11 @@
 	        <td>{{$solution->problem->name}}</td>
 	    @endif
 	@endif
-	<td>{{trans('wzoj.solution_status_'.$solution->status)}}</td>
+	<td>
+	  <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1'>
+	  {{trans('wzoj.solution_status_'.$solution->status)}}</div>
+	</td>
+
 	<td>{{$solution->score}}</td>
 	<td>{{$solution->time_used}}ms</td>
 	<td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
@@ -83,39 +87,43 @@
 " style="display:block;">{{$solution->code}}</pre>
 @endcan
 
-@if (isset($solution->ce))
-	<h3>{{trans('wzoj.compile_error')}}</h3>
-	@can ('view_code', $solution)
-	<pre>{{$solution->ce}}</pre>
-	@endcan
-	<hr>
-@else
+@if ($solution->status == SL_JUDGED)
 
-	<h3>{{trans('wzoj.testcases')}}</h3>
-	<table class="table table-striped">
-	<thead>
-	    <tr>
-    		<th>{{trans('wzoj.name')}}</th>
-		<th>{{trans('wzoj.score')}}</th>
-		<th>{{trans('wzoj.time_used')}}</th>
-		<th>{{trans('wzoj.memory_used')}}</th>
-		<th>{{trans('wzoj.verdict')}}</th>
-		<th>{{trans('wzoj.checklog')}}</th>
- 	   </tr>
-	</thead>
-	<tbody>
-	@foreach ($solution->testcases as $testcase)
-	    <tr>
-		<td>{{$testcase->filename}}</td>
-		<td>{{$testcase->score}}</td>
-		<td>{{$testcase->time_used}}ms</td>
-		<td>{{sprintf('%.2f', $testcase->memory_used / 1024 / 1024)}}MB</td>
-		<td>{{$testcase->verdict}}</td>
-		<td>{{$testcase->checklog}}</td>
-	    </tr>
-	@endforeach
-	</tbody>
-</table>
+	@if (isset($solution->ce))
+		<h3>{{trans('wzoj.compile_error')}}</h3>
+		@can ('view_code', $solution)
+		<pre>{{$solution->ce}}</pre>
+		@endcan
+		<hr>
+	@else
+
+		<h3>{{trans('wzoj.testcases')}}</h3>
+		<table class="table table-striped">
+		<thead>
+		    <tr>
+    			<th>{{trans('wzoj.name')}}</th>
+			<th>{{trans('wzoj.score')}}</th>
+			<th>{{trans('wzoj.time_used')}}</th>
+			<th>{{trans('wzoj.memory_used')}}</th>
+			<th>{{trans('wzoj.verdict')}}</th>
+			<th>{{trans('wzoj.checklog')}}</th>
+ 		   </tr>
+		</thead>
+		<tbody>
+		@foreach ($solution->testcases as $testcase)
+		    <tr>
+			<td>{{$testcase->filename}}</td>
+			<td>{{$testcase->score}}</td>
+			<td>{{$testcase->time_used}}ms</td>
+			<td>{{sprintf('%.2f', $testcase->memory_used / 1024 / 1024)}}MB</td>
+			<td>{{$testcase->verdict}}</td>
+			<td>{{$testcase->checklog}}</td>
+		    </tr>
+		@endforeach
+		</tbody>
+	</table>
+
+	@endif
 
 @endif
 
@@ -126,6 +134,10 @@
 <script>
 $( document ).ready(function() {
 	showOrHideCode();
+	updatePendings(function(s){
+		fillTable(s);
+		location.reload();
+			});
 });
 </script>
 @endsection

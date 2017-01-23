@@ -91,4 +91,20 @@ return [
 
     'group' => '用户组',
     'groups' => '用户组',
+
+    'search_problem' => '搜索题目',
+    'new_problem' => '添加题目',
+    'new_index' => '新序号',
+    'move_to' => '移动到',
+    'choose_group' => '选择组',
+    'add_group' => '添加组',
+
+    'problem_description' => '题目描述',
+    'input_format' => '输入格式',
+    'output_format' => '输出格式',
+    'sample_input' => '样例输入',
+    'sample_output' => '样例输出',
+    'hints' => '提示',
+    'time_limit' => '时间限制',
+    'memory_limit' => '空间限制',
 ];

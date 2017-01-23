@@ -134,7 +134,11 @@ function fillTable( s ){
 	s.attr('class', '');
 	s.text(TRANS['solution_status_4']);
 	$.get('/ajax/solution-result', {solution_id: s.data('id')}).done(function(data){
-		$('#' + id + ' .solution-score').text(data.score);
+		if(s.data('ce')){
+			$('#' + id + ' .solution-score').text(TRANS['compile_error']);
+		}else{
+			$('#' + id + ' .solution-score').text(data.score);
+		}
 		$('#' + id + ' .solution-timeused').text(data.time_used + 'ms');
 
 		var m = new Number(data.memory_used / 1024 / 1024);
@@ -167,7 +171,11 @@ function solutions_update(last_solution_id){
 			}
 
 			row.append($("<td></td>").append(soldiv));
-			row.append("<td class='solution-score'>" + solution.score + "</td>");
+			if(solution.ce){
+				row.append("<td class='solution-score'>" + TRANS['compile_error'] + "</td>");
+			}else{
+				row.append("<td class='solution-score'>" + solution.score + "</td>");
+			}
 			row.append("<td class='solution-timeused'>" + solution.time_used + "ms</td>");
 
 			var m = new Number(solution.memory_used / 1024 / 1024);

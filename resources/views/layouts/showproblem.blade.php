@@ -3,43 +3,43 @@
 
 <small>
 @if ($problem->type == 2)
-	interactive
+{{trans('wzoj.interactive')}}
 @elseif ($problem->type == 3)
-	submit answer
+{{trans('wzoj.submit_problem')}}
 @endif
 
 @if ($problem->spj)
-	spj
+{{trans('wzoj.spj')}}
 @endif
 
 </small>
 
+<h3>{{trans('wzoj.problem_description')}}:</h3>
 {!! Purifier::clean($problem->description) !!}
 
-<h3>input:</h3>
+<h3>{{trans('wzoj.input_format')}}:</h3>
 {!! Purifier::clean($problem->inputformat) !!}
 
-<h3>output:</h3>
+<h3>{{trans('wzoj.output_format')}}:</h3>
 {!! Purifier::clean($problem->outputformat) !!}
 
-<h3>samplein:</h3>
+<h3>{{trans('wzoj.sample_input')}}:</h3>
 <pre>
 {{$problem->sampleinput}}
 </pre>
 
-<h3>sampleout:</h3>
+<h3>{{trans('wzoj.sample_output')}}:</h3>
 <pre>
 {{$problem->sampleoutput}}
 </pre>
 
-<h3>hint:</h3>
+<h3>{{trans('wzoj.hints')}}:</h3>
 {!! Purifier::clean($problem->hint) !!}
 
-<h3>Limits</h3>
-timelimit:{{$problem->timelimit}}s<br>
-memorylimit:{{$problem->memorylimit}}MB<br>
+{{trans('wzoj.time_limit')}}:{{$problem->timelimit}}s<br>
+{{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MB<br>
 
 <hr>
-<p>from:{{$problem->source}}</p>
+<p>{{trans('wzoj.source')}}:{{$problem->source}}</p>
 
 </div>
