@@ -18,13 +18,24 @@
 
 @section ('content')
 
+<div class="col-lg-1 row">
+<ul class="sortable_list">
+  <li class="col-lg-12"><div class="sortable_list_cell" style="width:100%"><span class="glyphicon glyphicon-king"></span></div></li>
+</ul>
+<hr>
+
+<ul id="rank-indicator" class="sortable_list">
+</ul>
+</div>
+
+<div class='col-lg-11 row'>
 <ul class='sortable_list'>
-  <li class='col-lg-12' style='height:40px;'>
-    <div class='sortable_list_cell' style='width:5%'>{{trans('wzoj.user')}}</div>
-    <div class='sortable_list_cell' style='width:10%'>{{trans('wzoj.class')}}</div>
-    <div class='sortable_list_cell' style='width:5%'>{{trans('wzoj.score')}}</div>
+  <li class='col-lg-12'>
+    <div class='sortable_list_cell' style='width:5%'><strong>{{trans('wzoj.user')}}</strong></div>
+    <div class='sortable_list_cell' style='width:10%'><strong>{{trans('wzoj.class')}}</strong></div>
+    <div class='sortable_list_cell' style='width:5%'><strong>{{trans('wzoj.score')}}</strong></div>
     @foreach ($problems as $problem)
-	<div class='sortable_list_cell'><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></div>
+	<div class='sortable_list_cell'><a href='/s/{{$problemset->id}}/{{$problem->id}}'><strong>{{$problem->name}}</strong></a></div>
     @endforeach
   </li>
 </ul>
@@ -33,16 +44,20 @@
 <ul id="rank-table" class="sortable_list">
 </ul>
 
+</div>
+
 <script>
 //define template
-var user_template = "<li class='col-lg-12' style='height:40px;'>" +
+var user_template = "<li class='col-lg-12'>" +
 			"<div class='rank-user sortable_list_cell' style='width:5%'></div>" +
 			"<div class='rank-class sortable_list_cell' style='width:10%'></div>" +
 			"<div class='rank-score sortable_list_cell' style='width:5%'></div>";
 			@foreach ($problems as $problem)
-			user_template += "<div class='problem-{{$problem->id}} sortable_list_cell'></div>"
+			user_template += "<div class='problem-{{$problem->id}} sortable_list_cell' style=''>-</div>"
 			@endforeach
 user_template += '</li>';
+
+var indicator_template = "<li class='col-lg-12'><div class='rank_num sortable_list_cell' style='width:100%'></div></li>"
 
 //init solutions
 var init_solutions = {!! json_encode($solutions) !!};

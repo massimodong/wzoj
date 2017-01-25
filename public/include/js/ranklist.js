@@ -1,4 +1,9 @@
 function ranklist_addRow(user){
+	if(typeof ranklist_addRow.cnt == 'undefined'){
+			ranklist_addRow.cnt = 0;
+	}
+	ranklist_addRow.cnt++;
+
 	var row = $(user_template);
 	row.attr('id', 'user-' + user.id);
 
@@ -8,6 +13,10 @@ function ranklist_addRow(user){
 	$('#user-' + user.id + ' .rank-user').html(user.name);
 	$('#user-' + user.id + ' .rank-class').html(user.class);
 	$('#user-' + user.id + ' .rank-score').html(0);
+
+	var indicator = $(indicator_template);
+	indicator.children('.rank_num').html(ranklist_addRow.cnt);
+	$('#rank-indicator').append(indicator);
 }
 
 function ranklist_updateScore(row, ps, newscore){
@@ -37,20 +46,22 @@ function ranklist_addSolution(solution){
 	var ps = row.children('.problem-' + solution.problem_id);
 	var msg = '';
 	if(solution.ce){
-		msg = 'CE';
+		msg = TRANS['compile_error'];
 	}else if(solution.status == 4){ //judged
 		msg = solution.score;
 	}else if(solution.status !=3){ //not running
 		msg = TRANS["solution_status_" + solution.status];
 	}
 
-	ps.html("<div id='solution-" + solution.id + "' class='judging-solution' data-id='" + solution.id + "' data-waiting='1'>" +msg + "</div>");
+	ps.html("<div id='solution-" + solution.id + "' class='judging-solution' data-id='" + solution.id + "' data-waiting='1' data-score='" + solution.score + "'>" +msg + "</div>");
 
 	if(solution.status == 4){
 		ranklist_updateScore(row, ps, solution.score);
 	}else{
 		ranklist_updateScore(row, ps, 0);
 	}
+
+	if(solution.status == 4) ranklist_setColor(ps);
 }
 
 function ranklist_updateSolutions(problemset_id, last_solution_id){
@@ -67,13 +78,31 @@ function ranklist_updateSolutions(problemset_id, last_solution_id){
 	});
 }
 
+function ranklist_setColor(ps){//too hard coloring
+	return;
+	/*
+	var newscore = ps.data('score');
+	if(newscore == 100){
+		ps.css('background-color', '#88ff88');
+	}else if(newscore >= 80){
+		ps.css('background-color', '#ddff88');
+	}else if(newscore >= 20){
+		ps.css('background-color', '#ffff88');
+	}else{
+		ps.css('background-color', '#ffcccc');
+	}
+	*/
+}
+
 function ranklist_fillCell(s){
 	s.attr('class', '');
 	if(s.data('ce')){
-		s.text('CE');
+		s.text(TRANS['compile_error']);
 	}else{
 		s.text(s.data('score'));
 	}
 
-	ranklist_updateScore(s.parent().parent(), s.parent(), s.data('score'));
+	var ps = s.parent(), newscore = s.data('score');
+	ranklist_updateScore(ps.parent(), ps, newscore);
+	ranklist_setColor(ps);
 }

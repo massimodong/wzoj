@@ -107,4 +107,10 @@ return [
     'hints' => '提示',
     'time_limit' => '时间限制',
     'memory_limit' => '空间限制',
+
+    'rank' => '名次',
+
+    'interactive'  => '交互题',
+    'submit_answer'  => '提交答案题',
+    'spj' => 'Special Judge',
 ];

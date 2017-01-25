@@ -44,8 +44,13 @@ class ProblemsetController extends Controller
 		$problems = $problemset->problems()->orderByIndex()->get();
 		//ranklist requires no authorization
 
-		//todo :Pick the last solution for each user/problem
-		$solutions = $problemset->solutions()->with('user')->get();
+		//Pick the last solution for each user/problem
+		$solutions = \App\Solution::whereIn('id', function($query) use($psid){
+			$query->select(DB::raw('MAX(id) as id'))
+			      ->from(with(new \App\Solution)->getTable())
+			      ->where('problemset_id', $psid)
+			      ->groupBy(['user_id', 'problem_id']);
+		})->public()->get();
 
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
 						'problems' => $problems,
