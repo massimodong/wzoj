@@ -1,4 +1,4 @@
-<div class="col-lg-12">
+<div class="col-xs-12">
 <h1 class="page-header text-center">{{$problem->name}}</h1>
 
 <small>

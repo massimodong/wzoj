@@ -5,7 +5,7 @@
 @endsection
 
 @section ('content')
-<div class='col-lg-12'>
+<div class='col-xs-12'>
 
 @can ('create',App\Problemset::class)
 <form method='POST'>

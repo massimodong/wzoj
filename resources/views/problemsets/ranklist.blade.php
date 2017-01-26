@@ -9,7 +9,7 @@
 <!-- width for each problem -->
 <style>
 .sortable_list .sortable_list_cell{
-  width: {{(100.0 - 20.0)/count($problems)}}%;
+  width: {{(100.0 - 25.0)/count($problems)}}%;
 }
 </style>
 @endsection
@@ -18,9 +18,9 @@
 
 @section ('content')
 
-<div class="col-lg-1 row">
+<div class="col-xs-1 row">
 <ul class="sortable_list">
-  <li class="col-lg-12"><div class="sortable_list_cell" style="width:100%"><span class="glyphicon glyphicon-king"></span></div></li>
+  <li class="col-xs-12"><div class="sortable_list_cell" style="width:100%"><span class="glyphicon glyphicon-king"></span></div></li>
 </ul>
 <hr>
 
@@ -28,10 +28,10 @@
 </ul>
 </div>
 
-<div class='col-lg-11 row'>
+<div class='col-xs-11 row'>
 <ul class='sortable_list'>
-  <li class='col-lg-12'>
-    <div class='sortable_list_cell' style='width:5%'><strong>{{trans('wzoj.user')}}</strong></div>
+  <li class='col-xs-12'>
+    <div class='sortable_list_cell' style='width:10%'><strong>{{trans('wzoj.user')}}</strong></div>
     <div class='sortable_list_cell' style='width:10%'><strong>{{trans('wzoj.class')}}</strong></div>
     <div class='sortable_list_cell' style='width:5%'><strong>{{trans('wzoj.score')}}</strong></div>
     @foreach ($problems as $problem)
@@ -48,8 +48,8 @@
 
 <script>
 //define template
-var user_template = "<li class='col-lg-12'>" +
-			"<div class='rank-user sortable_list_cell' style='width:5%'></div>" +
+var user_template = "<li class='col-xs-12'>" +
+			"<div class='rank-user sortable_list_cell' style='width:10%'></div>" +
 			"<div class='rank-class sortable_list_cell' style='width:10%'></div>" +
 			"<div class='rank-score sortable_list_cell' style='width:5%'></div>";
 			@foreach ($problems as $problem)
@@ -57,7 +57,7 @@ var user_template = "<li class='col-lg-12'>" +
 			@endforeach
 user_template += '</li>';
 
-var indicator_template = "<li class='col-lg-12'><div class='rank_num sortable_list_cell' style='width:100%'></div></li>"
+var indicator_template = "<li class='col-xs-12'><div class='rank_num sortable_list_cell' style='width:100%'></div></li>"
 
 //init solutions
 var init_solutions = {!! json_encode($solutions) !!};

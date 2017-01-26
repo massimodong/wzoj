@@ -29,16 +29,16 @@
       <input name='problemset_id' value='{{$problemset->id}}' hidden>
       <input name='problem_id' value='{{$problem->id}}' hidden>
       <div class='form-group row'>
-        <label for='language' class='col-lg-1 col-form-label'> {{trans('wzoj.language')}}: </label>
-	<div class='col-lg-3'>
+        <label for='language' class='col-xs-1 col-form-label'> {{trans('wzoj.language')}}: </label>
+	<div class='col-xs-3'>
           <select name='language' id='language' class='form-control input-sm'>
       	    <option value='0'>C</option>
 	    <option value='1'>C++</option>
 	    <option value='2'>Pascal</option>
           </select>
 	</div>
-	<label for='srcfile' class='col-lg-1 col-form-label'> {{trans('wzoj.choosefile')}}</label>
-	<div class='col-lg-7'>
+	<label for='srcfile' class='col-xs-1 col-form-label'> {{trans('wzoj.choosefile')}}</label>
+	<div class='col-xs-7'>
 	  <input type="file" class="file" name="srcfile" id="srcfile">
 	</div>
       </div>

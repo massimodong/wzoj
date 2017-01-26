@@ -93,7 +93,7 @@
 	    <th>{{$problem->pivot->index}}</th>
 	    <th><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></th>
 	    <th class="row">
-		<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST' class="form-inline col-lg-10">
+		<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST' class="form-inline col-xs-10">
 		  {{csrf_field()}}
 		  {{method_field('PUT')}}
 		  <div class="form-group">
@@ -103,7 +103,7 @@
 		  <button type="submit" class="btn btn-primary">{{trans('wzoj.move_to')}}</button>
 		</form>
 
-		<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST' class="form-inline col-lg-2">
+		<form action='/s/{{$problemset->id}}/{{$problem->id}}' method='POST' class="form-inline col-xs-2">
 		  {{csrf_field()}}
 		  {{method_field('DELETE')}}
 		  <button type="submit" class="btn btn-danger">{{trans('wzoj.delete')}}</button>

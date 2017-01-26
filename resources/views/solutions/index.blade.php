@@ -9,7 +9,7 @@
 @endif
 
 @section ('content')
-<div class='col-lg-12'>
+<div class='col-xs-12'>
 
 <div class='pull-right'>
 
