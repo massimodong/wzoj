@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Storage;
+
 class AdminProblemController extends Controller
 {
 	const LIMIT = 20;
@@ -53,6 +55,7 @@ class AdminProblemController extends Controller
 
 	public function postProblems(){
 		$problem = \App\Problem::create(['name' =>'title','type'=>1,'spj'=>0,'timelimit'=>1000,'memorylimit'=>256.0]);
+		Storage::disk('data')->makeDirectory('/'.$problem->id);
 		return redirect('/admin/problems/'.$problem->id);
 	}
 
