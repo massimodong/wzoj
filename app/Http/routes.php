@@ -85,4 +85,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 		//problem rejudge
 		Route::get('problem-rejudge', 'AdminProblemRejudgeController@getProblemRejudge');
 		Route::post('problem-rejudge', 'AdminProblemRejudgeController@postProblemRejudge');
+
+		//update system
+		Route::get('update-system', 'AdminUpdateSystemController@getUpdate');
+		Route::post('update-system', 'AdminUpdateSystemController@postUpdate');
 });

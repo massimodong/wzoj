@@ -81,6 +81,9 @@
 		    <li id='problem-rejudge'>
 		    	<a href="/admin/problem-rejudge"> Problem-rejudge</a>
 		    </li>
+		    <li id='update-system'>
+		    	<a href="/admin/update-system"> Update-system</a>
+		    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
