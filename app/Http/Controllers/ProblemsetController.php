@@ -12,6 +12,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Auth;
+use Storage;
 
 class ProblemsetController extends Controller
 {
@@ -134,6 +135,11 @@ class ProblemsetController extends Controller
 		$problem = $problemset->problems()->findOrFail($pid);
 		if(!ojCanViewProblems($problemset)) return redirect('/s/'.$psid);
 
+		if(isset($request->download_attached_file)){//download file, do not render page
+			$storagePath = Storage::disk('data')->getDriver()->getAdapter()->getPathPrefix();
+			return response()->download($storagePath.'/'.$problem->id.'/download.zip', $problem->id.'.zip');
+		}
+
 		$answerfiles = NULL;
 		if($problem->type == 3 && Auth::check()){
 			$answerfiles = $request->user()->answerfiles()
@@ -142,9 +148,14 @@ class ProblemsetController extends Controller
 				->get();
 		}
 
+		$download_url = NULL;
+		if(Storage::disk('data')->has('/'.$problem->id.'/'.'download.zip')){
+			$download_url = '/s/'.$problemset->id.'/'.$problem->id.'?download_attached_file=true';
+		}
 		return view('problems.view_'.$problemset->type,['problemset' => $problemset,
 				'problem' => $problem,
-				'answerfiles' => $answerfiles]);
+				'answerfiles' => $answerfiles,
+				'download_url' => $download_url]);
 	}
 
 	public function postProblem($psid,Request $request){

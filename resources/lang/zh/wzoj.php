@@ -119,4 +119,6 @@ return [
     'invalid_file' => '不合法的文件',
     'submit_and_judge' => '提交评测',
     'download_answerfile' => '下载提交的答案',
+
+    'download_attached_file' => '下载附加文件',
 ];

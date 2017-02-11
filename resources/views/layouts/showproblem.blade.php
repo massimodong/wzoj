@@ -33,6 +33,10 @@
 {{$problem->sampleoutput}}
 </pre>
 
+@if (isset($download_url))
+<p><a href='{{$download_url}}'>{{trans('wzoj.download_attached_file')}}</a></p>
+@endif
+
 <h3>{{trans('wzoj.hints')}}:</h3>
 {!! Purifier::clean($problem->hint) !!}
 
