@@ -5,7 +5,7 @@
 @if ($problem->type == 2)
 {{trans('wzoj.interactive')}}
 @elseif ($problem->type == 3)
-{{trans('wzoj.submit_problem')}}
+{{trans('wzoj.submit_answer')}}
 @endif
 
 @if ($problem->spj)

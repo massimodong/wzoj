@@ -121,4 +121,10 @@ class JudgerController extends Controller
 	public function postPostTestcase(Request $request){
 		$testcase = Testcase::create($request->all());
 	}
+
+	public function getGetAnswer(Request $request){
+		$solution = Solution::findOrFail($request->solution_id);
+		$answer = $solution->answerfiles()->where('filename', $request->filename)->first();
+		return response()->json($answer);
+	}
 }

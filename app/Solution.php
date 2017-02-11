@@ -25,6 +25,10 @@ class Solution extends Model
 		return $this->hasMany('App\Testcase');
 	}
 
+	public function answerfiles(){
+		return $this->hasMany('App\Answerfile');
+	}
+
 	//public part of the solutions
 	public function scopePublic($query){
 		$query->select(['id', 'user_id', 'problem_id', 'score', 'status', 'time_used', 'memory_used',
