@@ -127,6 +127,14 @@ class SolutionController extends Controller
 	    $solution->code_length = strlen($solution->code);
 	    $solution->save();
 
+	    $request->user()->answerfiles()
+		    ->where('problemset_id', $request->problemset_id)
+		    ->where('problem_id', $request->problem_id)
+		    ->update(['solution_id' => $solution->id,
+				'user_id' => 0,
+		    		'problemset_id' => 0,
+		    		'problem_id' => 0]);
+
 	    return redirect('/solutions/'.$solution->id);
     }
 

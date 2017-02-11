@@ -11,6 +11,8 @@ use App\Problemset;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Auth;
+
 class ProblemsetController extends Controller
 {
 	public function getIndex(){
@@ -123,7 +125,7 @@ class ProblemsetController extends Controller
 	}
 
 	//problems
-	public function getProblem($psid,$pid){
+	public function getProblem($psid, $pid, Request $request){
 		$problemset = Problemset::findOrFail($psid);
 		if(!$problemset->public){
 			$this->authorize('view',$problemset);
@@ -132,7 +134,17 @@ class ProblemsetController extends Controller
 		$problem = $problemset->problems()->findOrFail($pid);
 		if(!ojCanViewProblems($problemset)) return redirect('/s/'.$psid);
 
-		return view('problems.view_'.$problemset->type,['problemset' => $problemset,'problem' => $problem]);
+		$answerfiles = NULL;
+		if($problem->type == 3 && Auth::check()){
+			$answerfiles = $request->user()->answerfiles()
+				->where('problemset_id', $problemset->id)
+				->where('problem_id', $problem->id)
+				->get();
+		}
+
+		return view('problems.view_'.$problemset->type,['problemset' => $problemset,
+				'problem' => $problem,
+				'answerfiles' => $answerfiles]);
 	}
 
 	public function postProblem($psid,Request $request){

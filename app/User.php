@@ -53,6 +53,10 @@ class User extends Model implements AuthenticatableContract,
 	    return $this->hasMany('App\Solution');
     }
 
+    public function answerfiles(){
+	    return $this->hasMany('App\Answerfile');
+    }
+
     public function files(){
 	    return $this->hasMany('App\File');
     }

@@ -14,7 +14,12 @@ class CreateAnswerfilesTable extends Migration
     {
         Schema::create('answerfiles', function (Blueprint $table) {
             $table->increments('id');
-	    $table->integer('solution_id');
+
+	    $table->integer('user_id')->index();
+	    $table->integer('problemset_id');
+	    $table->integer('problem_id');
+
+	    $table->integer('solution_id')->index();
 	    $table->string('filename');
 	    $table->longText('answer');
             $table->timestamps();

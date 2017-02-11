@@ -73,19 +73,21 @@
 </table>
 <hr>
 
-@can ('view_code', $solution)
-<h3>{{trans('wzoj.code')}}</h3>
-<button id='code_button' type="button" class="btn btn-xs btn-default" onclick="showOrHideCode();return false;" >—</button>
-<pre id='code_pre' class="brush: 
+@if ($solution->problem->type <> 3)
+  @can ('view_code', $solution)
+  <h3>{{trans('wzoj.code')}}</h3>
+  <button id='code_button' type="button" class="btn btn-xs btn-default" onclick="showOrHideCode();return false;" >—</button>
+  <pre id='code_pre' class="brush: 
 
-@if ($solution->lang <= 1)
+    @if ($solution->lang <= 1)
 	c++
-@else
+    @else
 	pascal
-@endif
+    @endif
 
-" style="display:block;">{{$solution->code}}</pre>
-@endcan
+  " style="display:block;">{{$solution->code}}</pre>
+  @endcan
+@endif
 
 @if ($solution->status == SL_JUDGED)
 
@@ -101,7 +103,7 @@
 		<table class="table table-striped">
 		<thead>
 		    <tr>
-    			<th>{{trans('wzoj.name')}}</th>
+			<th>{{trans('wzoj.name')}}</th>
 			<th>{{trans('wzoj.score')}}</th>
 			<th>{{trans('wzoj.time_used')}}</th>
 			<th>{{trans('wzoj.memory_used')}}</th>
@@ -112,7 +114,11 @@
 		<tbody>
 		@foreach ($solution->testcases as $testcase)
 		    <tr>
-			<td>{{$testcase->filename}}</td>
+		    	@can ('view_code', $solution)
+			  <td><a href='#' title="{{trans('wzoj.download_answerfile')}}">{{$testcase->filename}}</a></td>
+			@else
+			  <td>{{$testcase->filename}}</td>
+			@endcan
 			<td>{{$testcase->score}}</td>
 			<td>{{$testcase->time_used}}ms</td>
 			<td>{{sprintf('%.2f', $testcase->memory_used / 1024 / 1024)}}MB</td>

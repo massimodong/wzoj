@@ -44,6 +44,11 @@
     <script src='/include/js/solution.js'></script>
     <script src='/include/js/ranklist.js'></script>
     <script src='/include/js/syntaxhighlighter.js'></script>
+
+    <script>
+    var csrf_token = '{{csrf_token()}}';
+    </script>
+
     @show
   </head>
 

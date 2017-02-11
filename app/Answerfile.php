@@ -10,4 +10,8 @@ class Answerfile extends Model
 	public function solution(){
 		return $this->belongsTo('App\Solution');
 	}
+
+	public function user(){
+		return $this->belongsTo('App\User');
+	}
 }

@@ -113,4 +113,10 @@ return [
     'interactive'  => '交互题',
     'submit_answer'  => '提交答案题',
     'spj' => 'Special Judge',
+
+    'uploaded_files' => '已经上传的文件',
+    'not_out_file' => '请上传.out文件',
+    'invalid_file' => '不合法的文件',
+    'submit_and_judge' => '提交评测',
+    'download_answerfile' => '下载提交的答案',
 ];
