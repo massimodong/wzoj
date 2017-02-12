@@ -121,4 +121,11 @@ return [
     'download_answerfile' => '下载提交的答案',
 
     'download_attached_file' => '下载附加文件',
+
+    'overview' => '概览',
+    'settings' => '设置',
+    'homeworks' => '作业',
+    'help' => '帮助',
+    'lock_fullname' => '锁定姓名',
+    'lock_class' => '锁定班级',
 ];
