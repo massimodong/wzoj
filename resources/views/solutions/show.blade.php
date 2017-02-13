@@ -80,7 +80,7 @@
   <pre id='code_pre' class="brush: 
 
     @if ($solution->lang <= 1)
-	c++
+	cpp
     @else
 	pascal
     @endif

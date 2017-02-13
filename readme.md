@@ -12,6 +12,7 @@
 [Bootstrap File Input](https://github.com/kartik-v/bootstrap-fileinput)
 [DataTables](https://datatables.net/)
 [bootstrap-select](https://silviomoreto.github.io/bootstrap-select/)
+[Isotope](http://isotope.metafizzy.co/)
 
 ## Laravel PHP Framework
 
