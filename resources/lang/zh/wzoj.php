@@ -140,6 +140,8 @@ return [
     'last_login_time' => '上次登录',
     'belong_groups' => '所在的组',
 
+    'search' => '搜索',
+
     'month_1' => '一月',
     'month_2' => '二月',
     'month_3' => '三月',

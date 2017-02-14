@@ -11,6 +11,37 @@
 @section ('content')
 <div class='col-xs-12'>
 
+<center><form class="form-inline" method="GET">
+  <div class="form-group">
+    <label for="problemset_id">{{trans('wzoj.problemset')}}</label>
+    <input type="text" class="form-control" id="problemset_id" name="problemset_id" size="1" value="{{$request->problemset_id}}">
+  </div>
+  <div class="form-group">
+    <label for="user_id">{{trans('wzoj.user')}}</label>
+    <input type="text" class="form-control" id="user_id" name="user_id" size="1" value="{{$request->user_id}}">
+  </div>
+  <div class="form-group">
+    <label for="problem_id">{{trans('wzoj.problem')}}</label>
+    <input type="text" class="form-control" id="problem_id" name="problem_id" size="1" value="{{$request->problem_id}}">
+  </div>
+  <div class="form-group">
+    <label for="score_min">{{trans('wzoj.score')}}</label>
+    <input type="text" class="form-control" id="score_min" name="score_min" size="1" value="{{$request->score_min}}">-
+    <input type="text" class="form-control" id="score_max" name="score_max" size="1" value="{{$request->score_max}}">
+  </div>
+  <div class="form-group">
+    <label for="language">{{trans('wzoj.language')}}</label>
+    <!--<input type="text" class="form-control" id="language" name="language" size="1" value="{{$request->language}}">-->
+    <select class="form-control" id="language" name="language">
+      <option value=""></option>
+      <option value="0" {{$request->language=='0'?"selected":""}}>C</option>
+      <option value="1" {{$request->language=='1'?"selected":""}}>C++</option>
+      <option value="2" {{$request->language=='2'?"selected":""}}>Pascal</option>
+    </select>
+  </div>
+  <button type="submit" class="btn btn-default">{{trans('wzoj.search')}}</button>
+</form></center>
+
 <div class='pull-right'>
 
 @if ($url_limits <> '')

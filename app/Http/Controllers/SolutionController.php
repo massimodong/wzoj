@@ -28,9 +28,9 @@ class SolutionController extends Controller
     {
 	    $this->validate($request, [
 		    'top' => 'integer',
-		    'problemset_id' => 'integer',
-		    'user_id' => 'integer',
-		    'problem_id' => 'integer',
+		    'problemset_id' => 'integer|exists:problemsets,id',
+		    'user_id' => 'integer|exists:users,id',
+		    'problem_id' => 'integer|exists:problems,id',
 		    'score_min' => 'integer|min:0|max:100',
 		    'score_max' => 'integer|min:0|max:100',
 		    'language' => 'integer|in:0,1,2',
@@ -44,6 +44,7 @@ class SolutionController extends Controller
 
 	    $solutions = Solution::where('id', '<>', 0);
 	    // limits
+	    //todo: abandon url_limits
 	    $url_limits = '';
 	    $problemset = NULL;
 	    if(isset($request->problemset_id) && $request->problemset_id <> ''){
@@ -111,6 +112,7 @@ class SolutionController extends Controller
 
 	    $solutions = $solutions->where('id', '<=', $top)->public()->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
 	    return view('solutions.index',['solutions' => $solutions,
+			    		'request' => $request,
 	    				'prev_url' => $prev_url,
 	    				'next_url' => $next_url,
 					'url_limits' => $url_limits,
