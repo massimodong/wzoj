@@ -54,8 +54,74 @@
 		<div class="col-md-9">
             <div class="profile-content">
 	    	<div class="tab-content">
-			<div id="overview" class="tab-pane in active">
-				todo
+			<div id="overview" class="tab-pane in active row">
+				<div class="col-xs-4" style="height:250px;">
+					<div class="panel panel-wzoj">
+					<div class="panel-heading">{{trans('wzoj.overview')}}</div>
+					<div class="panel-body">
+					{{trans('wzoj.count_submit')}}:<span class="pull-right">{{$cnt_submissions}}</span><br>
+					{{trans('wzoj.count_ac_problems')}}:<span class="pull-right">{{$cnt_ac}}</span><br>
+					{{trans('wzoj.register_time')}}:<span class="pull-right">
+						{{date("Y-m-d",strtotime($user->created_at))}}</span><br>
+					{{trans('wzoj.last_login_time')}}:<span class="pull-right">NULL</span><br>
+					{{trans('wzoj.belong_groups')}}:<span class="pull-right">
+					@if (count($user->groups) == 0)
+						{{trans('wzoj.none')}}
+					@elseif (count($user->groups) == 1)
+						{{$user->groups[0]->name}}
+					@else
+						<span title="{{trans('wzoj.belong_groups')}}:@foreach ($user->groups as $key => $group){{$key?', ':''}}{{$group->name}}@endforeach">{{$user->groups[0]->name.' '.trans('wzoj.ect')}}</span>
+					@endif
+						</span><br>
+					</div>
+					</div>
+				</div>
+				<div class="col-xs-8" style="height:250px;">
+					<canvas id="activity_chart" style="width:100%;height:100%"></canvas>
+				</div>
+				<div class="col-xs-12" style="overflow-y: scroll;height:150px">
+				<table class="table table-striped">
+				<thead>
+					<tr>
+						<th style="width:9%">{{trans('wzoj.id')}}</th>
+						<th style="width:12%">{{trans('wzoj.problem')}}</th>
+						<th style="width:12%">{{trans('wzoj.score')}}</th>
+						<th style="width:9%">{{trans('wzoj.time_used')}}</th>
+						<th style="width:16%">{{trans('wzoj.memory_used')}}</th>
+						<th style="width:11%">{{trans('wzoj.language')}}</th>
+						<th style="width:12%">{{trans('wzoj.code_length')}}</th>
+						<th style="width:19%">{{trans('wzoj.judged_at')}}</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($last_solutions as $solution)
+					<tr class='clickable-row' data-href='/solutions/{{$solution->id}}'>
+						<td>{{$solution->id}}</td>
+						<td>{{$solution->problem->name}}</td>
+						<td>{{$solution->score}}</td>
+						<td>{{$solution->time_used}}ms</td>
+						<td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
+						<td>
+						@if ($solution->language == 0)
+							C
+						@endif
+						@if ($solution->language == 1)
+							C++
+						@endif
+						@if ($solution->language == 2)
+							Pascal
+						@endif
+
+						</td>
+						<td>{{$solution->code_length}}B</td>
+						<td>{{$solution->judged_at}}</td>
+					</tr>
+					@endforeach
+				</tbody>
+				</table>
+				<center><a href="/solutions?user_id={{$user->id}}">{{trans('wzoj.more')}}</a></center>
+				<div style="height:20px"></div>
+				</div>
 			</div>
 			<div id="settings" class="tab-pane">
 
@@ -116,6 +182,64 @@
 <script>
 selectHashTab();
 jQuery(document).ready(function($) {
+
+	$(".clickable-row").click(function() {
+                window.document.location = $(this).data("href");
+        });
+
+	var ctx = $("#activity_chart").get(0).getContext("2d");
+	var data = {
+	labels : [
+	@for ($i=0;$i<$month_cnt;++$i)
+		"{{trans('wzoj.month_'.$month_no[$i])}}"
+		{{$i < $month_cnt - 1?",":""}}
+	@endfor
+	],
+	datasets : [
+		{
+			label : "{{trans('wzoj.count_submit')}}",
+			backgroundColor : "rgba(220,220,220,0.5)",
+			borderColor : "rgba(220,220,220,1)",
+			pointBackgroundColor : "rgba(220,220,220,1)",
+			pointBorderColor : "#fff",
+			data : [
+			@for ($i=0;$i<$month_cnt;++$i)
+				{{$month_submit_cnt[$i]}}
+				{{$i < $month_cnt - 1?",":""}}
+			@endfor
+			]
+		},
+		{
+			label : "{{trans('wzoj.count_ac')}}",
+			backgroundColor : "rgba(151,187,205,0.5)",
+			borderColor : "rgba(151,187,205,1)",
+			pointBackgroundColor : "rgba(151,187,205,1)",
+			pointBorderColor : "#fff",
+			data : [
+			@for ($i=0;$i<$month_cnt;++$i)
+				{{$month_ac_cnt[$i]}}
+				{{$i < $month_cnt - 1?",":""}}
+			@endfor
+
+			]
+		}
+	]
+}
+	var options = {
+		scales: {
+			yAxes: [{
+				ticks: {
+					beginAtZero: true,
+					suggestedMax: 5
+				}
+			}]
+		}
+    	};
+	var myLineChart = new Chart(ctx, {
+		type: 'line',
+		data: data,
+		options: options
+	});
 });
 </script>
 @endsection

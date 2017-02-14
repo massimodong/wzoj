@@ -13,6 +13,8 @@
 [DataTables](https://datatables.net/)
 [bootstrap-select](https://silviomoreto.github.io/bootstrap-select/)
 [Isotope](http://isotope.metafizzy.co/)
+[SyntaxHighlighter](http://alexgorbatchev.com/SyntaxHighlighter/)
+[Chart.js](http://www.chartjs.org/)
 
 ## Laravel PHP Framework
 

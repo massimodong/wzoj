@@ -28,6 +28,12 @@ class SolutionController extends Controller
     {
 	    $this->validate($request, [
 		    'top' => 'integer',
+		    'problemset_id' => 'integer',
+		    'user_id' => 'integer',
+		    'problem_id' => 'integer',
+		    'score_min' => 'integer|min:0|max:100',
+		    'score_max' => 'integer|min:0|max:100',
+		    'language' => 'integer|in:0,1,2',
 	    ]);
 	    $max_id = Solution::max('id');
 	    if(isset($request->top)){
@@ -40,13 +46,45 @@ class SolutionController extends Controller
 	    // limits
 	    $url_limits = '';
 	    $problemset = NULL;
-	    if(isset($request->problemset_id)){
+	    if(isset($request->problemset_id) && $request->problemset_id <> ''){
 		    $problemset = Problemset::find($request->problemset_id);
 		    if($problemset){
 			    $solutions = $solutions->where('problemset_id', $problemset->id);
 			    $url_limits.='&problemset_id='.$problemset->id;
 		    }
 	    }
+
+	    if(isset($request->user_id) && $request->user_id <> ''){
+		    $user = \App\User::find($request->user_id);
+		    if($user){
+			    $solutions = $solutions->where('user_id', $user->id);
+			    $url_limits.='&user_id='.$user->id;
+		    }
+	    }
+
+	    if(isset($request->problem_id) && $request->problem_id <> ''){
+		    $problem = \App\Problem::find($request->problem_id);
+		    if($problem){
+			    $solutions = $solutions->where('problem_id', $problem->id);
+			    $url_limits.='&problem_id='.$problem->id;
+		    }
+	    }
+
+	    if(isset($request->score_min) && $request->score_min <> ''){
+		    $solutions = $solutions->where('score', '>=', $request->score_min);
+		    $url_limits.='&score_min='.$request->score_min;
+	    }
+
+	    if(isset($request->score_max) && $request->score_max <> ''){
+		    $solutions = $solutions->where('score', '<=', $request->score_max);
+		    $url_limits.='&score_max='.$request->score_max;
+	    }
+
+	    if(isset($request->language) && $request->language <> ''){
+		    $solutions = $solutions->where('language', $request->language);
+		    $url_limits.='&language='.$request->language;
+	    }
+	    //limits end
 
 	    //get prev top
 	    $prev_url = '';

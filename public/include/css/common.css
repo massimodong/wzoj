@@ -157,7 +157,6 @@ textarea {
 }
 
 .profile-usertitle-job {
-  text-transform: uppercase;
   color: #5b9bd1;
   font-size: 12px;
   font-weight: 600;
@@ -224,9 +223,24 @@ textarea {
 .profile-content {
   padding: 20px;
   background: #fff;
-  min-height: 420px;
+  height: 420px;
   border-style: solid;
   border-width: 2px;
   border-color: #F1F3FA;
   border-radius: 8px;
+}
+
+.panel-wzoj {
+  border-color: #F1F3FA;
+}
+
+.panel-wzoj .panel-heading {
+  color: #5b9bd1;
+  background-color: #F1F3FA;
+  border-color: #F1F3FA;
+}
+
+.panel-wzoj .panel-body {
+  color:#93a3b5;
+  padding: 15px;
 }

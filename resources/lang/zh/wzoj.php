@@ -7,6 +7,10 @@ return [
     | Wzoj Language File
     |--------------------------------------------------------------------------
     */
+    'ect' => '等',
+    'none' => '无',
+    'more' => '更多',
+
     'class' => '班级',
     'home' => '主页',
     'problemset' => '题库',
@@ -128,4 +132,24 @@ return [
     'help' => '帮助',
     'lock_fullname' => '锁定姓名',
     'lock_class' => '锁定班级',
+
+    'count_submit' => '提交数',
+    'count_ac' => '通过数',
+    'count_ac_problems' => '通过题目',
+    'register_time' => '注册时间',
+    'last_login_time' => '上次登录',
+    'belong_groups' => '所在的组',
+
+    'month_1' => '一月',
+    'month_2' => '二月',
+    'month_3' => '三月',
+    'month_4' => '四月',
+    'month_5' => '五月',
+    'month_6' => '六月',
+    'month_7' => '七月',
+    'month_8' => '八月',
+    'month_9' => '九月',
+    'month_10' => '十月',
+    'month_11' => '十一月',
+    'month_12' => '十二月',
 ];

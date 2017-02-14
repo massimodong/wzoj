@@ -153,6 +153,8 @@
     <!-- bootstrap-select -->
     <script src='/include/js/bootstrap-select.min.js'></script>
     <script src='/include/js/bootstrap-select-zh_CN.js'></script>
+    <!-- Chart.js-->
+    <script src='/include/js/Chart.js'></script>
     @yield ('scripts')
   </body>
 </html>
