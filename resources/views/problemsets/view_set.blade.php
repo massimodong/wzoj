@@ -11,6 +11,12 @@
 <div id="home" class="tab-pane fade in active">
   {!! Purifier::clean($problemset->description) !!}
 
+  <center><ul class="pagination">
+    @for ($i=1;$i <= $cnt_pages;++$i)
+      <li><a href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}</a></li>
+    @endfor
+  </ul></center>
+
   <table class="table table-striped">
   <thead>
     <tr>

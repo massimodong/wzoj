@@ -16,6 +16,7 @@ use Storage;
 
 class ProblemsetController extends Controller
 {
+	const PAGE_LIMIT = 10;
 	public function getIndex(){
 		$allproblemsets = Problemset::all();
 		$problemsets=[];
@@ -32,14 +33,30 @@ class ProblemsetController extends Controller
 		if(!$problemset->public){
 			$this->authorize('view',$problemset);
 		}
+
+		$page = $cnt_pages = NULL;
 		if(ojCanViewProblems($problemset)){
 			$problems = $problemset->problems()->orderByIndex();
+
+			//select page
+			$page = 1;
+			$cnt_pages = (($problemset->problems()->count()-1) / self::PAGE_LIMIT) + 1;
+			if(isset($request->page)){
+				$page = $request->page;
+			}
+			$problems=$problems->where('problem_problemset.index', '>', ($page-1) * self::PAGE_LIMIT);
+			$problems=$problems->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT);
+
 			$problems = $problems->get();
 		}else{
 			$problems = [];
 		}
 
-		return view('problemsets.view_'.$problemset->type,['problemset' => $problemset,'problems' => $problems]);
+		return view('problemsets.view_'.$problemset->type,[
+				'problemset' => $problemset,
+				'problems' => $problems,
+				'cnt_pages' => $cnt_pages,
+				'cur_page' => $page]);
 	}
 
 	public function getRanklist($psid, Request $request){
@@ -108,6 +125,8 @@ class ProblemsetController extends Controller
 			'name' => 'required|max:255',
 			'type' => 'required|in:set,oi,acm,apio',
 			'public' => 'in:1',
+			'contest_start_at' => 'required|date',
+			'contest_end_at' => 'required|date',
 		]);
 
 		$newval = $request->all();

@@ -15,6 +15,7 @@
 [Isotope](http://isotope.metafizzy.co/)
 [SyntaxHighlighter](http://alexgorbatchev.com/SyntaxHighlighter/)
 [Chart.js](http://www.chartjs.org/)
+[bootstrap-datetimepicker](http://www.malot.fr/bootstrap-datetimepicker/index.php)
 
 ## Laravel PHP Framework
 

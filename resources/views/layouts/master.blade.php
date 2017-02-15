@@ -29,6 +29,8 @@
     <link href="/include/css/datatables.min.css" rel="stylesheet">
     <!-- bootstrap-select -->
     <link href="/include/css/bootstrap-select.min.css" rel="stylesheet">
+    <!-- bootstrap-datetimepicker -->
+    <link href="/include/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -155,6 +157,9 @@
     <script src='/include/js/bootstrap-select-zh_CN.js'></script>
     <!-- Chart.js-->
     <script src='/include/js/Chart.js'></script>
+    <!-- bootstrap-datetimepicker -->
+    <script src='/include/js/bootstrap-datetimepicker.min.js'></script>
+    <script src='/include/js/bootstrap-datetimepicker.zh-CN.js'></script>
     @yield ('scripts')
   </body>
 </html>

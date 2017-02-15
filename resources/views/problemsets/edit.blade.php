@@ -37,6 +37,18 @@
 	        <input type="text" class="form-control" name='type' id="type" value='{{$problemset->type}}'>
 	  </div>
     </div>
+    <div class="form-group">
+          <label class="control-label col-sm-2" for="contest_start_at">{{trans('wzoj.contest_start_at')}}:</label>
+	  <div class="col-sm-10">
+	        <input type="text" class="form-control" name='contest_start_at' id="contest_start_at" value='{{$problemset->contest_start_at}}' data-date-format="yyyy-mm-dd hh:ii">
+	  </div>
+    </div>
+    <div class="form-group">
+          <label class="control-label col-sm-2" for="contest_end_at">{{trans('wzoj.contest_end_at')}}:</label>
+	  <div class="col-sm-10">
+	        <input type="text" class="form-control" name='contest_end_at' id="contest_end_at" value='{{$problemset->contest_end_at}}' data-date-format="yyyy-mm-dd hh:ii">
+	  </div>
+    </div>
     <div class="form-group">        
           <div class="col-sm-offset-2 col-sm-10">
 	      <div class="checkbox">
@@ -145,6 +157,12 @@
 @section ('scripts')
 <script>
 jQuery(document).ready(function($) {
+	$('#contest_start_at').datetimepicker({
+		language: 'zh-CN'
+	});
+	$('#contest_end_at').datetimepicker({
+		language: 'zh-CN'
+	});
 	$('#problems_table').dataTable({
 		"autoWidth": false
 	});
