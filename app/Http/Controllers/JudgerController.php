@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Problemset;
+use DB;
+
 use App\Solution;
 use App\Problem;
 use App\Testcase;
@@ -21,7 +24,22 @@ class JudgerController extends Controller
 		return response()->json(['ok' => true]);
 	}
 	public function getPendingSolutions(Request $request){
-		$solutions = Solution::where('status','<=',1)->take(5)->get();
+		//$solutions = Solution::where('status','<=',1)->take(5)->get();
+		$running_oi_contests = Problemset::where('type', 'oi')
+			->where('contest_start_at', '<', DB::raw('now()'))
+			->where('contest_end_at', '>=', DB::raw('now()'))
+			->get(['id']);
+		$running_ids = [];
+		foreach ($running_oi_contests as $problemset){
+			array_push($running_ids, $problemset->id);
+		}
+
+		$solutions = Solution::where('status', '<=', 1)
+			->whereNotIn('problemset_id', $running_ids)
+			->take(5);
+
+		//todo: judge oi submissions in user_id/pivot_index order
+		$solutions = $solutions->get();
 		return response()->json($solutions);
 	}
 	public function postCheckout(Request $request){

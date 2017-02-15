@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Option;
+
 use PharData;
 
 class AdminUpdateSystemController extends Controller
@@ -41,6 +43,7 @@ class AdminUpdateSystemController extends Controller
 
 	public function postUpdate(){
 		//header("Content-type: text/plain");
+		ignore_user_abort(true);
 		$this->disable_ob();
 
 		echo "<pre>";
@@ -95,5 +98,8 @@ class AdminUpdateSystemController extends Controller
 		echo "Disabling Maintenance Mode\n";
 		system("php artisan up");
 		echo "</pre>";
+
+		Option::where('name', 'current_version_tag')->update(['value' => $latest_release->tag_name]);
+		Option::where('name', 'current_version_id')->update(['value' => $latest_release->id]);
 	}
 }
