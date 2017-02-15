@@ -244,3 +244,22 @@ textarea {
   color:#93a3b5;
   padding: 15px;
 }
+
+.thumbnail {
+  padding: 0;
+}
+
+.problemset-dock {
+  background-color: #F9FCFECC;
+  border-radius: 0;
+  border-color: #eef0f6;
+  border-width: 2px;
+  cursor: pointer;
+}
+
+.problemset-dock .dock-heading {
+  color: #86949C;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
