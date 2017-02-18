@@ -1,7 +1,7 @@
 @extends ('admin.layout')
 
 @section ('title')
-groups
+{{trans('wzoj.groups')}}
 @endsection
 
 @section ('content')

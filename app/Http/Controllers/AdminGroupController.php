@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Validator;
+
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -19,21 +21,26 @@ class AdminGroupController extends Controller
 		}
 	}
 
-	public function postGroups(Request $request , $id = -1){
-		if($id==-1){
-			$group = new \App\Group;
-			$group->save();
-			return redirect('/admin/groups/'.$group->id);
-		}else{
-			$group = \App\Group::findOrFail($id);
+	public function postGroups(Request $request){
+		$group = new \App\Group;
+		$group->save();
+		return redirect('/admin/groups/'.$group->id);
+	}
 
-			$this->validate($request,[
-					'user_id' => 'required|exists:users,id|unique:group_user,user_id,NULL,id,group_id,'.$id,
+	public function postUsers($gid, Request $request){
+		$group = \App\Group::findOrFail($gid);
+
+		foreach($request->uids as $uid){
+			$arr = [];
+			$arr['user_id'] = $uid;
+			$validator = Validator::make($arr,[
+				'user_id' => 'required|exists:users,id|unique:group_user,user_id,NULL,id,group_id,'.$gid,
 			]);
-
-			$group->users()->attach($request->user_id);
-			return back();
+			if(!$validator->fails()){
+				$group->users()->attach($uid);
+			}
 		}
+		return back();
 	}
 
 	public function putGroups(Request $request,$id){
@@ -43,18 +50,17 @@ class AdminGroupController extends Controller
 		return back();
 	}
 
-	public function deleteGroups($gid,$uid = -1){
-		if($uid == -1){
-			$group = \App\Group::findOrFail($gid);
-			$group->delete();
-			return redirect('/admin/groups');
-		}else{
-			$group = \App\Group::findOrFail($gid);
-
-			$group->users()->detach($uid);
-			return back();
-		}
+	public function deleteGroups($gid){
+		$group = \App\Group::findOrFail($gid);
+		$group->delete();
+		return redirect('/admin/groups');
 	}
 
-
+	public function deleteUsers($gid, Request $request){
+		$group = \App\Group::findOrFail($gid);
+		foreach($request->id as $uid){
+			$group->users()->detach($uid);
+		}
+		return back();
+	}
 }

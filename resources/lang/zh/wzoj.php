@@ -42,6 +42,7 @@ return [
     'register' => '注册',
 
     'user' => '用户',
+    'users' => '用户',
     'problem' => '题目',
     'problems' => '题目',
     'status' => '状态',
@@ -132,6 +133,8 @@ return [
     'help' => '帮助',
     'lock_fullname' => '锁定姓名',
     'lock_class' => '锁定班级',
+    'unlock_fullname' => '取消锁定姓名',
+    'unlock_class' => '取消锁定班级',
 
     'count_submit' => '提交数',
     'count_ac' => '通过数',
@@ -156,4 +159,9 @@ return [
     'month_12' => '十二月',
 
     'notices' => '通知',
+    
+    'groups' => '用户组',
+    'search_user' => '选择用户',
+    'new_user' => '添加用户',
+    'expel_from_group' => '从用户组中删除',
 ];

@@ -16,6 +16,8 @@
     <!-- Custom CSS -->
     <link href="/include/css/sb-admin.css" rel="stylesheet">
     <link href="/include/css/common.css" rel="stylesheet">
+    <link href="/include/css/datatables.min.css" rel="stylesheet">
+    <link href="/include/css/bootstrap-select.min.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
     <!--<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
@@ -132,6 +134,12 @@
     <!-- tinymce -->
     <script src='/vendor/tinymce/tinymce.min.js'></script>
     <script src='/include/js/tinymce.js'></script>
+
+    <script src='/include/js/datatables.min.js'></script>
+    <script src='/include/js/bootstrap-select.min.js'></script>
+    <script src='/include/js/bootstrap-select-zh_CN.js'></script>
+
+    @yield ('scripts')
 </body>
 
 </html>

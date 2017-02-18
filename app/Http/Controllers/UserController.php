@@ -100,4 +100,23 @@ class UserController extends Controller
 
 		return back();
 	}
+
+	public function putUsers(Request $request){
+		$query = User::whereIn('id', $request->id);
+		switch($request->action){
+			case 'lock_fullname':
+				$query->update(['fullname_lock'=> true]);
+				break;
+			case 'lock_class':
+				$query->update(['class_lock'=> true]);
+				break;
+			case 'unlock_fullname':
+				$query->update(['fullname_lock'=> false]);
+				break;
+			case 'unlock_class':
+				$query->update(['class_lock'=> false]);
+				break;
+		}
+		return back();
+	}
 }

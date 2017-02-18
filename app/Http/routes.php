@@ -24,6 +24,7 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 
 Route::get('users/{id}','UserController@getId');
+Route::put('users', 'UserController@putUsers')->middleware('admin');
 Route::post('users/{id}','UserController@postId')->middleware('auth');
 
 //problemsets
@@ -58,10 +59,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 		Route::get('groups', 'AdminGroupController@getGroups');
 		Route::get('groups/{id}', 'AdminGroupController@getGroups');
 		Route::post('groups', 'AdminGroupController@postGroups');
-		Route::post('groups/{id}', 'AdminGroupController@postGroups');
+		Route::post('groups/{id}/users', 'AdminGroupController@postUsers');
 		Route::put('groups/{id}', 'AdminGroupController@putGroups');
 		Route::delete('groups/{gid}', 'AdminGroupController@deleteGroups');
-		Route::delete('groups/{gid}/{uid}', 'AdminGroupController@deleteGroups');
+		Route::delete('groups/{gid}/users', 'AdminGroupController@deleteUsers');
 
 		//invitations
 		Route::get('invitations', 'AdminInvitationController@getInvitations');
