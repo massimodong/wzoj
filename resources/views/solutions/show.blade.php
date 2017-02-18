@@ -14,18 +14,17 @@
 <table class="table table-striped">
 <thead>
     <tr>
-    	<th>{{trans('wzoj.id')}}</th>
-	<th>{{trans('wzoj.user')}}</th>
-	<th>{{trans('wzoj.problem')}}</th>
-	<th>{{trans('wzoj.status')}}</th>
-	<th>{{trans('wzoj.score')}}</th>
-	<th>{{trans('wzoj.time_used')}}</th>
-	<th>{{trans('wzoj.memory_used')}}</th>
-	<th>{{trans('wzoj.language')}}</th>
-	<th>{{trans('wzoj.code_length')}}</th>
-	<th>{{trans('wzoj.sim')}}</th>
-	<th>{{trans('wzoj.judger')}}</th>
-	<th>{{trans('wzoj.judged_at')}}</th>
+    	<th style='width:6%'>{{trans('wzoj.id')}}</th>
+	<th style='width:9%'>{{trans('wzoj.user')}}</th>
+	<th style='width:15%'>{{trans('wzoj.problem')}}</th>
+	<th style='width:12%'>{{trans('wzoj.status')}}</th>
+	<th style='width:8%'>{{trans('wzoj.score')}}</th>
+	<th style='width:6%'>{{trans('wzoj.time_used')}}</th>
+	<th style='width:10%'>{{trans('wzoj.memory_used')}}</th>
+	<th style='width:7%'>{{trans('wzoj.language')}}</th>
+	<th style='width:7%'>{{trans('wzoj.code_length')}}</th>
+	<th style='width:8%'>{{trans('wzoj.judger')}}</th>
+	<th style='width:12%'>{{trans('wzoj.judged_at')}}</th>
     </tr>
 </thead>
 <tbody>
@@ -65,8 +64,7 @@
 	    @endif
 	</td>
 	<td>{{$solution->code_length}}B</td>
-	<td>todo</td>
-	<td>todo</td>
+	<td>{{$solution->judger->fullname}}</td>
 	<td>{{$solution->judged_at}}</td>
     </tr>
 </tbody>

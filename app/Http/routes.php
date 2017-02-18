@@ -36,9 +36,9 @@ Route::put('s/{psid}','ProblemsetController@putProblemset');
 Route::delete('s/{psid}','ProblemsetController@deleteProblemset');
 	//problems
 Route::get('s/{psid}/{pid}','ProblemsetController@getProblem');
-Route::post('s/{psid}','ProblemsetController@postProblem');
-Route::put('s/{psid}/{pid}','ProblemsetController@putProblem');
-Route::delete('s/{psid}/{pid}','ProblemsetController@deleteProblem');
+Route::post('s/{psid}/problems','ProblemsetController@postProblem');
+Route::put('s/{psid}/problems','ProblemsetController@putProblem');
+Route::delete('s/{psid}/problems','ProblemsetController@deleteProblem');
 //Route::get('s/{psid}/{pid}/submit','ProblemsetController@getSubmit')->middleware('auth');
 	//groups
 Route::post('s/{psid}/groups','ProblemsetController@postGroup');

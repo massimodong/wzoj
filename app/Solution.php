@@ -13,6 +13,10 @@ class Solution extends Model
 		return $this->belongsTo('App\User');
 	}
 
+	public function judger(){
+		return $this->belongsTo('App\User', 'judger_id');
+	}
+
 	public function problemset(){
 		return $this->belongsTo('App\Problemset');
 	}
@@ -32,13 +36,16 @@ class Solution extends Model
 	//public part of the solutions
 	public function scopePublic($query){
 		$query->select(['id', 'user_id', 'problem_id', 'score', 'status', 'time_used', 'memory_used',
-				'language', 'code_length', 'judged_at'])
+				'language', 'code_length', 'judger_id', 'judged_at'])
 			->addSelect(DB::raw('ce is NOT NULL as ce'))
 			->with(['user' => function($query){
 				$query->select(['id', 'name', 'fullname', 'class']);
 			  }])
 			->with(['problem' => function($query){
 				$query->select(['id', 'name']);
+			  }])
+			->with(['judger' => function($query){
+				$query->select(['id', 'name', 'fullname', 'class']);
 			  }]);
 	}
 }
