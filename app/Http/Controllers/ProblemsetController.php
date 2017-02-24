@@ -17,7 +17,7 @@ use Storage;
 
 class ProblemsetController extends Controller
 {
-	const PAGE_LIMIT = 10;
+	const PAGE_LIMIT = 100;
 	public function getIndex(){
 		$allproblemsets = Problemset::all();
 		$problemsets=[];

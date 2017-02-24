@@ -108,7 +108,7 @@
 	    @endif
 	</td>
 	<td>{{$solution->code_length}}B</td>
-	<td>{{$solution->judger->fullname}}</td>
+	<td>{{$solution->judger?$solution->judger->fullname:""}}</td>
 	<td class='solution-judgedat'>{{$solution->judged_at}}</td>
     </tr>
 @endforeach

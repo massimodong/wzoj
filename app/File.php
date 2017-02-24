@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class File extends Model
 {
 	protected $fillable = ['name'];
+	protected $casts = [
+			'id' => 'integer',
+			'user_id' => 'integer',
+	];
 
 	/**
 	 * Get the user who owns the file

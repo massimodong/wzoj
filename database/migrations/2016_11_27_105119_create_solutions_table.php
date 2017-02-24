@@ -21,7 +21,7 @@ class CreateSolutionsTable extends Migration
 	    $table->integer('language');
 	    $table->longText('code');
 
-	    $table->double('code_length');
+	    $table->integer('code_length');
 	    $table->integer('time_used');
 	    $table->double('memory_used');
 	    $table->integer('status')->default(0);

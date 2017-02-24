@@ -9,6 +9,22 @@ use DB;
 class Solution extends Model
 {
 	protected $guarded = ['id','created_at','updated_at'];
+	protected $casts =[
+		'id' => 'integer',
+		'user_id' => 'integer',
+		'problem_id' => 'integer',
+		'problemset_id' => 'integer',
+		'language' => 'integer',
+		'code_length' => 'integer',
+		'time_used' => 'integer',
+		'memory_used' => 'double',
+		'status' => 'integer',
+		'score' => 'integer',
+		'sim_id' => 'integer',
+		'judger_id' => 'integer',
+		'cnt_testcases' => 'integer',
+	];
+
 	public function user(){
 		return $this->belongsTo('App\User');
 	}
