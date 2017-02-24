@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Storage;
+use App\Problem;
 
 class AdminProblemController extends Controller
 {
@@ -17,6 +18,7 @@ class AdminProblemController extends Controller
 			'top' => 'integer',
 		]);
 		if($id == -1){
+			/*
 			$top = 1;
 			if(isset($request->top)){
 				$top = $request->top;
@@ -43,6 +45,9 @@ class AdminProblemController extends Controller
 					'prevpage_url' => $prev_url,
 					'nextpage_url' => $next_url,
 					'bottompage_url' => $bottom_url]);
+					*/
+			$problems = Problem::all();
+			return view('admin.problems_index', ['problems' => $problems]);
 		}else{
 			$problem = \App\Problem::findOrFail($id);
 			if(isset($request->preview)){
@@ -59,7 +64,7 @@ class AdminProblemController extends Controller
 		return redirect('/admin/problems/'.$problem->id);
 	}
 
-	public function putProblems(Request $request,$id){
+	public function putProblemsId(Request $request,$id){
 		$problem = \App\Problem::findOrFail($id);
 		$this->validate($request,[
 			'name' => 'required|max:255',
@@ -74,6 +79,15 @@ class AdminProblemController extends Controller
 
 		$problem->update($newval);
 
+		return back();
+	}
+	public function putProblems(Request $request){
+		$query = Problem::whereIn('id', $request->id);
+		switch($request->action){
+			case 'delete':
+				$query->delete();
+				break;
+		}
 		return back();
 	}
 	public function deleteProblems($id){

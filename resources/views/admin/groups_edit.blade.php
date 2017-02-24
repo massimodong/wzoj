@@ -66,7 +66,7 @@
         {{trans('wzoj.operations')}}
         <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <ul class="dropdown-menu">
           <li><a href="#" onclick="users_lock_fullname();"> {{trans('wzoj.lock_fullname')}} </a></li>
 	  <li><a href="#" onclick="users_lock_class();"> {{trans('wzoj.lock_class')}} </a></li>
 	  <li><a href="#" onclick="users_unlock_fullname();"> {{trans('wzoj.unlock_fullname')}} </a></li>

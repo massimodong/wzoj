@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\Invitation;
+
 class AdminInvitationController extends Controller
 {
 	public function getInvitations($id = -1){
@@ -35,7 +37,7 @@ class AdminInvitationController extends Controller
 		}
 	}
 
-	public function putInvitations($id,Request $request){
+	public function putInvitationsId($id,Request $request){
 		$invitation = \App\Invitation::findOrFail($id);
 		$this->validate($request,[
 			'remaining' => 'required|integer',
@@ -50,6 +52,30 @@ class AdminInvitationController extends Controller
 		$invitation->private     = $request->private;
 
 		$invitation->save();
+		return back();
+	}
+	public function putInvitations(Request $request){
+		$query = Invitation::whereIn('id', $request->id);
+		switch($request->action){
+			case 'set_always_available':
+				$query->update(['remaining' => '-1']);
+				break;
+			case 'set_once_available':
+				$query->update(['remaining' => '1']);
+				break;
+			case 'set_non_available':
+				$query->update(['remaining' => '0']);
+				break;
+			case 'set_private':
+				$query->update(['private' => true]);
+				break;
+			case 'set_public':
+				$query->update(['private' => false]);
+				break;
+			case 'delete':
+				$query->delete();
+				break;
+		}
 		return back();
 	}
 

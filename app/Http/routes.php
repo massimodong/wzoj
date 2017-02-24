@@ -69,14 +69,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 		Route::get('invitations/{id}', 'AdminInvitationController@getInvitations');
 		Route::post('invitations', 'AdminInvitationController@postInvitations');
 		Route::post('invitations/{id}', 'AdminInvitationController@postInvitations');
-		Route::put('invitations/{id}', 'AdminInvitationController@putInvitations');
+		Route::put('invitations/{id}', 'AdminInvitationController@putInvitationsId');
+		Route::put('invitations', 'AdminInvitationController@putInvitations');
 		Route::delete('invitations/{iid}/{gid}', 'AdminInvitationController@deleteInvitations');
 
 		//problems
 		Route::get('problems', 'AdminProblemController@getProblems');
 		Route::get('problems/{id}', 'AdminProblemController@getProblems');
 		Route::post('problems', 'AdminProblemController@postProblems');
-		Route::put('problems/{id}', 'AdminProblemController@putProblems');
+		Route::put('problems/{id}', 'AdminProblemController@putProblemsId');
+		Route::put('problems', 'AdminProblemController@putProblems');
 		Route::delete('problems/{id}', 'AdminProblemController@deleteProblems');
 
 		//import problems

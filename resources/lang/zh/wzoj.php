@@ -72,12 +72,18 @@ return [
     'type' => '类型',
     'contest_start_at' => '比赛开始时间',
     'contest_end_at' => '比赛结束时间',
+
     'public' => '公开',
+    'private' => '私有',
 
     'problem_type_set' => '题目集合',
     'problem_type_oi' => 'OI比赛',
     'problem_type_acm' => 'ACM比赛',
     'problem_type_apio' => 'APIO',
+
+    'problem_type_1' => '传统题',
+    'problem_type_2' => '交互题',
+    'problem_type_3' => '提交答案题',
 
     'toppage' => '首页',
     'prevpage' => '上一页',
@@ -164,4 +170,17 @@ return [
     'search_user' => '选择用户',
     'new_user' => '添加用户',
     'expel_from_group' => '从用户组中删除',
+
+    'invitations' => '注册码',
+    'remaining' => '剩余',
+    'set_always_available' => '设为永久有效',
+    'set_once_available' => '设为仅一次有效',
+    'set_non_available'=> '设为失效',
+    'set_private' => '设为私有',
+    'set_public' => '设为公开',
+    'delete_invitations' => '删除注册码',
+
+    'delete_problems' => '删除题目',
+    'search_problemset' => '搜索题库',
+    'add_to_problemset' => '加入到题库',
 ];
