@@ -14,33 +14,17 @@
     <title>@yield('title')</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="/vendor/bootstrap/docs/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <link href="/vendor/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet">
+    <link href="/css/_bower.min.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="/include/css/common.css" rel="stylesheet">
     <link href="/include/css/syntaxhighlighter.css" rel="stylesheet">
 
-    <!--Data Tables-->
-    <link href="/include/css/datatables.min.css" rel="stylesheet">
     <!-- bootstrap-select -->
     <link href="/include/css/bootstrap-select.min.css" rel="stylesheet">
     <!-- bootstrap-datetimepicker -->
     <link href="/include/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
-    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="/vendor/bootstrap/docs/assets/js/ie-emulation-modes-warning.js"></script>
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
     <script src='/include/js/lang/zh.js'></script>
     <script src='/include/js/common.js'></script>
     <script src='/include/js/solution.js'></script>
@@ -138,20 +122,10 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/vendor/bootstrap/docs/assets/js/vendor/jquery.min.js"></script>
-    <!-- <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script> -->
-    <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- bootstrap-fileinput -->
-    <script src="/vendor/bootstrap-fileinput/js/fileinput.min.js"></script>
-    <script src="/vendor/bootstrap-fileinput/themes/fa/theme.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="/vendor/bootstrap/docs/assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="/js/_bower.min.js"></script>
     <!-- tinymce -->
-    <script src='/vendor/tinymce/tinymce.min.js'></script>
     <script src='/include/js/tinymce.js'></script>
     <script src='/include/js/isotope.pkgd.min.js'></script>
-    <!-- Data Tables-->
-    <script src='/include/js/datatables.min.js'></script>
     <!-- bootstrap-select -->
     <script src='/include/js/bootstrap-select.min.js'></script>
     <script src='/include/js/bootstrap-select-zh_CN.js'></script>
