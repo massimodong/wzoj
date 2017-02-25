@@ -12,6 +12,7 @@ return [
     'more' => '更多',
     'yes' => '是',
     'no' => '否',
+    'or' => '或',
 
     'class' => '班级',
     'home' => '主页',
@@ -166,7 +167,7 @@ return [
     'month_11' => '十一月',
     'month_12' => '十二月',
 
-    'notices' => '通知',
+    'notices' => '公告',
     
     'groups' => '用户组',
     'search_user' => '选择用户',
@@ -192,4 +193,11 @@ return [
     'msg_explain_remaining' => '生成的注册码剩余使用次数,用-1表示不限次数',
     'msg_one_fullname_per_line' => '每行输入一个姓名',
     'msg_add_groups_when_register' => '注册时自动加入的组，多选',
+
+    'admin_home' => '管理主页',
+    'import_problems' => '导入题目',
+    'problem_rejudge' => '重判题目',
+    'update_system' => '更新系统',
+
+    'solution_id' => '提交编号',
 ];

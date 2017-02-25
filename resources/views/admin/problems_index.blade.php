@@ -48,6 +48,7 @@
     <th>{{trans('wzoj.name')}}</th>
     <th style="width: 10%">{{trans('wzoj.type')}}</th>
     <th style="width: 5%">spj</th>
+    <th style="width: 5%">{{trans('wzoj.source')}}</th>
     <th style="width: 20%">{{trans('wzoj.problemsets')}}</th>
 </thead>
 <tbody>
@@ -58,6 +59,7 @@
 	<td><a href='/admin/problems/{{$problem->id}}'>{{$problem->name}}</a></td>
 	<td>{{trans('wzoj.problem_type_'.$problem->type)}}</td>
 	<td>{{$problem->spj?"Y":""}}</td>
+	<td>{{$problem->source}}</td>
 	<td>
 	@foreach ($problem->problemsets as $problemset)
 		<a href="/s/{{$problemset->id}}/edit">{{$problemset->name}}</a>

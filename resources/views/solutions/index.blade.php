@@ -42,21 +42,22 @@
   <button type="submit" class="btn btn-default">{{trans('wzoj.search')}}</button>
 </form></center>
 
-<div class='pull-right'>
+<div class='pull-right small'>
+  <ul class="pager">
+    @if ($url_limits <> '')
+      <li><a href='/solutions?{{$url_limits}}'>{{trans('wzoj.toppage')}}</a></li>
+    @else
+      <li><a href='/solutions'>{{trans('wzoj.toppage')}}</a></li>
+    @endif
 
-@if ($url_limits <> '')
-[<a href='/solutions?{{$url_limits}}'>{{trans('wzoj.toppage')}}</a>]
-@else
-[<a href='/solutions'>{{trans('wzoj.toppage')}}</a>]
-@endif
+    @if ($prev_url <> '')
+      <li><a href='{{$prev_url.$url_limits}}'>{{trans('wzoj.prevpage')}}</a></li>
+    @endif
 
-@if ($prev_url <> '')
-[<a href='{{$prev_url.$url_limits}}'>{{trans('wzoj.prevpage')}}</a>]
-@endif
-
-@if ($next_url <> '')
-[<a href='{{$next_url.$url_limits}}'>{{trans('wzoj.nextpage')}}</a>]
-@endif
+    @if ($next_url <> '')
+      <li><a href='{{$next_url.$url_limits}}'>{{trans('wzoj.nextpage')}}</a></li>
+    @endif
+  </ul>
 </div>
 
 <table class="table table-striped">
@@ -114,6 +115,24 @@
 @endforeach
 </tbody>
 </table>
+
+<div class='pull-right small'>
+  <ul class="pager">
+    @if ($url_limits <> '')
+      <li><a href='/solutions?{{$url_limits}}'>{{trans('wzoj.toppage')}}</a></li>
+    @else
+      <li><a href='/solutions'>{{trans('wzoj.toppage')}}</a></li>
+    @endif
+
+    @if ($prev_url <> '')
+      <li><a href='{{$prev_url.$url_limits}}'>{{trans('wzoj.prevpage')}}</a></li>
+    @endif
+
+    @if ($next_url <> '')
+      <li><a href='{{$next_url.$url_limits}}'>{{trans('wzoj.nextpage')}}</a></li>
+    @endif
+  </ul>
+</div>
 
 </div>
 @endsection

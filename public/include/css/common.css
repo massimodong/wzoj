@@ -250,11 +250,14 @@ textarea {
 }
 
 .problemset-dock {
-  background-color: #FBFBFB;
   border-radius: 0;
   border-color: #eef0f6;
   border-width: 2px;
   cursor: pointer;
+}
+
+.problemset-dock:hover{
+  background-color: #FDFDFD;
 }
 
 .problemset-dock .dock-heading {

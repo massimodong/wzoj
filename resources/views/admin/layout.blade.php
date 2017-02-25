@@ -66,28 +66,28 @@
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
 		    <li id='home_sidebar'>
-		    	<a href="/admin"> Admin-Home</a>
+		    	<a href="/admin"> {{trans('wzoj.admin_home')}} </a>
 		    </li>
                     <li id='groups_sidebar'>
-                        <a href="/admin/groups"> Groups</a>
+                        <a href="/admin/groups"> {{trans('wzoj.groups')}} </a>
                     </li>
                     <li id='invitations_sidebar'>
-                        <a href="/admin/invitations"> Invitations</a>
+                        <a href="/admin/invitations"> {{trans('wzoj.invitations')}} </a>
                     </li>
                     <li id='problems_sidebar'>
-                        <a href="/admin/problems"> Problems</a>
+                        <a href="/admin/problems"> {{trans('wzoj.problems')}} </a>
                     </li>
                     <li id='import-problems_sidebar'>
-                        <a href="/admin/import-problems"> Import-Problems</a>
+                        <a href="/admin/import-problems"> {{trans('wzoj.import_problems')}} </a>
                     </li>
 		    <li id='problem-rejudge'>
-		    	<a href="/admin/problem-rejudge"> Problem-rejudge</a>
+		    	<a href="/admin/problem-rejudge"> {{trans('wzoj.problem_rejudge')}} </a>
 		    </li>
 		    <li id='invitations-generate'>
-		    	<a href="/admin/invitations-generate"> Invitations-Generate </a>
+		    	<a href="/admin/invitations-generate"> {{trans('wzoj.invitations_generate')}} </a>
 		    </li>
 		    <li id='update-system'>
-		    	<a href="/admin/update-system"> Update-system</a>
+		    	<a href="/admin/update-system"> {{trans('wzoj.update_system')}} </a>
 		    </li>
                 </ul>
             </div>

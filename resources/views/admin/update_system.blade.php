@@ -1,7 +1,7 @@
 @extends ('admin.layout')
 
 @section ('title')
-Update System
+{{trans('wzoj.update_system')}}
 @endsection
 
 @section ('content')
