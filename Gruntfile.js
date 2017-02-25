@@ -28,18 +28,23 @@ module.exports = function(grunt) {
 		dest: {
 			'js': 'build/_bower.js',
 			'css': 'build/_bower.css'
-		},/*
+		},
 		include: [
 			'jquery',
-			'bootstrap'
-		],*/
-		exclude: [
-			'isotope'
+			'bootstrap',
+			'datatables.net',
+			'datatables.net-bs',
+			'bootstrap-fileinput',
+			'tinymce',
+			'isotope',
+			'bootstrap-select',
+			'chart.js'
 		],
 		mainFiles: {
 			'bootstrap':['dist/js/bootstrap.js', 'dist/css/bootstrap.css'],
 			'tinymce':['tinymce.js'],
-			'isotope':['dist/isotope.pkgd.js']
+			'isotope':['dist/isotope.pkgd.js'],
+			'bootstrap-select':['dist/js/bootstrap-select.js', 'dist/css/bootstrap-select.css', 'dist/js/i18n/defaults-zh_CN.js']
 		}
 	}
     },

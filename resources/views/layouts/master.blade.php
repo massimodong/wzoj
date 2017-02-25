@@ -20,8 +20,6 @@
     <link href="/include/css/common.css" rel="stylesheet">
     <link href="/include/css/syntaxhighlighter.css" rel="stylesheet">
 
-    <!-- bootstrap-select -->
-    <link href="/include/css/bootstrap-select.min.css" rel="stylesheet">
     <!-- bootstrap-datetimepicker -->
     <link href="/include/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     
@@ -125,12 +123,6 @@
     <script src="/js/_bower.min.js"></script>
     <!-- tinymce -->
     <script src='/include/js/tinymce.js'></script>
-    <script src='/include/js/isotope.pkgd.min.js'></script>
-    <!-- bootstrap-select -->
-    <script src='/include/js/bootstrap-select.min.js'></script>
-    <script src='/include/js/bootstrap-select-zh_CN.js'></script>
-    <!-- Chart.js-->
-    <script src='/include/js/Chart.js'></script>
     <!-- bootstrap-datetimepicker -->
     <script src='/include/js/bootstrap-datetimepicker.min.js'></script>
     <script src='/include/js/bootstrap-datetimepicker.zh-CN.js'></script>
