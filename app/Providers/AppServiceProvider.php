@@ -20,12 +20,6 @@ class AppServiceProvider extends ServiceProvider
 			    if($invitation == NULL) return false;
 			    return $invitation->remaining != 0;
 	    });
-
-	    $this->publishes([
-			    'vendor/twbs/bootstrap' => public_path('vendor/bootstrap'),
-			    'vendor/tinymce/tinymce' => public_path('vendor/tinymce'),
-			    'vendor/kartik-v/bootstrap-fileinput' => public_path('vendor/bootstrap-fileinput'),
-	    ],'wzoj');
     }
 
     /**

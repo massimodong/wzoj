@@ -7,10 +7,7 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
-        "twbs/bootstrap": "^3.3",
         "mews/purifier": "^2.0",
-        "tinymce/tinymce": "^4.5",
-        "kartik-v/bootstrap-fileinput": "@dev",
         "barryvdh/laravel-debugbar": "^2.3"
     },
     "require-dev": {
@@ -42,12 +39,16 @@
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
             "php artisan optimize",
-	    "php artisan vendor:publish --tag=wzoj"
+	    "npm --registry https://registry.npm.taobao.org install",
+	    "bower install",
+	    "grunt"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize",
-	    "php artisan vendor:publish --tag=wzoj"
+	    "npm --registry https://registry.npm.taobao.org install",
+	    "bower install",
+	    "grunt"
         ]
     },
     "config": {
