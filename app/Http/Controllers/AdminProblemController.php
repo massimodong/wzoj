@@ -46,7 +46,7 @@ class AdminProblemController extends Controller
 					'nextpage_url' => $next_url,
 					'bottompage_url' => $bottom_url]);
 					*/
-			$problems = Problem::all();
+			$problems = Problem::with('problemsets')->get();
 			return view('admin.problems_index', ['problems' => $problems]);
 		}else{
 			$problem = \App\Problem::findOrFail($id);

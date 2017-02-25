@@ -62,7 +62,7 @@ class UserController extends Controller
 			->distinct('problem_id')
 			->count('problem_id');
 
-		$last_solutions = $user->solutions()->orderBy('created_at', 'desc')->take(5)->get();
+		$last_solutions = $user->solutions()->public()->orderBy('created_at', 'desc')->take(5)->get();
 
 		return view('user.profile',['user' => $user,
 						'month_cnt' => $month_cnt,

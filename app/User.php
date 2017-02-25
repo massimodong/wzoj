@@ -46,7 +46,12 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function has_role($role){
-	    return $this->roles()->where('name',$role)->count()>0;
+	    static $roles = [];
+	    if(isset($roles[$role])){
+		    return $roles[$role];
+	    }else{
+	    	return $roles[$role] = $this->roles()->where('name',$role)->count()>0;
+	    }
     }
 
     public function solutions(){

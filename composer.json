@@ -10,7 +10,8 @@
         "twbs/bootstrap": "^3.3",
         "mews/purifier": "^2.0",
         "tinymce/tinymce": "^4.5",
-        "kartik-v/bootstrap-fileinput": "@dev"
+        "kartik-v/bootstrap-fileinput": "@dev",
+        "barryvdh/laravel-debugbar": "^2.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
