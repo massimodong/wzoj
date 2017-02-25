@@ -10,6 +10,8 @@ return [
     'ect' => '等',
     'none' => '无',
     'more' => '更多',
+    'yes' => '是',
+    'no' => '否',
 
     'class' => '班级',
     'home' => '主页',
@@ -183,4 +185,11 @@ return [
     'delete_problems' => '删除题目',
     'search_problemset' => '搜索题库',
     'add_to_problemset' => '加入到题库',
+
+    'invitations_generate' => '批量生成注册码',
+    'prefix' => '前缀',
+    'generate' => '生成',
+    'msg_explain_remaining' => '生成的注册码剩余使用次数,用-1表示不限次数',
+    'msg_one_fullname_per_line' => '每行输入一个姓名',
+    'msg_add_groups_when_register' => '注册时自动加入的组，多选',
 ];

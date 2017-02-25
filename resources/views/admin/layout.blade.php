@@ -83,6 +83,9 @@
 		    <li id='problem-rejudge'>
 		    	<a href="/admin/problem-rejudge"> Problem-rejudge</a>
 		    </li>
+		    <li id='invitations-generate'>
+		    	<a href="/admin/invitations-generate"> Invitations-Generate </a>
+		    </li>
 		    <li id='update-system'>
 		    	<a href="/admin/update-system"> Update-system</a>
 		    </li>

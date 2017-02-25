@@ -40,7 +40,7 @@
 <h3>{{trans('wzoj.hints')}}:</h3>
 {!! Purifier::clean($problem->hint) !!}
 
-{{trans('wzoj.time_limit')}}:{{$problem->timelimit}}s<br>
+{{trans('wzoj.time_limit')}}:{{$problem->timelimit}}ms<br>
 {{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MB<br>
 
 <hr>

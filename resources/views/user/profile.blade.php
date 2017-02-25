@@ -37,7 +37,7 @@
 							{{trans('wzoj.settings')}} </a>
 						</li>
 						<li>
-							<a href="#" target="_blank">
+							<a href="#">
 							<i class="glyphicon glyphicon-ok"></i>
 							{{trans('wzoj.homeworks')}} </a>
 						</li>
