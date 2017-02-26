@@ -212,4 +212,6 @@ return [
     'old_password' => '旧密码',
     'new_password' => '新密码',
     'password_incorrect' => '密码不正确',
+
+    'problem_not_in_any_problemsets' => '不在任何题库',
 ];

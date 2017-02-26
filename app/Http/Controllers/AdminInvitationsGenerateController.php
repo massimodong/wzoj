@@ -41,8 +41,10 @@ class AdminInvitationsGenerateController extends Controller
 				'private' => $request->private,
 			]);
 
-			foreach($request->groups_id as $group_id){
-				$invitation->groups()->attach($group_id);
+			if(isset($request->groups_id) && count($request->groups_id)){
+				foreach($request->groups_id as $group_id){
+					$invitation->groups()->attach($group_id);
+				}
 			}
 		}
 		return back();

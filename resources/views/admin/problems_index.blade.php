@@ -64,6 +64,9 @@
 	@foreach ($problem->problemsets as $problemset)
 		<a href="/s/{{$problemset->id}}/edit">{{$problemset->name}}</a>
 	@endforeach
+	@if (count($problem->problemsets) == 0)
+		<span style="color:red">{{trans('wzoj.problem_not_in_any_problemsets')}}</span>
+	@endif
 	</td>
     </tr>
 @endforeach

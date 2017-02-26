@@ -182,8 +182,11 @@ class ProblemsetController extends Controller
 		$problemset = Problemset::findOrFail($psid);
 		$this->authorize('update',$problemset);
 
-		for($i = count($request->pids)-1;$i >= 0;--$i){
-			$pid = $request->pids[$i];
+		$pids = $request->pids;
+		sort($pids);
+		//for($i = count($request->pids)-1;$i >= 0;--$i){
+		for($i = 0;isset($pids[$i]);++$i){
+			$pid = $pids[$i];
 			$arr = [];
 			$arr['pid'] = $pid;
 			$validator = Validator::make($arr,[
