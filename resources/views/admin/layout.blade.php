@@ -10,17 +10,17 @@
 
     <title>admin - @yield('title')</title>
 
-    <link href="/css/_bower.min.css" rel="stylesheet">
+    <link href="{{ojcache('/css/_bower.min.css')}}" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/include/css/sb-admin.css" rel="stylesheet">
-    <link href="/include/css/common.css" rel="stylesheet">
+    <link href="{{ojcache('/include/css/sb-admin.css')}}" rel="stylesheet">
+    <link href="{{ojcache('/include/css/common.css')}}" rel="stylesheet">
 
     <script>
     var csrf_token = '{{csrf_token()}}'
     </script>
 
-    <script src='/include/js/common.js'></script>
+    <script src="{{ojcache('/include/js/common.js')}}"></script>
 </head>
 
 <body>
@@ -116,9 +116,9 @@
     </div>
     <!-- /#wrapper -->
 
-    <script src="/js/_bower.min.js"></script>
+    <script src="{{ojcache('/js/_bower.min.js')}}"></script>
 
-    <script src='/include/js/tinymce.js'></script>
+    <script src="{{ojcache('/include/js/tinymce.js')}}"></script>
 
     @yield ('scripts')
 </body>

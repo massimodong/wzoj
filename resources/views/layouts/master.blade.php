@@ -14,20 +14,20 @@
     <title>@yield('title')</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/css/_bower.min.css" rel="stylesheet">
+    <link href="{{ojcache('/css/_bower.min.css')}}" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/include/css/common.css" rel="stylesheet">
-    <link href="/include/css/syntaxhighlighter.css" rel="stylesheet">
+    <link href="{{ojcache('/include/css/common.css')}}" rel="stylesheet">
+    <link href="{{ojcache('/include/css/syntaxhighlighter.css')}}" rel="stylesheet">
 
     <!-- bootstrap-datetimepicker -->
-    <link href="/include/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
+    <link href="{{ojcache('/include/css/bootstrap-datetimepicker.min.css')}}" rel="stylesheet">
     
-    <script src='/include/js/lang/zh.js'></script>
-    <script src='/include/js/common.js'></script>
-    <script src='/include/js/solution.js'></script>
-    <script src='/include/js/ranklist.js'></script>
-    <script src='/include/js/syntaxhighlighter.js'></script>
+    <script src="{{ojcache('/include/js/lang/zh.js')}}"></script>
+    <script src="{{ojcache('/include/js/common.js')}}"></script>
+    <script src="{{ojcache('/include/js/solution.js')}}"></script>
+    <script src="{{ojcache('/include/js/ranklist.js')}}"></script>
+    <script src="{{ojcache('/include/js/syntaxhighlighter.js')}}"></script>
 
     <script>
     var csrf_token = '{{csrf_token()}}';
@@ -123,12 +123,12 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/js/_bower.min.js"></script>
+    <script src="{{ojcache('/js/_bower.min.js')}}"></script>
     <!-- tinymce -->
-    <script src='/include/js/tinymce.js'></script>
+    <script src="{{ojcache('/include/js/tinymce.js')}}"></script>
     <!-- bootstrap-datetimepicker -->
-    <script src='/include/js/bootstrap-datetimepicker.min.js'></script>
-    <script src='/include/js/bootstrap-datetimepicker.zh-CN.js'></script>
+    <script src="{{ojcache('/include/js/bootstrap-datetimepicker.min.js')}}"></script>
+    <script src="{{ojcache('/include/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
     @yield ('scripts')
   </body>
 </html>

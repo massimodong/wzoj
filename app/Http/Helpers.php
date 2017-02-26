@@ -19,3 +19,7 @@ function ojCanViewProblems($problemset){
 	}
 	return ($problemset->type === 'set') || (strtotime($problemset->contest_start_at)<time());
 }
+
+function ojcache($url){
+	return $url."?v=".ojoption('current_version_id');
+}
