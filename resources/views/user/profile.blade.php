@@ -125,7 +125,7 @@
 			</div>
 			<div id="settings" class="tab-pane">
 
-				<form method='POST'>
+			    <form method='POST'>
 				{{csrf_field()}}
 
 				<div class="form-group">
@@ -169,7 +169,8 @@
 				@endcan
 				<button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
 
-				</form>
+			    </form>
+			    <a href="/auth/change_password">{{trans('wzoj.change_password')}}</a>
 			</div>
 		</div>
             </div>

@@ -22,6 +22,8 @@ Route::post('auth/logout', 'Auth\AuthController@getLogout');
 Route::get('auth/register','Auth\AuthController@oj_getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
+Route::get('auth/change_password', 'Auth\PasswordController@getChangePassword');
+Route::post('auth/change_password', 'Auth\PasswordController@postChangePassword');
 
 Route::get('users/{id}','UserController@getId');
 Route::put('users', 'UserController@putUsers')->middleware('admin');
