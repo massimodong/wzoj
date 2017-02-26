@@ -8,7 +8,9 @@ define('SL_JUDGED' , 4);
 define('SL_CANCELED' ,5);
 
 function ojoption($name){
-	return \App\Option::where('name',$name)->first()->value;
+	static $ojoptions = [];
+	if(isset($ojoptions[$name])) return $ojoptions[$name];
+	else return $ojoptions[$name] = \App\Option::where('name',$name)->first()->value;
 }
 
 function ojCanViewProblems($problemset){

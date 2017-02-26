@@ -113,7 +113,10 @@
 
     <footer class="footer">
         <div class="container">
-	    <p class="text-muted">Copyright 2016 <a href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a></p>
+	    <p class="text-muted">
+	    	Copyright 2016
+		<a href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
+	    	{{ojoption('current_version_tag')}}</p>
 	</div>
     </footer>
 
