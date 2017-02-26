@@ -47,7 +47,7 @@
 	    </ul>
             <ul class="nav navbar-right top-nav">
                 <li>
-                    <a> {{Auth::user()->fullname}} </a>
+                    <a> {{Auth::user()->name}} </a>
 		</li>
             </ul>
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
