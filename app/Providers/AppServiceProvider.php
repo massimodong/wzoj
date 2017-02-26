@@ -20,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
 			    if($invitation == NULL) return false;
 			    return $invitation->remaining != 0;
 	    });
+	     $this->publishes([
+			    'vendor/tinymce/tinymce' => public_path('vendor/tinymce'),
+	    ],'wzoj');
     }
 
     /**

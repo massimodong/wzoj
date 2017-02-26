@@ -125,6 +125,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ojcache('/js/_bower.min.js')}}"></script>
     <!-- tinymce -->
+    <script src="{{ojcache('/vendor/tinymce/tinymce.min.js')}}"></script>
     <script src="{{ojcache('/include/js/tinymce.js')}}"></script>
     <!-- bootstrap-datetimepicker -->
     <script src="{{ojcache('/include/js/bootstrap-datetimepicker.min.js')}}"></script>

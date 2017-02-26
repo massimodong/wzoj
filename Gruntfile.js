@@ -35,7 +35,6 @@ module.exports = function(grunt) {
 			'datatables.net',
 			'datatables.net-bs',
 			'bootstrap-fileinput',
-			'tinymce',
 			'isotope',
 			'bootstrap-select',
 			'chart.js'

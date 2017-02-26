@@ -118,6 +118,7 @@
 
     <script src="{{ojcache('/js/_bower.min.js')}}"></script>
 
+    <script src="{{ojcache('/vendor/tinymce/tinymce.min.js')}}"></script>
     <script src="{{ojcache('/include/js/tinymce.js')}}"></script>
 
     @yield ('scripts')
