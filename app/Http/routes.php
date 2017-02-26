@@ -55,6 +55,7 @@ Route::resource('files','FileController');
 
 Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 		Route::get('/', 'AdminHomeController@index');
+		Route::post('options','AdminHomeController@postOptions');
 		//groups
 		Route::get('groups', 'AdminGroupController@getGroups');
 		Route::get('groups/{id}', 'AdminGroupController@getGroups');

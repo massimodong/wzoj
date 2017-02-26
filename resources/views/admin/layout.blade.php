@@ -10,24 +10,12 @@
 
     <title>admin - @yield('title')</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="/vendor/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/_bower.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="/include/css/sb-admin.css" rel="stylesheet">
     <link href="/include/css/common.css" rel="stylesheet">
-    <link href="/include/css/datatables.min.css" rel="stylesheet">
-    <link href="/include/css/bootstrap-select.min.css" rel="stylesheet">
 
-    <!-- Custom Fonts -->
-    <!--<link href="font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
     <script>
     var csrf_token = '{{csrf_token()}}'
     </script>
@@ -128,19 +116,9 @@
     </div>
     <!-- /#wrapper -->
 
-    <!-- jQuery -->
-    <script src="/vendor/bootstrap/docs/assets/js/vendor/jquery.min.js"></script>
+    <script src="/js/_bower.min.js"></script>
 
-    <!-- Bootstrap Core JavaScript -->
-    <script src="/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
-
-    <!-- tinymce -->
-    <script src='/vendor/tinymce/tinymce.min.js'></script>
     <script src='/include/js/tinymce.js'></script>
-
-    <script src='/include/js/datatables.min.js'></script>
-    <script src='/include/js/bootstrap-select.min.js'></script>
-    <script src='/include/js/bootstrap-select-zh_CN.js'></script>
 
     @yield ('scripts')
 </body>

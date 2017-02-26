@@ -39,14 +39,12 @@
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
             "php artisan optimize",
-	    "npm --registry https://registry.npm.taobao.org install",
 	    "bower install",
 	    "grunt"
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize",
-	    "npm --registry https://registry.npm.taobao.org install",
 	    "bower install",
 	    "grunt"
         ]

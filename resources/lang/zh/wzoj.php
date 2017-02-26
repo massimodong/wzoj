@@ -200,4 +200,11 @@ return [
     'update_system' => '更新系统',
 
     'solution_id' => '提交编号',
+
+    'general_options' => '基础设置',
+    'release_informations' => '版本信息',
+    'site_name' => '站点名称',
+    'current_version_tag' => '版本号',
+    'current_version_id' => '版本id',
+    'msg_release_help' => '版本信息随系统更新自动同步，不需要手动设置',
 ];
