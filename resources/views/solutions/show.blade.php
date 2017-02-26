@@ -64,7 +64,7 @@
 	    @endif
 	</td>
 	<td>{{$solution->code_length}}B</td>
-	<td>{{$solution->judger->fullname}}</td>
+	<td>{{$solution->judger?$solution->judger->fullname:""}}</td>
 	<td>{{$solution->judged_at}}</td>
     </tr>
 </tbody>
@@ -112,11 +112,15 @@
 		<tbody>
 		@foreach ($solution->testcases as $testcase)
 		    <tr>
-		    	@can ('view_code', $solution)
-			  <td><a href='#' title="{{trans('wzoj.download_answerfile')}}">{{$testcase->filename}}</a></td>
+		    	@if ($solution->problem->type == 3)
+		    	  @can ('view_code', $solution)
+			    <td><a href='#' title="{{trans('wzoj.download_answerfile')}}">{{$testcase->filename}}</a></td>
+			  @else
+			    <td>{{$testcase->filename}}</td>
+			  @endcan
 			@else
-			  <td>{{$testcase->filename}}</td>
-			@endcan
+			    <td>{{$testcase->filename}}</td>
+			@endif
 			<td>{{$testcase->score}}</td>
 			<td>{{$testcase->time_used}}ms</td>
 			<td>{{sprintf('%.2f', $testcase->memory_used / 1024 / 1024)}}MB</td>
