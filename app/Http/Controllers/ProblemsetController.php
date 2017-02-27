@@ -48,6 +48,17 @@ class ProblemsetController extends Controller
 			$problems=$problems->where('problem_problemset.index', '>', ($page-1) * self::PAGE_LIMIT);
 			$problems=$problems->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT);
 
+			if(Auth::check()){
+				$problems=$problems->leftJoin(DB::raw('(SELECT problem_id, max(score) as maxscore FROM solutions
+							WHERE user_id ='.Auth::user()->id.' AND problemset_id ='.$problemset->id
+							.' GROUP BY problem_id) solutions'),
+					function($join){
+						$join->on('problems.id', '=', 'solutions.problem_id');
+					})
+					->select('*')
+					->addSelect('solutions.maxscore');
+			}
+
 			$problems = $problems->get();
 		}else{
 			$problems = [];
