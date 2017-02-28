@@ -96,6 +96,8 @@ class AdminImportProblemsController extends Controller
 		}
 		//Storage::disk('data')->put('/233/temp.txt', "233333");
 		echo "<br><br>";
+
+		return back();
 	}
 
 }

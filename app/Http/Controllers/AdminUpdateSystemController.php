@@ -101,5 +101,7 @@ class AdminUpdateSystemController extends Controller
 
 		Option::where('name', 'current_version_tag')->update(['value' => $latest_release->tag_name]);
 		Option::where('name', 'current_version_id')->update(['value' => $latest_release->id]);
+
+		return back();
 	}
 }
