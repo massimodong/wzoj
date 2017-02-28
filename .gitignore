@@ -7,6 +7,3 @@ public/vendor
 *.swp
 bower
 build
-public/css/_bower.min.css
-public/js
-public/fonts

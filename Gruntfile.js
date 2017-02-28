@@ -9,7 +9,7 @@ module.exports = function(grunt) {
 	},
 	build: {
 		src: 'build/_bower.js',
-		dest: 'public/js/_bower.min.js'
+		dest: 'public/include/js/_bower.min.js'
 	}
     },
     cssmin: {
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
 	},
 	target: {
 		files: {
-			'public/css/_bower.min.css': ['build/_bower.css']
+			'public/include/css/_bower.min.css': ['build/_bower.css']
 		}
 	}
     },
@@ -41,7 +41,6 @@ module.exports = function(grunt) {
 		],
 		mainFiles: {
 			'bootstrap':['dist/js/bootstrap.js', 'dist/css/bootstrap.css'],
-			'tinymce':['tinymce.js'],
 			'isotope':['dist/isotope.pkgd.js'],
 			'bootstrap-select':['dist/js/bootstrap-select.js', 'dist/css/bootstrap-select.css', 'dist/js/i18n/defaults-zh_CN.js']
 		}
@@ -49,10 +48,7 @@ module.exports = function(grunt) {
     },
     copy: {
 	main: {
-		files: [{expand:true, cwd: 'bower/bootstrap/dist/fonts', src: '**', dest: 'public/fonts/'},
-			{expand:true, cwd: 'bower/tinymce/plugins', src: '**', dest: 'public/js/plugins'},
-			{expand:true, cwd: 'bower/tinymce/themes', src: '**', dest: 'public/js/themes'},
-			{expand:true, cwd: 'bower/tinymce/skins', src: '**', dest: 'public/js/skins'}]
+		files: [{expand:true, cwd: 'bower/bootstrap/dist/fonts', src: '**', dest: 'public/include/fonts/'}]
 	}
     }
   });

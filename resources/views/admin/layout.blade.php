@@ -10,7 +10,7 @@
 
     <title>admin - @yield('title')</title>
 
-    <link href="{{ojcache('/css/_bower.min.css')}}" rel="stylesheet">
+    <link href="{{ojcache('/include/css/_bower.min.css')}}" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link href="{{ojcache('/include/css/sb-admin.css')}}" rel="stylesheet">
@@ -116,7 +116,7 @@
     </div>
     <!-- /#wrapper -->
 
-    <script src="{{ojcache('/js/_bower.min.js')}}"></script>
+    <script src="{{ojcache('/include/js/_bower.min.js')}}"></script>
 
     <script src="{{ojcache('/vendor/tinymce/tinymce.min.js')}}"></script>
     <script src="{{ojcache('/include/js/tinymce.js')}}"></script>
