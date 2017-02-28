@@ -50,13 +50,15 @@ function showOrHideCode(){
 function selectHashTab(){
 	var itemName = window.location.href+'-activeTab';
 	$(document).ready(function() {
+		$(document.body).on("click", "a[data-toggle]", function(event) {
+			if(this.getAttribute("href") == '#') return;
+			localStorage.setItem(itemName, this.getAttribute("href"));
+		});
+
 		var activeTab = localStorage.getItem(itemName);
 		if (activeTab) {
 			$("a[href='" + activeTab + "']").tab("show");
 		}
-		$(document.body).on("click", "a[data-toggle]", function(event) {
-			localStorage.setItem(itemName, this.getAttribute("href"));
-		});
 	});
 }
 

@@ -170,7 +170,9 @@
 				<button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
 
 			    </form>
+			    @if (Auth::check() && $user->id == Auth::user()->id)
 			    <a href="/auth/change_password">{{trans('wzoj.change_password')}}</a>
+			    @endif
 			</div>
 		</div>
             </div>
