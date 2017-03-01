@@ -119,7 +119,7 @@
 					@endforeach
 				</tbody>
 				</table>
-				<center><a href="/solutions?user_id={{$user->id}}">{{trans('wzoj.more')}}</a></center>
+				<center><a href="/solutions?user_id={{$user->name}}">{{trans('wzoj.more')}}</a></center>
 				<div style="height:20px"></div>
 				</div>
 			</div>

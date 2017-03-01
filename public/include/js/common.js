@@ -114,7 +114,8 @@ function createDatatableWithCheckboxs(table_id, rows_selected, form_id){
 				$(row).addClass('selected');
 			}
 		},
-		'autoWidth': false
+		'autoWidth': false,
+		'lengthMenu':[[-1, 10, 100, 500],[TRANS['all'], 10, 100, 500]]
 	});
 
 	// Handle click on checkbox

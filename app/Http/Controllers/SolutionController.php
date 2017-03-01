@@ -55,12 +55,14 @@ class SolutionController extends Controller
 		    }
 	    }
 
-	    if(isset($request->user_id) && $request->user_id <> ''){
-		    $user = \App\User::find($request->user_id);
+	    if(isset($request->user_name) && $request->user_name <> ''){
+		    $user = \App\User::where('name', $request->user_name)->first();
 		    if($user){
 			    $solutions = $solutions->where('user_id', $user->id);
-			    $url_limits.='&user_id='.$user->id;
+		    }else{
+			    $solutions = $solutions->where('user_id', -1);
 		    }
+		    $url_limits.='&user_name='.$request->user_name;
 	    }
 
 	    if(isset($request->problem_id) && $request->problem_id <> ''){

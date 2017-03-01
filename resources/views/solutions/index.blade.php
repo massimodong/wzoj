@@ -17,8 +17,8 @@
     <input type="text" class="form-control" id="problemset_id" name="problemset_id" size="1" value="{{$request->problemset_id}}">
   </div>
   <div class="form-group">
-    <label for="user_id">{{trans('wzoj.user')}}</label>
-    <input type="text" class="form-control" id="user_id" name="user_id" size="1" value="{{$request->user_id}}">
+    <label for="user_name">{{trans('wzoj.user')}}</label>
+    <input type="text" class="form-control" id="user_name" name="user_name" size="5" value="{{$request->user_name}}">
   </div>
   <div class="form-group">
     <label for="problem_id">{{trans('wzoj.problem')}}</label>

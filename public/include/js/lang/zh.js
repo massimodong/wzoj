@@ -6,6 +6,7 @@ const TRANS = {
 	solution_status_4: '评测完成',
 	solution_status_5: '取消',
 	compile_error: '编译错误',
+	all: '全部',
 }
 
 const LANG = ['C', 'C++', 'Pascal'];
