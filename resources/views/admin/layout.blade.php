@@ -20,6 +20,7 @@
     var csrf_token = '{{csrf_token()}}'
     </script>
 
+    <script src="{{ojcache('/include/js/lang/zh.js')}}"></script>
     <script src="{{ojcache('/include/js/common.js')}}"></script>
 </head>
 
