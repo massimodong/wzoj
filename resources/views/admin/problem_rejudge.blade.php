@@ -16,6 +16,7 @@
 <div class="form-group">
   <label for="problemset_id"> {{trans('wzoj.or')}} {{trans('wzoj.problemset')}} </label>
   <select name="problemset_id" id="problemset_id" class="selectpicker">
+  	<option disabled selected value style="display:none"></option>
     @foreach (\App\Problemset::all() as $problemset)
 	<option value="{{$problemset->id}}">{{$problemset->id}}-{{$problemset->name}}</option>
     @endforeach
