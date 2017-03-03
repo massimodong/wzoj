@@ -29,7 +29,7 @@ class SolutionController extends Controller
 	    $this->validate($request, [
 		    'top' => 'integer',
 		    'problemset_id' => 'integer|exists:problemsets,id',
-		    'user_id' => 'integer|exists:users,id',
+		    'user_name' => 'exists:users,name',
 		    'problem_id' => 'integer|exists:problems,id',
 		    'score_min' => 'integer|min:0|max:100',
 		    'score_max' => 'integer|min:0|max:100',
