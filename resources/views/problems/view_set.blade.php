@@ -33,6 +33,7 @@
         <label for='language' class='col-xs-1 col-form-label'> {{trans('wzoj.language')}}: </label>
 	<div class='col-xs-3'>
           <select name='language' id='language' class='form-control input-sm'>
+      	    <option value='-1'>{{trans('wzoj.auto')}}</option>
       	    <option value='0'>C</option>
 	    <option value='1'>C++</option>
 	    <option value='2'>Pascal</option>
@@ -50,7 +51,7 @@
       </div>
       <!-- form-group -->
 
-      <button type="submit" class="btn btn-primary"> {{trans('wzoj.submit')}} </button>
+      <button type="submit" class="btn btn-primary" onclick="return detectLanguage()"> {{trans('wzoj.submit')}} </button>
     </form>
     @else
       @if (count($answerfiles))
@@ -80,6 +81,17 @@
 @section ('scripts')
 <script>
 selectHashTab();
+function detectLanguage(){
+	if($('#language').val() != -1) return true;
+	var lang = codeDetectLanguage($('#code').val());
+	if(lang == -1){
+		alert('{{trans('wzoj.msg_unable_to_detect_language')}}');
+		return false;
+	}else{
+		$('#language').val(lang);
+		return true;
+	}
+}
 </script>
 @if ($problem->type == 3)
 	<script>

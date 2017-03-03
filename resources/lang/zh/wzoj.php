@@ -13,6 +13,7 @@ return [
     'yes' => '是',
     'no' => '否',
     'or' => '或',
+    'auto' => '自动',
 
     'class' => '班级',
     'home' => '主页',
@@ -214,4 +215,5 @@ return [
     'password_incorrect' => '密码不正确',
 
     'problem_not_in_any_problemsets' => '不在任何题库',
+    'msg_unable_to_detect_language' => '无法判断语言，请手动指定',
 ];
