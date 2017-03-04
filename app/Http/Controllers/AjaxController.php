@@ -68,6 +68,7 @@ class AjaxController extends Controller
 		return response()->json(['score' => $solution->score,
 					 'time_used' => $solution->time_used,
 					 'memory_used' => $solution->memory_used,
+					 'judger' => $solution->judger()->select(['fullname'])->first(),
 					 'judged_at' => $solution->judged_at]);
 	}
 

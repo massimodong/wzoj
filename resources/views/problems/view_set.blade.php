@@ -47,7 +47,7 @@
       <!-- form-group -->
 
       <div class='form-group'>
-        <textarea class="form-control" name="code" id="code" rows="3">{{old('code')}}</textarea>
+        <textarea class="form-control" name="code" id="code" rows="9">{{old('code')}}</textarea>
       </div>
       <!-- form-group -->
 
@@ -83,13 +83,35 @@
 selectHashTab();
 function detectLanguage(){
 	if($('#language').val() != -1) return true;
-	var lang = codeDetectLanguage($('#code').val());
-	if(lang == -1){
-		alert('{{trans('wzoj.msg_unable_to_detect_language')}}');
-		return false;
+	if($('#srcfile').val()){ //uploading file
+		var str = $('#srcfile').val();
+		var ext = str.substr(str.lastIndexOf('.') + 1);
+		console.log('ext:' + ext);
+		switch(ext){
+			case 'c':
+				$('#language').val(0);
+				return true;
+			case 'cpp':
+			case 'cc':
+			case 'cxx':
+				$('#language').val(1);
+				return true;
+			case 'pas':
+				$('#language').val(2);
+				return true;
+			default:
+				alert('{{trans('wzoj.msg_unable_to_detect_language')}}');
+				return false;
+		}
 	}else{
-		$('#language').val(lang);
-		return true;
+		var lang = codeDetectLanguage($('#code').val());
+		if(lang == -1){
+			alert('{{trans('wzoj.msg_unable_to_detect_language')}}');
+			return false;
+		}else{
+			$('#language').val(lang);
+			return true;
+		}
 	}
 }
 </script>

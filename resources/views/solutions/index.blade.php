@@ -80,8 +80,8 @@
 @foreach ($solutions as $solution)
     <tr id= 'tr-{{$solution->id}}' class='clickable-row' data-href='/solutions/{{$solution->id}}'>
         <td>{{$solution->id}}</td>
-	<td>{{$solution->user->name}}</td>
-	<td>{{$solution->problem->name}}</td>
+	<td>{{$solution->user?$solution->user->name:""}}</td>
+	<td>{{$solution->problem?$solution->problem->name:""}}</td>
 	<td>
 	@if ($solution->status == SL_RUNNING)
 	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1'></div>
@@ -109,7 +109,7 @@
 	    @endif
 	</td>
 	<td>{{$solution->code_length}}B</td>
-	<td>{{$solution->judger?$solution->judger->fullname:""}}</td>
+	<td class='solution-judger'>{{$solution->judger?$solution->judger->fullname:""}}</td>
 	<td class='solution-judgedat'>{{$solution->judged_at}}</td>
     </tr>
 @endforeach

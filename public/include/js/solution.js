@@ -144,6 +144,10 @@ function fillTable( s ){
 		var m = new Number(data.memory_used / 1024 / 1024);
 		$('#' + id + ' .solution-memoryused').text(m.toFixed(2) + 'MB');
 
+		if(data.judger){
+			$('#' + id + ' .solution-judger').text(data.judger.fullname);
+		}
+
 		$('#' + id + ' .solution-judgedat').text(data.judged_at);
 	})
 }
@@ -184,9 +188,8 @@ function solutions_update(last_solution_id){
 			row.append("<td>" + LANG[solution.language] + "</td>");
 			row.append("<td>" + solution.code_length +"B</td>");
 
-			row.append("<td>todo</td>");
-			row.append("<td>todo</td>");
-			row.append("<td>" + solution.judged_at + "</td>");
+			row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.name:"") + "</td>");
+			row.append("<td class='solution-judgedat'>" + solution.judged_at + "</td>");
 
 			$('#solutions-tbody').prepend(row);
 
