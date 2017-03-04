@@ -84,8 +84,12 @@ class AdminProblemController extends Controller
 	public function putProblems(Request $request){
 		$query = Problem::whereIn('id', $request->id);
 		switch($request->action){
+			/*
 			case 'delete':
 				$query->delete();
+				break;
+				*/
+			default:
 				break;
 		}
 		return back();

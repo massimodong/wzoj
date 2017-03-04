@@ -70,15 +70,6 @@
     </div>
     </form>
 
-    <form action='/s/{{$problemset->id}}' method='POST' class="form-horizontal">
-    {{csrf_field()}}
-    {{method_field('DELETE')}}
-    <div class="form-group"> 
-        <div class="col-sm-offset-2 col-sm-10">
-	    <button type="submit" class="btn btn-danger">{{trans('wzoj.delete')}}</button>
-        </div>
-    </div>
-    </form>
 </div>
 <!-- problemset -->
 

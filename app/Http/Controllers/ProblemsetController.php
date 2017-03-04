@@ -26,10 +26,7 @@ class ProblemsetController extends Controller
 				array_push($problemsets,$problemset);
 			}
 		}
-
-		$del_problemsets = Problemset::onlyTrashed()->get();
-		return view('problemsets.index',['problemsets' => $problemsets,
-						'del_problemsets' => $del_problemsets]);
+		return view('problemsets.index',['problemsets' => $problemsets]);
 	}
 
 	public function getProblemset($psid,Request $request){
@@ -148,22 +145,6 @@ class ProblemsetController extends Controller
 		if(!isset($newval['public'])) $newval['public'] = 0;
 
 		$problemset->update($newval);
-		return back();
-	}
-
-	public function deleteProblemset($psid){
-		$problemset = Problemset::findOrFail($psid);
-		$this->authorize('update',$problemset);
-
-		$problemset->delete();
-		return redirect('/s');
-	}
-
-	public function recoverProblemset($psid){
-		$problemset = Problemset::withTrashed()->findOrFail($psid);
-		$this->authorize('update',$problemset);
-
-		$problemset->restore();
 		return back();
 	}
 

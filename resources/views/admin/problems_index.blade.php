@@ -36,7 +36,7 @@
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-      <li><a href="#" onclick="problems_action('delete');" style="color: red"> {{trans('wzoj.delete_problems')}} </a></li>
+      <!-- <li><a href="#" onclick="problems_action('delete');" style="color: red"> {{trans('wzoj.delete_problems')}} </a></li> -->
     </ul>
   </div>
 </div>

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Gate;
+
 class HomeController extends Controller
 {
 	public function index(){
