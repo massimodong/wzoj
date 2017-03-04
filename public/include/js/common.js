@@ -195,9 +195,10 @@ function createDatatableWithCheckboxs(table_id, rows_selected, form_id){
 
 function codeDetectLanguage( code ){
 	const langs = {
-		1: ['include', '{', '}', 'stdio', 'iostream', 'using', 'namespace', 'int', 'main', //cpp
+		1: ['include', '{', '}', 'stdio', 'iostream', 'using', ' namespace ', 'int', 'main', //cpp
 			'cin', 'cout', 'scanf', 'printf', 'return'],
-		2: ['var', 'begin', 'end', 'read', 'write', 'then', ':=', 'integer'] //pascal
+		2: ['var', 'begin', 'end', 'read', 'write', 'then', ':=', 'integer'], //pascal
+		4: ['from',' import ', ' def ', ' in ', 'elif ', 'input', 'print'] //python
 	};
 	var cur_lang = -1, cur_pb = 0.1;
 	for(var key in langs){

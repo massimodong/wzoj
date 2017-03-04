@@ -37,6 +37,7 @@
       	    <option value='0'>C</option>
 	    <option value='1'>C++</option>
 	    <option value='2'>Pascal</option>
+	    <option value='4'>Python</option>
           </select>
 	</div>
 	<label for='srcfile' class='col-xs-1 col-form-label'> {{trans('wzoj.choosefile')}}</label>

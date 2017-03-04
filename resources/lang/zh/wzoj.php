@@ -68,6 +68,11 @@ return [
     'checklog' => '比较日志',
     'code' => '代码',
     'source' => '来源',
+    'programing_language_0' => 'C',
+    'programing_language_1' => 'C++',
+    'programing_language_2' => 'Pascal',
+    'programing_language_3' => 'Java',
+    'programing_language_4' => 'Python',
 
     'compile_error' => '编译错误',
     'testcases' => '测试点',
