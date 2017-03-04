@@ -37,6 +37,9 @@ Route::get('s/{psid}/ranklist','ProblemsetController@getRanklist');
 Route::get('s/{psid}/edit','ProblemsetController@getEditProblemset')->middleware('auth');
 Route::put('s/{psid}','ProblemsetController@putProblemset');
 Route::delete('s/{psid}','ProblemsetController@deleteProblemset');
+
+//todo
+Route::get('s/{psid}/recover','ProblemsetController@recoverProblemset');
 	//problems
 Route::get('s/{psid}/{pid}','ProblemsetController@getProblem');
 Route::post('s/{psid}/problems','ProblemsetController@postProblem');

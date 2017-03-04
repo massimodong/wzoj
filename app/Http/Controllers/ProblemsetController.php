@@ -26,7 +26,10 @@ class ProblemsetController extends Controller
 				array_push($problemsets,$problemset);
 			}
 		}
-		return view('problemsets.index',['problemsets' => $problemsets]);
+
+		$del_problemsets = Problemset::onlyTrashed()->get();
+		return view('problemsets.index',['problemsets' => $problemsets,
+						'del_problemsets' => $del_problemsets]);
 	}
 
 	public function getProblemset($psid,Request $request){
@@ -154,6 +157,14 @@ class ProblemsetController extends Controller
 
 		$problemset->delete();
 		return redirect('/s');
+	}
+
+	public function recoverProblemset($psid){
+		$problemset = Problemset::withTrashed()->findOrFail($psid);
+		$this->authorize('update',$problemset);
+
+		$problemset->restore();
+		return back();
 	}
 
 	//problems
