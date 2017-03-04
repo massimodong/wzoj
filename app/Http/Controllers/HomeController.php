@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Lang;
 use Gate;
 
 class HomeController extends Controller
@@ -22,5 +23,8 @@ class HomeController extends Controller
 
 		return view('home',[
 			'home_page_problemsets' => $home_page_problemsets]);
+	}
+	public function faq(){
+		return view('faq.'.Lang::locale());
 	}
 }

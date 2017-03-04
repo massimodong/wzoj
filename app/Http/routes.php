@@ -12,6 +12,7 @@
 */
 
 Route::get('/','HomeController@index');
+Route::get('faq', 'HomeController@faq');
 
 // auth
 Route::get('auth/login', 'Auth\AuthController@getLogin');

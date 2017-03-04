@@ -175,7 +175,7 @@ function solutions_update(last_solution_id){
 			}
 
 			row.append($("<td></td>").append(soldiv));
-			if(solution.ce){
+			if(solution.ce && parseInt(solution.ce)){
 				row.append("<td class='solution-score'>" + TRANS['compile_error'] + "</td>");
 			}else{
 				row.append("<td class='solution-score'>" + solution.score + "</td>");
@@ -188,7 +188,7 @@ function solutions_update(last_solution_id){
 			row.append("<td>" + LANG[solution.language] + "</td>");
 			row.append("<td>" + solution.code_length +"B</td>");
 
-			row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.name:"") + "</td>");
+			row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.fullname:"") + "</td>");
 			row.append("<td class='solution-judgedat'>" + solution.judged_at + "</td>");
 
 			$('#solutions-tbody').prepend(row);

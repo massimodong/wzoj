@@ -216,4 +216,6 @@ return [
 
     'problem_not_in_any_problemsets' => '不在任何题库',
     'msg_unable_to_detect_language' => '无法判断语言，请手动指定',
+
+    'faq' => 'FAQ',
 ];
