@@ -37,6 +37,7 @@
       <option value="0" {{$request->language=='0'?"selected":""}}>C</option>
       <option value="1" {{$request->language=='1'?"selected":""}}>C++</option>
       <option value="2" {{$request->language=='2'?"selected":""}}>Pascal</option>
+      <option value="4" {{$request->language=='2'?"selected":""}}>Python</option>
     </select>
   </div>
   <button type="submit" class="btn btn-default">{{trans('wzoj.search')}}</button>

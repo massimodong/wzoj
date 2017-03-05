@@ -33,7 +33,7 @@ class SolutionController extends Controller
 		    'problem_id' => 'integer|exists:problems,id',
 		    'score_min' => 'integer|min:0|max:100',
 		    'score_max' => 'integer|min:0|max:100',
-		    'language' => 'integer|in:0,1,2',
+		    'language' => 'integer|in:0,1,2,4',
 	    ]);
 	    $max_id = Solution::max('id');
 	    if(isset($request->top)){
