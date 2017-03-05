@@ -39,7 +39,7 @@ class JudgerController extends Controller
 			->take(5);
 
 		//todo: judge oi submissions in user_id/pivot_index order
-		$solutions = $solutions->get();
+		$solutions = $solutions->get(["id"]);
 		return response()->json($solutions);
 	}
 	public function postCheckout(Request $request){
@@ -70,7 +70,10 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Solution::findOrFail($request->solution_id);
+		$solution = Solution::where("id",$request->solution_id)
+			->select(["id", "problem_id", "language", "code", "time_used", "memory_used",
+						"status", "score", "ce", "cnt_testcases"])
+			->first();
 		return response()->json($solution);
 	}
 	public function getProblem(Request $request){
@@ -78,6 +81,9 @@ class JudgerController extends Controller
 			"problem_id" => "required|integer",
 		]);
 		$problem = Problem::findOrFail($request->problem_id);
+		$problem = Problem::where("id", $request->problem_id)
+			->select("id", "name", "type", "spj", "timelimit", "memorylimit")
+			->first();
 		return response()->json($problem);
 	}
 	public function postUpdateCe(Request $request){
