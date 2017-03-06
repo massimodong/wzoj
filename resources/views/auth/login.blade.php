@@ -22,5 +22,6 @@
 </div>
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">{{trans('wzoj.login')}}</button>
+<a href='/password/email'>{{trans('wzoj.forgot_password')}}?</a>
 </form>
 @endsection

@@ -227,4 +227,5 @@ return [
     'captcha' => '验证码',
     'send_password_reset_link' => '发送密码重置链接',
     'reset_password' => '重置密码',
+    'forgot_password' => '忘记密码',
 ];
