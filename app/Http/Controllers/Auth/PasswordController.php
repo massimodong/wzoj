@@ -23,6 +23,8 @@ class PasswordController extends Controller
 
     use ResetsPasswords;
 
+    protected $redirectTo = '/';
+
     /**
      * Create a new password controller instance.
      *
@@ -51,5 +53,15 @@ class PasswordController extends Controller
 		    return back()
 			    ->withErrors(['old_password' => trans('wzoj.password_incorrect')]);
 	    }
+    }
+
+    /**
+     * Use Captcha
+     */
+    public function postEmailWithCaptcha(Request $request){
+            $this->validate($request,[
+                'captcha'=>'required|captcha',
+            ]);
+            return PasswordController::postEmail($request);
     }
 }

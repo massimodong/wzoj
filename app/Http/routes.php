@@ -26,6 +26,15 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 Route::get('auth/change_password', 'Auth\PasswordController@getChangePassword');
 Route::post('auth/change_password', 'Auth\PasswordController@postChangePassword');
 
+// Password reset link request routes...
+Route::get('password/email', 'Auth\PasswordController@getEmail');
+Route::post('password/email', 'Auth\PasswordController@postEmailWithCaptcha');
+
+// Password reset routes...
+Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
+Route::post('password/reset', 'Auth\PasswordController@postReset');
+
+
 Route::get('users/{id}','UserController@getId');
 Route::put('users', 'UserController@putUsers')->middleware('admin');
 Route::post('users/{id}','UserController@postId')->middleware('auth');

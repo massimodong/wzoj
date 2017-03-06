@@ -146,6 +146,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 	Barryvdh\Debugbar\ServiceProvider::class,
 	Mews\Purifier\PurifierServiceProvider::class,
+	Mews\Captcha\CaptchaServiceProvider::class,
 
     ],
 
@@ -195,6 +196,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 	'Purifier' => Mews\Purifier\Facades\Purifier::class,
+	'Captcha' => Mews\Captcha\Facades\Captcha::class,
 
     ],
 
