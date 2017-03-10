@@ -6,6 +6,7 @@
 
 @section ('content')
 <div class="col-xs-9 row">
+  <div class="col-xs-12 row">
   @foreach ($home_page_problemsets as $problemset)
     <div class="col-xs-4">
       <div class="thumbnail problemset-dock" data-href="/s/{{$problemset->id}}">
@@ -25,6 +26,33 @@
       </div>
     </div>
   @endforeach
+  </div>
+  <div class="col-xs-12">
+    <h3>{{trans('wzoj.user_rank_list')}}</h3>
+    <hr>
+    <table class="table table-striped table-bordered">
+      <thead>
+        <tr>
+	  <th style="width:7%">{{trans('wzoj.rank')}}</th>
+	  <th style="width:15%">{{trans('wzoj.username')}}</th>
+	  <th></th>
+	  <th style="width:10%">{{trans('wzoj.count_ac')}}</th>
+	</tr>
+      </thead>
+      <tbody>
+        @foreach ($top_users as $key=>$user)
+	<tr>
+	  <td>{{$key + 1}}</td>
+	  <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
+	  <td>{{$user->description}}</td>
+	  <td>{{$user->cnt_ac}}</td>
+	</tr>
+	@endforeach
+      </tbody>
+    </table>
+    <center><a href="/ranklist">{{trans('wzoj.user_rank_list')}}</a></center>
+  </div>
+  <div class="col-xs-12" style="height:50px"></div>
 </div>
 <div class="col-xs-3 row">
   <div class="panel panel-wzoj">

@@ -101,18 +101,7 @@
 						<td>{{$solution->score}}</td>
 						<td>{{$solution->time_used}}ms</td>
 						<td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
-						<td>
-						@if ($solution->language == 0)
-							C
-						@endif
-						@if ($solution->language == 1)
-							C++
-						@endif
-						@if ($solution->language == 2)
-							Pascal
-						@endif
-
-						</td>
+						<td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
 						<td>{{$solution->code_length}}B</td>
 						<td>{{$solution->judged_at}}</td>
 					</tr>

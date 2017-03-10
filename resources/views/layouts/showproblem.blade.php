@@ -1,5 +1,8 @@
 <div class="col-xs-12">
 <h1 class="page-header text-center">{{$problem->name}}</h1>
+@if (Auth::check() && Auth::user()->has_role('admin'))
+  <div class="pull-right"><a href="/admin/problems/{{$problem->id}}">{{trans('wzoj.edit')}}</a></div>
+@endif
 
 <small>
 @if ($problem->type == 2)

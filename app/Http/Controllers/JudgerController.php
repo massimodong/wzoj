@@ -141,6 +141,8 @@ class JudgerController extends Controller
 		$solution->judged_at = date('Y-m-d H:i:s');
 		
 		$solution->save();
+
+		$solution->user->update_cnt_ac();
 	}
 	public function postPostTestcase(Request $request){
 		$testcase = Testcase::create($request->all());

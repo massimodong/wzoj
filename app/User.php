@@ -69,4 +69,12 @@ class User extends Model implements AuthenticatableContract,
     public function files(){
 	    return $this->hasMany('App\File');
     }
+
+    public function update_cnt_ac(){
+	    $this->cnt_ac = $this->solutions()
+	    			->distinct('problem_id')
+	    			->where('score', '>=', 100)
+	    			->count('problem_id');
+	    $this->save();
+    }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\User;
 
 use Lang;
 use Gate;
@@ -21,8 +22,11 @@ class HomeController extends Controller
 			}
 		}
 
+		$top_users = User::orderBy('cnt_ac', 'desc')->take(10)->get();
+
 		return view('home',[
-			'home_page_problemsets' => $home_page_problemsets]);
+			'home_page_problemsets' => $home_page_problemsets,
+			'top_users' => $top_users]);
 	}
 	public function faq(){
 		return view('faq.'.Lang::locale());

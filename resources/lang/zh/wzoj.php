@@ -228,4 +228,7 @@ return [
     'send_password_reset_link' => '发送密码重置链接',
     'reset_password' => '重置密码',
     'forgot_password' => '忘记密码',
+
+    'user_rank_list' => '用户排名',
+    'preview' => '预览',
 ];

@@ -9,6 +9,9 @@
 @section ('content')
 
 <h1 class='page-header text-center'>{{$problemset->name}}</h1>
+@if (Auth::check() && Auth::user()->has_role('admin'))
+<div class="pull-right"><a href="/s/{{$problemset->id}}/edit">{{trans('wzoj.edit')}}</a></div>
+@endif
 
 <div id="home" class="tab-pane fade in active">
   {!! Purifier::clean($problemset->description) !!}
