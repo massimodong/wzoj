@@ -17,6 +17,11 @@ function alertEach(key, message){
 	addAlertWarning(message);
 }
 
+function changeCaptcha(){
+	document.getElementById('captchaImage').src="/captcha/default?"+Date.now();
+}
+
+
 function sendForm(form){
 	var action;
 	if(form.attr('action')){
