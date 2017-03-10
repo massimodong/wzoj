@@ -87,7 +87,7 @@ function detectLanguage(){
 	if($('#srcfile').val()){ //uploading file
 		var str = $('#srcfile').val();
 		var ext = str.substr(str.lastIndexOf('.') + 1);
-		console.log('ext:' + ext);
+		//console.log('ext:' + ext);
 		switch(ext){
 			case 'c':
 				$('#language').val(0);
@@ -99,6 +99,9 @@ function detectLanguage(){
 				return true;
 			case 'pas':
 				$('#language').val(2);
+				return true;
+			case 'py':
+				$('#language').val(4);
 				return true;
 			default:
 				alert('{{trans('wzoj.msg_unable_to_detect_language')}}');
