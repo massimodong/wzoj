@@ -15,7 +15,7 @@ use App\Http\Controllers\Controller;
 class FileController extends Controller
 {
     public function __construct(){   
-	    $this->middleware('auth', ['except' => 'show']);
+	    $this->middleware('auth', ['except' => 'showfile']);
     }  
     /**
      * Display a listing of the resource.
