@@ -77,4 +77,12 @@ class User extends Model implements AuthenticatableContract,
 	    			->count('problem_id');
 	    $this->save();
     }
+
+    public function scopeWithoutAdmin($query){
+	    return $query->whereNotIn('id', function($query){
+			    $query->select('user_id')
+			          ->from('role_user')
+				  ->where('role_id', 1);//role_id 1 must be admin
+		});
+    }
 }

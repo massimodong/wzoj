@@ -13,6 +13,7 @@
 
 Route::get('/','HomeController@index');
 Route::get('faq', 'HomeController@faq');
+Route::get('ranklist', 'HomeController@ranklist');
 
 // auth
 Route::get('auth/login', 'Auth\AuthController@getLogin');
