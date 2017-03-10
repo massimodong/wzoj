@@ -74,6 +74,12 @@ return [
     'programing_language_3' => 'Java',
     'programing_language_4' => 'Python',
 
+    'programing_lang_short_0' => 'c',
+    'programing_lang_short_1' => 'cpp',
+    'programing_lang_short_2' => 'pascal',
+    'programing_lang_short_3' => 'java',
+    'programing_lang_short_4' => 'python',
+
     'compile_error' => '编译错误',
     'testcases' => '测试点',
 

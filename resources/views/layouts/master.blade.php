@@ -18,7 +18,6 @@
 
     <!-- Custom styles for this template -->
     <link href="{{ojcache('/include/css/common.css')}}" rel="stylesheet">
-    <link href="{{ojcache('/include/css/syntaxhighlighter.css')}}" rel="stylesheet">
 
     <!-- bootstrap-datetimepicker -->
     <link href="{{ojcache('/include/css/bootstrap-datetimepicker.min.css')}}" rel="stylesheet">
@@ -27,7 +26,6 @@
     <script src="{{ojcache('/include/js/common.js')}}"></script>
     <script src="{{ojcache('/include/js/solution.js')}}"></script>
     <script src="{{ojcache('/include/js/ranklist.js')}}"></script>
-    <script src="{{ojcache('/include/js/syntaxhighlighter.js')}}"></script>
 
     <script>
     var csrf_token = '{{csrf_token()}}';

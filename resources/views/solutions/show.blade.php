@@ -65,15 +65,7 @@
   @can ('view_code', $solution)
   <h3>{{trans('wzoj.code')}}</h3>
   <button id='code_button' type="button" class="btn btn-xs btn-default" onclick="showOrHideCode();return false;" >—</button>
-  <pre id='code_pre' class="brush: 
-
-    @if ($solution->lang <= 1)
-	cpp
-    @else
-	pascal
-    @endif
-
-  " style="display:block;">{{$solution->code}}</pre>
+  <pre id='code_pre' style="display:block;"><code class="language-{{trans('wzoj.programing_lang_short_'.$solution->language)}}">{{$solution->code}}</code></pre>
   @endcan
 @endif
 

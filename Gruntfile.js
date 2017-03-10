@@ -37,12 +37,15 @@ module.exports = function(grunt) {
 			'bootstrap-fileinput',
 			'isotope',
 			'bootstrap-select',
-			'chart.js'
+			'chart.js',
+			'prism'
 		],
 		mainFiles: {
 			'bootstrap':['dist/js/bootstrap.js', 'dist/css/bootstrap.css'],
 			'isotope':['dist/isotope.pkgd.js'],
-			'bootstrap-select':['dist/js/bootstrap-select.js', 'dist/css/bootstrap-select.css', 'dist/js/i18n/defaults-zh_CN.js']
+			'bootstrap-select':['dist/js/bootstrap-select.js', 'dist/css/bootstrap-select.css', 'dist/js/i18n/defaults-zh_CN.js'],
+			'prism':['prism.js', 'components/prism-c.js', 'components/prism-cpp.js',
+				'components/prism-pascal.js','components/prism-python.js', 'themes/prism.css']
 		}
 	}
     },

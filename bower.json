@@ -7,6 +7,7 @@
     "bootstrap-fileinput": "^4.3.8",
     "isotope": "^3.0.2",
     "bootstrap-select": "^1.12.2",
-    "chart.js": "^2.5.0"
+    "chart.js": "^2.5.0",
+    "prism-js": "^1.0.0"
   }
 }
