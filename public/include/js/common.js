@@ -198,7 +198,7 @@ function codeDetectLanguage( code ){
 		1: ['include', '{', '}', 'stdio', 'iostream', 'using', ' namespace ', 'int ', 'main(', //cpp
 			'cin>>', 'cout<<', 'scanf(', 'printf(', 'return'],
 		2: ['var', 'begin', 'end', 'read(', 'write(', 'then', ':='], //pascal
-		4: ['from','import ', ' def ', ' in ', 'elif ', 'input(', 'print('] //python
+		4: ['from','import ', 'def ', ' in ', 'elif ', 'input(', 'print('] //python
 	};
 	var cur_lang = -1, cur_pb = 0.1;
 	for(var key in langs){
