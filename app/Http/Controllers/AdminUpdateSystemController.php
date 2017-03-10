@@ -52,9 +52,6 @@ class AdminUpdateSystemController extends Controller
 
 		chdir("../");
 
-		echo "Enabling Maintenance Mode\n";
-		system("php artisan down");
-
 		putenv('COMPOSER_HOME=' . getcwd());
 		$opts = [
 			'http' => [
@@ -76,6 +73,9 @@ class AdminUpdateSystemController extends Controller
 		echo "Downloading..\n";
 
 		file_put_contents("storage/app/tmpfile.tar.gz", fopen($latest_release->tarball_url, 'r', false, $context));
+
+		echo "Enabling Maintenance Mode\n";
+		system("php artisan down");
 
 		echo "Installing...\n";
 
