@@ -57,10 +57,6 @@ class UserController extends Controller
 		}
 
 		$cnt_submissions = $user->solutions()->count();
-		$cnt_ac = $user->solutions()
-			->where('score', '>=', 100)
-			->distinct('problem_id')
-			->count('problem_id');
 
 		$last_solutions = $user->solutions()->public()->orderBy('created_at', 'desc')->take(5)->get();
 
@@ -70,7 +66,6 @@ class UserController extends Controller
 						'month_submit_cnt' => $month_submit_cnt,
 						'month_ac_cnt' => $month_ac_cnt,
 						'cnt_submissions' => $cnt_submissions,
-						'cnt_ac' => $cnt_ac,
 						'last_solutions' => $last_solutions]);
 	}
 
@@ -92,6 +87,10 @@ class UserController extends Controller
 			$profile_changed = true;
 			$user->fullname_lock = $request->fullname_lock;
 			$user->class_lock = $request->class_lock;
+		}
+		if(Gate::allows('change_description', $user)){
+			$profile_changed = true;
+			$user->description = $request->description;
 		}
 
 		if($profile_changed){

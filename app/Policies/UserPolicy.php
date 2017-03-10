@@ -34,4 +34,8 @@ class UserPolicy
 	    return ($auth->id == $user->id) && ($auth->class_lock == false);
     }
 
+    public function change_description(User $auth, User $user){
+	    return $auth->id == $user->id;
+    }
+
 }

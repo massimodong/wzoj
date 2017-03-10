@@ -35,7 +35,7 @@
         <tr>
 	  <th style="width:7%">{{trans('wzoj.rank')}}</th>
 	  <th style="width:15%">{{trans('wzoj.username')}}</th>
-	  <th></th>
+	  <th>{{trans('wzoj.user_description')}}</th>
 	  <th style="width:10%">{{trans('wzoj.count_ac')}}</th>
 	</tr>
       </thead>
@@ -44,7 +44,7 @@
 	<tr>
 	  <td>{{$key + 1}}</td>
 	  <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
-	  <td>{{$user->description}}</td>
+	  <td><div style="overflow-y: auto;max-height: 58px">{{$user->description}}</div></td>
 	  <td>{{$user->cnt_ac}}</td>
 	</tr>
 	@endforeach

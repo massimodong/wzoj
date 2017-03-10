@@ -150,6 +150,7 @@ textarea {
 }
 
 .profile-usertitle-name {
+  height: 20px;
   color: #5a7391;
   font-size: 16px;
   font-weight: 600;
@@ -157,10 +158,19 @@ textarea {
 }
 
 .profile-usertitle-job {
+  height: 15px;
   color: #5b9bd1;
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 15px;
+}
+
+.profile-usertitle-description {
+  margin-left:30px;
+  margin-right:30px;
+  height: 40px;
+  overflow-wrap: break-word;
+  overflow-y:auto;
 }
 
 .profile-userbuttons {
@@ -223,7 +233,7 @@ textarea {
 .profile-content {
   padding: 20px;
   background: #fff;
-  height: 420px;
+  height: 470px;
   border-style: solid;
   border-width: 2px;
   border-color: #F1F3FA;

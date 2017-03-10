@@ -231,4 +231,6 @@ return [
 
     'user_rank_list' => '用户排名',
     'preview' => '预览',
+
+    'user_description' => '简介',
 ];

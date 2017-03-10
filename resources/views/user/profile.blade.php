@@ -21,6 +21,7 @@
 					<div class="profile-usertitle-job">
 						{{$user->name}}
 					</div>
+					<div class="profile-usertitle-description">{{$user->description}}</div>
 				</div>
 				<!-- END SIDEBAR USER TITLE -->
 				<!-- SIDEBAR MENU -->
@@ -60,7 +61,7 @@
 					<div class="panel-heading">{{trans('wzoj.overview')}}</div>
 					<div class="panel-body">
 					{{trans('wzoj.count_submit')}}:<span class="pull-right">{{$cnt_submissions}}</span><br>
-					{{trans('wzoj.count_ac_problems')}}:<span class="pull-right">{{$cnt_ac}}</span><br>
+					{{trans('wzoj.count_ac_problems')}}:<span class="pull-right">{{$user->cnt_ac}}</span><br>
 					{{trans('wzoj.register_time')}}:<span class="pull-right">
 						{{date("Y-m-d",strtotime($user->created_at))}}</span><br>
 					{{trans('wzoj.last_login_time')}}:<span class="pull-right">NULL</span><br>
@@ -156,6 +157,15 @@
 					<span class="custom-control-description">{{trans('wzoj.lock_class')}}</span>
 				</label>
 				@endcan
+				<div class="form-group">
+    					<label for="class"> {{trans('wzoj.description')}}: </label>
+					<textarea class="form-control" id="description" name="description"
+					@can ('change_description', $user)
+					@else
+					disabled
+					@endcan
+					>{{$user->description}}</textarea>
+				</div>
 				<button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
 
 			    </form>
