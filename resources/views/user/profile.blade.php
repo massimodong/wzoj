@@ -43,7 +43,7 @@
 							{{trans('wzoj.homeworks')}} </a>
 						</li>
 						<li>
-							<a href="#">
+							<a href="/faq#gravatar">
 							<i class="glyphicon glyphicon-flag"></i>
 							{{trans('wzoj.help')}} </a>
 						</li>

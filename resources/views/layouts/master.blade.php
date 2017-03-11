@@ -62,7 +62,7 @@
             <li id='home_sidebar'><a href="/"> {{trans('wzoj.home')}} </a></li>
             <li id='problemsets_sidebar'><a href="/s"> {{trans('wzoj.problemsets')}} </a></li>
             <li id='solutions_sidebar'><a href="/solutions"> {{trans('wzoj.solutions')}} </a></li>
-            <!--<li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li> -->
+            <li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li>
           @show
           </ul>
           <ul class="nav navbar-nav navbar-right">
