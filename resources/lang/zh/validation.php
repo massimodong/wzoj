@@ -113,7 +113,12 @@ return [
 	    'score_max' => '最高分',
 	    'language' => '语言',
 	    'password' => '密码',
+	    'old_password' => '旧密码',
 	    'new_password' => '新密码',
+	    'name' => '用户名',
+	    'email' => '邮箱',
+	    'fullname' => '姓名',
+	    'class' => '班级',
     ],
 
 ];

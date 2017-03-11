@@ -120,7 +120,7 @@
 
 				<div class="form-group">
     					<label for="email"> {{trans('wzoj.email')}}: </label>
-					<input type="email" class="form-control" id="email" name="email" value="{{$user->email}}" disabled>
+					<input type="email" class="form-control" id="email" name="email" value="{{substr($user->email, 0, 1).'****'.substr($user->email, strpos($user->email, '@'))}}" disabled>
 				</div>
 				<div class="form-group">
     					<label for="fullname"> {{trans('wzoj.fullname')}}: </label>
@@ -170,7 +170,7 @@
 
 			    </form>
 			    @if (Auth::check() && $user->id == Auth::user()->id)
-			    <a href="/auth/change_password">{{trans('wzoj.change_password')}}</a>
+			    <a href="/password/change">{{trans('wzoj.change_password')}}</a>
 			    @endif
 			</div>
 		</div>

@@ -43,10 +43,16 @@ class PasswordController extends Controller
     public function postChangePassword(Request $request){
 	    if(!Auth::check()) return redirect('/');
 	    $this->validate($request, [
-		'new_password' => 'required|confirmed|min:6',
+		'name' => 'required|min:3|max:255|unique:users,name,'.Auth::user()->id,
+		'email' => 'required|email|max:255|unique:users,email,'.Auth::user()->id,
+		'new_password' => 'confirmed|min:6',
+		'old_password' => 'required',
 	    ]);
 	    if(Auth::attempt(['name' => Auth::user()->name, 'password' => $request->old_password])){
-		    Auth::user()->password = bcrypt($request->new_password);
+		    if(isset($request->new_password) && $request->new_password != '')
+			    Auth::user()->password = bcrypt($request->new_password);
+		    Auth::user()->name = $request->name;
+		    Auth::user()->email = $request->email;
 		    Auth::user()->save();
 		    return redirect('/users/'.Auth::user()->id);
 	    }else{

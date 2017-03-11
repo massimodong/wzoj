@@ -24,8 +24,8 @@ Route::post('auth/logout', 'Auth\AuthController@getLogout');
 Route::get('auth/register','Auth\AuthController@oj_getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
-Route::get('auth/change_password', 'Auth\PasswordController@getChangePassword');
-Route::post('auth/change_password', 'Auth\PasswordController@postChangePassword');
+Route::get('password/change', 'Auth\PasswordController@getChangePassword');
+Route::post('password/change', 'Auth\PasswordController@postChangePassword');
 
 // Password reset link request routes...
 Route::get('password/email', 'Auth\PasswordController@getEmail');

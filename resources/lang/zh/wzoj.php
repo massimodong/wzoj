@@ -220,7 +220,7 @@ return [
     'current_version_id' => '版本id',
     'msg_release_help' => '版本信息随系统更新自动同步，不需要手动设置',
 
-    'change_password' => '修改密码',
+    'change_password' => '修改密码/用户名/邮箱',
     'old_password' => '旧密码',
     'new_password' => '新密码',
     'password_incorrect' => '密码不正确',

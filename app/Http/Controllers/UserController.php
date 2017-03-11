@@ -70,6 +70,10 @@ class UserController extends Controller
 	}
 
 	public function postId($id,Request $request){
+		$this->validate($request, [
+				'fullname' => 'max:255',
+				'class'    => 'max:255',
+		]);
 		$user = User::findOrFail($id);
 		$profile_changed = false;
 

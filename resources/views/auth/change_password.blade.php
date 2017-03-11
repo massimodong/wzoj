@@ -10,9 +10,15 @@
 <form method="POST" class="form-horizontal">
   {{csrf_field()}}
   <div class="form-group">
-    <label for="old_password" class="col-sm-2 control-label">{{trans('wzoj.old_password')}}</label>
+    <label for="name" class="col-sm-2 control-label">{{trans('wzoj.username')}}</label>
     <div class="col-sm-10">
-      <input type="password" class="form-control" id="old_password" name="old_password">
+      <input type="text" class="form-control" id="name" name="name" value="{{Auth::user()->name}}" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="email" class="col-sm-2 control-label">{{trans('wzoj.email')}}</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="email" name="email" value="{{Auth::user()->email}}" required>
     </div>
   </div>
   <div class="form-group">
@@ -25,6 +31,13 @@
     <label for="new_password_confirmation" class="col-sm-2 control-label">{{trans('wzoj.password_confirmation')}}</label>
     <div class="col-sm-10">
       <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation">
+    </div>
+  </div>
+  <hr>
+  <div class="form-group">
+    <label for="old_password" class="col-sm-2 control-label">{{trans('wzoj.old_password')}}</label>
+    <div class="col-sm-10">
+      <input type="password" class="form-control" id="old_password" name="old_password">
     </div>
   </div>
 
