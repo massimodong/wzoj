@@ -25,5 +25,7 @@
 
 <button type="submit" class="btn btn-default"> {{trans('wzoj.submit')}} </button>
 
+<p class="help-block">{{trans('wzoj.msg_problem_rejudge_helper')}}</p>
+
 </form>
 @endsection

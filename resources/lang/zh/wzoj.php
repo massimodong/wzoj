@@ -239,4 +239,6 @@ return [
     'preview' => '预览',
 
     'user_description' => '简介',
+
+    'msg_problem_rejudge_helper' => '*提交编号为 1,2,5-7,9 表示重判第1,2,5,6,7,9 题',
 ];
