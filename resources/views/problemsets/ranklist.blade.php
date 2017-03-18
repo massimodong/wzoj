@@ -93,6 +93,11 @@ jQuery(document).ready(function($) {
 	});
 
 	ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
+
+	@foreach ($solutions_judging as $solution)
+		animateJudging($('#solution-{{$solution->id}}'), fillTable);
+	@endforeach
+
 	updatePendings(ranklist_fillCell);
 });
 </script>

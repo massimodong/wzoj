@@ -135,6 +135,9 @@ jQuery(document).ready(function($) {
 		window.document.location = $(this).data("href");
 	});
 	solutions_update({{$last_solution_id}});
+	@foreach ($solutions_judging as $solution)
+		animateJudging($('#solution-{{$solution->id}}'), fillTable);
+	@endforeach
 	updatePendings(fillTable);
 });
 </script>

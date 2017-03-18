@@ -84,10 +84,13 @@ class ProblemsetController extends Controller
 			      ->groupBy(['user_id', 'problem_id']);
 		})->public()->get();
 
+		$solutions_judging = \App\Solution::where('status', SL_COMPILING)->orWhere('status', SL_RUNNING)->get(['id']);
+
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
 						'problems' => $problems,
 						'solutions'  => $solutions,
-						'last_solution_id' => $problemset->solutions()->max('id')]);
+						'last_solution_id' => $problemset->solutions()->max('id'),
+						'solutions_judging' => $solutions_judging]);
 		/*
 		switch($problemset->type){
 			case 'set':

@@ -85,7 +85,7 @@ function work( s, done){
 
 		if(s.length == 0){
 			return;
-		}else if(st == 3){
+		}else if(st == 3 || s.data('index') < testcases[0].cnt_testcases){
 			setTimeout(work.bind(this, s, done), s.data('wait_time'));
 		}else{
 			//finish running
@@ -108,8 +108,9 @@ function work( s, done){
 
 function animateJudging( s ,done){
 	//s.date('id')
+	s.data('waiting', 0);
 	s.data('t_id', 0); //last testcase_id
-	s.data('index', -1); //index of current testcase
+	s.data('index', 0); //index of current testcase
 	s.data('wait_time', 200); //time used by last testcase
 	s.data('score', 0);//score
 	s.data('ce', false);//compile error
@@ -121,7 +122,6 @@ function updatePendings( finish ){
 		$.each(data.solutions, function(key, value){
 			var id = value.id, td = $('#solution-'+id);
 			if(td.length && td.data('waiting') == 1){
-				td.data('waiting', 0);
 				animateJudging(td, finish);
 			}
 		});
