@@ -114,15 +114,13 @@ class SolutionController extends Controller
 
 	    $solutions = $solutions->where('id', '<=', $top)->public()->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
 
-	    $solutions_judging = Solution::where('status', SL_COMPILING)->orWhere('status', SL_RUNNING)->get(['id']);
 	    return view('solutions.index',['solutions' => $solutions,
 			    		'request' => $request,
 	    				'prev_url' => $prev_url,
 	    				'next_url' => $next_url,
 					'url_limits' => $url_limits,
 	    				'last_solution_id' => isset($request->top)?-1:$top,
-	    				'problemset' => $problemset,
-	    				'solutions_judging' => $solutions_judging]);
+	    				'problemset' => $problemset]);
     }
 
     /**

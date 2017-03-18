@@ -24,7 +24,7 @@
 	<th style='width:7%'>{{trans('wzoj.language')}}</th>
 	<th style='width:7%'>{{trans('wzoj.code_length')}}</th>
 	<th style='width:8%'>{{trans('wzoj.judger')}}</th>
-	<th style='width:12%'>{{trans('wzoj.judged_at')}}</th>
+	<th style='width:12%'>{{trans('wzoj.submitted_at')}}</th>
     </tr>
 </thead>
 <tbody>
@@ -55,7 +55,7 @@
 	<td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
 	<td>{{$solution->code_length}}B</td>
 	<td>{{$solution->judger?$solution->judger->fullname:""}}</td>
-	<td>{{$solution->judged_at}}</td>
+	<td>{{$solution->created_at}}</td>
     </tr>
 </tbody>
 </table>
@@ -124,10 +124,11 @@
 <script>
 $( document ).ready(function() {
 	showOrHideCode();
+
 	updatePendings(function(s){
 		fillTable(s);
 		location.reload();
-			});
+			}, "{{date('Y-m-d H:i:s')}}");
 });
 </script>
 @endsection

@@ -52,7 +52,7 @@ class Solution extends Model
 	//public part of the solutions
 	public function scopePublic($query){
 		$query->select(['id', 'user_id', 'problem_id', 'score', 'status', 'time_used', 'memory_used',
-				'language', 'code_length', 'judger_id', 'judged_at'])
+				'language', 'code_length', 'judger_id', 'judged_at', 'created_at'])
 			->addSelect(DB::raw('ce is NOT NULL as ce'))
 			->with(['user' => function($query){
 				$query->select(['id', 'name', 'fullname', 'class']);

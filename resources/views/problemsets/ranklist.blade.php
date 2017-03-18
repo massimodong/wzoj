@@ -35,7 +35,7 @@
     <div class='sortable_list_cell' style='width:10%'><strong>{{trans('wzoj.class')}}</strong></div>
     <div class='sortable_list_cell' style='width:5%'><strong>{{trans('wzoj.score')}}</strong></div>
     @foreach ($problems as $problem)
-	<div class='sortable_list_cell'><a href='/s/{{$problemset->id}}/{{$problem->id}}'><strong>{{$problem->name}}</strong></a></div>
+	<div class='sortable_list_cell'><a href='/s/{{$problemset->id}}/{{$problem->id}}' title="{{$problem->name}}"><strong>{{$problem->name}}</strong></a></div>
     @endforeach
   </li>
 </ul>
@@ -71,7 +71,7 @@ jQuery(document).ready(function($) {
 	//initiate table
 	$('#rank-table').isotope({
 		getSortData: {
-			id: '[id]',
+			id: '[data-id] parseInt',
 			score: '.rank-score parseInt',
 			penalty: function(itemElem) {
 				if(typeof $(itemElem).data('penalty') == 'undefined'){
@@ -94,11 +94,7 @@ jQuery(document).ready(function($) {
 
 	ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
 
-	@foreach ($solutions_judging as $solution)
-		animateJudging($('#solution-{{$solution->id}}'), fillTable);
-	@endforeach
-
-	updatePendings(ranklist_fillCell);
+	updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
 });
 </script>
 @endsection

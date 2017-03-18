@@ -24,22 +24,30 @@ class JudgerController extends Controller
 		return response()->json(['ok' => true]);
 	}
 	public function getPendingSolutions(Request $request){
-		//$solutions = Solution::where('status','<=',1)->take(5)->get();
-		$running_oi_contests = Problemset::where('type', 'oi')
-			->where('contest_start_at', '<', DB::raw('now()'))
-			->where('contest_end_at', '>=', DB::raw('now()'))
-			->get(['id']);
-		$running_ids = [];
-		foreach ($running_oi_contests as $problemset){
-			array_push($running_ids, $problemset->id);
-		}
+		$solutions = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
+				->where('solutions.status', '<=', 1)
+				->where(function($query){
+					$query->where('problemsets.type', '<>', 'oi')
+					      ->orWhere('solutions.problemset_id', '<', 0)
+					      ->orWhere('solutions.created_at', '<', DB::raw('problemsets.contest_start_at'))
+					      ->orWhere('solutions.created_at', '>', DB::raw('problemsets.contest_end_at'));
+						})
+				->take(5)
+				->orderBy('solutions.id','asc')
+				->select('solutions.id');
 
-		$solutions = Solution::where('status', '<=', 1)
-			->whereNotIn('problemset_id', $running_ids)
-			->take(5);
+		$solutions_oi = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
+				->where('solutions.status', '<=', 1)
+				->where('problemsets.type', 'oi')
+				->where('problemsets.contest_end_at', '<', DB::raw('now()'))
+				->where('solutions.created_at', '>=', DB::raw('problemsets.contest_start_at'))
+				->where('solutions.created_at', '<=', DB::raw('problemsets.contest_end_at'))
+				->take(5)
+				->orderBy('solutions.user_id', 'asc')
+				->select('solutions.id');
+		$solutions = $solutions->union($solutions_oi);
 
-		//todo: judge oi submissions in user_id/pivot_index order
-		$solutions = $solutions->get(["id"]);
+		$solutions = $solutions->get();
 		return response()->json($solutions);
 	}
 	public function postCheckout(Request $request){
@@ -56,6 +64,7 @@ class JudgerController extends Controller
 			$solution->ce = NULL;
 			$solution->sim_id = NULL;
 			$solution->judger_id = $request->user()->id;
+			$solution->judged_at = date('Y-m-d H:i:s');
 			$solution->save();
 
 			foreach($solution->testcases as $testcase){
@@ -106,7 +115,6 @@ class JudgerController extends Controller
 		$solution->status = $request->status;
 		$solution->score = $request->score;
 		$solution->cnt_testcases = $request->cnt_testcases;
-		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
 		return response()->json(["ok" => true]);
 	}
@@ -138,7 +146,6 @@ class JudgerController extends Controller
 		$solution->memory_used = $memory_used;
 		$solution->status = SL_JUDGED;
 		$solution->score = $score;
-		$solution->judged_at = date('Y-m-d H:i:s');
 		
 		$solution->save();
 

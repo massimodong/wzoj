@@ -91,7 +91,7 @@
 						<th style="width:16%">{{trans('wzoj.memory_used')}}</th>
 						<th style="width:11%">{{trans('wzoj.language')}}</th>
 						<th style="width:12%">{{trans('wzoj.code_length')}}</th>
-						<th style="width:19%">{{trans('wzoj.judged_at')}}</th>
+						<th style="width:19%">{{trans('wzoj.submitted_at')}}</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -104,7 +104,7 @@
 						<td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
 						<td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
 						<td>{{$solution->code_length}}B</td>
-						<td>{{$solution->judged_at}}</td>
+						<td>{{$solution->created_at}}</td>
 					</tr>
 					@endforeach
 				</tbody>

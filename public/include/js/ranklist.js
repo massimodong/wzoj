@@ -6,11 +6,12 @@ function ranklist_addRow(user){
 
 	var row = $(user_template);
 	row.attr('id', 'user-' + user.id);
+	row.attr('data-id', user.id);
 
 	$('#rank-table').append(row)
 		.isotope('appended', row);
 
-	$('#user-' + user.id + ' .rank-user').html(user.name);
+	$('#user-' + user.id + ' .rank-user').html("<a href='/users/" + user.id + "'>" + user.name + "</a>");
 	$('#user-' + user.id + ' .rank-class').html(user.class);
 	$('#user-' + user.id + ' .rank-score').html(0);
 
@@ -65,7 +66,7 @@ function ranklist_addSolution(solution){
 }
 
 function ranklist_updateSolutions(problemset_id, last_solution_id){
-	$.get('/ajax/problemset-solutions',{
+	$.get('/ajax/contest-solutions',{
 		problemset_id: problemset_id,
 		top: last_solution_id
 	})

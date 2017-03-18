@@ -58,6 +58,7 @@ return [
     'judger' => '评测机',
     'sim' => '相似代码',
     'judged_at' => '评测时间',
+    'submitted_at' => '提交时间',
     'solution_status_0' => '等待评测',
     'solution_status_1' => '等待重测',
     'solution_status_2' => '正在编译',

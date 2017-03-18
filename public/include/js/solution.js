@@ -117,15 +117,16 @@ function animateJudging( s ,done){
 	work(s, done);
 }
 
-function updatePendings( finish ){
-	$.get('/ajax/solutions-judging').done(function(data){
+function updatePendings( finish , last_time){
+	$.get('/ajax/solutions-judging', {last_time: last_time}).done(function(data){
 		$.each(data.solutions, function(key, value){
+			last_time = value.judged_at;
 			var id = value.id, td = $('#solution-'+id);
 			if(td.length && td.data('waiting') == 1){
 				animateJudging(td, finish);
 			}
 		});
-		setTimeout(updatePendings.bind(this, finish), 500);
+		setTimeout(updatePendings.bind(this, finish, last_time), 500);
 	});
 }
 
@@ -148,7 +149,7 @@ function fillTable( s ){
 			$('#' + id + ' .solution-judger').text(data.judger.fullname);
 		}
 
-		$('#' + id + ' .solution-judgedat').text(data.judged_at);
+		$('#' + id + ' .solution-submitted_at').text(data.created_at);
 	})
 }
 
@@ -189,7 +190,7 @@ function solutions_update(last_solution_id){
 			row.append("<td>" + solution.code_length +"B</td>");
 
 			row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.fullname:"") + "</td>");
-			row.append("<td class='solution-judgedat'>" + solution.judged_at + "</td>");
+			row.append("<td class='solution-submitted_at'>" + solution.created_at + "</td>");
 
 			$('#solutions-tbody').prepend(row);
 

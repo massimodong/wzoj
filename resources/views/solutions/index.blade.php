@@ -74,7 +74,7 @@
 	<th style='width:7%'>{{trans('wzoj.language')}}</th>
 	<th style='width:7%'>{{trans('wzoj.code_length')}}</th>
 	<th style='width:8%'>{{trans('wzoj.judger')}}</th>
-	<th style='width:12%'>{{trans('wzoj.judged_at')}}</th>
+	<th style='width:12%'>{{trans('wzoj.submitted_at')}}</th>
     </tr>
 </thead>
 <tbody id='solutions-tbody'>
@@ -101,7 +101,7 @@
 	<td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
 	<td>{{$solution->code_length}}B</td>
 	<td class='solution-judger'>{{$solution->judger?$solution->judger->fullname:""}}</td>
-	<td class='solution-judgedat'>{{$solution->judged_at}}</td>
+	<td class='solution-submitted_at'>{{$solution->created_at}}</td>
     </tr>
 @endforeach
 </tbody>
@@ -135,10 +135,7 @@ jQuery(document).ready(function($) {
 		window.document.location = $(this).data("href");
 	});
 	solutions_update({{$last_solution_id}});
-	@foreach ($solutions_judging as $solution)
-		animateJudging($('#solution-{{$solution->id}}'), fillTable);
-	@endforeach
-	updatePendings(fillTable);
+	updatePendings(fillTable, "{{date('Y-m-d H:i:s')}}");
 });
 </script>
 @endsection

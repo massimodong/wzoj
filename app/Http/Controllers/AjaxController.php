@@ -72,18 +72,25 @@ class AjaxController extends Controller
 					 'judged_at' => $solution->judged_at]);
 	}
 
-	public function getSolutionsJudging(){
-		$solutions = \App\Solution::where('status', SL_COMPILING)->orWhere('status', SL_RUNNING)->get(['id']);
+	public function getSolutionsJudging(Request $request){
+		$this->validate($request, [
+			'last_time' => 'required|date',
+		]);
+		$solutions = \App\Solution::where('judged_at', '>', $request->last_time)
+					->orderBy('judged_at', 'asc')
+					->get(['id', 'judged_at']);
 		return response()->json(['solutions' => $solutions]);
 	}
 
-	public function getProblemsetSolutions(Request $request){
+	public function getContestSolutions(Request $request){
 		$this->validate($request, [
 			'problemset_id' => 'required|integer',
 			'top' => 'required|integer',
 		]);
 		$problemset = \App\Problemset::findOrFail($request->problemset_id);
 		$solutions = $problemset->solutions()->where('id', '>', $request->top)
+			->where('created_at', '>=', $problemset->contest_start_at)
+			->where('created_at', '<=', $problemset->contest_end_at)
 			->public()
 			->get();
 		return response()->json(['solutions' => $solutions]);

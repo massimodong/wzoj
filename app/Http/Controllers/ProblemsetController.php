@@ -77,20 +77,19 @@ class ProblemsetController extends Controller
 		//ranklist requires no authorization
 
 		//Pick the last solution for each user/problem
-		$solutions = \App\Solution::whereIn('id', function($query) use($psid){
+		$solutions = \App\Solution::whereIn('id', function($query) use($psid, $problemset){
 			$query->select(DB::raw('MAX(id) as id'))
 			      ->from(with(new \App\Solution)->getTable())
 			      ->where('problemset_id', $psid)
+			      ->where('created_at', '>=', $problemset->contest_start_at)
+			      ->where('created_at', '<=', $problemset->contest_end_at)
 			      ->groupBy(['user_id', 'problem_id']);
 		})->public()->get();
-
-		$solutions_judging = \App\Solution::where('status', SL_COMPILING)->orWhere('status', SL_RUNNING)->get(['id']);
 
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
 						'problems' => $problems,
 						'solutions'  => $solutions,
-						'last_solution_id' => $problemset->solutions()->max('id'),
-						'solutions_judging' => $solutions_judging]);
+						'last_solution_id' => $problemset->solutions()->max('id')]);
 		/*
 		switch($problemset->type){
 			case 'set':
