@@ -87,6 +87,10 @@ class SolutionController extends Controller
 		    $solutions = $solutions->where('language', $request->language);
 		    $url_limits.='&language='.$request->language;
 	    }
+	    if(isset($request->status) && $request->status <> ''){
+		    $solutions = $solutions->where('status', $request->status);
+		    $url_limits.='&status='.$request->status;
+	    }
 	    //limits end
 
 	    //get prev top

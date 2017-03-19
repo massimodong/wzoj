@@ -66,6 +66,9 @@
                     <li id='problems_sidebar'>
                         <a href="/admin/problems"> {{trans('wzoj.problems')}} </a>
                     </li>
+		    <li id='problemsets_sidebar'>
+		    	<a href="/s"> {{trans('wzoj.problemsets')}} </a>
+		    </li>
                     <li id='import-problems_sidebar'>
                         <a href="/admin/import-problems"> {{trans('wzoj.import_problems')}} </a>
                     </li>

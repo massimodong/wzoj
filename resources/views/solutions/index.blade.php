@@ -40,6 +40,15 @@
       <option value="4" {{$request->language=='4'?"selected":""}}>Python</option>
     </select>
   </div>
+  <div class="form-group">
+    <label for="status">{{trans('wzoj.status')}}</label>
+    <select class="form-control" id="status" name="status">
+      <option value=""></option>
+      @for ($i=0;$i<=4;++$i)
+        <option value="{{$i}}" {{$request->status==strval($i)?"selected":""}}>{{trans('wzoj.solution_status_'.$i)}}</option>
+      @endfor
+    </select>
+  </div>
   <button type="submit" class="btn btn-default">{{trans('wzoj.search')}}</button>
 </form></center>
 
