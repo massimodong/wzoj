@@ -64,7 +64,6 @@ class JudgerController extends Controller
 			$solution->ce = NULL;
 			$solution->sim_id = NULL;
 			$solution->judger_id = $request->user()->id;
-			$solution->judged_at = date('Y-m-d H:i:s');
 			$solution->save();
 
 			foreach($solution->testcases as $testcase){
@@ -146,6 +145,7 @@ class JudgerController extends Controller
 		$solution->memory_used = $memory_used;
 		$solution->status = SL_JUDGED;
 		$solution->score = $score;
+		$solution->judged_at = date('Y-m-d H:i:s');
 		
 		$solution->save();
 

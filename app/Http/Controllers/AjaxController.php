@@ -76,10 +76,14 @@ class AjaxController extends Controller
 		$this->validate($request, [
 			'last_time' => 'required|date',
 		]);
-		$solutions = \App\Solution::where('judged_at', '>', $request->last_time)
-					->orderBy('judged_at', 'asc')
-					->get(['id', 'judged_at']);
-		return response()->json(['solutions' => $solutions]);
+		$solutions_judging = \App\Solution::where('status', SL_COMPILING)
+						->orWhere('status', SL_RUNNING)
+						->select('id');
+		$solutions = \App\Solution::where('judged_at', '>=', $request->last_time)
+						->select('id')
+						->union($solutions_judging)
+						->get();
+		return response()->json(['solutions' => $solutions, 'cur_time' => date('Y-m-d H:i:s')]);
 	}
 
 	public function getContestSolutions(Request $request){

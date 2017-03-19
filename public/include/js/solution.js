@@ -98,10 +98,6 @@ function work( s, done){
 				s.data('ce', true);
 			}
 			s.data('score', solution[0].score);
-
-			if(typeof s.data('waiting') == 'undefined' || s.data('waiting') == 0){
-				s.data('waiting', 1);
-			}
 		}
 	});
 }
@@ -120,13 +116,12 @@ function animateJudging( s ,done){
 function updatePendings( finish , last_time){
 	$.get('/ajax/solutions-judging', {last_time: last_time}).done(function(data){
 		$.each(data.solutions, function(key, value){
-			last_time = value.judged_at;
 			var id = value.id, td = $('#solution-'+id);
 			if(td.length && td.data('waiting') == 1){
 				animateJudging(td, finish);
 			}
 		});
-		setTimeout(updatePendings.bind(this, finish, last_time), 500);
+		setTimeout(updatePendings.bind(this, finish, data.cur_time), 500);
 	});
 }
 
