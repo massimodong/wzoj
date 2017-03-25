@@ -9,7 +9,7 @@
 <!-- width for each problem -->
 <style>
 .sortable_list .sortable_list_cell{
-  width: {{(100.0 - 25.0)/count($problems)}}%;
+  width: {{(100.0 - 35.0)/count($problems)}}%;
 }
 </style>
 @endsection
@@ -32,6 +32,7 @@
 <ul class='sortable_list'>
   <li class='col-xs-12'>
     <div class='sortable_list_cell' style='width:10%'><strong>{{trans('wzoj.user')}}</strong></div>
+    <div class='sortable_list_cell' style='width:10%'><strong>{{trans('wzoj.fullname')}}</strong></div>
     <div class='sortable_list_cell' style='width:10%'><strong>{{trans('wzoj.class')}}</strong></div>
     <div class='sortable_list_cell' style='width:5%'><strong>{{trans('wzoj.score')}}</strong></div>
     @foreach ($problems as $problem)
@@ -50,6 +51,7 @@
 //define template
 var user_template = "<li class='col-xs-12'>" +
 			"<div class='rank-user sortable_list_cell' style='width:10%'></div>" +
+			"<div class='rank-fullname sortable_list_cell' style='width:10%'></div>" +
 			"<div class='rank-class sortable_list_cell' style='width:10%'></div>" +
 			"<div class='rank-score sortable_list_cell' style='width:5%'></div>";
 			@foreach ($problems as $problem)

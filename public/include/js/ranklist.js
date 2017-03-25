@@ -12,6 +12,7 @@ function ranklist_addRow(user){
 		.isotope('appended', row);
 
 	$('#user-' + user.id + ' .rank-user').html("<a href='/users/" + user.id + "'>" + user.name + "</a>");
+	$('#user-' + user.id + ' .rank-fullname').html(user.fullname);
 	$('#user-' + user.id + ' .rank-class').html(user.class);
 	$('#user-' + user.id + ' .rank-score').html(0);
 
@@ -58,8 +59,6 @@ function ranklist_addSolution(solution){
 
 	if(solution.status == 4){
 		ranklist_updateScore(row, ps, solution.score);
-	}else{
-		ranklist_updateScore(row, ps, 0);
 	}
 
 	if(solution.status == 4) ranklist_setColor(ps);

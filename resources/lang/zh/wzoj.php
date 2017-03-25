@@ -95,7 +95,7 @@ return [
     'problem_type_set' => '题目集合',
     'problem_type_oi' => 'OI比赛',
     'problem_type_acm' => 'ACM比赛',
-    'problem_type_apio' => 'APIO',
+    'problem_type_apio' => 'APIO赛制比赛',
 
     'problem_type_1' => '传统题',
     'problem_type_2' => '交互题',

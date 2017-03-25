@@ -15,10 +15,10 @@
 
 <div id="home" class="tab-pane fade in active">
   {!! Purifier::clean($problemset->description) !!}
-  <center><p>
+  <p>
   <span style="color:#00CC00">{{trans('wzoj.contest_start_at')}}:{{$problemset->contest_start_at}}</span><br>
   <span style="color:#FF0000">{{trans('wzoj.contest_end_at')}}:{{$problemset->contest_end_at}}</span>
-  </p></center>
+  </p>
 
   <table class="table table-striped">
   <thead>
