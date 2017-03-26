@@ -32,9 +32,10 @@ class JudgerController extends Controller
 					      ->orWhere('solutions.created_at', '<', DB::raw('problemsets.contest_start_at'))
 					      ->orWhere('solutions.created_at', '>', DB::raw('problemsets.contest_end_at'));
 						})
-				->take(5)
+				->take(200)
 				->orderBy('solutions.id','asc')
-				->select('solutions.id');
+				->groupBy('solutions.user_id')
+				->select(DB::raw('MIN(solutions.id) as id'));
 
 		$solutions_oi = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
 				->where('solutions.status', '<=', 1)
