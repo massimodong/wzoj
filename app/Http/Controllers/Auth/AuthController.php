@@ -51,6 +51,7 @@ class AuthController extends Controller
 	    'class' => 'max:255',
 	    'token' => 'required|invitation',
             'password' => 'required|confirmed|min:6',
+	    'captcha' => 'required|captcha',
         ]);
     }
 

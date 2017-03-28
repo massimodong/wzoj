@@ -15,7 +15,7 @@ return [
     'or' => '或',
     'auto' => '自动',
 
-    'class' => '班级',
+    'class' => '学校',
     'home' => '主页',
     'problemset' => '题库',
     'problemsets' => '题库',
@@ -154,9 +154,9 @@ return [
     'homeworks' => '作业',
     'help' => '帮助',
     'lock_fullname' => '锁定姓名',
-    'lock_class' => '锁定班级',
+    'lock_class' => '锁定学校',
     'unlock_fullname' => '取消锁定姓名',
-    'unlock_class' => '取消锁定班级',
+    'unlock_class' => '取消锁定学校',
 
     'count_submit' => '提交数',
     'count_ac' => '通过数',
