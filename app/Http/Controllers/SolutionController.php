@@ -149,17 +149,17 @@ class SolutionController extends Controller
 	    $cnt_minute_solutions = $user->solutions()
 		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 minute')))
 		    ->count();
-	    if($cnt_minute_solutions >= 20) $user->isbot(50);
+	    if($cnt_minute_solutions >= 20) $user->isbot(100);
 
 	    $cnt_hour_solutions = $user->solutions()
 		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 hour')))
 		    ->count();
-	    if($cnt_hour_solutions >= 60) $user->isbot(20);
+	    if($cnt_hour_solutions >= 60) $user->isbot(50);
 
 	    $cnt_day_solutions = $user->solutions()
 		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 day')))
 		    ->count();
-	    if($cnt_day_solutions >= 240) $user->isbot(10);
+	    if($cnt_day_solutions >= 240) $user->isbot(25);
     }
 
     /**

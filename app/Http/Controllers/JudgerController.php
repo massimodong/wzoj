@@ -25,6 +25,8 @@ class JudgerController extends Controller
 	}
 	public function getPendingSolutions(Request $request){
 		$solutions = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
+				->leftJoin('users', 'solutions.user_id', '=', 'users.id')
+				->where('users.bot_tendency', '<', 100)
 				->where('solutions.status', '<=', 1)
 				->where(function($query){
 					$query->where('problemsets.type', '<>', 'oi')
