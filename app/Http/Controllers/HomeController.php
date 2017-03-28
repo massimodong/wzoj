@@ -10,6 +10,7 @@ use App\User;
 
 use Lang;
 use Gate;
+use Auth;
 
 class HomeController extends Controller
 {
@@ -47,5 +48,22 @@ class HomeController extends Controller
 				'start_rank' => ($page-1) * self::USER_LIMIT,
 				'cur_page' => $page,
 				'max_page' => (User::count()-1) / self::USER_LIMIT + 1]);
+	}
+
+	public function getSorry(Request $request){
+		if((!Auth::check()) || $request->user()->bot_tendency < 100){
+			return redirect('/');
+		}
+		\Session::put('url.intended', \URL::previous());
+		return view('sorry');
+	}
+
+	public function postSorry(Request $request){
+		if(!(Auth::check())) return redirect('/');
+		$this->validate($request,[
+			'captcha' => 'required|captcha']);
+		\App\User::where('id', $request->user()->id)
+			->update(['bot_tendency' => 0]);
+		return redirect()->intended('/');
 	}
 }

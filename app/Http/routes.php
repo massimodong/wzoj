@@ -14,6 +14,8 @@
 Route::get('/','HomeController@index');
 Route::get('faq', 'HomeController@faq');
 Route::get('ranklist', 'HomeController@ranklist');
+Route::get('sorry', 'HomeController@getSorry');
+Route::post('sorry', 'HomeController@postSorry');
 
 // auth
 Route::get('auth/login', 'Auth\AuthController@getLogin');
