@@ -85,4 +85,8 @@ class User extends Model implements AuthenticatableContract,
 				  ->where('role_id', 1);//role_id 1 must be admin
 		});
     }
+
+    public function isbot($v){
+	    User::where('id', $this->id)->increment('bot_tendency', $v);
+    }
 }

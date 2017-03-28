@@ -138,6 +138,31 @@ class SolutionController extends Controller
     }
 
     /**
+     * Check if the solution is posted by a bot
+     */
+    private function bot_check($user){
+	    $cnt_second_solutions = $user->solutions()
+		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 second')))
+		    ->count();
+	    if($cnt_second_solutions >= 3) $user->isbot(1000);
+
+	    $cnt_minute_solutions = $user->solutions()
+		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 minute')))
+		    ->count();
+	    if($cnt_minute_solutions >= 20) $user->isbot(50);
+
+	    $cnt_hour_solutions = $user->solutions()
+		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 hour')))
+		    ->count();
+	    if($cnt_hour_solutions >= 60) $user->isbot(20);
+
+	    $cnt_day_solutions = $user->solutions()
+		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 day')))
+		    ->count();
+	    if($cnt_day_solutions >= 240) $user->isbot(10);
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -168,11 +193,9 @@ class SolutionController extends Controller
 			    ->withErrors(trans('wzoj.code_too_short'))
 			    ->withInput();
 	    }
+	    $solution_meta["code_length"] = strlen($solution_meta["code"]);
 
 	    $solution = $request->user()->solutions()->create($solution_meta);
-
-	    $solution->code_length = strlen($solution->code);
-	    $solution->save();
 
 	    $request->user()->answerfiles()
 		    ->where('problemset_id', $request->problemset_id)
@@ -181,6 +204,8 @@ class SolutionController extends Controller
 				'user_id' => 0,
 		    		'problemset_id' => 0,
 		    		'problem_id' => 0]);
+
+	    $this->bot_check($request->user());
 
 	    return redirect('/solutions/'.$solution->id);
     }
