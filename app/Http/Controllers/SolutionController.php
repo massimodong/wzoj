@@ -144,7 +144,7 @@ class SolutionController extends Controller
 	    $cnt_second_solutions = $user->solutions()
 		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 second')))
 		    ->count();
-	    if($cnt_second_solutions >= 3) $user->isbot(1000);
+	    if($cnt_second_solutions >= 3) $user->isbot(500);
 
 	    $cnt_minute_solutions = $user->solutions()
 		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 minute')))
