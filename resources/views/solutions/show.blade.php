@@ -54,7 +54,7 @@
 	<td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
 	<td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
 	<td>{{$solution->code_length}}B</td>
-	<td>{{$solution->judger?$solution->judger->fullname:""}}</td>
+	<td>{{$solution->judger?$solution->judger->name:""}}</td>
 	<td>{{$solution->created_at}}</td>
     </tr>
 </tbody>

@@ -5,6 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
+use App\Judger;
+
 class VerifyIfJudger
 {
     /**
@@ -34,18 +36,14 @@ class VerifyIfJudger
      */
     public function handle($request, Closure $next)
     {
-	    if ($this->auth->guest()) {
-		    if ($request->ajax()) {
-			    return response('Unauthorized.', 401);
-		    } else {
-			    return redirect()->guest('auth/login');
-		    }
+	    if(!isset($request->judger_token)){
+		    return response('Need Token', 401);
 	    }
-
-	    if($this->auth->user()->has_role('judger') || $this->auth->user()->has_role('admin')){
-	    	return $next($request);
-	    }else{
-		return response('Unauthorized.', 401);
+	    $judger = Judger::where('token', $request->judger_token)->first();
+	    if($judger == NULL){
+		    return response('Invalid Token', 401);
 	    }
+	    $request->attributes->add(['judger' => $judger]);
+	    return $next($request);
     }
 }

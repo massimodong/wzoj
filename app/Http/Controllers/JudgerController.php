@@ -17,7 +17,6 @@ use App\Testcase;
 class JudgerController extends Controller
 {
 	public function __construct(){
-		$this->middleware('auth');
 		$this->middleware('judger');
 	}
 	public function getIndex(){
@@ -66,7 +65,7 @@ class JudgerController extends Controller
 			$solution->score = 0;
 			$solution->ce = NULL;
 			$solution->sim_id = NULL;
-			$solution->judger_id = $request->user()->id;
+			$solution->judger_id = \Request::get('judger')->id;
 			$solution->save();
 
 			foreach($solution->testcases as $testcase){
@@ -155,7 +154,7 @@ class JudgerController extends Controller
 		$solution->user->update_cnt_ac();
 	}
 	public function postPostTestcase(Request $request){
-		$testcase = Testcase::create($request->all());
+		$testcase = Testcase::create($request->except('judger_token'));
 	}
 
 	public function getGetAnswer(Request $request){
