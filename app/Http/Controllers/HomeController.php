@@ -16,7 +16,8 @@ class HomeController extends Controller
 {
 	const USER_LIMIT = 100;
 	public function index(){
-		$recent_problemsets = \App\Problemset::orderBy('updated_at', 'desc')->take(6)->get();
+		$recent_problemsets = \App\Problemset::where('type', '=', 'set')->orderBy('updated_at', 'desc')->take(6)->get();
+		$recent_contests = \App\Problemset::where('type','<>', 'set')->orderBy('contest_start_at', 'desc')->take(6)->get();
 		$home_page_problemsets=[];
 		foreach($recent_problemsets as $problemset){
 			if($problemset->public || Gate::allows('view',$problemset)){
@@ -28,6 +29,7 @@ class HomeController extends Controller
 
 		return view('home',[
 			'home_page_problemsets' => $home_page_problemsets,
+			'recent_contests' => $recent_contests,
 			'top_users' => $top_users]);
 	}
 	public function faq(){

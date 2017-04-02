@@ -19,7 +19,7 @@ class ProblemsetController extends Controller
 {
 	const PAGE_LIMIT = 100;
 	public function getIndex(){
-		$allproblemsets = Problemset::all();
+		$allproblemsets = Problemset::where('type', '=', 'set')->get();
 		$problemsets=[];
 		foreach($allproblemsets as $problemset){
 			if($problemset->public || Gate::allows('view',$problemset)){
@@ -27,6 +27,10 @@ class ProblemsetController extends Controller
 			}
 		}
 		return view('problemsets.index',['problemsets' => $problemsets]);
+	}
+	public function getContestsIndex(){
+		$contests = Problemset::where('type', '<>', 'set')->orderBy('contest_start_at', 'desc')->get();
+		return view('problemsets.contests',['problemsets' => $contests]);
 	}
 
 	public function getProblemset($psid,Request $request){

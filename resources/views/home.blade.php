@@ -13,12 +13,7 @@
         <div class="row">
           <div class="col-xs-12">
             <div style="padding: 9px;min-height: 130px;">
-	      <small class="pull-right">{{trans('wzoj.problem_type_'.$problemset->type)}}</small>
               <div class="dock-heading">{{$problemset->name}}</div>
-	      @if ($problemset->type <> 'set')
-	      	{{$problemset->contest_start_at}} - <br>
-		{{$problemset->contest_end_at}} <br>
-	      @endif
   		{!! Purifier::clean($problemset->description) !!}
 	    </div>
           </div>
@@ -26,6 +21,17 @@
       </div>
     </div>
   @endforeach
+  </div>
+  <div class="col-xs-12">
+    <h3>{{trans('wzoj.recent_contests')}}</h3>
+    <ul class="list-group">
+      @foreach ($recent_contests as $problemset)
+	<li class="list-group-item row">
+	  <div class="col-xs-5"><a href="/s/{{$problemset->id}}">{{$problemset->name}}</a></div>
+	  <div class="col-xs-7">{{$problemset->contest_start_at}} - {{$problemset->contest_end_at}} {{trans('wzoj.problem_type_'.$problemset->type)}}</div>
+	</li>
+      @endforeach
+    </ul>
   </div>
   <div class="col-xs-12">
     <h3>{{trans('wzoj.user_rank_list')}}</h3>
