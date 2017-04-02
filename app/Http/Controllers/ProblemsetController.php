@@ -77,6 +77,10 @@ class ProblemsetController extends Controller
 
 	public function getRanklist($psid, Request $request){
 		$problemset = Problemset::findOrFail($psid);
+		if($problemset->type == 'set' || time() < strtotime($problemset->contest_start_at)){
+			//if not contest or contest not started
+			return back();
+		}
 		$problems = $problemset->problems()->orderByIndex()->get();
 		//ranklist requires no authorization
 
