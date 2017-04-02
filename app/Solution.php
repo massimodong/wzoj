@@ -30,7 +30,7 @@ class Solution extends Model
 	}
 
 	public function judger(){
-		return $this->belongsTo('App\User', 'judger_id');
+		return $this->belongsTo('App\Judger');
 	}
 
 	public function problemset(){
@@ -61,7 +61,7 @@ class Solution extends Model
 				$query->select(['id', 'name']);
 			  }])
 			->with(['judger' => function($query){
-				$query->select(['id', 'name', 'fullname', 'class']);
+				$query->select(['id', 'name']);
 			  }]);
 	}
 }

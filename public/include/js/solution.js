@@ -141,7 +141,7 @@ function fillTable( s ){
 		$('#' + id + ' .solution-memoryused').text(m.toFixed(2) + 'MB');
 
 		if(data.judger){
-			$('#' + id + ' .solution-judger').text(data.judger.fullname);
+			$('#' + id + ' .solution-judger').text(data.judger.name);
 		}
 
 		$('#' + id + ' .solution-submitted_at').text(data.created_at);
@@ -184,7 +184,7 @@ function solutions_update(last_solution_id){
 			row.append("<td>" + LANG[solution.language] + "</td>");
 			row.append("<td>" + solution.code_length +"B</td>");
 
-			row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.fullname:"") + "</td>");
+			row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.name:"") + "</td>");
 			row.append("<td class='solution-submitted_at'>" + solution.created_at + "</td>");
 
 			$('#solutions-tbody').prepend(row);
