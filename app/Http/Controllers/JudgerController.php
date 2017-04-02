@@ -23,6 +23,9 @@ class JudgerController extends Controller
 		return response()->json(['ok' => true]);
 	}
 	public function getPendingSolutions(Request $request){
+		if(!(Solution::where('status', '<=', 1)->count())){
+			return response()->json([]);
+		}
 		$solutions = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
 				->leftJoin('users', 'solutions.user_id', '=', 'users.id')
 				->where('users.bot_tendency', '<', 100)
