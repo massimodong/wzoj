@@ -125,28 +125,7 @@ class JudgerController extends Controller
 		]);
 		$solution = Solution::findOrFail($request->solution_id);
 
-		$cnt_testcases = 0;
-		$time_used = 0;
-		$memory_used = 0;
-		$score = 0;
-
-		foreach($solution->testcases as $testcase){
-			++$cnt_testcases;
-			$time_used = max($time_used, $testcase->time_used);
-			$memory_used = max($memory_used, $testcase->memory_used);
-			$score += $testcase->score;
-		}
-
-		if($cnt_testcases){
-			$score /= $cnt_testcases;
-		}else{
-			$score = 0;
-		}
-
-		$solution->time_used = $time_used;
-		$solution->memory_used = $memory_used;
 		$solution->status = SL_JUDGED;
-		$solution->score = $score;
 		$solution->judged_at = date('Y-m-d H:i:s');
 		
 		$solution->save();
