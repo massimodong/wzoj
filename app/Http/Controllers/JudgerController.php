@@ -59,19 +59,28 @@ class JudgerController extends Controller
 		$solution = Solution::find($request->solution_id);
 		if($solution == NULL) return response()->json(["ok" => false]);
 		if($solution->status <= 1 || $request->force === "true"){
-			$solution->time_used = 0;
-			$solution->memory_used = 0.0;
-			$solution->status = SL_COMPILING;
-			$solution->score = 0;
-			$solution->ce = NULL;
-			$solution->sim_id = NULL;
-			$solution->judger_id = \Request::get('judger')->id;
-			$solution->save();
-
-			foreach($solution->testcases as $testcase){
-				$testcase->delete();
+			$query = Solution::where('id', $solution->id);
+			if(!$request->force){
+				$query = $query->where('status', '<=', 1);
 			}
-			return response()->json(["ok" => true]);
+			$ok = $query->update([
+				'time_used' => 0,
+				'memory_used' => 0.0,
+				'status' => SL_COMPILING,
+				'score' => 0,
+				'ce' => NULL,
+				'sim_id' => NULL,
+				'judger_id' => \Request::get('judger')->id,
+			]);
+
+			if($ok){
+				foreach($solution->testcases as $testcase){
+					$testcase->delete();
+				}
+				return response()->json(["ok" => true]);
+			}else{
+				return response()->json(["ok" => false]);
+			}
 		}else{
 			return response()->json(["ok" => false]);
 		}
