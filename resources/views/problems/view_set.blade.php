@@ -122,7 +122,7 @@ function detectLanguage(){
 @if ($problem->type == 3)
 	<script>
 	$('#answerfile').fileinput({
-		'uploadUrl': "/ajax/submit-answerfile",
+		'uploadUrl': "/solutions/answerfile",
 		'uploadExtraData': {
 			_token: csrf_token,
 			problemset_id: {{$problemset->id}},

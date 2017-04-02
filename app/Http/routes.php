@@ -61,9 +61,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::post('s/{psid}/groups','ProblemsetController@postGroup');
 		Route::delete('s/{psid}/groups/{gid}','ProblemsetController@deleteGroup');
 
+		Route::post('solutions/answerfile', 'SolutionController@postSubmitAnswerfile');
 		Route::resource('solutions','SolutionController');
-
-		Route::controller('ajax','AjaxController');
 
 		Route::get('files/{user_id}/{name}','FileController@showfile');
 		Route::resource('files','FileController');
@@ -117,3 +116,4 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 });
 
 Route::controller('judger','JudgerController');
+Route::controller('ajax','AjaxController');

@@ -11,6 +11,8 @@ use App\Problem;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Storage;
+
 class SolutionController extends Controller
 {
     /**
@@ -256,5 +258,53 @@ class SolutionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function postSubmitAnswerfile(Request $request){
+	    $problemset = \App\Problemset::findOrFail($request->problemset_id);
+	    $this->authorize('view',$problemset);
+	    $this->validate($request,[
+			    'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
+			    'answerfile' => 'required',
+	    ]);
+
+	    if(!ojCanViewProblems($problemset)){
+		    return back();
+	    }
+
+	    //check if is problem type 3
+	    $problem = $problemset->problems()->findOrFail($request->problem_id);
+	    if($problem->type <> 3){
+		    return response()->json(['error' => trans('wzoj.problem_not_type3')]);
+	    }
+
+	    $pinfo = pathinfo($request->file('answerfile')->getClientOriginalName());
+	    $filename = $pinfo['filename'];
+	    //check filename
+	    if($pinfo['extension'] <> 'out'){
+		    return response()->json(['error' => trans('wzoj.not_out_file')]);
+	    }
+	    if(!Storage::disk('data')->has('/'.$problem->id.'/'.$filename.'.in')){
+		    return response()->json(['error' => trans('wzoj.invalid_file')]);
+	    }
+
+	    $answerfile = $request->user()->answerfiles()
+		    ->where('problemset_id', $request->problemset_id)
+		    ->where('problem_id', $request->problem_id)
+		    ->where('filename', $filename)
+		    ->first();
+	    if($answerfile == NULL){
+		    $answerfile = $request->user()->answerfiles()->create([
+				    'problemset_id' => $request->problemset_id,
+				    'problem_id' => $request->problem_id,
+				    'filename' => $filename,
+		    ]);
+	    }
+
+	    $answerfile->answer = file_get_contents($request->file('answerfile')->getRealPath());
+	    $answerfile->save();
+
+	    $ret=[];
+	    return response()->json($ret);
     }
 }
