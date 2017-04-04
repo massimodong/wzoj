@@ -19,12 +19,10 @@ class BlockIfBot
 	    if(!(Auth::check())) return $next($request);
 	    $user = Auth::user();
 	    if($user->bot_tendency >= 1000){ //Definitely a bot, ban user
-		    $user->password = '';
-		    $user->save();
 		    Auth::logout();
 		    return redirect('/');
 	    }else if($user->bot_tendency >= 100){ //block request
-		    if($request->path() === 'sorry' || $request->path() === 'captcha/default') return $next($request);
+		    if($request->path() === 'sorry' || $request->path() === '_captcha/default') return $next($request);
 		    else{
 			    $user->isbot(10);
 			    return redirect('/sorry');

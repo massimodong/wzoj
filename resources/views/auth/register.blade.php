@@ -70,7 +70,7 @@
          name="captcha" placehold="{{trans('wzoj.captcha')}}" value="" required>
     </div>
     <div class="col-xs-6">
-	<img src="{{captcha_src()}}" id="captchaImage" alt="captcha"
+	<img src="/_captcha/default?{{rand()}}" id="captchaImage" alt="captcha"
 	  class="img-thumbnail" onclick="changeCaptcha()"></p>
     </div>
   </div>

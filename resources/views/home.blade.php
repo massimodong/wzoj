@@ -27,8 +27,8 @@
     <ul class="list-group">
       @foreach ($recent_contests as $problemset)
 	<li class="list-group-item row">
-	  <div class="col-xs-5"><a href="/s/{{$problemset->id}}">{{$problemset->name}}</a></div>
-	  <div class="col-xs-7">{{$problemset->contest_start_at}} - {{$problemset->contest_end_at}} {{trans('wzoj.problem_type_'.$problemset->type)}}</div>
+	  <div class="col-xs-4"><a href="/s/{{$problemset->id}}">{{$problemset->name}}</a></div>
+	  <div class="col-xs-8">{{$problemset->contest_start_at}} - {{$problemset->contest_end_at}} {{trans('wzoj.problem_type_'.$problemset->type)}}</div>
 	</li>
       @endforeach
     </ul>

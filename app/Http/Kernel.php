@@ -13,7 +13,6 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        \App\Http\Middleware\BlockIfBot::class,
     ];
 
     /**
@@ -27,6 +26,7 @@ class Kernel extends HttpKernel
         'session' => \Illuminate\Session\Middleware\StartSession::class,
         'session_errors' => \Illuminate\View\Middleware\ShareErrorsFromSession::class,
         'csrf' => \App\Http\Middleware\VerifyCsrfToken::class,
+        'antibot' => \App\Http\Middleware\BlockIfBot::class,
 	
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,

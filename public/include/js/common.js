@@ -18,7 +18,7 @@ function alertEach(key, message){
 }
 
 function changeCaptcha(){
-	document.getElementById('captchaImage').src="/captcha/default?"+Date.now();
+	document.getElementById('captchaImage').src="/_captcha/default?"+Date.now();
 }
 
 

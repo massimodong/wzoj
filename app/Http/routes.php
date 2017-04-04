@@ -11,7 +11,7 @@
 |
 */
 
-Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_errors', 'csrf']], function(){
+Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_errors', 'csrf', 'antibot']], function(){
 
 		Route::get('/','HomeController@index');
 		Route::get('faq', 'HomeController@faq');
@@ -69,6 +69,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('files/{user_id}/{name}','FileController@showfile');
 		Route::resource('files','FileController');
 
+		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
 		Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 				Route::get('/', 'AdminHomeController@index');
 				Route::post('options','AdminHomeController@postOptions');
