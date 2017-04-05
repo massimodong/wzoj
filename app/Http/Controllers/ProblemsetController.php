@@ -9,6 +9,7 @@ use Validator;
 
 use DB;
 use App\Problemset;
+use App\Solution;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -85,14 +86,16 @@ class ProblemsetController extends Controller
 		//ranklist requires no authorization
 
 		//Pick the last solution for each user/problem
-		$solutions = \App\Solution::whereIn('id', function($query) use($psid, $problemset){
-			$query->select(DB::raw('MAX(id) as id'))
-			      ->from(with(new \App\Solution)->getTable())
-			      ->where('problemset_id', $psid)
-			      ->where('created_at', '>=', $problemset->contest_start_at)
-			      ->where('created_at', '<=', $problemset->contest_end_at)
-			      ->groupBy(['user_id', 'problem_id']);
-		})->public()->get();
+		$sub = $problemset->solutions()
+			->where('created_at', '>=', $problemset->contest_start_at)
+			->where('created_at', '<=', $problemset->contest_end_at)
+			->groupBy(['user_id', 'problem_id'])
+			->select(DB::raw("MAX(id) as id"));
+		//return $sub->toSql();
+		$solutions = Solution::join(DB::raw("({$sub->toSql()}) subid"), 'solutions.id', '=', 'subid.id')
+			->mergeBindings($sub->getQuery()->getQuery())
+			->public()
+			->get();
 
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
 						'problems' => $problems,
