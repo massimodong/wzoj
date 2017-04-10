@@ -17,7 +17,7 @@ function ranklist_addRow(user){
 	$('#user-' + user.id + ' .rank-score').html(0);
 
 	var indicator = $(indicator_template);
-	indicator.children('.rank_num').html(ranklist_addRow.cnt);
+	indicator.children('.rank_num').html('<small>' + ranklist_addRow.cnt + '</small>');
 	$('#rank-indicator').append(indicator);
 }
 
@@ -47,7 +47,7 @@ function ranklist_addSolution(solution){
 
 	var ps = row.children('.problem-' + solution.problem_id);
 	var msg = '';
-	if(solution.ce){
+	if(solution.ce && parseInt(solution.ce)){
 		msg = TRANS['compile_error'];
 	}else if(solution.status == 4){ //judged
 		msg = solution.score;

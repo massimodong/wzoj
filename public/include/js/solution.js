@@ -94,7 +94,7 @@ function work( s, done){
 				setTimeout(done.bind(this, s), 300);
 			}
 
-			if(solution[0].ce){
+			if(solution[0].ce && parseInt(solution[0].ce)){
 				s.data('ce', true);
 			}
 			s.data('score', solution[0].score);

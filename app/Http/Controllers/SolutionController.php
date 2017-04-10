@@ -143,11 +143,6 @@ class SolutionController extends Controller
      * Check if the solution is posted by a bot
      */
     private function bot_check($user){
-	    $cnt_second_solutions = $user->solutions()
-		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 second')))
-		    ->count();
-	    if($cnt_second_solutions >= 3) $user->isbot(500);
-
 	    $cnt_minute_solutions = $user->solutions()
 		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 minute')))
 		    ->count();
@@ -174,6 +169,16 @@ class SolutionController extends Controller
     {
 	    $problemset = Problemset::findOrFail($request->problemset_id);
 	    $this->authorize('view',$problemset);
+
+	    $cnt_second_solutions = $request->user()->solutions()
+		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 second')))
+		    ->count();
+	    if($cnt_second_solutions){
+		    return back()
+			    ->withErrors(trans('wzoj.submit_too_frequent'))
+			    ->withInput();
+	    }
+
 	    $this->validate($request,[
 		'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
 		'language' => 'required|in:0,1,2,4', //c,cpp,pas,java,python
