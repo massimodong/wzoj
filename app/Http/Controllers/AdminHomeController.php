@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Option;
+use Cache;
 
 class AdminHomeController extends Controller
 {
@@ -19,6 +20,7 @@ class AdminHomeController extends Controller
 		foreach($request->except(['_token']) as $option => $value){
 			Option::where('name', $option)->update(['value' => $value]);
 		}
+		Cache::tags(['options'])->flush();
 		return back();
 	}
 }

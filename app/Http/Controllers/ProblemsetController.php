@@ -13,6 +13,7 @@ use App\Solution;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Cache;
 use Auth;
 use Storage;
 
@@ -42,29 +43,24 @@ class ProblemsetController extends Controller
 
 		$page = $cnt_pages = NULL;
 		if(ojCanViewProblems($problemset)){
-			$problems = $problemset->problems()->orderByIndex();
-
 			//select page
 			$page = 1;
-			$cnt_pages = (($problemset->problems()->count()-1) / self::PAGE_LIMIT) + 1;
+			$cnt_problems = Cache::tags(['problemsets', 'cnt_problems'])
+					->rememberForever($psid, function() use($problemset){
+				return $problemset->problems()->count();
+			});
+			$cnt_pages = (($cnt_problems-1) / self::PAGE_LIMIT) + 1;
 			if(isset($request->page)){
 				$page = $request->page;
 			}
-			$problems=$problems->where('problem_problemset.index', '>', ($page-1) * self::PAGE_LIMIT);
-			$problems=$problems->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT);
 
-			if(Auth::check()){
-				$problems=$problems->leftJoin(DB::raw('(SELECT problem_id, max(score) as maxscore FROM solutions
-							WHERE user_id ='.Auth::user()->id.' AND problemset_id ='.$problemset->id
-							.' GROUP BY problem_id) solutions'),
-					function($join){
-						$join->on('problems.id', '=', 'solutions.problem_id');
-					})
-					->select('*')
-					->addSelect('solutions.maxscore');
-			}
-
-			$problems = $problems->get();
+			$problems = Cache::tags(['problemsets', 'problems', $psid])->rememberForever($page, 
+					function() use($problemset, $page){
+				return $problemset->problems()->orderByIndex()
+					->where('problem_problemset.index', '>', ($page-1) * self::PAGE_LIMIT)
+					->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT)
+					->get();
+			});
 		}else{
 			$problems = [];
 		}
@@ -72,6 +68,7 @@ class ProblemsetController extends Controller
 		return view('problemsets.view_'.$problemset->type,[
 				'problemset' => $problemset,
 				'problems' => $problems,
+				'max_scores' => Auth::check()?Auth::user()->max_scores($problemset, $problems):[],
 				'cnt_pages' => $cnt_pages,
 				'cur_page' => $page]);
 	}
@@ -214,6 +211,8 @@ class ProblemsetController extends Controller
 				$problemset->problems()->attach($pid,['index' => $newindex]);
 			}
 		}
+		Cache::tags(['problemsets', 'cnt_problems'])->forget($psid);
+		Cache::tags([$psid])->flush();
 		return back();
 	}
 
@@ -261,6 +260,7 @@ class ProblemsetController extends Controller
 			}
 		}
 
+		Cache::tags([$psid])->flush();
 		return back();
 	}
 
@@ -286,6 +286,8 @@ class ProblemsetController extends Controller
 				->where('index','>',$index)
 				->decrement('index',1);
 		}
+		Cache::tags(['problemsets', 'cnt_problems'])->forget($psid);
+		Cache::tags([$psid])->flush();
 		return back();
 	}
 

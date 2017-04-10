@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\User;
 
+use Cache;
 use Lang;
 use Gate;
 use Auth;
@@ -16,8 +17,12 @@ class HomeController extends Controller
 {
 	const USER_LIMIT = 100;
 	public function index(){
-		$recent_problemsets = \App\Problemset::where('type', '=', 'set')->orderBy('updated_at', 'desc')->take(6)->get();
-		$recent_contests = \App\Problemset::where('type','<>', 'set')->orderBy('contest_start_at', 'desc')->take(6)->get();
+		$recent_problemsets = Cache::tags(['wzoj'])->remember('recent_problemsets', 1, function(){
+			return \App\Problemset::where('type', '=', 'set')->orderBy('updated_at', 'desc')->take(6)->get();
+		});
+		$recent_contests = Cache::tags(['wzoj'])->remember('recent_contests', 1, function(){
+			return \App\Problemset::where('type','<>', 'set')->orderBy('contest_start_at', 'desc')->take(6)->get();
+		});
 		$home_page_problemsets=[];
 		foreach($recent_problemsets as $problemset){
 			if($problemset->public || Gate::allows('view',$problemset)){
@@ -25,7 +30,9 @@ class HomeController extends Controller
 			}
 		}
 
-		$top_users = User::orderBy('cnt_ac', 'desc')->take(10)->withoutAdmin()->get();
+		$top_users = Cache::tags(['wzoj'])->remember('top_users', 1, function(){
+			return User::orderBy('cnt_ac', 'desc')->take(10)->withoutAdmin()->get();
+		});
 
 		return view('home',[
 			'home_page_problemsets' => $home_page_problemsets,

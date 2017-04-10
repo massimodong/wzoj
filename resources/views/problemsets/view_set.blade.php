@@ -33,11 +33,11 @@
     @foreach ($problems as $problem)
     <tr>
       <td>
-        @if ($problem->maxscore >= 100)
+        @if (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 100)
 	  <span class="glyphicon glyphicon-ok" style="color:green"></span>
-        @elseif (isset($problem->maxscore))
+        @elseif (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 0)
 	  <span style="color:red">
-	  {{$problem->maxscore}}</span>
+	  {{$max_scores[$problem->id]}}</span>
 	@endif
       </td>
       <td>{{$problem->pivot->index}}</td>

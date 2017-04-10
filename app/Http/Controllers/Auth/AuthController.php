@@ -103,6 +103,15 @@ class AuthController extends Controller
 	    return view('auth.login');
     }
 
+    private function authenticated(Request $request, $user){
+	    $roles = [];
+	    foreach($user->roles as $role){
+		    $roles[$role->name] = true;
+	    }
+	    $request->session()->put('roles', $roles);
+	    return redirect()->intended($this->redirectPath());
+    }
+
     public function oj_getRegister(Request $request){
 	    if(isset($request->token)){
 		    $invitation = \App\Invitation::where('token',$request->token)

@@ -7,10 +7,12 @@ define('SL_RUNNING' , 3);
 define('SL_JUDGED' , 4);
 define('SL_CANCELED' ,5);
 
+define('CACHE_ONE_DAY', 1440);
+
 function ojoption($name){
-	static $ojoptions = [];
-	if(isset($ojoptions[$name])) return $ojoptions[$name];
-	else return $ojoptions[$name] = \App\Option::where('name',$name)->first()->value;
+	return Cache::tags(['options'])->rememberForever($name, function() use ($name){
+		return \App\Option::where('name', $name)->first()->value;
+	});
 }
 
 function ojCanViewProblems($problemset){
