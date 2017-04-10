@@ -46,6 +46,7 @@ class SolutionController extends Controller
 
 	    $solutions = Solution::where('id', '<>', 0);
 	    // limits
+	    $all_solutions = true;
 	    //todo: abandon url_limits
 	    $url_limits = '';
 	    $problemset = NULL;
@@ -55,6 +56,7 @@ class SolutionController extends Controller
 			    $solutions = $solutions->where('problemset_id', $problemset->id);
 			    $url_limits.='&problemset_id='.$problemset->id;
 		    }
+		    $all_solutions = false;
 	    }
 
 	    if(isset($request->user_name) && $request->user_name <> ''){
@@ -65,6 +67,7 @@ class SolutionController extends Controller
 			    $solutions = $solutions->where('user_id', -1);
 		    }
 		    $url_limits.='&user_name='.$request->user_name;
+		    $all_solutions = false;
 	    }
 
 	    if(isset($request->problem_id) && $request->problem_id <> ''){
@@ -73,25 +76,30 @@ class SolutionController extends Controller
 			    $solutions = $solutions->where('problem_id', $problem->id);
 			    $url_limits.='&problem_id='.$problem->id;
 		    }
+		    $all_solutions = false;
 	    }
 
 	    if(isset($request->score_min) && $request->score_min <> ''){
 		    $solutions = $solutions->where('score', '>=', $request->score_min);
 		    $url_limits.='&score_min='.$request->score_min;
+		    $all_solutions = false;
 	    }
 
 	    if(isset($request->score_max) && $request->score_max <> ''){
 		    $solutions = $solutions->where('score', '<=', $request->score_max);
 		    $url_limits.='&score_max='.$request->score_max;
+		    $all_solutions = false;
 	    }
 
 	    if(isset($request->language) && $request->language <> ''){
 		    $solutions = $solutions->where('language', $request->language);
 		    $url_limits.='&language='.$request->language;
+		    $all_solutions = false;
 	    }
 	    if(isset($request->status) && $request->status <> ''){
 		    $solutions = $solutions->where('status', $request->status);
 		    $url_limits.='&status='.$request->status;
+		    $all_solutions = false;
 	    }
 	    //limits end
 
@@ -125,7 +133,7 @@ class SolutionController extends Controller
 	    				'prev_url' => $prev_url,
 	    				'next_url' => $next_url,
 					'url_limits' => $url_limits,
-	    				'last_solution_id' => isset($request->top)?-1:$top,
+	    				'last_solution_id' => $all_solutions?$top:-1,
 	    				'problemset' => $problemset]);
     }
 

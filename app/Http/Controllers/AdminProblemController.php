@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Cache;
 use Storage;
 use App\Problem;
 
@@ -78,6 +79,8 @@ class AdminProblemController extends Controller
 		if(!isset($newval['spj'])) $newval['spj'] = 0;
 
 		$problem->update($newval);
+
+		Cache::tags(['problems'])->flush();
 
 		return back();
 	}
