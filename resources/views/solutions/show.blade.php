@@ -125,10 +125,12 @@
 $( document ).ready(function() {
 	showOrHideCode();
 
-	updatePendings(function(s){
+	@if ($solution->status < 4)
+	animateJudging($('#solution-{{$solution->id}}') ,function(s){
 		fillTable(s);
 		location.reload();
-			}, "{{date('Y-m-d H:i:s')}}");
+			});
+	@endif
 });
 </script>
 @endsection

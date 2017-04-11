@@ -17,6 +17,22 @@ use Cache;
 use Auth;
 use Storage;
 
+class RanklistUser{
+	public $user;
+	public $score;
+	public $penalty;
+	public $problem_scores;
+	public $problem_solutions;
+	function __construct($u, $p){
+		$this->user = $u;
+		$this->score = 0;
+		$this->penalty = 0;
+		foreach($p as $s){
+			$this->problem_scores[$s->id] = 0;
+		}
+	}
+}
+
 class ProblemsetController extends Controller
 {
 	const PAGE_LIMIT = 100;
@@ -82,35 +98,36 @@ class ProblemsetController extends Controller
 		$problems = $problemset->problems()->orderByIndex()->get();
 		//ranklist requires no authorization
 
-		//Pick the last solution for each user/problem
-		$sub = $problemset->solutions()
+		$solutions = $problemset->solutions()
 			->where('created_at', '>=', $problemset->contest_start_at)
 			->where('created_at', '<=', $problemset->contest_end_at)
-			->groupBy(['user_id', 'problem_id'])
-			->select(DB::raw("MAX(id) as id"));
-		//return $sub->toSql();
-		$solutions = Solution::join(DB::raw("({$sub->toSql()}) subid"), 'solutions.id', '=', 'subid.id')
-			->mergeBindings($sub->getQuery()->getQuery())
 			->public()
 			->get();
 
+		$table = array();
+		$users_id = [];
+		foreach($solutions as $solution){
+			if(!isset($users_id[$solution->user_id])){
+				array_push($table, new RanklistUser($solution->user, $problems));
+				$users_id[$solution->user_id] = count($table)-1;
+			}
+			$id = $users_id[$solution->user_id];
+			++$table[$id]->penalty;
+
+			if(isset($table[$id]->problem_scores[$solution->problem_id])){
+				$table[$id]->score -= $table[$id]->problem_scores[$solution->problem_id];
+				$table[$id]->problem_scores[$solution->problem_id] = $solution->score;
+				$table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
+
+				$table[$id]->problem_solutions[$solution->problem_id] = $solution;
+			}
+		}
+		usort($table, "ranklist_cmp_user");
+
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
 						'problems' => $problems,
-						'solutions'  => $solutions,
+						'table' => $table,
 						'last_solution_id' => $problemset->solutions()->max('id')]);
-		/*
-		switch($problemset->type){
-			case 'set':
-				//no ranklist for SET
-				return redirect('/s/'.$psid);
-				break;
-			case 'oi':
-				return view('problemsets.ranklist_oi', ['problemset' => $problemset]);
-				break;
-			default:
-				abort(503);
-				break;
-		}*/
 	}
 
 	public function postNewProblemset(){

@@ -16,14 +16,6 @@ class AjaxController extends Controller
 		return response()->json(['welcome'=>'hello world!']);
 	}
 
-	public function getToken(Request $request){
-		return response()->json(['_token' => csrf_token()]);
-	}
-
-	public function postTest(Request $request){
-		return $request->all();
-	}
-
 	public function getTestcases(Request $request){
 		$this->validate($request, [
 			'solution_id' => 'required|integer',

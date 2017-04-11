@@ -25,3 +25,8 @@ function ojCanViewProblems($problemset){
 function ojcache($url){
 	return $url."?v=".ojoption('current_version_id');
 }
+
+function ranklist_cmp_user($a, $b){
+	if($a->score != $b->score) return $a->score < $b->score;
+	else return $a->penalty > $b->penalty;
+}

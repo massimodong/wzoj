@@ -74,7 +74,7 @@ function ranklist_updateSolutions(problemset_id, last_solution_id){
 			ranklist_addSolution(solution);
 			last_solution_id = solution.id;
 		})
-		setTimeout(ranklist_updateSolutions.bind(this, problemset_id, last_solution_id), 500);
+		setTimeout(ranklist_updateSolutions.bind(this, problemset_id, last_solution_id), 1000);
 	});
 }
 

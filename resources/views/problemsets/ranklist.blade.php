@@ -25,6 +25,13 @@
 <hr>
 
 <ul id="rank-indicator" class="sortable_list">
+  @foreach ($table as $index => $row)
+    <li class='col-xs-12'>
+      <div class='rank_num sortable_list_cell' style='width:100%'>
+        <small>{{$index}}</small>
+      </div>
+    </li>
+  @endforeach
 </ul>
 </div>
 
@@ -43,6 +50,32 @@
 <hr>
 
 <ul id="rank-table" class="sortable_list">
+  @foreach ($table as $row)
+    <li class='col-xs-12' id='user-{{$row->user->id}}' data-id='{{$row->user->id}}'>
+	<div class='rank-user sortable_list_cell' style='width:10%'><a href='/users/{{$row->user->id}}'>{{$row->user->name}}</a></div>
+	<div class='rank-fullname sortable_list_cell' style='width:10%'>{{$row->user->fullname}}</div>
+	<div class='rank-class sortable_list_cell' style='width:10%'>{{$row->user->class}}</div>
+	<div class='rank-score sortable_list_cell' style='width:5%'>{{$row->score}}</div>
+
+	@foreach ($problems as $problem)
+	  @if (isset($row->problem_solutions[$problem->id]) && $solution = $row->problem_solutions[$problem->id])
+	  <div class='problem-{{$problem->id}} sortable_list_cell' style=''>
+	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1' data-score='{{$solution->score}}'>
+	      @if ($solution->ce)
+	        {{trans('wzoj.compile_error')}}
+	      @elseif ($solution->status == 4)
+		{{$solution->score}}
+	      @else
+	        {{trans('wzoj.solution_status_'.$solution->status)}}
+	      @endif
+	    </div>
+	  </div>
+	  @else
+	  <div class='problem-{{$problem->id}} sortable_list_cell' style=''>-</div>
+	  @endif
+	@endforeach
+    </li>
+  @endforeach
 </ul>
 
 </div>
@@ -61,8 +94,6 @@ user_template += '</li>';
 
 var indicator_template = "<li class='col-xs-12'><div class='rank_num sortable_list_cell' style='width:100%'></div></li>"
 
-//init solutions
-var init_solutions = {!! json_encode($solutions) !!};
 </script>
 
 @endsection
@@ -71,6 +102,7 @@ var init_solutions = {!! json_encode($solutions) !!};
 <script>
 jQuery(document).ready(function($) {
 	//initiate table
+	ranklist_addRow.cnt = {{count($table)}};
 	$('#rank-table').isotope({
 		getSortData: {
 			id: '[data-id] parseInt',
@@ -90,13 +122,9 @@ jQuery(document).ready(function($) {
 		sortBy: ['score', 'penalty', 'id']
 	});
 
-	$.each(init_solutions, function(key, solution){
-		ranklist_addSolution(solution);
-	});
+	//ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
 
-	ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
-
-	updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
+	//updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
 });
 </script>
 @endsection

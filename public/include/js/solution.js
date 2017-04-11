@@ -107,7 +107,7 @@ function animateJudging( s ,done){
 	s.data('waiting', 0);
 	s.data('t_id', 0); //last testcase_id
 	s.data('index', 0); //index of current testcase
-	s.data('wait_time', 200); //time used by last testcase
+	s.data('wait_time', 500); //time used by last testcase
 	s.data('score', 0);//score
 	s.data('ce', false);//compile error
 	work(s, done);
@@ -121,7 +121,7 @@ function updatePendings( finish , last_time){
 				animateJudging(td, finish);
 			}
 		});
-		setTimeout(updatePendings.bind(this, finish, data.cur_time), 500);
+		setTimeout(updatePendings.bind(this, finish, data.cur_time), 1000);
 	});
 }
 
@@ -194,6 +194,6 @@ function solutions_update(last_solution_id){
 		$(".clickable-row").click(function() {
 			window.document.location = $(this).data("href");
 		});
-		setTimeout(solutions_update.bind(this, last_solution_id), 500);
+		setTimeout(solutions_update.bind(this, last_solution_id), 1000);
 	});
 }
