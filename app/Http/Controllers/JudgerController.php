@@ -103,7 +103,9 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"problem_id" => "required|integer",
 		]);
-		$problem = Problem::findOrFail($request->problem_id);
+		$problem = Cache::tags(['problems'])->rememberForever($request->problem_id, function() use ($request){
+			return Problem::findOrFail($request->problem_id);
+		});
 		$problem = Problem::where("id", $request->problem_id)
 			->select("id", "name", "type", "spj", "timelimit", "memorylimit")
 			->first();
