@@ -39,7 +39,7 @@ class AjaxController extends Controller
 		$solution = \App\Solution::findOrFail($request->solution_id);
 		return response()->json(['status' => $solution->status,
 					'score' => $solution->score,
-					'ce' => isset($solution->ce)]);
+					'ce' => isset($solution->ce)?'1':'0']);
 	}
 
 	public function getSolutionResult(Request $request){

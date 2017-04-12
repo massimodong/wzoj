@@ -122,9 +122,9 @@ jQuery(document).ready(function($) {
 		sortBy: ['score', 'penalty', 'id']
 	});
 
-	//ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
+	ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
 
-	//updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
+	updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
 });
 </script>
 @endsection
