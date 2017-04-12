@@ -11,6 +11,7 @@ use App\Problem;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Cache;
 use Storage;
 
 class SolutionController extends Controller
@@ -211,6 +212,7 @@ class SolutionController extends Controller
 	    $solution_meta["code_length"] = strlen($solution_meta["code"]);
 
 	    $solution = $request->user()->solutions()->create($solution_meta);
+	    Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 	    $request->user()->answerfiles()
 		    ->where('problemset_id', $request->problemset_id)
@@ -233,9 +235,15 @@ class SolutionController extends Controller
      */
     public function show($id)
     {
-	    $solution = Solution::findOrFail($id);
+	    $solution = Cache::tags(['solutions'])->remember($id, 1, function() use($id){
+			return Solution::findOrFail($id);
+	    });
 	    //$this->authorize('view',$solution);
+	    $testcases = Cache::tags(['solutions', 'testcases'])->remember($id, 1, function() use($solution){
+			return $solution->testcases;
+	    });
 	    return view('solutions.show',['solution' => $solution,
+			    		'testcases' => $testcases,
 	    				'problemset' => $solution->problemset]);
     }
 

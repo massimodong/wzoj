@@ -92,7 +92,7 @@
  		   </tr>
 		</thead>
 		<tbody>
-		@foreach ($solution->testcases as $testcase)
+		@foreach ($testcases as $testcase)
 		    <tr>
 		    	@if ($solution->problem->type == 3)
 		    	  @can ('view_code', $solution)

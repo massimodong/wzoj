@@ -11,6 +11,7 @@ use Cache;
 use App\Problemset;
 use DB;
 
+use Log;
 use App\Solution;
 use App\Problem;
 use App\Testcase;
@@ -81,6 +82,15 @@ class JudgerController extends Controller
 				foreach($solution->testcases as $testcase){
 					$testcase->delete();
 				}
+				$solution->time_used = 0;
+				$solution->memory_used = 0.0;
+				$solution->status = SL_COMPILING;
+				$solution->score = 0;
+				$solution->ce = NULL;
+				$solution->sim_id = NULL;
+				$solution->judger_id = \Request::get('judger')->id;
+				Cache::tags(['solutions'])->put($solution->id, $solution, 1);
+				Cache::tags(['solutions', 'testcases'])->put($solution->id, collect(new \App\Testcase), 1);
 				return response()->json(["ok" => true]);
 			}else{
 				return response()->json(["ok" => false]);
@@ -93,11 +103,21 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Solution::where("id",$request->solution_id)
-			->select(["id", "problem_id", "language", "code", "time_used", "memory_used",
-						"status", "score", "ce", "cnt_testcases"])
-			->first();
-		return response()->json($solution);
+		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
+			return \App\Solution::findOrFail($request->solution_id);
+		});
+		return response()->json([
+			'id' => $solution->id,
+			'problem_id' => $solution->problem_id,
+			'language' => $solution->language,
+			'code' => $solution->code,
+			'time_used' => $solution->time_used,
+			'memory_used' => $solution->memory_used,
+			'status' => $solution->status,
+			'score' => $solution->score,
+			'ce' => $solution->ce,
+			'cnt_testcases' => $solution->cnt_testcases,
+		]);
 	}
 	public function getProblem(Request $request){
 		$this->validate($request,[
@@ -106,25 +126,34 @@ class JudgerController extends Controller
 		$problem = Cache::tags(['problems'])->rememberForever($request->problem_id, function() use ($request){
 			return Problem::findOrFail($request->problem_id);
 		});
-		$problem = Problem::where("id", $request->problem_id)
-			->select("id", "name", "type", "spj", "timelimit", "memorylimit")
-			->first();
-		return response()->json($problem);
+		return response()->json([
+			'id' => $problem->id,
+			'name' => $problem->name,
+			'type' => $problem->type,
+			'spj' => $problem->spj,
+			'timelimit' => $problem->timelimit,
+			'memorylimit' => $problem->memorylimit,
+		]);
 	}
 	public function postUpdateCe(Request $request){
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Solution::findOrFail($request->solution_id);
+		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
+			return \App\Solution::findOrFail($request->solution_id);
+		});
 		$solution->ce = $request->ce;
 		$solution->save();
+		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 		return response()->json(["ok" => true]);
 	}
 	public function postUpdateSolution(Request $request){
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Solution::findOrFail($request->solution_id);
+		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
+			return \App\Solution::findOrFail($request->solution_id);
+		});
 
 		$solution->time_used = $request->time_used;
 		$solution->memory_used = $request->memory_used;
@@ -132,6 +161,7 @@ class JudgerController extends Controller
 		$solution->score = $request->score;
 		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->save();
+		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 		$cache_path = $solution->user_id.'-'.$solution->problemset_id.'-'.$solution->problem_id;
 		if($solution->score > Cache::tags(['problemsets', 'max_score'])->get($cache_path, -1)){
@@ -144,17 +174,25 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Solution::findOrFail($request->solution_id);
+		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
+			return \App\Solution::findOrFail($request->solution_id);
+		});
 
 		$solution->status = SL_JUDGED;
 		$solution->judged_at = date('Y-m-d H:i:s');
 		
 		$solution->save();
+		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 		$solution->user->update_cnt_ac();
 	}
 	public function postPostTestcase(Request $request){
 		$testcase = Testcase::create($request->except('judger_token'));
+		if(Cache::tags(['solutions', 'testcases'])->has($testcase->solution_id)){
+			$all_testcases = Cache::tags(['solutions', 'testcases'])->get($testcase->solution_id);
+			$all_testcases->push($testcase);
+			Cache::tags(['solutions', 'testcases'])->put($testcase->solution_id, $all_testcases, 1);
+		}
 	}
 
 	public function getGetAnswer(Request $request){

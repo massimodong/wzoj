@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+use Cache;
 use Auth;
 use App\Solution;
 use App\Http\Requests;
@@ -21,14 +22,27 @@ class AjaxController extends Controller
 			'solution_id' => 'required|integer',
 			'last_tid' => 'integer',
 		]);
-		$solution = \App\Solution::findOrFail($request->solution_id);
+		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
+			return \App\Solution::findOrFail($request->solution_id);
+		});
 
 		$last_tid = 0;
 		if(isset($request->last_tid)){
 			$last_tid = $request->last_tid;
 		}
 
-		return response()->json(['testcases' => $solution->testcases()->where('id', '>', $last_tid)->get(),
+		$all_testcases=Cache::tags(['solutions','testcases'])->remember($request->solution_id,1,function() use($solution){
+				return $solution->testcases;
+		});
+
+		$testcases = [];
+		foreach($all_testcases as $testcase){
+			if($testcase->id > $last_tid){
+				array_push($testcases, $testcase);
+			}
+		}
+
+		return response()->json(['testcases' => $testcases,
 					'cnt_testcases' => $solution->cnt_testcases]);//total testcases
 	}
 
@@ -36,7 +50,9 @@ class AjaxController extends Controller
 		$this->validate($request, [
 			'solution_id' => 'required|integer',
 		]);
-		$solution = \App\Solution::findOrFail($request->solution_id);
+		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
+			return \App\Solution::findOrFail($request->solution_id);
+		});
 		return response()->json(['status' => $solution->status,
 					'score' => $solution->score,
 					'ce' => isset($solution->ce)?'1':'0']);
@@ -46,7 +62,9 @@ class AjaxController extends Controller
 		$this->validate($request, [
 			'solution_id' => 'required|integer',
 		]);
-		$solution = \App\Solution::findOrFail($request->solution_id);
+		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
+			return \App\Solution::findOrFail($request->solution_id);
+		});
 		return response()->json(['score' => $solution->score,
 					 'time_used' => $solution->time_used,
 					 'memory_used' => $solution->memory_used,

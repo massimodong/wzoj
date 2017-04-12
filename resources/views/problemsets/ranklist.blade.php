@@ -122,7 +122,9 @@ jQuery(document).ready(function($) {
 		sortBy: ['score', 'penalty', 'id']
 	});
 
+	@if (time() < strtotime($problemset->contest_end_at))
 	ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
+	@endif
 
 	updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
 });
