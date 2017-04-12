@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Cache;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -101,6 +102,7 @@ class AdminUpdateSystemController extends Controller
 
 		Option::where('name', 'current_version_tag')->update(['value' => $latest_release->tag_name]);
 		Option::where('name', 'current_version_id')->update(['value' => $latest_release->id]);
+		Cache::tags(['options'])->flush();
 
 		return back();
 	}
