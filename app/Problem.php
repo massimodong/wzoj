@@ -22,6 +22,10 @@ class Problem extends Model
 		return $this->belongsToMany('App\Problemset')->withPivot('index');
 	}
 
+	public function solutions(){
+		return $this->hasMany('App\Solution');
+	}
+
 	public function scopeOrderByIndex($query){
 		return $query->orderBy('problem_problemset.index','asc');
 	}

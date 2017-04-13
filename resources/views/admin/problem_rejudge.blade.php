@@ -5,7 +5,7 @@
 @endsection
 
 @section ('content')
-<form method='POST' class="form-inline">
+<form method='POST'>
 {{csrf_field()}}
 
 <div class="form-group">
@@ -19,6 +19,16 @@
   	<option disabled selected value style="display:none"></option>
     @foreach (\App\Problemset::all() as $problemset)
 	<option value="{{$problemset->id}}">{{$problemset->id}}-{{$problemset->name}}</option>
+    @endforeach
+  </select>
+</div>
+
+<div class="form-group">
+  <label for="problem_id"> {{trans('wzoj.or')}} {{trans('wzoj.problem')}} </label>
+  <select name="problem_id" id="problem_id" class="selectpicker" data-live-search="true">
+  	<option disabled selected value style="display:none"></option>
+    @foreach (\App\Problem::all() as $problem)
+	<option value="{{$problem->id}}">{{$problem->id}}-{{$problem->name}}</option>
     @endforeach
   </select>
 </div>

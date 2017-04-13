@@ -212,7 +212,6 @@ class SolutionController extends Controller
 	    $solution_meta["code_length"] = strlen($solution_meta["code"]);
 
 	    $solution = $request->user()->solutions()->create($solution_meta);
-	    Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 	    $request->user()->answerfiles()
 		    ->where('problemset_id', $request->problemset_id)

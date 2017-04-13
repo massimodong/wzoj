@@ -54,7 +54,14 @@ class ProblemsetController extends Controller
 	public function getProblemset($psid,Request $request){
 		$problemset = Problemset::findOrFail($psid);
 		if(!$problemset->public){
-			$this->authorize('view',$problemset);
+			if(Gate::denies('view', $problemset)){
+				if(Auth::check()){
+					//todo
+					abort(403);
+				}else{
+					return redirect('/auth/login');
+				}
+			}
 		}
 
 		$page = $cnt_pages = NULL;

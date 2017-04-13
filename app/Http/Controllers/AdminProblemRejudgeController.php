@@ -55,6 +55,13 @@ class AdminProblemRejudgeController extends Controller
 				$this->rejudgeSolutions($problemset->solutions());
 			}
 		}
+
+		if(isset($request->problem_id) && $request->problem_id > 0){
+			$problem = \App\Problem::find($request->problem_id);
+			if($problem <> NULL){
+				$this->rejudgeSolutions($problem->solutions());
+			}
+		}
 		return back();
 	}
 }
