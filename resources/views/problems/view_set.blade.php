@@ -18,7 +18,52 @@
 </ul>
 <div class="tab-content">
   <div id="problem" class="tab-pane in active">
-    @include ('layouts.showproblem')
+    <div class="col-xs-9 row">
+      @include ('layouts.showproblem')
+    </div>
+    <div class="col-xs-3">
+      <div style="height:85px"></div>
+      <div class="panel panel-default">
+        <div class="panel-heading">{{trans('wzoj.status')}}</div>
+        <div class="panel-body">
+	  {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: {{$cnt_submit}}/{{$cnt_ac}}
+	  <hr>
+	  <div class="limited_text">
+	    @foreach ($best_solutions as $index => $solution)
+	      @if ($index == 0)
+	        <span class="label label-success">1</span>
+	      @elseif ($index == 1)
+	        <span class="label label-primary">2</span>
+	      @else
+	        <span class="label label-info">3</span>
+	      @endif
+	      <a href="/users/{{$solution->user->id}}">{{$solution->user->name}}</a><br>
+	      <span class="best_solution_status">
+	        <a style="color:grey" href="/solutions/{{$solution->id}}">#{{$solution->id}}</a>
+	        @if ($solution->score == 100)
+	        <span style="color:green"><strong>{{$solution->score}}</strong></span>
+	        @else
+	        <span style="color:red"><strong>{{$solution->score}}</strong></span>
+	        @endif
+	        {{$solution->time_used}}ms
+	        {{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB
+	      </span><br>
+	      <div class="top-buffer-sm"></div>
+	    @endforeach
+	  </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">{{trans('wzoj.tags')}}</div>
+        <div class="panel-body">
+	</div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading"><a href="#">{{trans('wzoj.forum')}}</a></div>
+        <div class="panel-body">
+	</div>
+      </div>
+    </div>
   </div>
   <!-- problem -->
 

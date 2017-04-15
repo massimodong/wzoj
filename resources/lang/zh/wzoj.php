@@ -245,4 +245,7 @@ return [
 
     'recent_contests' => '近期比赛',
     'contests' => '比赛',
+
+    'forum' => '讨论版',
+    'tags' => '标签',
 ];

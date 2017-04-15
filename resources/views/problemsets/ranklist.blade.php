@@ -28,7 +28,7 @@
   @foreach ($table as $index => $row)
     <li class='col-xs-12'>
       <div class='rank_num sortable_list_cell' style='width:100%'>
-        <small>{{$index}}</small>
+        <small>{{$index + 1}}</small>
       </div>
     </li>
   @endforeach

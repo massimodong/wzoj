@@ -180,6 +180,10 @@ class JudgerController extends Controller
 
 		$solution->status = SL_JUDGED;
 		$solution->judged_at = date('Y-m-d H:i:s');
+		$solution->rate = $solution->score * 10000000000000000
+					- $solution->time_used * 100000000000
+					- $solution->memory_used
+					- $solution->code_length;
 		
 		$solution->save();
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);

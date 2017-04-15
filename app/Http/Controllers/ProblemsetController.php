@@ -211,10 +211,53 @@ class ProblemsetController extends Controller
 		if(Storage::disk('data')->has('/'.$problem->id.'/'.'download.zip')){
 			$download_url = '/s/'.$problemset->id.'/'.$problem->id.'?download_attached_file=true';
 		}
+
+		//problem status
+		$problem_status = Cache::tags(['problem_status', $problemset->id])->remember($problem->id, 1,
+				function() use($problemset, $problem){
+			//best solutions for this problemset/problem
+			$best_solutions_meta = $problemset->solutions()
+				->where('problem_id', $problem->id)
+				->groupBy('user_id')
+				->select('user_id')
+				->addSelect(DB::raw('MAX(rate) as rate'))
+				->orderBy('rate', 'desc')
+				->take(3)
+				->get();
+			$best_solutions = [];
+			foreach($best_solutions_meta as $meta){
+				array_push($best_solutions,
+						$problemset->solutions()
+						->where('problem_id', $problem->id)
+						->where('user_id', $meta->user_id)
+						->where('rate', $meta->rate)
+						->public()
+						->first()
+					  );
+				}
+			//count solutions
+			$cnt_submit = $problemset->solutions()
+				->where('problem_id', $problem->id)
+				->count();
+			//count ac solutions
+			$cnt_ac = $problemset->solutions()
+				->where('problem_id', $problem->id)
+				->where('score', '>=', 100)
+				->count();
+			return [
+				'best_solutions' => $best_solutions,
+				'cnt_submit' => $cnt_submit,
+				'cnt_ac' => $cnt_ac,
+			];
+		});
 		return view('problems.view_'.$problemset->type,['problemset' => $problemset,
 				'problem' => $problem,
 				'answerfiles' => $answerfiles,
-				'download_url' => $download_url]);
+				'download_url' => $download_url,
+				'best_solutions' => $problem_status['best_solutions'],
+				'cnt_submit' => $problem_status['cnt_submit'],
+				'cnt_ac' => $problem_status['cnt_ac'],
+		]);
 	}
 
 	public function postProblem($psid,Request $request){

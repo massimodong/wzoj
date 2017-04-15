@@ -279,3 +279,12 @@ textarea {
   font-weight: 600;
   margin-bottom: 7px;
 }
+
+.limited_text {
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+
+.best_solution_status {
+}
