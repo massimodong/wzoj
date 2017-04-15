@@ -108,6 +108,20 @@
       <input type="text" class="form-control" id="source" name="source" value="{{$problem->source}}" required>
     </div>
   </div>
+  <div class="form-group">
+    <label for="source" class="col-xs-2 control-label"> {{trans('wzoj.tags')}} </label>
+    <div class="col-xs-10">
+      <select name="tags[]" class="selectpicker" data-live-search="true" multiple>
+        @foreach (\App\ProblemTag::all() as $tag)
+	  <option data-tokens="{{$tag->aliases}}" value="{{$tag->id}}"
+	    @if (isset($selected_tags[$tag->id]))
+	      selected = "selected"
+	    @endif
+	  >{{$tag->name}}</option>
+	@endforeach
+      </select>
+    </div>
+  </div>
 </form>
 
 <form method='POST'>

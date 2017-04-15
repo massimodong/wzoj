@@ -54,7 +54,15 @@ class AdminProblemController extends Controller
 			if(isset($request->preview)){
 				return view('admin.problems_preview',['problem' => $problem]);
 			}else{
-				return view('admin.problems_edit',['problem' => $problem]);
+				$tags = $problem->tags;
+				$selected_tags = [];
+				foreach($tags as $tag){
+					$selected_tags[$tag->id] = true;
+				}
+				return view('admin.problems_edit',[
+						'problem' => $problem,
+						'selected_tags' => $selected_tags,
+				]);
 			}
 		}
 	}
@@ -75,12 +83,14 @@ class AdminProblemController extends Controller
 			'memorylimit' => 'required|numeric',
 		]);
 
-		$newval = $request->all();
+		$newval = $request->except('tags');
 		if(!isset($newval['spj'])) $newval['spj'] = 0;
 
 		$problem->update($newval);
-
 		Cache::tags(['problems'])->flush();
+
+		$problem->tags()->sync($request->tags);
+		Cache::tags(['problem_tags'])->forever($problem->id, $problem->tags);
 
 		return back();
 	}

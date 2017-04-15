@@ -26,6 +26,10 @@ class Problem extends Model
 		return $this->hasMany('App\Solution');
 	}
 
+	public function tags(){
+		return $this->belongsToMany('App\ProblemTag');
+	}
+
 	public function scopeOrderByIndex($query){
 		return $query->orderBy('problem_problemset.index','asc');
 	}

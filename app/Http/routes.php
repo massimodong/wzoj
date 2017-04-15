@@ -103,6 +103,11 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				Route::get('import-problems', 'AdminImportProblemsController@getImportProblems');
 				Route::post('import-problems', 'AdminImportProblemsController@postImportProblems');
 
+				//ProblemTags
+				Route::get('problem-tags', 'AdminProblemTagController@index');
+				Route::post('problem-tags', 'AdminProblemTagController@store');
+				Route::put('problem-tags/{id}', 'AdminProblemTagController@update');
+
 				//problem rejudge
 				Route::get('problem-rejudge', 'AdminProblemRejudgeController@getProblemRejudge');
 				Route::post('problem-rejudge', 'AdminProblemRejudgeController@postProblemRejudge');
