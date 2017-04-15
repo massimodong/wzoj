@@ -30,3 +30,7 @@ function ranklist_cmp_user($a, $b){
 	if($a->score != $b->score) return $a->score < $b->score;
 	else return $a->penalty > $b->penalty;
 }
+
+function ojShortTime($time){
+	return 'now';
+}

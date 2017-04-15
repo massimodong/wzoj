@@ -37,6 +37,7 @@ return [
     'submit' => '提交',
     'choosefile' => '选择文件',
     'delete' => '删除',
+    'title' => '标题',
 
     'email' => '邮箱',
     'username' => '用户名',
@@ -254,4 +255,9 @@ return [
     'msg_problem_search_name_helper' => '*将返回包含所给字符的所有题目',
 
     'no_result' => '没有结果',
+
+    'new_post' => '发帖',
+    'bbs' => '论坛',
+    'content' => '内容',
+    'title_needed' => '需要标题',
 ];

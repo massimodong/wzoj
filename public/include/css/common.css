@@ -292,3 +292,24 @@ textarea {
 .clickable {
   cursor: pointer;
 }
+
+.new_post_sidebar {
+    background: linear-gradient(to bottom,#086ed5,#055db5);
+    background-image: linear-gradient(rgb(215, 226, 239), rgb(40, 147, 255));
+    background-position-x: initial;
+    background-position-y: initial;
+    background-size: initial;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: initial;
+}
+
+.topic_index {
+  padding:15px;
+  min-height:100px;
+  border-radius: 1px;
+  border-style: solid;
+  border-color: #D8D8D8;
+  border-width: 1px;
+}

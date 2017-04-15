@@ -65,6 +65,13 @@ class User extends Model implements AuthenticatableContract,
 	    return $this->hasMany('App\File');
     }
 
+    public function topics(){
+	    return $this->hasMany('App\ForumTopic');
+    }
+    public function replies(){
+	    return $this->hasMany('App\ForumReply');
+    }
+
     public function update_cnt_ac(){
 	    $this->cnt_ac = $this->solutions()
 	    			->distinct('problem_id')

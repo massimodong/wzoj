@@ -40,6 +40,13 @@ return [
             "HTML.SafeIframe"      => 'true',
             "URI.SafeIframeRegexp" => "%^(http://|https://|//)(www.youtube.com/embed/|player.vimeo.com/video/|music.163.com/outchain/)%",
         ],
+	'forum' => [
+            'HTML.Doctype'             => 'XHTML 1.0 Strict',
+            'HTML.Allowed'             => 'a[href],strong,br,p[style]',
+            'CSS.AllowedProperties'    => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
+            'AutoFormat.AutoParagraph' => true,
+            'AutoFormat.RemoveEmpty'   => true,
+	],
 	'comment' => [
             'HTML.Doctype'             => 'XHTML 1.0 Strict',
             'HTML.Allowed'             => 'a[href],strong,br,p[style]',
