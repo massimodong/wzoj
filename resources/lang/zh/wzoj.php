@@ -14,6 +14,7 @@ return [
     'no' => '否',
     'or' => '或',
     'auto' => '自动',
+    'add' => '添加',
 
     'class' => '学校',
     'home' => '主页',
@@ -248,4 +249,9 @@ return [
 
     'forum' => '讨论版',
     'tags' => '标签',
+
+    'problem_name' => '题目名称',
+    'msg_problem_search_name_helper' => '*将返回包含所给字符的所有题目',
+
+    'no_result' => '没有结果',
 ];

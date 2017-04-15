@@ -288,3 +288,7 @@ textarea {
 
 .best_solution_status {
 }
+
+.clickable {
+  cursor: pointer;
+}

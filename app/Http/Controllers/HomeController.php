@@ -75,4 +75,59 @@ class HomeController extends Controller
 			->update(['bot_tendency' => 0]);
 		return redirect()->intended('/');
 	}
+
+	public function problemSearch(Request $request){
+		$problemsets_id = [];
+		$problemset_ids = [];
+
+		$groups = $request->user()->groups()->with('problemsets')->get();
+		foreach($groups as $group){
+			foreach($group->problemsets as $problemset){
+				if(!isset($problemsets_id[$problemset->id])){
+					$problemsets_id[$problemset->id] = $problemset;
+					array_push($problemset_ids, $problemset->id);
+				}
+			}
+		}
+		$public_problemsets = \App\Problemset::where('public', true)->get();
+		foreach($public_problemsets as $problemset){
+			if(!isset($problemsets_id[$problemset->id])){
+				$problemsets_id[$problemset->id] = $problemset;
+				array_push($problemset_ids, $problemset->id);
+			}
+		}
+
+		$problemsets = \App\Problemset::whereIn('id', $problemset_ids)
+			->with(['problems' => function($query) use($request){
+				$query->with('tags');
+				if(isset($request->tags)){
+					foreach($request->tags as $tag_id){
+						$query->whereIn('id', function($q) use($tag_id){
+							$q->select('problem_id')
+							->from('problem_problem_tag')
+							->where('problem_tag_id', $tag_id);
+						});
+					}
+				}
+				if(!empty($request->name)){
+					$query->where('name', 'like', '%'.$request->name.'%');
+				}
+			}])->get();
+		$problems = collect(new \App\Problem);
+		foreach($problemsets as $problemset){
+			foreach($problemset->problems as $problem){
+				$problems->push($problem);
+			}
+		}
+		if(count($problems) == 0){
+			return back()
+			    ->withErrors(trans('wzoj.no_result'))
+			    ->withInput();
+
+		}
+		return view('problem_search', [
+				'problems' => $problems,
+				'problemsets' => $problemsets_id,
+		]);
+	}
 }

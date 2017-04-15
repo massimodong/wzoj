@@ -69,6 +69,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('files/{user_id}/{name}','FileController@showfile');
 		Route::resource('files','FileController');
 
+		Route::get('problem-search', 'HomeController@problemSearch')->middleware('auth');
+
 		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
 		Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 				Route::get('/', 'AdminHomeController@index');

@@ -44,7 +44,7 @@ class ProblemsetController extends Controller
 				array_push($problemsets,$problemset);
 			}
 		}
-		return view('problemsets.index',['problemsets' => $problemsets]);
+		return view('problemsets.index',['problemsets' => $problemsets, 'tags' => \App\ProblemTag::all()]);
 	}
 	public function getContestsIndex(){
 		$contests = Problemset::where('type', '<>', 'set')->orderBy('contest_start_at', 'desc')->get();
