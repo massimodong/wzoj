@@ -32,5 +32,22 @@ function ranklist_cmp_user($a, $b){
 }
 
 function ojShortTime($time){
-	return 'now';
+	$cur = time();
+	$dist = $cur - $time;
+	if($dist < 60){
+		return $dist.trans('wzoj.seconds').trans('wzoj.before');
+	}else if($dist < 3600){
+		$min = intdiv($dist, 60);
+		return $min.trans('wzoj.minutes').trans('wzoj.before');
+	}else if($dist < 216000){
+		$hour = intdiv($dist, 3600);
+		return $hour.trans('wzoj.hours').trans('wzoj.before');
+	}else{
+		$year = date('Y', $time);
+		if($year == date('Y')){ //same year
+			return date('m-d', $time);
+		}else{
+			return $year.trans('wzoj.year');
+		}
+	}
 }

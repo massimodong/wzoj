@@ -260,4 +260,11 @@ return [
     'bbs' => '论坛',
     'content' => '内容',
     'title_needed' => '需要标题',
+
+    'seconds' => '秒',
+    'minutes' => '分钟',
+    'hours' => '小时',
+    'year' => '年',
+
+    'before' => '前',
 ];

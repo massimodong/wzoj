@@ -73,7 +73,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 
 		Route::get('forum', 'ForumController@getIndex');
 		Route::post('forum', 'ForumController@postIndex');
-		Route::get('forum/create', 'ForumController@getCreate');
+		Route::get('forum/create', 'ForumController@getCreate')->middleware('auth');
 		Route::get('forum/{id}', 'ForumController@getTopic');
 
 		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');

@@ -23,11 +23,13 @@
 <hr>
 @foreach ($topics as $topic)
   <div class="topic_index row">
-    <div class="col-xs-11">
+    <div class="col-xs-10">
       <a href="/forum/{{$topic->id}}">{{$topic->title}}</a><br>
-      fafdafsafas...todo...
+        <div class="topic_index_content">
+        {{Html2Text\Html2Text::convert($topic->replies[0]->content)}}
+        </div>
     </div>
-    <div class="col-xs-1">
+    <div class="col-xs-2">
       <a href="/users/{{$topic->user->id}}">{{$topic->user->name}}</a><br>
       {{ojShortTime(strtotime($topic->updated_at))}}<br>
       <span class="glyphicon glyphicon-eye-open" style="color:grey"></span> {{$topic->cnt_views}}

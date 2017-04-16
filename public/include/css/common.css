@@ -308,6 +308,33 @@ textarea {
 .topic_index {
   padding:15px;
   min-height:100px;
+  max-height:200px;
+  border-radius: 1px;
+  border-style: solid;
+  border-color: #D8D8D8;
+  border-width: 1px;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+
+.topic_index_content {
+  white-space:pre-line;
+  word-break:break-all;
+}
+
+.topic {
+}
+
+.topic-title {
+  padding:15px;
+  border-radius: 1px;
+  border-style: solid;
+  border-color: #D8D8D8;
+  border-width: 1px;
+}
+
+.topic-reply {
+  padding:15px;
   border-radius: 1px;
   border-style: solid;
   border-color: #D8D8D8;
