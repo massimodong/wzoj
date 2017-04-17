@@ -25,6 +25,8 @@ class AuthServiceProvider extends ServiceProvider
 	User::class => UserPolicy::class,
 	Problemset::class => ProblemsetPolicy::class,
 	Solution::class => SolutionPolicy::class,
+	ForumTopic::class => ForumTopicPolicy::class,
+	ForumReply::class => ForumReplyPolicy::class,
     ];
 
     /**
