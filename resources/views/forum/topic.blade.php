@@ -12,6 +12,10 @@
 {{csrf_field()}}
 {{method_field('DELETE')}}
 </form>
+<form method="POST" id="delete-tag-form">
+{{csrf_field()}}
+{{method_field('DELETE')}}
+</form>
 
 <div class="topic">
   <div class="topic-title row">
@@ -20,17 +24,28 @@
         <strong>{{$topic->title}}</strong>
       </div>
       @can ('update', $topic)
+        <form class="pull-right" method="POST" action="/forum/{{$topic->id}}/tags">
+          {{csrf_field()}}
+          <input name="value" required>
+          <button type="submit" class="btn btn-default">{{trans('wzoj.tags')}}</button>
+        </form>
+      @endcan
+      @can ('update', $topic)
         <a href="#" onclick="show_change_title_form();return false;">{{trans('wzoj.edit')}}</a>
       @endcan
       @can ('delete', $topic)
       	<a href="#" onclick="$('#delete-form').submit();return false;">{{trans('wzoj.delete')}}</a>
       @endcan
+      @foreach ($topic->tags as $tag)
+	<span class="label label-info"
+	@can ('update', $topic)
+		style="cursor:pointer" onclick="deleteTag({{$tag->id}})"
+	@endcan
+	 >{{$tag->value}}</span>
+      @endforeach
     </div>
     <div class="col-xs-2">
       <a href="/users/{{$topic->user_id}}">{{$topic->user->name}}</a><br>
-      @foreach ($topic->tags as $tag)
-	{{$tag->value}}
-      @endforeach
     </div>
   </div>
   @foreach ($replies as $reply)
@@ -83,6 +98,10 @@ function show_change_title_form(){
 			"<input name='title' value='{{$topic->title}}'>"+
 			"<button type='submit' class='btn btn-default'>{{trans('wzoj.submit')}}</button>"+
 			"</form>");
+}
+function deleteTag( id ){
+	$('#delete-tag-form').attr('action', '/forum/tags/' + id);
+	$('#delete-tag-form').submit();
 }
 </script>
 @endsection

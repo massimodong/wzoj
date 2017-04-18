@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 use App\ForumTopic;
 use App\ForumReply;
+use App\ForumTag;
 
 use Gate;
 use DB;
@@ -17,6 +18,7 @@ class ForumController extends Controller
 {
 	public function getIndex(){
 		$topics = ForumTopic::orderBy('updated_at', 'desc')->take(10)->get();
+		$topics->load('replies', 'user');
 		return view('forum.index',[
 			'topics' => $topics,
 		]);
@@ -38,6 +40,7 @@ class ForumController extends Controller
 
 	public function getTopic($id, Request $request){
 		$topic = ForumTopic::findOrFail($id);
+		$topic->load('replies.user', 'replies.topic', 'tags', 'user');
 
 		//add views
 		if(!in_array($topic->id , session('topics_read',[])) ){
@@ -95,5 +98,22 @@ class ForumController extends Controller
 		}else{
 			$reply->delete();
 		}
+	}
+
+	public function postTag($id, Request $request){
+		$topic = ForumTopic::findOrFail($id);
+		$this->authorize('update', $topic);
+		$this->validate($request, [
+			'value' => 'required|min:1|max:10',
+		]);
+		$topic->tags()->create(["value" => $request->value]);
+		return back();
+	}
+
+	public function deleteTag($id){
+		$tag = ForumTag::findOrFail($id);
+		$this->authorize('update', $tag->topic);
+		$tag->delete();
+		return back();
 	}
 }
