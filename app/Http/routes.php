@@ -75,6 +75,11 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::post('forum', 'ForumController@postIndex');
 		Route::get('forum/create', 'ForumController@getCreate')->middleware('auth');
 		Route::get('forum/{id}', 'ForumController@getTopic');
+		Route::delete('forum/{id}', 'ForumController@deleteTopic')->middleware('auth');
+
+		Route::put('forum/replies/{id}', 'ForumController@putReply')->middleware('auth');
+		Route::post('forum/{id}', 'ForumController@postReply')->middleware('auth');
+		Route::delete('forum/replies/{id}', 'ForumController@deleteReply')->middleware('auth');
 
 		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
 		Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){

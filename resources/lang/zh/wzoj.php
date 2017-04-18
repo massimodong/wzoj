@@ -267,4 +267,5 @@ return [
     'year' => '年',
 
     'before' => '前',
+    'reply' => '回复',
 ];

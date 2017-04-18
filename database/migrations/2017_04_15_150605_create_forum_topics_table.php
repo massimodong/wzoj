@@ -18,6 +18,7 @@ class CreateForumTopicsTable extends Migration
 	    $table->string('title');
 	    $table->integer('cnt_views');
             $table->timestamps();
+	    $table->softDeletes();
         });
     }
 

@@ -19,6 +19,7 @@ class CreateForumRepliesTable extends Migration
 	    $table->integer('index');
 	    $table->longText('content');
             $table->timestamps();
+	    $table->softDeletes();
         });
     }
 

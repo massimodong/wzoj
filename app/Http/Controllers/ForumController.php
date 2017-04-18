@@ -8,6 +8,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\ForumTopic;
+use App\ForumReply;
+
+use Gate;
 
 class ForumController extends Controller
 {
@@ -48,5 +51,35 @@ class ForumController extends Controller
 			'topic' => $topic,
 			'replies' => $replies,
 		]);
+	}
+
+	public function deleteTopic($id){
+		$topic = ForumTopic::findOrFail($id);
+		$this->authorize('delete', $topic);
+		$topic->delete();
+		return redirect('/forum');
+	}
+
+	public function postReply($id, Request $request){
+		$topic = ForumTopic::findOrFail($id);
+		$topic->reply($request->user(), $request->content);
+		return back();
+	}
+	public function putReply($id, Request $request){
+		$reply = ForumReply::findOrFail($id);
+		$this->authorize('update', $reply);
+		$reply->content = $request->content;
+		$reply->save();
+		return back();
+	}
+
+	public function deleteReply($id){
+		$reply = ForumReply::findOrFail($id);
+		$this->authorize('delete', $reply);
+		if($reply->index == 1){
+			$reply->topic->delete();
+		}else{
+			$reply->delete();
+		}
 	}
 }
