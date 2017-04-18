@@ -54,6 +54,14 @@ class ForumController extends Controller
 		]);
 	}
 
+	public function putTopic($id, Request $request){
+		$topic = ForumTopic::findOrFail($id);
+		$this->authorize('update', $topic);
+		$topic->title = $request->title;
+		$topic->save();
+		return back();
+	}
+
 	public function deleteTopic($id){
 		$topic = ForumTopic::findOrFail($id);
 		$this->authorize('delete', $topic);

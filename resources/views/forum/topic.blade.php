@@ -7,16 +7,23 @@
 @endsection
 
 @section ('content')
+
+<form method="POST" id="delete-form">
+{{csrf_field()}}
+{{method_field('DELETE')}}
+</form>
+
 <div class="topic">
   <div class="topic-title row">
     <div class="col-xs-10">
-      <strong>{{$topic->title}}</strong>
+      <div id="title">
+        <strong>{{$topic->title}}</strong>
+      </div>
+      @can ('update', $topic)
+        <a href="#" onclick="show_change_title_form();return false;">{{trans('wzoj.edit')}}</a>
+      @endcan
       @can ('delete', $topic)
-        <form method="POST">
-	  {{csrf_field()}}
-          {{method_field('DELETE')}}
-	  <button type="submit" class="btn btn-default">{{trans('wzoj.delete')}}</button>
-        </form>
+      	<a href="#" onclick="$('#delete-form').submit();return false;">{{trans('wzoj.delete')}}</a>
       @endcan
     </div>
     <div class="col-xs-2">
@@ -68,6 +75,14 @@ function deleteReply(id){
 	}, function(result){
 	  $('#reply-'+id).remove();
 	});
+}
+function show_change_title_form(){
+	$('#title').html("<form method='POST'>"+
+			"<input hidden name='_token' value='{{csrf_token()}}'>"+
+			"<input hidden name='_method' value='PUT'>"+
+			"<input name='title' value='{{$topic->title}}'>"+
+			"<button type='submit' class='btn btn-default'>{{trans('wzoj.submit')}}</button>"+
+			"</form>");
 }
 </script>
 @endsection

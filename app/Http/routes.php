@@ -75,6 +75,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::post('forum', 'ForumController@postIndex');
 		Route::get('forum/create', 'ForumController@getCreate')->middleware('auth');
 		Route::get('forum/{id}', 'ForumController@getTopic');
+		Route::put('forum/{id}', 'ForumController@putTopic')->middleware('auth');
 		Route::delete('forum/{id}', 'ForumController@deleteTopic')->middleware('auth');
 
 		Route::put('forum/replies/{id}', 'ForumController@putReply')->middleware('auth');

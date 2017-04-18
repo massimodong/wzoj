@@ -8,6 +8,6 @@ class ForumTag extends Model
 {
 	protected $guarded = ['id'];
 	public function topic(){
-		return $this->belongsTo('App\ForumTopic');
+		return $this->belongsTo('App\ForumTopic', 'forum_topic_id');
 	}
 }
