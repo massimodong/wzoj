@@ -33,7 +33,7 @@ class ForumReplyPolicy
     }
 
     public function delete(User $user, ForumReply $reply){
-	    return $user->id === $replu->user_id ||
+	    return $user->id === $reply->user_id ||
 		    $user->id === $reply->topic->user_id;
     }
 }

@@ -339,4 +339,5 @@ textarea {
   border-style: solid;
   border-color: #D8D8D8;
   border-width: 1px;
+  word-break:break-all;
 }

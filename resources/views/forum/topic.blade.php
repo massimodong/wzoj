@@ -42,11 +42,12 @@
 	{{ojShortTime(strtotime($reply->updated_at))}}
 	@can ('delete', $reply)
 	  @if ($reply->index != 1)
-	    <a href="#" onclick="deleteReply({{$reply->id}})">{{trans('wzoj.delete')}}</a>
+	    <a href="#" onclick="deleteReply({{$reply->id}});return false;">{{trans('wzoj.delete')}}</a>
 	  @endif
 	@endcan
     </div>
   </div>
+  <div class="top-buffer-sm"></div>
   @endforeach
 </div>
 

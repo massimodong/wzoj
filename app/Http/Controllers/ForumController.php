@@ -11,6 +11,7 @@ use App\ForumTopic;
 use App\ForumReply;
 
 use Gate;
+use DB;
 
 class ForumController extends Controller
 {
@@ -63,14 +64,19 @@ class ForumController extends Controller
 	public function postReply($id, Request $request){
 		$topic = ForumTopic::findOrFail($id);
 		$topic->reply($request->user(), $request->content);
-		return back();
+		ForumTopic::where('id', $topic->id)
+			->update(['updated_at' => DB::raw('NOW()')]);
+		return redirect('/forum/'.$topic->id.'#content');
 	}
 	public function putReply($id, Request $request){
 		$reply = ForumReply::findOrFail($id);
 		$this->authorize('update', $reply);
 		$reply->content = $request->content;
 		$reply->save();
-		return back();
+
+		ForumTopic::where('id', $reply->forum_topic_id)
+			->update(['updated_at' => DB::raw('NOW()')]);
+		return redirect('/forum/'.$reply->forum_topic_id.'#reply-'.$reply->id);
 	}
 
 	public function deleteReply($id){
