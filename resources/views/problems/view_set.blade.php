@@ -66,8 +66,11 @@
 	</div>
       </div>
       <div class="panel panel-default">
-        <div class="panel-heading"><a href="#">{{trans('wzoj.forum')}}</a></div>
+        <div class="panel-heading"><a href="/forum?tags[]=p{{$problem->id}}">{{trans('wzoj.forum')}}</a></div>
         <div class="panel-body">
+	  @foreach ($topics as $topic)
+	    <a href="/forum/{{$topic->id}}">{{$topic->title}}</a><br>
+	  @endforeach
 	</div>
       </div>
     </div>

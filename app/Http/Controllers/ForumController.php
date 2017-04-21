@@ -33,11 +33,21 @@ class ForumController extends Controller
 		}
 		return $ret;
 	}
-	public function getIndex(){
-		$topics = ForumTopic::orderBy('updated_at', 'desc')->take(self::PAGE_LIMIT)->get();
+	public function getIndex(Request $request){
+		$topics = ForumTopic::orderBy('updated_at', 'desc')->take(self::PAGE_LIMIT);
+		if(isset($request->tags)){
+			//todo:multi tags
+			$topics = $topics->whereIn('id', function($query) use($request){
+				$query->select('forum_topic_id')
+				      ->from(with(new \App\ForumTag)->getTable())
+				      ->where('value', '=', $request->tags[0]);
+			});
+		}
+		$topics=$topics->get();
 		$topics->load('replies', 'user');
 		return view('forum.index',[
 			'topics' => $this->getTopicsPublic($topics),
+			'request' => $request,
 		]);
 	}
 
@@ -140,8 +150,16 @@ class ForumController extends Controller
 		]);
 		$topics = ForumTopic::where('updated_at', '<', $request->last_time)
 			->orderBy('updated_at', 'desc')
-			->take(self::PAGE_LIMIT)
-			->get();
+			->take(self::PAGE_LIMIT);
+		if(isset($request->tags)){
+			//todo:multi tags
+			$topics = $topics->whereIn('id', function($query) use($request){
+				$query->select('forum_topic_id')
+				      ->from(with(new \App\ForumTag)->getTable())
+				      ->where('value', '=', $request->tags[0]);
+			});
+		}
+		$topics = $topics->get();
 		$topics->load('replies', 'user');
 		return $this->getTopicsPublic($topics);
 	}

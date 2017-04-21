@@ -61,7 +61,12 @@ function expand(){
 		return;
 	}
 	isExpanding = true;
-	$.get("/forum/ajax-get-topics", {last_time:lastTime})
+	$.get("/forum/ajax-get-topics", {
+			last_time:lastTime,
+			@if (isset($request->tags))
+			"tags[]":"{{$request->tags[0]}}",
+			@endif
+		})
 		.done(function( data ){
 			if(data.length == 0){
 				return;
