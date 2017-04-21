@@ -37,10 +37,10 @@ function ojShortTime($time){
 	if($dist < 60){
 		return $dist.trans('wzoj.seconds').trans('wzoj.before');
 	}else if($dist < 3600){
-		$min = intdiv($dist, 60);
+		$min = floor($dist/60);
 		return $min.trans('wzoj.minutes').trans('wzoj.before');
 	}else if($dist < 216000){
-		$hour = intdiv($dist, 3600);
+		$hour = floor($dist/3600);
 		return $hour.trans('wzoj.hours').trans('wzoj.before');
 	}else{
 		$year = date('Y', $time);
