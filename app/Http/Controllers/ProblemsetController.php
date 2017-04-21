@@ -251,15 +251,17 @@ class ProblemsetController extends Controller
 			];
 		});
 
-		$topics = \App\ForumTopic::whereIn('id', function($query) use($problem){
-			$query->select('forum_topic_id')
-			      ->from(with(new \App\ForumTag)->getTable())
-			      ->where('value', '=', 'p'.$problem->id);
-		})
-		->orderBy('updated_at', 'desc')
-		->take(3)
-		->get();
-
+		$topics = Cache::tags(['problem_topics'])->remember($problem->id, 1, function() use($problem){
+			return \App\ForumTopic::whereIn('id', function($query) use($problem){
+					$query->select('forum_topic_id')
+					->from(with(new \App\ForumTag)->getTable())
+					->where('value', '=', 'p'.$problem->id);
+				})
+				->orderBy('updated_at', 'desc')
+				->take(3)
+				->get();
+		});
+		
 		$tags = Cache::tags(['problem_tags'])->rememberForever($problem->id, function() use($problem){
 			return $problem->tags;
 		});
