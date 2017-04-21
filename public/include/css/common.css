@@ -294,7 +294,9 @@ textarea {
 }
 
 .new_post_sidebar {
+    background: -webkit-linear-gradient(top,#086ed5,#055db5);
     background: linear-gradient(to bottom,#086ed5,#055db5);
+    background-image: -webkit-linear-gradient(rgb(215, 226, 239), rgb(40, 147, 255));
     background-image: linear-gradient(rgb(215, 226, 239), rgb(40, 147, 255));
     background-position-x: initial;
     background-position-y: initial;
