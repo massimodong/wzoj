@@ -11,6 +11,8 @@
 |
 */
 
+Route::get('forum/ajax-get-topics', 'ForumController@getAjaxTopics');
+
 Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_errors', 'csrf', 'antibot']], function(){
 
 		Route::get('/','HomeController@index');
@@ -71,6 +73,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 
 		Route::get('problem-search', 'HomeController@problemSearch')->middleware('auth');
 
+		//forum
 		Route::get('forum', 'ForumController@getIndex');
 		Route::post('forum', 'ForumController@postIndex');
 		Route::get('forum/create', 'ForumController@getCreate')->middleware('auth');
@@ -84,6 +87,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 
 		Route::post('forum/{id}/tags', 'ForumController@postTag')->middleware('auth');
 		Route::delete('forum/tags/{id}', 'ForumController@deleteTag')->middleware('auth');
+		//end forum
 
 		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
 		Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){

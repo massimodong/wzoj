@@ -6,6 +6,10 @@
 {{$topic->title}}
 @endsection
 
+@section ('sidebar')
+<li id='home_sidebar'><a href="/"> {{trans('wzoj.home')}} </a></li>
+@endsection
+
 @section ('content')
 
 <form method="POST" id="delete-form">

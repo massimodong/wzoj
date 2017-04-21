@@ -16,11 +16,28 @@ use DB;
 
 class ForumController extends Controller
 {
+	const PAGE_LIMIT = 4;
+	public function getTopicsPublic($topics){
+		$ret = [];
+		foreach($topics as $topic){
+			array_push($ret, [
+				'id' => $topic->id,
+				'title' => $topic->title,
+				'preview' => (\Html2Text\Html2Text::convert($topic->replies[0]->content)),
+				'user_id' => $topic->user_id,
+				'user_name' => $topic->user->name,
+				'updated_time' => ojShortTime(strtotime($topic->updated_at)),
+				'updated_at' => $topic->updated_at,
+				'cnt_views' => $topic->cnt_views,
+			]);
+		}
+		return $ret;
+	}
 	public function getIndex(){
-		$topics = ForumTopic::orderBy('updated_at', 'desc')->take(10)->get();
+		$topics = ForumTopic::orderBy('updated_at', 'desc')->take(self::PAGE_LIMIT)->get();
 		$topics->load('replies', 'user');
 		return view('forum.index',[
-			'topics' => $topics,
+			'topics' => $this->getTopicsPublic($topics),
 		]);
 	}
 
@@ -115,5 +132,17 @@ class ForumController extends Controller
 		$this->authorize('update', $tag->topic);
 		$tag->delete();
 		return back();
+	}
+
+	public function getAjaxTopics(Request $request){
+		$this->validate($request, [
+			"last_time" => "required",
+		]);
+		$topics = ForumTopic::where('updated_at', '<', $request->last_time)
+			->orderBy('updated_at', 'desc')
+			->take(self::PAGE_LIMIT)
+			->get();
+		$topics->load('replies', 'user');
+		return $this->getTopicsPublic($topics);
 	}
 }

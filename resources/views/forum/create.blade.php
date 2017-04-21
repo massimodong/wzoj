@@ -7,7 +7,8 @@
 @endsection
 
 @section ('sidebar')
-<li><a href="#" onclick="post_topic();return false;">{{trans('wzoj.new_post')}}</a></li>
+<li id='home_sidebar'><a href="/"> {{trans('wzoj.home')}} </a></li>
+<li id='newpost_sidebar' class="new_post_sidebar"><a href="#" onclick="post_topic();return false;" style="color:#FFFFFF;"> {{trans('wzoj.new_post')}} </a></li>
 @endsection
 
 @section ('content')
