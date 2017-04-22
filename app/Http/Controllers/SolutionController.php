@@ -38,16 +38,17 @@ class SolutionController extends Controller
 		    'score_max' => 'integer|min:0|max:100',
 		    'language' => 'integer|in:0,1,2,4',
 	    ]);
+	    $all_solutions = true;
 	    $max_id = Solution::max('id');
 	    if(isset($request->top)){
 		    $top = $request->top;
+		    $all_solutions = false;
 	    }else{
 		    $top = $max_id;
 	    }
 
 	    $solutions = Solution::where('id', '<>', 0);
 	    // limits
-	    $all_solutions = true;
 	    //todo: abandon url_limits
 	    $url_limits = '';
 	    $problemset = NULL;
