@@ -20,10 +20,14 @@ class ForumController extends Controller
 	public function getTopicsPublic($topics){
 		$ret = [];
 		foreach($topics as $topic){
+			$content = $topic->replies[0]->content;
+			if(!empty($content)){
+				$content = \Html2Text\Html2Text::convert($content);
+			}
 			array_push($ret, [
 				'id' => $topic->id,
 				'title' => $topic->title,
-				'preview' => (\Html2Text\Html2Text::convert($topic->replies[0]->content)),
+				'preview' => $content,
 				'user_id' => $topic->user_id,
 				'user_name' => $topic->user->name,
 				'updated_time' => ojShortTime(strtotime($topic->updated_at)),
@@ -87,6 +91,9 @@ class ForumController extends Controller
 	public function putTopic($id, Request $request){
 		$topic = ForumTopic::findOrFail($id);
 		$this->authorize('update', $topic);
+		$this->validate($request, [
+			'title' => 'required',
+		]);
 		$topic->title = $request->title;
 		$topic->save();
 		return back();
