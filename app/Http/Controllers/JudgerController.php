@@ -15,6 +15,7 @@ use Log;
 use App\Solution;
 use App\Problem;
 use App\Testcase;
+use App\Sim;
 
 class JudgerController extends Controller
 {
@@ -203,5 +204,47 @@ class JudgerController extends Controller
 		$solution = Solution::findOrFail($request->solution_id);
 		$answer = $solution->answerfiles()->where('filename', $request->filename)->first();
 		return response()->json($answer);
+	}
+
+	public function getGetSimSolutions(){
+		$solutions = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
+			->whereNull('solutions.sim_id')
+			->where(function($query){
+				$query->where('solutions.score', '>=', 100)
+				      ->orWhere(function($query){
+						$query->where('problemsets.type', '<>', 'set')
+						      ->where('solutions.score', '>=', 30);
+					});
+			})
+			->select('solutions.id')
+			->take(5)
+			->get();
+		return response()->json($solutions);
+	}
+
+	public function postUpdateSim(Request $request){
+		if($request->solution2_id ==0 || $request->rate < 10){
+			Solution::where('id', $request->solution_id)
+				->update(['sim_id' => -1]);
+			return response()->json(['ok' => true]);
+		}
+		$solution1 = Solution::where('id', $request->solution_id)
+					->select(['user_id'])->first();
+		$solution2 = Solution::where('id', $request->solution2_id)
+					->select(['user_id'])->first();
+		if($solution1->user_id == $solution2->user_id){
+			Solution::where('id', $request->solution_id)
+				->update(['sim_id' => -1]);
+			return response()->json(['ok' => true]);
+		}else{
+			$sim = Sim::create([
+				'solution1_id' => $request->solution_id,
+				'solution2_id' => $request->solution2_id,
+				'rate' => $request->rate,
+			]);
+			Solution::where('id', $request->solution_id)
+				->update(['sim_id' => $sim->id]);
+		}
+		return response()->json(['ok' => true]);
 	}
 }
