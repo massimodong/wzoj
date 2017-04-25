@@ -61,6 +61,11 @@
 </table>
 <hr>
 
+@if (isset($solution->sim) && $solution->sim->rate > ojoption('sim_threshold'))
+<span style="color:yellow" class="glyphicon glyphicon-warning-sign"></span>
+{{trans('wzoj.sim_warning', ['sid' => $solution->sim->solution2_id, 'rate' => $solution->sim->rate])}}
+@endif
+
 @if ($solution->problem->type <> 3)
   @can ('view_code', $solution)
   <h3>{{trans('wzoj.code')}}</h3>

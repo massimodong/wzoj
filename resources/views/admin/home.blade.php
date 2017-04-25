@@ -30,6 +30,14 @@
     </div>
   </div>
 
+  <h3>{{trans('wzoj.sim_options')}}</h3>
+  <div class="form-group">
+    <label for="sim_threshold" class="col-sm-2 control-label">{{trans('wzoj.sim_threshold')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="sim_threshold" name="sim_threshold" value="{{ojoption('sim_threshold')}}">
+    </div>
+  </div>
+
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>

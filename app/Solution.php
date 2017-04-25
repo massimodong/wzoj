@@ -49,11 +49,15 @@ class Solution extends Model
 		return $this->hasMany('App\Answerfile');
 	}
 
+	public function sim(){
+		return $this->belongsTo('App\Sim');
+	}
+
 	//public part of the solutions
 	public function scopePublic($query){
 		$query->select(['solutions.id', 'solutions.user_id', 'solutions.problem_id', 'solutions.score', 'solutions.status',
 				'solutions.time_used', 'solutions.memory_used','solutions.language', 'solutions.code_length',
-				'solutions.judger_id', 'solutions.judged_at', 'solutions.created_at'])
+				'solutions.judger_id', 'solutions.judged_at', 'solutions.sim_id', 'solutions.created_at'])
 			->addSelect(DB::raw('solutions.ce is NOT NULL as ce'))
 			->with(['user' => function($query){
 				$query->select(['id', 'name', 'fullname', 'class']);
@@ -63,6 +67,7 @@ class Solution extends Model
 			  }])
 			->with(['judger' => function($query){
 				$query->select(['id', 'name']);
-			  }]);
+			  }])
+			->with('sim');
 	}
 }

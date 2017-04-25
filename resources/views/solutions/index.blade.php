@@ -78,11 +78,11 @@
 	<th style='width:15%'>{{trans('wzoj.problem')}}</th>
 	<th style='width:12%'>{{trans('wzoj.status')}}</th>
 	<th style='width:8%'>{{trans('wzoj.score')}}</th>
-	<th style='width:6%'>{{trans('wzoj.time_used')}}</th>
+	<th style='width:7%'>{{trans('wzoj.time_used')}}</th>
 	<th style='width:10%'>{{trans('wzoj.memory_used')}}</th>
 	<th style='width:7%'>{{trans('wzoj.language')}}</th>
 	<th style='width:7%'>{{trans('wzoj.code_length')}}</th>
-	<th style='width:8%'>{{trans('wzoj.judger')}}</th>
+	<th style='width:7%'>{{trans('wzoj.judger')}}</th>
 	<th style='width:12%'>{{trans('wzoj.submitted_at')}}</th>
     </tr>
 </thead>
@@ -103,7 +103,12 @@
 	@if ($solution->ce)
 	<td class='solution-score'>{{trans('wzoj.compile_error')}}</td>
 	@else
-	<td class='solution-score'>{{$solution->score}}</td>
+	<td class='solution-score'>
+	  {{$solution->score}}
+	    @if (isset($solution->sim) && $solution->sim->rate > ojoption('sim_threshold'))
+	      <span style="color:yellow" title="{{trans('wzoj.sim_warning', ['sid' => $solution->sim->solution2_id, 'rate' => $solution->sim->rate])}}" class="glyphicon glyphicon-warning-sign"></span>
+	    @endif
+	</td>
 	@endif
 	<td class='solution-timeused'>{{$solution->time_used}}ms</td>
 	<td class='solution-memoryused'>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>

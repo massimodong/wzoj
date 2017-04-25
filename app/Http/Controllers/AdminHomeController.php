@@ -17,6 +17,9 @@ class AdminHomeController extends Controller
 	}
 
 	public function postOptions(Request $request){
+		$this->validate($request, [
+			'sim_threshold' => 'integer|min:1|max:100',
+		]);
 		foreach($request->except(['_token']) as $option => $value){
 			Option::where('name', $option)->update(['value' => $value]);
 		}
