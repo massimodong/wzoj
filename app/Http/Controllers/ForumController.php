@@ -20,14 +20,10 @@ class ForumController extends Controller
 	public function getTopicsPublic($topics){
 		$ret = [];
 		foreach($topics as $topic){
-			$content = $topic->replies[0]->content;
-			if(!empty($content)){
-				$content = \Html2Text\Html2Text::convert($content);
-			}
 			array_push($ret, [
 				'id' => $topic->id,
 				'title' => $topic->title,
-				'preview' => $content,
+				'preview' => $topic->preview,
 				'user_id' => $topic->user_id,
 				'user_name' => $topic->user->name,
 				'updated_time' => ojShortTime(strtotime($topic->updated_at)),
@@ -60,8 +56,14 @@ class ForumController extends Controller
 	}
 
 	public function postIndex(Request $request){
+		$preview = $request->content;
+		if(!empty($preview)){
+			$preview = \Html2Text\Html2Text::convert($preview);
+			$preview = substr($preview,0 , 200);
+		}
 		$topic = $request->user()->topics()->create([
 			'title' => $request->title,
+			'preview' => $preview,
 			'created_at' => date('Y-m-d H:i:s'),
 			'updated_at' => date('Y-m-d H:i:s'),
 		]);
@@ -116,8 +118,18 @@ class ForumController extends Controller
 	public function putReply($id, Request $request){
 		$reply = ForumReply::findOrFail($id);
 		$this->authorize('update', $reply);
-		$reply->content = $request->content;
+		$reply->content = \Purifier::clean($request->content, 'forum');
 		$reply->save();
+
+		if($reply->index == 1){
+			$preview = $reply->content;
+			if(!empty($preview)){
+				$preview = \Html2Text\Html2Text::convert($preview);
+				$preview = substr($preview,0 , 200);
+			}
+			ForumTopic::where('id', $reply->forum_topic_id)
+				->update(['preview' => $preview]);
+		}
 
 		ForumTopic::where('id', $reply->forum_topic_id)
 			->update(['updated_at' => DB::raw('NOW()')]);

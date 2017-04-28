@@ -25,6 +25,7 @@ class ForumTopic extends Model
 	}
 
 	public function reply($user, $content){
+		$content = \Purifier::clean($content, 'forum');
 		DB::insert('INSERT INTO `forum_replies` (`user_id`, `forum_topic_id`, `index`, `content`,`created_at`,`updated_at`)
 				SELECT ?, ?, IFNULL(MAX(`index`), 0)+1, ?, ?, ?
 				FROM `forum_replies` WHERE `forum_topic_id` = ?',[

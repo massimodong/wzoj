@@ -59,7 +59,7 @@
       {{method_field('PUT')}}
       <div class="topic-reply row">
         <div @can ('update', $reply) class="posteditor_inline" @endcan>
-        {!!Purifier::clean($reply->content, 'forum')!!}
+        {!! $reply->content !!}
 	</div>
       </div>
     </form>
