@@ -130,4 +130,13 @@ class HomeController extends Controller
 				'problemsets' => $problemsets_id,
 		]);
 	}
+
+	public function sourceCompare(Request $request){
+		$lsolution = \App\Solution::findOrFail($request->lsid);
+		$rsolution = \App\Solution::findOrFail($request->rsid);
+		return view('source_compare',[
+			'lsolution' => $lsolution,
+			'rsolution' => $rsolution,
+		]);
+	}
 }

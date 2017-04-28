@@ -73,6 +73,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 
 		Route::get('problem-search', 'HomeController@problemSearch')->middleware('auth');
 
+		Route::get('source-compare', 'HomeController@sourceCompare')->middleware('admin');
+
 		//forum
 		Route::get('forum', 'ForumController@getIndex');
 		Route::post('forum', 'ForumController@postIndex');

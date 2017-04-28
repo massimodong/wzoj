@@ -38,7 +38,9 @@ module.exports = function(grunt) {
 			'isotope',
 			'bootstrap-select',
 			'chart.js',
-			'prism'
+			'prism',
+			'codemirror',
+			'Mergely'
 		],
 		mainFiles: {
 			'bootstrap':['dist/js/bootstrap.js', 'dist/css/bootstrap.css'],

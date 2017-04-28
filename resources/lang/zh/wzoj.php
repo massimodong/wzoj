@@ -272,4 +272,6 @@ return [
     'sim_warning' => '与#:sid代码相似度:rate%',
     'sim_options' => '相似度检测设置',
     'sim_threshold' => '相似度大于多少显示',
+
+    'source_compare' => '代码比较',
 ];
