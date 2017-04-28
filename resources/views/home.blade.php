@@ -24,6 +24,7 @@
   </div>
   <div class="col-xs-12">
     <h3>{{trans('wzoj.recent_contests')}}</h3>
+    <div style="width:795;padding:15px">
     <ul class="list-group">
       @foreach ($recent_contests as $problemset)
 	<li class="list-group-item row">
@@ -32,6 +33,7 @@
 	</li>
       @endforeach
     </ul>
+    </div>
   </div>
   <div class="col-xs-12">
     <h3>{{trans('wzoj.user_rank_list')}}</h3>
