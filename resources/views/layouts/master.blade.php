@@ -9,6 +9,7 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="google" content="notranslate" />
     <link rel="icon" href="/favicon.ico">
 
     <title>@yield('title')</title>
