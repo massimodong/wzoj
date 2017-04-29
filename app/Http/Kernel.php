@@ -33,5 +33,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
 	'admin' => \App\Http\Middleware\VerifyIfAdmin::class,
 	'judger'=> \App\Http\Middleware\VerifyIfJudger::class,
+	'contest' => \App\Http\Middleware\OnlyContest::class,
     ];
 }

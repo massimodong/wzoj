@@ -13,7 +13,7 @@
 
 Route::get('forum/ajax-get-topics', 'ForumController@getAjaxTopics');
 
-Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_errors', 'csrf', 'antibot']], function(){
+Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_errors', 'csrf', 'antibot','contest']], function(){
 
 		Route::get('/','HomeController@index');
 		Route::get('faq', 'HomeController@faq');

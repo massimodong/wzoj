@@ -58,6 +58,7 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+	  @if (empty(\Request::get('contests')))
 	  @section ('sidebar')
             <li id='home_sidebar'><a href="/"> {{trans('wzoj.home')}} </a></li>
             <li id='problemsets_sidebar'><a href="/s"> {{trans('wzoj.problemsets')}} </a></li>
@@ -66,6 +67,12 @@
             <li id='forum_sidebar'><a href="/forum"> {{trans('wzoj.forum')}} </a></li>
             <li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li>
           @show
+	  @else
+	  @section ('sidebar')
+            <li id='contests_sidebar'><a href="/contests"> {{trans('wzoj.contests')}} </a></li>
+            <li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li>
+          @show
+	  @endif
           </ul>
           <ul class="nav navbar-nav navbar-right">
 	    @if (Auth::check())

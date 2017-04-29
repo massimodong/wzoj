@@ -47,7 +47,12 @@ class ProblemsetController extends Controller
 		return view('problemsets.index',['problemsets' => $problemsets, 'tags' => \App\ProblemTag::all()]);
 	}
 	public function getContestsIndex(){
-		$contests = Problemset::where('type', '<>', 'set')->orderBy('contest_start_at', 'desc')->get();
+		$contests = Problemset::where('type', '<>', 'set')->orderBy('contest_start_at', 'desc');
+		if(!empty(\Request::get('contests'))){
+			$contests = $contests->whereIn('id', \Request::get('contests'));
+		}
+
+		$contests = $contests->get();
 		return view('problemsets.contests',['problemsets' => $contests]);
 	}
 
@@ -56,7 +61,6 @@ class ProblemsetController extends Controller
 		if(!$problemset->public){
 			if(Gate::denies('view', $problemset)){
 				if(Auth::check()){
-					//todo
 					abort(403);
 				}else{
 					return redirect('/auth/login');

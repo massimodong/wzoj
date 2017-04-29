@@ -53,12 +53,19 @@ class SolutionController extends Controller
 	    $url_limits = '';
 	    $problemset = NULL;
 	    if(isset($request->problemset_id) && $request->problemset_id <> ''){
+		    if(!empty(\Request::get('contests'))){
+			    if(!in_array($request->problemset_id, \Request::get('contests'))) abort(403);
+		    }
 		    $problemset = Problemset::find($request->problemset_id);
 		    if($problemset){
 			    $solutions = $solutions->where('problemset_id', $problemset->id);
 			    $url_limits.='&problemset_id='.$problemset->id;
 		    }
 		    $all_solutions = false;
+	    }else{
+		    if(!empty(\Request::get('contests'))){
+			    abort(403);
+		    }
 	    }
 
 	    if(isset($request->user_name) && $request->user_name <> ''){
@@ -180,6 +187,12 @@ class SolutionController extends Controller
 	    $problemset = Problemset::findOrFail($request->problemset_id);
 	    $this->authorize('view',$problemset);
 
+	    if(!empty(\Request::get('contests'))){
+		    if(!in_array($problemset->id, \Request::get('contests'))){
+			    abort(403);
+		    }
+	    }
+
 	    $cnt_second_solutions = $request->user()->solutions()
 		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 second')))
 		    ->count();
@@ -238,6 +251,13 @@ class SolutionController extends Controller
 	    $solution = Cache::tags(['solutions'])->remember($id, 1, function() use($id){
 			return Solution::findOrFail($id);
 	    });
+
+	    if(!empty(\Request::get('contests'))){
+		    if(!in_array($solution->problemset_id, \Request::get('contests'))){
+			    abort(403);
+		    }
+	    }
+
 	    //$this->authorize('view',$solution);
 	    $testcases = Cache::tags(['solutions', 'testcases'])->remember($id, 1, function() use($solution){
 			return $solution->testcases;

@@ -17,6 +17,9 @@ class HomeController extends Controller
 {
 	const USER_LIMIT = 100;
 	public function index(){
+		if(!empty(\Request::get('contests'))){
+			return redirect('/contests');
+		}
 		$recent_problemsets = Cache::tags(['wzoj'])->remember('recent_problemsets', 1, function(){
 			return \App\Problemset::where('type', '=', 'set')->orderBy('updated_at', 'desc')->take(6)->get();
 		});

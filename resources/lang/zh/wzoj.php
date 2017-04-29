@@ -274,4 +274,7 @@ return [
     'sim_threshold' => '相似度大于多少显示',
 
     'source_compare' => '代码比较',
+
+    'contest_options' => '比赛设置',
+    'contest_problemsets' => '比赛题库',
 ];
