@@ -101,12 +101,14 @@
     </nav>
 
     <div id="alerts" class="container">
+    @if (isset($errors))
     @foreach ($errors->all() as $error)
 	<div class="alert alert-warning alert-dismissable">
 	    <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
 	    {{$error}}
         </div>
     @endforeach
+    @endif
     @if (session('status'))
     	<div class="alert alert-success">
         	{{ session('status') }}

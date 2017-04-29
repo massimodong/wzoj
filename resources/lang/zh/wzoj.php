@@ -15,6 +15,7 @@ return [
     'or' => '或',
     'auto' => '自动',
     'add' => '添加',
+    'back' => '返回',
 
     'class' => '学校',
     'home' => '主页',
@@ -277,4 +278,8 @@ return [
 
     'contest_options' => '比赛设置',
     'contest_problemsets' => '比赛题库',
+
+
+    'msg_403_error' => '访问的内容在权限之外',
+    'msg_404_error' => '访问的内容不存在',
 ];
