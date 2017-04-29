@@ -5,6 +5,9 @@ namespace App\Providers;
 use Validator;
 use Illuminate\Support\ServiceProvider;
 
+use DB;
+use Log;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -23,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
 	     $this->publishes([
 			    'vendor/tinymce/tinymce' => public_path('vendor/tinymce'),
 	    ],'wzoj');
+	    DB::listen(function ($query) {
+		Log::info("DB QUERY:".$query);
+	    });
     }
 
     /**
