@@ -104,11 +104,34 @@ class AuthController extends Controller
     }
 
     private function authenticated(Request $request, $user){
+	    //roles
 	    $roles = [];
 	    foreach($user->roles as $role){
 		    $roles[$role->name] = true;
 	    }
 	    $request->session()->put('roles', $roles);
+
+	    //problemsets
+	    $problemsets_id = [];
+	    $problemsets = [];
+	    $groups = $user->groups()->with('problemsets')->get();
+	    foreach($groups as $group){
+		    foreach($group->problemsets as $problemset){
+			    if(!isset($problemsets_id[$problemset->id])){
+				    $problemsets_id[$problemset->id] = true;
+				    array_push($problemsets, $problemset);
+			    }
+		    }
+	    }
+	    $public_problemsets = \App\Problemset::where('public', true)->get();
+	    foreach($public_problemsets as $problemset){
+		    if(!isset($problemsets_id[$problemset->id])){
+			    $problemsets_id[$problemset->id] = true;
+			    array_push($problemsets, $problemset);
+		    }
+	    }
+	    $request->session()->put('problemsets', $problemsets);
+
 	    return redirect()->intended($this->redirectPath());
     }
 

@@ -16,19 +16,29 @@ use Auth;
 class HomeController extends Controller
 {
 	const USER_LIMIT = 100;
-	public function index(){
+	public function index(Request $request){
 		if(!empty(\Request::get('contests'))){
 			return redirect('/contests');
 		}
-		$recent_problemsets = Cache::tags(['wzoj'])->remember('recent_problemsets', 1, function(){
-			return \App\Problemset::where('type', '=', 'set')->orderBy('updated_at', 'desc')->take(6)->get();
-		});
+		if(!(Auth::check())){
+			$recent_problemsets = Cache::tags(['wzoj'])->remember('recent_problemsets', 1, function(){
+				return \App\Problemset::where('type', '=', 'set')
+							->where('public', true)
+							->orderBy('updated_at', 'desc')
+							->take(6)->get();
+			});
+		}else{
+			$recent_problemsets = $request->session()->get('problemsets');
+			usort($recent_problemsets, function($a, $b){
+				return $a->updated_at < $b->updated_at;
+			});
+		}
 		$recent_contests = Cache::tags(['wzoj'])->remember('recent_contests', 1, function(){
 			return \App\Problemset::where('type','<>', 'set')->orderBy('contest_start_at', 'desc')->take(6)->get();
 		});
 		$home_page_problemsets=[];
 		foreach($recent_problemsets as $problemset){
-			if($problemset->public || Gate::allows('view',$problemset)){
+			if($problemset->type == 'set'){
 				array_push($home_page_problemsets,$problemset);
 			}
 		}

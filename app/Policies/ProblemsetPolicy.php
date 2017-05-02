@@ -29,8 +29,8 @@ class ProblemsetPolicy
 
     public function view(User $user,Problemset $problemset){
 	    if($problemset->public) return true;
-	    foreach($user->groups as $group){
-		    if($group->problemsets()->find($problemset->id)) return true;
+	    foreach(\Session::get('problemsets') as $ps){
+		    if($problemset->id == $ps->id) return true;
 	    }
 	    return false;
     }

@@ -36,11 +36,18 @@ class RanklistUser{
 class ProblemsetController extends Controller
 {
 	const PAGE_LIMIT = 100;
-	public function getIndex(){
-		$allproblemsets = Problemset::where('type', '=', 'set')->get();
+	public function getIndex(Request $request){
+		if(!(Auth::check())){
+			$allproblemsets = Problemset::where('type', '=', 'set')
+							->where('public', true)
+							->get();
+		}else{
+			$allproblemsets = $request->session()->get('problemsets');
+			usort($allproblemsets, function($a, $b){return $a->id > $b->id;});
+		}
 		$problemsets=[];
 		foreach($allproblemsets as $problemset){
-			if($problemset->public || Gate::allows('view',$problemset)){
+			if($problemset->type == 'set'){
 				array_push($problemsets,$problemset);
 			}
 		}
