@@ -51,7 +51,7 @@
 
 <ul id="rank-table" class="sortable_list">
   @foreach ($table as $row)
-    <li class='col-xs-12' id='user-{{$row->user->id}}' data-id='{{$row->user->id}}'>
+    <li class='col-xs-12' id='user-{{$row->user->id}}' data-id='{{$row->user->id}}' data-score='{{$row->score}}'>
 	<div class='rank-user sortable_list_cell' style='width:10%'><a href='/users/{{$row->user->id}}'>{{$row->user->name}}</a></div>
 	<div class='rank-fullname sortable_list_cell' style='width:10%'>{{$row->user->fullname}}</div>
 	<div class='rank-class sortable_list_cell' style='width:10%'>{{$row->user->class}}</div>
