@@ -42,7 +42,7 @@ class ProblemsetController extends Controller
 							->where('public', true)
 							->get();
 		}else{
-			$allproblemsets = $request->session()->get('problemsets');
+			$allproblemsets = $request->user()->problemsets();
 			usort($allproblemsets, function($a, $b){return $a->id > $b->id;});
 		}
 		$problemsets=[];

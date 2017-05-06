@@ -28,7 +28,7 @@ class HomeController extends Controller
 							->take(6)->get();
 			});
 		}else{
-			$recent_problemsets = $request->session()->get('problemsets');
+			$recent_problemsets = $request->user()->problemsets();
 			usort($recent_problemsets, function($a, $b){
 				return $a->updated_at < $b->updated_at;
 			});

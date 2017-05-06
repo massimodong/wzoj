@@ -119,4 +119,39 @@ class User extends Model implements AuthenticatableContract,
 	    }
 	    return $max_scores;
     }
+
+    public function problemsets(){
+	    if($this->has_role('admin')) return \App\Problemset::all()->all();
+	    $problemsets_last_updated_at = Cache::tags(['wzoj'])->rememberForever('problemsets_last_updated_at', function(){
+			return time();
+	    });
+
+	    $user_last_updated_at = Session::get('problemsets_last_updated_at');
+	    if((isset($user_last_updated_at)) && $user_last_updated_at >= $problemsets_last_updated_at){
+		    return Session::get('problemsets');
+	    }else{
+		    Session::put('problemsets_last_updated_at', time());
+		    //problemsets
+		    $problemsets_id = [];
+		    $problemsets = [];
+		    $groups = $this->groups()->with('problemsets')->get();
+		    foreach($groups as $group){
+			    foreach($group->problemsets as $problemset){
+				    if(!isset($problemsets_id[$problemset->id])){
+					    $problemsets_id[$problemset->id] = true;
+					    array_push($problemsets, $problemset);
+				    }
+			    }
+		    }
+		    $public_problemsets = \App\Problemset::where('public', true)->get();
+		    foreach($public_problemsets as $problemset){
+			    if(!isset($problemsets_id[$problemset->id])){
+				    $problemsets_id[$problemset->id] = true;
+				    array_push($problemsets, $problemset);
+			    }
+		    }
+		    Session::put('problemsets', $problemsets);
+		    return $problemsets;
+	    }
+    }
 }

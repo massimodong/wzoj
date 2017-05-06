@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 
+use Auth;
+
 class AuthController extends Controller
 {
     /*
@@ -111,28 +113,15 @@ class AuthController extends Controller
 	    }
 	    $request->session()->put('roles', $roles);
 
-	    //problemsets
-	    $problemsets_id = [];
-	    $problemsets = [];
-	    $groups = $user->groups()->with('problemsets')->get();
-	    foreach($groups as $group){
-		    foreach($group->problemsets as $problemset){
-			    if(!isset($problemsets_id[$problemset->id])){
-				    $problemsets_id[$problemset->id] = true;
-				    array_push($problemsets, $problemset);
-			    }
-		    }
-	    }
-	    $public_problemsets = \App\Problemset::where('public', true)->get();
-	    foreach($public_problemsets as $problemset){
-		    if(!isset($problemsets_id[$problemset->id])){
-			    $problemsets_id[$problemset->id] = true;
-			    array_push($problemsets, $problemset);
-		    }
-	    }
-	    $request->session()->put('problemsets', $problemsets);
-
 	    return redirect()->intended($this->redirectPath());
+    }
+
+    public function getLogout(){
+	    Auth::logout();
+	    \Session::forget('roles');
+	    \Session::forget('problemsets_last_updated_at');
+	    \Session::forget('problemsets');
+	    return redirect('/');
     }
 
     public function oj_getRegister(Request $request){
