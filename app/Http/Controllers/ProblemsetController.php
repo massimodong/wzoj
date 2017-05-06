@@ -151,6 +151,7 @@ class ProblemsetController extends Controller
 	public function postNewProblemset(){
 		$this->authorize('create',Problemset::class);
 		$problemset = Problemset::create(['name'=>'problemset name','type'=>'set','public'=>'1']);
+		Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
 		return redirect('/s/'.$problemset->id.'/edit');
 	}
 
@@ -190,6 +191,8 @@ class ProblemsetController extends Controller
 		if(!isset($newval['public'])) $newval['public'] = 0;
 
 		$problemset->update($newval);
+
+		Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
 		return back();
 	}
 
@@ -411,6 +414,8 @@ class ProblemsetController extends Controller
 		]);
 
 		$problemset->groups()->attach($request->gid);
+
+		Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
 		return back();
 	}
 
@@ -420,6 +425,7 @@ class ProblemsetController extends Controller
 
 		$problemset->groups()->detach($gid);
 
+		Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
 		return back();
 	}
 }
