@@ -107,15 +107,7 @@ class ProblemsetController extends Controller
 				'cur_page' => $page]);
 	}
 
-	public function getRanklist($psid, Request $request){
-		$problemset = Problemset::findOrFail($psid);
-		if($problemset->type == 'set' || time() < strtotime($problemset->contest_start_at)){
-			//if not contest or contest not started
-			return back();
-		}
-		$problems = $problemset->problems()->orderByIndex()->get();
-		//ranklist requires no authorization
-
+	public function getRanklistTable($problemset, $problems){
 		$solutions = $problemset->solutions()
 			->where('created_at', '>=', $problemset->contest_start_at)
 			->where('created_at', '<=', $problemset->contest_end_at)
@@ -142,10 +134,65 @@ class ProblemsetController extends Controller
 		}
 		usort($table, "ranklist_cmp_user");
 
+		return $table;
+	}
+
+	public function getRanklist($psid, Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		if($problemset->type == 'set' || time() < strtotime($problemset->contest_start_at)){
+			//if not contest or contest not started
+			return back();
+		}
+		//ranklist requires no authorization
+
+		$problems = $problemset->problems()->orderByIndex()->get();
+		$table = $this->getRanklistTable($problemset, $problems);
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
-						'problems' => $problems,
-						'table' => $table,
-						'last_solution_id' => $problemset->solutions()->max('id')]);
+				'problems' => $problems,
+				'table' => $table,
+				'last_solution_id' => $problemset->solutions()->max('id')]);
+	}
+
+	public function getRanklistCSV($psid, Request $request){
+		$problemset = Problemset::findOrFail($psid);
+		if($problemset->type == 'set' || time() < strtotime($problemset->contest_start_at)){
+			//if not contest or contest not started
+			return back();
+		}
+		
+		download_send_headers($problemset->name . '-' . date("Y-m-d") . ".csv");
+
+		$problems = $problemset->problems()->orderByIndex()->get();
+		$table = $this->getRanklistTable($problemset, $problems);
+
+		$df = fopen("php://output", "w");
+
+		$head=array(trans('wzoj.rank'),trans('wzoj.user'),trans('wzoj.fullname'),trans('wzoj.class'),trans('wzoj.score'));
+		foreach($problems as $problem){
+			array_push($head, $problem->name);
+		}
+		fputcsv($df, $head);
+
+		$last_rank = 0;
+		foreach($table as $index => $row){
+			if($index > 0 && $table[$index-1]->score == $row->score){
+				$rank = $last_rank;
+			}else{
+				$last_rank = $rank = $index + 1;
+			}
+			$item = array($rank, $row->user->name, $row->user->fullname, $row->user->class, $row->score);
+			foreach($problems as $problem){
+				if(isset($row->problem_solutions[$problem->id])){
+					array_push($item, $row->problem_solutions[$problem->id]->score);
+				}else{
+					array_push($item, 0);
+				}
+			}
+			fputcsv($df, $item);
+		}
+
+		fclose($df);
+		return;
 	}
 
 	public function postNewProblemset(){

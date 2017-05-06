@@ -51,6 +51,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::post('s','ProblemsetController@postNewProblemset');
 		Route::get('s/{psid}','ProblemsetController@getProblemset');
 		Route::get('s/{psid}/ranklist','ProblemsetController@getRanklist');
+		Route::get('s/{psid}/ranklist_csv','ProblemsetController@getRanklistCSV')->middleware('admin');
 		Route::get('s/{psid}/edit','ProblemsetController@getEditProblemset')->middleware('auth');
 		Route::put('s/{psid}','ProblemsetController@putProblemset');
 

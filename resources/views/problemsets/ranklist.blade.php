@@ -17,6 +17,11 @@
 @include ('layouts.contest_header')
 
 @section ('content')
+@if (Auth::check() && Auth::user()->has_role('admin'))
+<div class="col-xs-12">
+<a href="./ranklist_csv" class="pull-right">{{trans('wzoj.download')}}</a>
+</div>
+@endif
 
 <div class="col-xs-1 row">
 <ul class="sortable_list">
