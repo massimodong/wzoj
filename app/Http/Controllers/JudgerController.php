@@ -208,7 +208,9 @@ class JudgerController extends Controller
 
 	public function getGetSimSolutions(){
 		$solutions = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
+			->leftJoin('problems', 'solutions.problem_id', '=', 'problems.id')
 			->whereNull('solutions.sim_id')
+			->where('problems.type', '<>', 3)
 			->where(function($query){
 				$query->where('solutions.score', '>=', 100)
 				      ->orWhere(function($query){
