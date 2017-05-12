@@ -109,6 +109,7 @@ class JudgerController extends Controller
 		});
 		return response()->json([
 			'id' => $solution->id,
+			'user_id' => $solution->user_id,
 			'problem_id' => $solution->problem_id,
 			'language' => $solution->language,
 			'code' => $solution->code,

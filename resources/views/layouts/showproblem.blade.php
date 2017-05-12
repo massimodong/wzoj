@@ -17,36 +17,50 @@
 
 </small>
 
+@if (strlen($problem->description))
 <h3>{{trans('wzoj.problem_description')}}:</h3>
 {!! Purifier::clean($problem->description) !!}
+@endif
 
+@if (strlen($problem->inputformat))
 <h3>{{trans('wzoj.input_format')}}:</h3>
 {!! Purifier::clean($problem->inputformat) !!}
+@endif
 
+@if (strlen($problem->outputformat))
 <h3>{{trans('wzoj.output_format')}}:</h3>
 {!! Purifier::clean($problem->outputformat) !!}
+@endif
 
+@if (strlen($problem->sampleinput))
 <h3>{{trans('wzoj.sample_input')}}:</h3>
 <pre>
 {{$problem->sampleinput}}
 </pre>
+@endif
 
+@if (strlen($problem->sampleoutput))
 <h3>{{trans('wzoj.sample_output')}}:</h3>
 <pre>
 {{$problem->sampleoutput}}
 </pre>
+@endif
 
 @if (isset($download_url))
 <p><a href='{{$download_url}}'>{{trans('wzoj.download_attached_file')}}</a></p>
 @endif
 
+@if (strlen($problem->hint))
 <h3>{{trans('wzoj.hints')}}:</h3>
 {!! Purifier::clean($problem->hint) !!}
+@endif
 
 {{trans('wzoj.time_limit')}}:{{$problem->timelimit}}ms<br>
 {{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MB<br>
 
 <hr>
+@if (strlen($problem->source))
 <p>{{trans('wzoj.source')}}:{{$problem->source}}</p>
+@endif
 
 </div>
