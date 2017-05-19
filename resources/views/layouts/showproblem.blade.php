@@ -56,7 +56,7 @@
 @endif
 
 {{trans('wzoj.time_limit')}}:{{$problem->timelimit}}ms<br>
-{{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MB<br>
+{{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MByte<br>
 
 <hr>
 @if (strlen($problem->source))
