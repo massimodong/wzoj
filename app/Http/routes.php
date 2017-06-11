@@ -142,6 +142,10 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				//update system
 				Route::get('update-system', 'AdminUpdateSystemController@getUpdate');
 				Route::post('update-system', 'AdminUpdateSystemController@postUpdate');
+
+				//advanced settings
+				Route::get('advanced-settings', 'AdminAdvanced@getAdvanced');
+				Route::post('advanced-settings', 'AdminAdvanced@postAdvanced');
 		});
 
 });

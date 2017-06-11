@@ -284,4 +284,7 @@ return [
     'msg_404_error' => '访问的内容不存在',
 
     'download' => '下载',
+
+    'advanced_settings' => '高级设置',
+    'execute_command' => '运行命令',
 ];
