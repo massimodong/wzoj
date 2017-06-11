@@ -11,12 +11,12 @@ class AdminAdvanced extends Controller
 {
 	public function getAdvanced(){
 		return view('admin.advanced_settings', [
-			'command_output' => NULL,
+			'command_output' => [],
 		]);
 	}
 
 	public function postAdvanced(Request $request){
-		$command_output = NULL;
+		$command_output = [];
 		if(isset($request->command) && strlen($request->command)){
 			exec($request->command, $command_output);
 		}
