@@ -287,4 +287,6 @@ return [
 
     'advanced_settings' => '高级设置',
     'execute_command' => '运行命令',
+
+    'confirm_logout' => '确认登出?',
 ];

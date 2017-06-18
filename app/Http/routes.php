@@ -25,7 +25,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('auth/login', 'Auth\AuthController@getLogin');
 		Route::post('auth/login', 'Auth\AuthController@postLogin');
 
-		Route::post('auth/logout', 'Auth\AuthController@getLogout');
+		Route::get('auth/logout', 'Auth\AuthController@getLogout');
+		Route::post('auth/logout', 'Auth\AuthController@postLogout');
 
 		Route::get('auth/register','Auth\AuthController@oj_getRegister');
 		Route::post('auth/register', 'Auth\AuthController@postRegister');

@@ -33,7 +33,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest', ['except' => 'getLogout']);
+        $this->middleware('guest', ['except' => ['getLogout', 'postLogout']]);
     }
     protected $redirectPath = '/';
     protected $username = 'name';
@@ -117,6 +117,9 @@ class AuthController extends Controller
     }
 
     public function getLogout(){
+	    return view('auth.logout');
+    }
+    public function postLogout(){
 	    Auth::logout();
 	    \Session::forget('roles');
 	    \Session::forget('problemsets_last_updated_at');
