@@ -64,8 +64,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::delete('s/{psid}/problems','ProblemsetController@deleteProblem');
 		//Route::get('s/{psid}/{pid}/submit','ProblemsetController@getSubmit')->middleware('auth');
 		//groups
-		Route::post('s/{psid}/groups','ProblemsetController@postGroup');
-		Route::delete('s/{psid}/groups/{gid}','ProblemsetController@deleteGroup');
+		Route::post('s/{psid}/groups','ProblemsetController@postGroup')->middleware('admin');
+		Route::delete('s/{psid}/groups/{gid}','ProblemsetController@deleteGroup')->middleware('admin');
 
 		Route::post('solutions/answerfile', 'SolutionController@postSubmitAnswerfile');
 		Route::resource('solutions','SolutionController');
@@ -105,6 +105,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				Route::put('groups/{id}', 'AdminGroupController@putGroups');
 				Route::delete('groups/{gid}', 'AdminGroupController@deleteGroups');
 				Route::delete('groups/{gid}/users', 'AdminGroupController@deleteUsers');
+				Route::post('groups/{gid}/homeworks', 'AdminGroupController@postHomeworks');
+				Route::delete('groups/{gid}/homeworks', 'AdminGroupController@deleteHomeworks');
 
 				//invitations
 				Route::get('invitations', 'AdminInvitationController@getInvitations');
@@ -147,6 +149,9 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				//advanced settings
 				Route::get('advanced-settings', 'AdminAdvanced@getAdvanced');
 				Route::post('advanced-settings', 'AdminAdvanced@postAdvanced');
+
+				//ajax
+				Route::controller('ajax', 'AdminAjaxController');
 		});
 
 });

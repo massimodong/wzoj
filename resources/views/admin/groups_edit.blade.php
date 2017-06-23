@@ -8,6 +8,7 @@
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#group"> {{trans('wzoj.groups')}} </a></li>
   <li><a data-toggle="tab" href="#users"> {{trans('wzoj.users')}} </a></li>
+  <li><a data-toggle="tab" href="#homework"> {{trans('wzoj.homework')}} </a></li>
 </ul>
 
 <div class="top-buffer-sm"></div>
@@ -67,10 +68,10 @@
         <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
-          <li><a href="#" onclick="users_lock_fullname();"> {{trans('wzoj.lock_fullname')}} </a></li>
-	  <li><a href="#" onclick="users_lock_class();"> {{trans('wzoj.lock_class')}} </a></li>
-	  <li><a href="#" onclick="users_unlock_fullname();"> {{trans('wzoj.unlock_fullname')}} </a></li>
-	  <li><a href="#" onclick="users_unlock_class();"> {{trans('wzoj.unlock_class')}} </a></li>
+          <li><a href="#" onclick="users_action('lock_fullname');"> {{trans('wzoj.lock_fullname')}} </a></li>
+	  <li><a href="#" onclick="users_action('lock_class');"> {{trans('wzoj.lock_class')}} </a></li>
+	  <li><a href="#" onclick="users_action('unlock_fullname');"> {{trans('wzoj.unlock_fullname')}} </a></li>
+	  <li><a href="#" onclick="users_action('unlock_class')();"> {{trans('wzoj.unlock_class')}} </a></li>
 	  <li role="separator" class="divider"></li>
 	  <li><a href="#" onclick="users_expel_from_group();" style="color: red"> {{trans('wzoj.expel_from_group')}} </a></li>
         </ul>
@@ -113,50 +114,74 @@
   </div>
   <!-- users -->
 
+  <div id="homework" class="tab-pane">
+    <form action='/admin/groups/{{$group->id}}/homeworks' method='POST' class="form-inline col-xs-12">
+      {{csrf_field()}}
+      <div class="form-group">
+	<label for="psid" class="sr-only"></label>
+        <select name="psid" id="psid" class="selectpicker" data-live-search="true" title="{{trans('wzoj.problemset')}}">
+	@foreach (\App\Problemset::all() as $problemset)
+	  <option value="{{$problemset->id}}">{{$problemset->name}}</option>
+	@endforeach
+	</select>
+
+        <label for="pids" class="sr-only"></label>
+        <select name="pids[]" id="pids" class="selectpicker" data-live-search="true" title="{{trans('wzoj.problem')}}" multiple>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">{{trans('wzoj.new_homework')}}</button>
+    </form>
+    <div class="col-xs-12">
+      <ul class="list-group">
+	@foreach ($group->homeworks as $problem)
+	  <li class="list-group-item">
+	    <div class="row">
+	      <a class="col-xs-4" href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{$problem->name}}</a>
+	      <span class="col-xs-4">
+	        @if ($homework_done[$problem->id])
+		  <span style="color:green">
+		    {{count($ac_users[$problem->id])}}
+		  </span>
+		@else
+		  <span style="color:red">
+		    {{count($ac_users[$problem->id])}}
+		  </span>
+		@endif
+		/ <span style="color:green">{{count($group->users)}}</span>
+	      </span>
+	      <form class="col-xs-4" action="/admin/groups/{{$group->id}}/homeworks" method="POST">
+		{{csrf_field()}}
+		{{method_field('DELETE')}}
+		<input name="id[]" value="{{$problem->id}}" hidden>
+		@if ($homework_done[$problem->id])
+		  <button type="submit" class="btn btn-success">{{trans('wzoj.complete_homework')}}</button>
+		@else
+		  <button type="submit" class="btn btn-danger">{{trans('wzoj.terminate_homework')}}</button>
+		@endif
+	      </form>
+	    </div>
+	  </li>
+	@endforeach
+      </ul>
+    </div>
+  </div>
+  <!-- homework -->
+
 </div>
 @endsection
 
 @section ('scripts')
 <script>
-function users_lock_fullname(){
+function users_action( action ){
 	$("#users_form").attr('action', '/users');
 	$("#users_form").append('<input hidden name="_method" value="PUT">')
-	$("#users_form").append('<input hidden name="action" value="lock_fullname">')
+	$("#users_form").append('<input hidden name="action" value="' + action + '">')
 	//submit
 	var submitInput = $("<input type='submit' />");
 	$("#users_form").append(submitInput);
 	submitInput.trigger("click");
 }
 
-function users_lock_class(){
-	$("#users_form").attr('action', '/users');
-	$("#users_form").append('<input hidden name="_method" value="PUT">')
-	$("#users_form").append('<input hidden name="action" value="lock_class">')
-	//submit
-	var submitInput = $("<input type='submit' />");
-	$("#users_form").append(submitInput);
-	submitInput.trigger("click");
-}
-
-function users_unlock_fullname(){
-	$("#users_form").attr('action', '/users');
-	$("#users_form").append('<input hidden name="_method" value="PUT">')
-	$("#users_form").append('<input hidden name="action" value="unlock_fullname">')
-	//submit
-	var submitInput = $("<input type='submit' />");
-	$("#users_form").append(submitInput);
-	submitInput.trigger("click");
-}
-
-function users_unlock_class(){
-	$("#users_form").attr('action', '/users');
-	$("#users_form").append('<input hidden name="_method" value="PUT">')
-	$("#users_form").append('<input hidden name="action" value="unlock_class">')
-	//submit
-	var submitInput = $("<input type='submit' />");
-	$("#users_form").append(submitInput);
-	submitInput.trigger("click");
-}
 function users_expel_from_group(){
 	$("#users_form").append('<input hidden name="_method" value="DELETE">')
 	//submit
@@ -164,6 +189,17 @@ function users_expel_from_group(){
 	$("#users_form").append(submitInput);
 	submitInput.trigger("click");
 }
+
+$('#psid').on('changed.bs.select', function (e) {
+	psid = $('#psid').val();
+	$.get("/admin/ajax/problemset-problems", {problemset_id: psid}).done(function(data){
+		$('#pids').html("");
+		data.forEach(function(value, index, ar){
+			$('#pids').append("<option value='" + value.id + "'>" + value.id + "-" + value.name + "</option>");
+		});
+		$('#pids').selectpicker('refresh');
+	});
+});
 
 selectHashTab();
 var ids = [];

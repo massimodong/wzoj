@@ -23,4 +23,8 @@ class Group extends Model
 	public function problemsets(){
 		return $this->belongsToMany('App\Problemset');
 	}
+
+	public function homeworks(){
+		return $this->belongsToMany('App\Problem', 'homeworks')->withPivot('problemset_id');
+	}
 }

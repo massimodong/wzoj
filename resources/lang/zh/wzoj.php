@@ -289,4 +289,9 @@ return [
     'execute_command' => '运行命令',
 
     'confirm_logout' => '确认登出?',
+
+    'homework' => '作业',
+    'new_homework' => '新增作业',
+    'complete_homework' => '完成作业',
+    'terminate_homework' => '终止作业',
 ];
