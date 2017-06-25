@@ -22,6 +22,31 @@
     </div>
   @endforeach
   </div>
+  @if (isset($homework_problem_cols))
+  <div class="col-xs-12">
+    <h3>{{trans('wzoj.homework')}}</h3>
+    <div style="width:795;padding:15px">
+    <ul class="list-group">
+      @foreach ($homework_problem_cols as $problems)
+        @foreach ($problems as $problem)
+	  <li class="list-group-item row">
+	    <div class="col-xs-6"><a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{$problem->name}}</a></div>
+	    <div class="col-xs-6">
+	      @if (($score = $homework_problem_max_scores[$problem->pivot->problemset_id][$problem->id]) >= 100)
+	        <span style="color:green">{{$score}}</span>
+	      @elseif ($score >= 0)
+	        <span style="color:red">{{$score}}</span>
+	      @else
+	        <a style="color:red" href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{trans('wzoj.homework_not_started')}}</a>
+	      @endif
+	    </div>
+	  </li>
+	@endforeach
+      @endforeach
+    </ul>
+    </div>
+  </div>
+  @endif
   <div class="col-xs-12">
     <h3>{{trans('wzoj.recent_contests')}}</h3>
     <div style="width:795;padding:15px">

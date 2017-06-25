@@ -295,4 +295,5 @@ return [
     'complete_homework' => '完成作业',
     'terminate_homework' => '终止作业',
     'uncompleted_users' => '未完成用户',
+    'homework_not_started' => '本题未做',
 ];
