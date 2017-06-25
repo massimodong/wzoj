@@ -92,11 +92,11 @@ class User extends Model implements AuthenticatableContract,
 	    User::where('id', $this->id)->increment('bot_tendency', $v);
     }
 
-    public function max_scores($problemset, $problems){
+    public function max_scores($problemset_id, $problems){
 	    $max_scores = [];
 	    $uncached_problems = [];
 	    foreach($problems as $problem){
-		    $path = $this->id.'-'.$problemset->id.'-'.$problem->id;
+		    $path = $this->id.'-'.$problemset_id.'-'.$problem->id;
 		    if(Cache::tags(['problemsets', 'max_score'])->has($path)){
 			    $max_scores[$problem->id] = Cache::tags(['problemsets', 'max_score'])->get($path);
 		    }else{
@@ -106,14 +106,14 @@ class User extends Model implements AuthenticatableContract,
 	    }
 	    if(!empty($uncached_problems)){
 		    $mc = $this->solutions()
-			    ->where('problemset_id', '=', $problemset->id)
+			    ->where('problemset_id', '=', $problemset_id)
 			    ->whereIn('problem_id', $uncached_problems)
 			    ->groupBy('problem_id')
 			    ->select(DB::raw('problem_id, max(score) as score'))
 			    ->get();
 		    foreach($mc as $problem){
 			    $max_scores[$problem->problem_id] = $problem->score;
-			    $path = $this->id.'-'.$problemset->id.'-'.$problem->problem_id;
+			    $path = $this->id.'-'.$problemset_id.'-'.$problem->problem_id;
 			    Cache::tags(['problemsets', 'max_score'])->put($path, $problem->score, CACHE_ONE_DAY);
 		    }
 	    }

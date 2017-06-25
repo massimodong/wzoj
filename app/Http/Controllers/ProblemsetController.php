@@ -102,7 +102,7 @@ class ProblemsetController extends Controller
 		return view('problemsets.view_'.$problemset->type,[
 				'problemset' => $problemset,
 				'problems' => $problems,
-				'max_scores' => Auth::check()?Auth::user()->max_scores($problemset, $problems):[],
+				'max_scores' => Auth::check()?Auth::user()->max_scores($problemset->id, $problems):[],
 				'cnt_pages' => $cnt_pages,
 				'cur_page' => $page]);
 	}

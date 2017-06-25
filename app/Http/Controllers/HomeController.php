@@ -66,7 +66,7 @@ class HomeController extends Controller
 
 			foreach($problem_cols as $problems) if(!$problems->isEmpty()){
 				$psid = $problems[0]->pivot->problemset_id;
-				$problem_max_scores[$psid] = $request->user()->max_scores(\App\Problemset::findOrFail($psid), $problems);
+				$problem_max_scores[$psid] = $request->user()->max_scores($psid, $problems);
 			}
 		}
 
