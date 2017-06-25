@@ -57,6 +57,10 @@
 		    <li id='home_sidebar'>
 		    	<a href="/admin"> {{trans('wzoj.admin_home')}} </a>
 		    </li>
+		    <li id='notice_sidebar'>
+                        <a href="/admin/notice"> {{trans('wzoj.notices')}} </a>
+		    </li>
+
                     <li id='groups_sidebar'>
                         <a href="/admin/groups"> {{trans('wzoj.groups')}} </a>
                     </li>

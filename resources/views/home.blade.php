@@ -90,9 +90,7 @@
 <div class="col-xs-3 row">
   <div class="panel panel-wzoj">
     <div class="panel-heading">{{trans('wzoj.notices')}}</div>
-    <div class="panel-body">
-	{{trans('wzoj.none')}}
-    </div>
+    <div class="panel-body" style="white-space:pre-wrap">{{ojoption('notice')}}</div>
   </div>
 </div>
 @endsection
