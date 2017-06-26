@@ -46,6 +46,14 @@
     </div>
   </div>
 
+  <h3>{{trans('wzoj.forum_options')}}</h3>
+  <div class="form-group">
+    <label for="forum_enabled" class="col-sm-2 control-label">{{trans('wzoj.forum_enabled')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="forum_enabled" name="forum_enabled" value="{{ojoption('forum_enabled')}}">
+    </div>
+  </div>
+
   <div class="form-group">
     <div class="col-sm-offset-2 col-sm-10">
       <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>

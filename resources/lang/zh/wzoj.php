@@ -298,4 +298,7 @@ return [
     'homework_not_started' => '本题未做',
 
     'at_home_page' => '见主页',
+
+    'forum_options' => '讨论版设置',
+    'forum_enabled' => '启用讨论版',
 ];

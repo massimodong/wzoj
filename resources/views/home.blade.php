@@ -54,7 +54,11 @@
       @foreach ($recent_contests as $problemset)
 	<li class="list-group-item row">
 	  <div class="col-xs-4"><a href="/s/{{$problemset->id}}">{{$problemset->name}}</a></div>
-	  <div class="col-xs-8">{{$problemset->contest_start_at}} - {{$problemset->contest_end_at}} {{trans('wzoj.problem_type_'.$problemset->type)}}</div>
+	  <div class="col-xs-8">{{$problemset->contest_start_at}} - {{$problemset->contest_end_at}} {{trans('wzoj.problem_type_'.$problemset->type)}}
+	    @if (strtotime($problemset->contest_start_at)<time())
+	      <a href="/s/{{$problemset->id}}/ranklist">[{{trans('wzoj.ranklist')}}]</a>
+	    @endif
+	  </div>
 	</li>
       @endforeach
     </ul>

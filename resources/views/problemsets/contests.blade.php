@@ -33,6 +33,9 @@
 	    @can ('update',$problemset)
 	    <a href='/s/{{$problemset->id}}/edit'> [{{trans('wzoj.edit')}}] </a>
 	    @endcan
+	    @if (strtotime($problemset->contest_start_at)<time())
+	      <a href='/s/{{$problemset->id}}/ranklist'>[{{trans('wzoj.ranklist')}}]</a>
+	    @endif
 	</td>
 	<td>{{trans('wzoj.problem_type_'.$problemset->type)}}</td>
 	@if ($problemset->type != 'set')

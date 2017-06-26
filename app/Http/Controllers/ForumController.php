@@ -16,7 +16,7 @@ use DB;
 
 class ForumController extends Controller
 {
-	const PAGE_LIMIT = 4;
+	const PAGE_LIMIT = 10;
 	public function getTopicsPublic($topics){
 		$ret = [];
 		foreach($topics as $topic){

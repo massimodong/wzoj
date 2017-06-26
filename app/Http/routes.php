@@ -78,20 +78,21 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('source-compare', 'HomeController@sourceCompare')->middleware('admin');
 
 		//forum
-		Route::get('forum', 'ForumController@getIndex');
-		Route::post('forum', 'ForumController@postIndex');
-		Route::get('forum/create', 'ForumController@getCreate')->middleware('auth');
-		Route::get('forum/{id}', 'ForumController@getTopic');
-		Route::put('forum/{id}', 'ForumController@putTopic')->middleware('auth');
-		Route::delete('forum/{id}', 'ForumController@deleteTopic')->middleware('auth');
+		Route::group(['prefix' => 'forum', 'middleware' => 'forum'], function(){
+			Route::get('/', 'ForumController@getIndex');
+			Route::post('/', 'ForumController@postIndex');
+			Route::get('create', 'ForumController@getCreate')->middleware('auth');
+			Route::get('{id}', 'ForumController@getTopic');
+			Route::put('{id}', 'ForumController@putTopic')->middleware('auth');
+			Route::delete('{id}', 'ForumController@deleteTopic')->middleware('auth');
 
-		Route::put('forum/replies/{id}', 'ForumController@putReply')->middleware('auth');
-		Route::post('forum/{id}', 'ForumController@postReply')->middleware('auth');
-		Route::delete('forum/replies/{id}', 'ForumController@deleteReply')->middleware('auth');
+			Route::put('replies/{id}', 'ForumController@putReply')->middleware('auth');
+			Route::post('{id}', 'ForumController@postReply')->middleware('auth');
+			Route::delete('replies/{id}', 'ForumController@deleteReply')->middleware('auth');
 
-		Route::post('forum/{id}/tags', 'ForumController@postTag')->middleware('auth');
-		Route::delete('forum/tags/{id}', 'ForumController@deleteTag')->middleware('auth');
-		//end forum
+			Route::post('{id}/tags', 'ForumController@postTag')->middleware('auth');
+			Route::delete('tags/{id}', 'ForumController@deleteTag')->middleware('auth');
+		});
 
 		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
 		Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
