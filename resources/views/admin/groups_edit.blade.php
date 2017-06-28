@@ -24,6 +24,12 @@
 	</div>
       </div>
       <div class="form-group">
+        <label for="notice" class="col-xs-2 control-label"> {{trans('wzoj.notice')}} </label>
+        <div class="col-xs-10">
+          <textarea class='form-control' name='notice' id='notice' rows='5'>{{$group->notice}}</textarea>
+        </div>
+      </div>
+      <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
 	  <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
         </div>

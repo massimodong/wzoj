@@ -103,6 +103,7 @@ class AdminGroupController extends Controller
 	public function putGroups(Request $request,$id){
 		$group = \App\Group::findOrFail($id);
 		$group->name = $request->name;
+		$group->notice = $request->notice;
 		$group->save();
 		return back();
 	}

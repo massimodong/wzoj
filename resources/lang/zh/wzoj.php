@@ -183,6 +183,7 @@ return [
     'month_11' => '十一月',
     'month_12' => '十二月',
 
+    'notice' => '公告',
     'notices' => '公告',
     
     'groups' => '用户组',

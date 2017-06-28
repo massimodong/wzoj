@@ -96,6 +96,16 @@
     <div class="panel-heading">{{trans('wzoj.notices')}}</div>
     <div class="panel-body" style="white-space:pre-wrap">{{ojoption('notice')}}</div>
   </div>
+  @if (Auth::check())
+    @foreach (Auth::user()->groups as $group)
+      @if (strlen($group->notice))
+        <div class="panel panel-wzoj">
+          <div class="panel-heading">{{$group->name}}-{{trans('wzoj.notice')}}</div>
+          <div class="panel-body" style="white-space:pre-wrap">{{$group->notice}}</div>
+        </div>
+      @endif
+    @endforeach
+  @endif
 </div>
 @endsection
 
