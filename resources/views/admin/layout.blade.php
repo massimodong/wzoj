@@ -85,6 +85,9 @@
 		    <li id='invitations-generate'>
 		    	<a href="/admin/invitations-generate"> {{trans('wzoj.invitations_generate')}} </a>
 		    </li>
+		    <li id='judgers_sidebar'>
+		    	<a href="/admin/judgers"> {{trans('wzoj.judgers')}} </a>
+		    </li>
 		    <li id='update-system'>
 		    	<a href="/admin/update-system"> {{trans('wzoj.update_system')}} </a>
 		    </li>

@@ -59,6 +59,7 @@ return [
     'language' => '语言',
     'code_length' => '代码长度',
     'judger' => '评测机',
+    'judgers' => '评测机',
     'sim' => '相似代码',
     'judged_at' => '评测时间',
     'submitted_at' => '提交时间',

@@ -145,6 +145,9 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				Route::get('invitations-generate', 'AdminInvitationsGenerateController@getIndex');
 				Route::post('invitations-generate', 'AdminInvitationsGenerateController@postIndex');
 
+				//judgers
+				Route::resource('judgers', 'AdminJudgerController');
+
 				//update system
 				Route::get('update-system', 'AdminUpdateSystemController@getUpdate');
 				Route::post('update-system', 'AdminUpdateSystemController@postUpdate');
