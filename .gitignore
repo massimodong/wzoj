@@ -7,3 +7,4 @@ public/vendor
 *.swp
 bower
 build
+dump.rdb

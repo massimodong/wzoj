@@ -100,6 +100,7 @@ class User extends Model implements AuthenticatableContract,
 		    if(Cache::tags(['problemsets', 'max_score'])->has($path)){
 			    $max_scores[$problem->id] = Cache::tags(['problemsets', 'max_score'])->get($path);
 		    }else{
+			    $max_scores[$problem->id] = -1;
 			    array_push($uncached_problems, $problem->id);
 			    Cache::tags(['problemsets', 'max_score'])->put($path, -1, CACHE_ONE_DAY);
 		    }
