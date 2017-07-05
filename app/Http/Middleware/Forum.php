@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Auth;
 
 class Forum
 {
@@ -18,7 +19,12 @@ class Forum
 	if(ojoption('forum_enabled')){
 		return $next($request);
 	}else{
-		abort(403);
+		if(Auth::check() && Auth::user()->has_role('admin')){
+			echo trans('wzoj.msg_forum_disabled');
+			return $next($request);
+		}else{
+			abort(403);
+		}
 	}
     }
 }

@@ -65,7 +65,7 @@
             <li id='problemsets_sidebar'><a href="/s"> {{trans('wzoj.problemsets')}} </a></li>
             <li id='contests_sidebar'><a href="/contests"> {{trans('wzoj.contests')}} </a></li>
             <li id='solutions_sidebar'><a href="/solutions"> {{trans('wzoj.solutions')}} </a></li>
-            @if (ojoption('forum_enabled'))
+            @if (ojoption('forum_enabled') || (Auth::check() && Auth::user()->has_role('admin')))
             <li id='forum_sidebar'><a href="/forum"> {{trans('wzoj.forum')}} </a></li>
             @endif
             <li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li>

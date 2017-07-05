@@ -303,4 +303,6 @@ return [
 
     'forum_options' => '讨论版设置',
     'forum_enabled' => '启用讨论版',
+
+    'msg_forum_disabled' => '讨论版已被禁用!',
 ];
