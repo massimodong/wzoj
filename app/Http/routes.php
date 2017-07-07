@@ -149,6 +149,11 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				//judgers
 				Route::resource('judgers', 'AdminJudgerController');
 
+				//database backup
+				Route::get('database-backup', 'AdminDatabaseBackupController@getIndex');
+				Route::post('database-backup/restrict-size', 'AdminDatabaseBackupController@postRestrictSize');
+				Route::delete('database-backup', 'AdminDatabaseBackupController@deleteBackup');
+
 				//update system
 				Route::get('update-system', 'AdminUpdateSystemController@getUpdate');
 				Route::post('update-system', 'AdminUpdateSystemController@postUpdate');

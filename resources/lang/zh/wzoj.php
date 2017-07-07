@@ -305,4 +305,14 @@ return [
     'forum_enabled' => '启用讨论版',
 
     'msg_forum_disabled' => '讨论版已被禁用!',
+
+    'database_backup' => '数据库备份',
+    'backup_time' => '备份时间',
+    'file_size' => '文件大小',
+    'msg_database_backup_warning' => '本页面不当操作可能造成严重后果，且无法撤回，请谨慎操作。',
+    'database_backup_file_size' => '备份占用空间',
+    'backup_restrict_size' => '清理空间',
+    'msg_backup_restrict_size' => '此操作将删除部分旧的备份文件，使占用空间在设置值以内',
+    'msg_confirm_delete_backup' => '确认删除备份?',
+    'database_size_limit' => '数据库备份空间限制',
 ];

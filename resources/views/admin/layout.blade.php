@@ -88,6 +88,9 @@
 		    <li id='judgers_sidebar'>
 		    	<a href="/admin/judgers"> {{trans('wzoj.judgers')}} </a>
 		    </li>
+		    <li id='database_backup_sidebar'>
+		    	<a href="/admin/database-backup"> {{trans('wzoj.database_backup')}} </a>
+		    </li>
 		    <li id='update-system'>
 		    	<a href="/admin/update-system"> {{trans('wzoj.update_system')}} </a>
 		    </li>
