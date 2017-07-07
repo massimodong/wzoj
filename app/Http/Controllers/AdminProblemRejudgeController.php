@@ -75,8 +75,10 @@ class AdminProblemRejudgeController extends Controller
 
 	public function getProblemRejudgeCheck(Request $request){
 		$solutions = $this->genSolutionsQuery($request);
-		$count = (clone $solutions)->count();
-		$time_used = (clone $solutions)->sum(DB::raw('time_used * cnt_testcases'));
+		$sol2 = clone $solutions;
+
+		$count = $solutions->count();
+		$time_used = $sol2->sum(DB::raw('time_used * cnt_testcases'));
 
 		return response()->json([
 			'count' => $count,

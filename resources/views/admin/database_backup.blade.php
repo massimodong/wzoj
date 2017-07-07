@@ -15,7 +15,7 @@
   {{csrf_field()}}
   <div class="form-group">
     <label for="database_size_limit">{{trans('wzoj.database_size_limit')}}:</label>
-    <input type="text" class="form-control" id="database_size_limit" name="database_size_limit" value="{{ojoption('database_size_limit')}}">
+    <input type="text" class="form-control" id="database_size_limit" name="database_size_limit" value="{{ojoption('database_size_limit')}}">GB
   </div>
   <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
 </form>
