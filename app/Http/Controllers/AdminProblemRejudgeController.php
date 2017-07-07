@@ -8,6 +8,9 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Solution;
+use App\Testcase;
+
+use DB;
 
 class AdminProblemRejudgeController extends Controller
 {
@@ -24,44 +27,60 @@ class AdminProblemRejudgeController extends Controller
 		return view('admin.problem_rejudge');
 	}
 
-	public function postProblemRejudge(Request $request){
+	public function genSolutionsQuery(Request $request){
 		$this->validate($request, [
 			'problemset_id' => 'integer',
 		]);
-		$solutions = Solution::where('id',-1);
+		$solutions = Solution::where('id', '<>', -1);
 		if(isset($request->solution_id) && $request->solution_id != ""){
 			$ids = explode(",",$request->solution_id);
-			foreach($ids as $id){
-				if(strpos($id,"-")){
-					$range = explode("-",$id);
-					echo $range[0].' to '.$range[1]."<br>";
-					$solutions = $solutions->orWhere(function($query) use($range){
-						$query->where('id', '>=', $range[0])
-						      ->where('id', '<=', $range[1]);
-					});
-				}else{
-					echo $id."<br>";
-					$solutions = $solutions->orWhere(function($query) use($id){
-						$query->where('id', $id);
-					});
+			$solutions = $solutions->where(function($query) use($ids){
+				foreach($ids as $id){
+					if(strpos($id,"-")){
+						$range = explode("-",$id);
+						$query->orWhere(function($query) use($range){
+							$query->where('id', '>=', $range[0])
+							      ->where('id', '<=', $range[1]);
+						});
+					}else{
+						$query->orWhere(function($query) use($id){
+							$query->where('id', $id);
+						});
+					}
 				}
-			}
-			$this->rejudgeSolutions($solutions);
+			});
 		}
 
 		if(isset($request->problemset_id) && $request->problemset_id > 0){
 			$problemset = \App\Problemset::find($request->problemset_id);
 			if($problemset <> null){
-				$this->rejudgeSolutions($problemset->solutions());
+				$solutions = $solutions->where('problemset_id', $problemset->id);
 			}
 		}
 
 		if(isset($request->problem_id) && $request->problem_id > 0){
 			$problem = \App\Problem::find($request->problem_id);
 			if($problem <> NULL){
-				$this->rejudgeSolutions($problem->solutions());
+				$solutions = $solutions->where('problem_id', $problem->id);
 			}
 		}
+		return $solutions;
+	}
+
+	public function postProblemRejudge(Request $request){
+		$solutions = $this->genSolutionsQuery($request);
+		$this->rejudgeSolutions($solutions);
 		return back();
+	}
+
+	public function getProblemRejudgeCheck(Request $request){
+		$solutions = $this->genSolutionsQuery($request);
+		$count = (clone $solutions)->count();
+		$time_used = (clone $solutions)->sum(DB::raw('time_used * cnt_testcases'));
+
+		return response()->json([
+			'count' => $count,
+			'time_used' => $time_used,
+		]);
 	}
 }

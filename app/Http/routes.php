@@ -140,6 +140,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				//problem rejudge
 				Route::get('problem-rejudge', 'AdminProblemRejudgeController@getProblemRejudge');
 				Route::post('problem-rejudge', 'AdminProblemRejudgeController@postProblemRejudge');
+				Route::get('problem-rejudge/check', 'AdminProblemRejudgeController@getProblemRejudgeCheck');
 
 				//invitations generate
 				Route::get('invitations-generate', 'AdminInvitationsGenerateController@getIndex');

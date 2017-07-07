@@ -7,6 +7,13 @@ const TRANS = {
 	solution_status_5: '取消',
 	compile_error: '编译错误',
 	all: '全部',
+	days: '天',
+	hours: '小时',
+	minutes: '分钟',
+	seconds: '秒',
+	cnt_solutions: '提交数',
+	estimate_time: '预计时间',
+	confirm_rejudge: '确认重测',
 }
 
 const LANG = ['C', 'C++', 'Pascal'];

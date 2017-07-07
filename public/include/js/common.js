@@ -228,3 +228,35 @@ function codeDetectLanguage( code ){
 	//console.log('result:' + cur_lang);
 	return cur_lang;
 }
+
+function sec2text( sec ){
+	var ret = "";
+	var flag = false;
+	if(sec >= 86400){//days
+		ret += ~~(sec / 86400) + TRANS['days'];
+		sec %= 86400;
+		flag = true;
+	}
+
+	if(flag || sec >= 3600){//hours
+		if(flag) ret += ' ';
+		ret += ~~(sec / 3600) + TRANS['hours'];
+		sec %= 3600;
+		flag = true;
+	}
+	
+	if(flag || sec > 60){//minutes
+		if(flag) ret += ' ';
+		ret += ~~(sec / 60) + TRANS['minutes'];
+		sec %= 60;
+		flag = true;
+	}
+
+	if(flag) ret += ' ';
+	ret += ~~sec + TRANS['seconds'];
+	return ret;
+}
+
+function ms2text( ms ){
+	return sec2text(ms / 1000);
+}
