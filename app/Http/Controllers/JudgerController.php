@@ -145,6 +145,7 @@ class JudgerController extends Controller
 			return \App\Solution::findOrFail($request->solution_id);
 		});
 		$solution->ce = $request->ce;
+		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 		return response()->json(["ok" => true]);
