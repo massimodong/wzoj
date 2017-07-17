@@ -64,7 +64,7 @@
 
 	@foreach ($problems as $problem)
 	  @if (isset($row->problem_solutions[$problem->id]) && $solution = $row->problem_solutions[$problem->id])
-	  <div class='problem-{{$problem->id}} sortable_list_cell' style=''>
+	  <div class='problem-{{$problem->id}} sortable_list_cell' style='' data-score='{{$solution->score}}'>
 	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1' data-score='{{$solution->score}}'>
 	      @if ($solution->ce)
 	        {{trans('wzoj.compile_error')}}
