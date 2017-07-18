@@ -11,6 +11,7 @@ use App\Solution;
 use App\Testcase;
 
 use DB;
+use Cache;
 
 class AdminProblemRejudgeController extends Controller
 {
@@ -22,6 +23,7 @@ class AdminProblemRejudgeController extends Controller
 				    'ce' => NULL,
 				    'sim_id' => NULL,
 				    'judger_id' => 0]);
+		Cache::tags(['solutions'])->flush();
 	}
 	public function getProblemRejudge(){
 		return view('admin.problem_rejudge');

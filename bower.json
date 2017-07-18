@@ -3,11 +3,11 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "datatables.net-bs": "^2.1.1",
-    "datatables.net": "^2.1.1",
-    "bootstrap-fileinput": "^4.3.8",
-    "isotope": "^3.0.2",
-    "bootstrap-select": "^1.12.2",
-    "chart.js": "^2.5.0",
+    "datatables.net": "^1.10.15",
+    "bootstrap-fileinput": "^4.4.2",
+    "isotope": "^3.0.4",
+    "bootstrap-select": "^1.12.3",
+    "chart.js": "^2.6.0",
     "prism-js": "^1.0.0",
     "Mergely": "bower-mergely#3.3.9"
   }

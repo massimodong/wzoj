@@ -53,7 +53,8 @@ module.exports = function(grunt) {
     },
     copy: {
 	main: {
-		files: [{expand:true, cwd: 'bower/bootstrap/dist/fonts', src: '**', dest: 'public/include/fonts/'}]
+		files: [{expand:true, cwd: 'bower/bootstrap/dist/fonts', src: '**', dest: 'public/include/fonts/'},
+			{expand:true, cwd: 'bower/bootstrap-fileinput/img', src: '**', dest: 'public/include/img/'}]
 	}
     }
   });
