@@ -183,6 +183,7 @@ function detectLanguage(){
 			problemset_id: {{$problemset->id}},
 			problem_id: {{$problem->id}}
 		},
+		allowedFileExtensions: ["out"],
 		showUpload: false,
 		showRemove: false
 	}).on("filebatchselected", function(event, files) {
