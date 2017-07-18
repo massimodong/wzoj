@@ -11,7 +11,10 @@
 
 @section ('content')
 
-<p><a href='/admin/problems/{{$problem->id}}?preview'> {{trans('wzoj.preview')}} </a></p>
+<p>
+  <a href='/admin/problems/{{$problem->id}}?preview'> [{{trans('wzoj.preview')}}] </a>
+  <a href='/admin/problems/{{$problem->id}}/data'> [{{trans('wzoj.testdata')}}] </a>
+</p>
 <hr>
 
 <form method='POST' id='problem_form' class="form-horizontal">

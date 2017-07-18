@@ -345,3 +345,13 @@ textarea {
   border-width: 1px;
   word-break:break-all;
 }
+
+.floating-div {
+  position:absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #FFFFFF;
+  border-style: solid;
+  border-width: 1px;
+}

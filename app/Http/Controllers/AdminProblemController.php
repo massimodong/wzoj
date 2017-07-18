@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Cache;
 use Storage;
 use App\Problem;
+use App\FileManager;
 
 class AdminProblemController extends Controller
 {
@@ -65,6 +66,15 @@ class AdminProblemController extends Controller
 				]);
 			}
 		}
+	}
+
+	public function getProblemsData(Request $request, $id){
+		$problem = Problem::findOrFail($id);
+		return FileManager::getRequests($request, [
+			'disk' => 'data',
+			'basepath' => strval($problem->id),
+			'title' => $problem->id.'-'.$problem->name.'-'.trans('wzoj.testdata'),
+		]);
 	}
 
 	public function postProblems(){

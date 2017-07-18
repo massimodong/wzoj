@@ -315,4 +315,8 @@ return [
     'msg_backup_restrict_size' => '此操作将删除部分旧的备份文件，使占用空间在设置值以内',
     'msg_confirm_delete_backup' => '确认删除备份?',
     'database_size_limit' => '数据库备份空间限制',
+
+    'testdata' => '测试数据',
+    'filename' => '文件名称',
+    'cur_path' => '当前目录',
 ];

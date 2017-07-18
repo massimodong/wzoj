@@ -56,7 +56,10 @@
     <tr>
     	<td></td>
 	<td>{{$problem->id}}</td>
-	<td><a href='/admin/problems/{{$problem->id}}'>{{$problem->name}}</a></td>
+	<td>
+	  <a href='/admin/problems/{{$problem->id}}'>{{$problem->name}}</a>
+	  <a class="pull-right" href='/admin/problems/{{$problem->id}}/data'>[{{trans('wzoj.testdata')}}]</a>
+	</td>
 	<td>{{trans('wzoj.problem_type_'.$problem->type)}}</td>
 	<td>{{$problem->spj?"Y":""}}</td>
 	<td>{{$problem->source}}</td>
