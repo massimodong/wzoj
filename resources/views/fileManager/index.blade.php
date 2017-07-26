@@ -16,7 +16,9 @@
     <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-      <li><a href="#" onclick="fileManager_action('download');return false;">{{trans('wzoj.download')}}</a></li>
+      <li><a href="#" onclick="fileManager_action('download', 'GET');return false;">{{trans('wzoj.download')}}</a></li>
+      <li role="separator" class="divider"></li>
+      <li><a href="#" onclick="confirm('{{trans('wzoj.msg_confirm_delete_file')}}')&&fileManager_action('delete');return false;" style="color: red">{{trans('wzoj.delete')}}</a></li>
     </ul>
   </div>
 </div>
@@ -75,11 +77,15 @@ function preview(path){
 	setTimeout('div_on_preview = true', 1000);
 }
 
-function fileManager_action( action ){
+function fileManager_action( action, method = 'POST'){
 	if(file_names.length == 0) return;
 	$('#fileManager_form').html('');
+	$('#fileManager_form').attr('method', method);
+	if(method == 'POST'){
+		$('#fileManager_form').append('<input hidden name="_token" value="{{csrf_token()}}">')
+	}
 	$('#fileManager_form').append('<input hidden name="action" value="' + action + '">');
-	$('#fileManager_form').append("<input hidden name='path' value='" + "{{$userPath}}" + "'></input>");
+	$('#fileManager_form').append("<input hidden name='path' value='" + "{{$userPath}}" + "'>");
 	var submitInput = $("<input style='display:none' type='submit' />");
 	$("#fileManager_form").append(submitInput);
         submitInput.trigger("click");

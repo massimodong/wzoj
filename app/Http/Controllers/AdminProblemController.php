@@ -83,6 +83,14 @@ class AdminProblemController extends Controller
 		return redirect('/admin/problems/'.$problem->id);
 	}
 
+	public function postProblemsData(Request $request, $id){
+		$problem = Problem::findOrFail($id);
+		return FileManager::postRequests($request, [
+			'disk' => 'data',
+			'basepath' => strval($problem->id),
+		]);
+	}
+
 	public function putProblemsId(Request $request,$id){
 		$problem = \App\Problem::findOrFail($id);
 		$this->validate($request,[

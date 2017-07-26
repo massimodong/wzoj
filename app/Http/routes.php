@@ -124,6 +124,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				Route::get('problems', 'AdminProblemController@getProblems');
 				Route::get('problems/{id}', 'AdminProblemController@getProblems');
 				Route::get('problems/{id}/data', 'AdminProblemController@getProblemsData');
+				Route::post('problems/{id}/data', 'AdminProblemController@postProblemsData');
 				Route::post('problems', 'AdminProblemController@postProblems');
 				Route::put('problems/{id}', 'AdminProblemController@putProblemsId');
 				Route::put('problems', 'AdminProblemController@putProblems');

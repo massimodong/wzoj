@@ -316,7 +316,11 @@ return [
     'msg_confirm_delete_backup' => '确认删除备份?',
     'database_size_limit' => '数据库备份空间限制',
 
+    'filesize' => '文件大小',
+    'fileLastModified' => '最近修改',
+
     'testdata' => '测试数据',
     'filename' => '文件名称',
     'cur_path' => '当前目录',
+    'msg_confirm_delete_file' => '确认删除文件?',
 ];

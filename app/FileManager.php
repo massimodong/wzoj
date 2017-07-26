@@ -75,4 +75,30 @@ class FileManager
 			]);
 		}
 	}
+
+	static function deleteFiles($disk, $basePath, $userPath, $files){
+		foreach($files as $file){
+			$file = basename($file);
+			if(in_array($basePath.$userPath.$file,Storage::disk($disk)->directories($basePath.$userPath), true)){
+				Storage::disk($disk)->deleteDirectory($basePath.$userPath.$file);
+			}else if(Storage::disk($disk)->has($basePath.$userPath.$file)){
+				Storage::disk($disk)->delete($basePath.$userPath.$file);
+			}
+		}
+	}
+
+	static function postRequests($request, $config){
+		$path = FileManager::resolvePath($request->path);
+		switch($request->action){
+			case 'delete':
+				FileManager::deleteFiles($config['disk'],
+							 $config['basepath'],
+							 $path,
+							 $request->id);
+				return back();
+			default:
+				abort(403);
+				return;
+		}
+	}
 }
