@@ -7,7 +7,14 @@
 @section ('content')
 <div style="padding:10px;" class="col-xs-12">{{trans('wzoj.cur_path')}}:{{$userPath}} <a href="#" onclick="transit('..');return false;">{{trans('wzoj.back')}}</a></div>
 
-<div class="col-xs-6">file upload</div>
+<div class="col-xs-6">
+  <form method="POST" enctype="multipart/form-data">
+    {{csrf_field()}}
+    <input hidden name="action" value="upload">
+    <input id="fileManager_upload_input" name="files[]" type="file" class="file" multiple>
+  </form>
+</div>
+
 <form id="fileManager_form" class="form-inline col-xs-1"></form>
 <div class="col-xs-5">
   <div class="dropdown">
@@ -22,6 +29,8 @@
     </ul>
   </div>
 </div>
+
+<div class="col-xs-12"></div>
 
 <table id="fileManagerTable" class="table table-striped">
 <thead>
@@ -101,6 +110,12 @@ $(document).click(function(){
 var file_names = [];
 jQuery(document).ready(function($){
 	createDatatableWithCheckboxs("fileManagerTable", file_names, "fileManager_form");
+});
+
+$('#fileManager_upload_input').fileinput({
+	dropZoneEnabled: false,
+	showPreview: false,
+	showRemove: false,
 });
 </script>
 @endsection

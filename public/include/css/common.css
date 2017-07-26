@@ -347,7 +347,8 @@ textarea {
 }
 
 .floating-div {
-  position:absolute;
+  position: absolute;
+  z-index: 1000;
   top: 0;
   left: 0;
   right: 0;

@@ -86,6 +86,13 @@ class FileManager
 			}
 		}
 	}
+	
+	static function storeFiles($disk, $basePath, $userPath, $files){
+		foreach($files as $file){
+			$name=basename($file->getClientOriginalName());
+			Storage::disk($disk)->put($basePath.$userPath.$name, file_get_contents($file->getRealPath()));
+		}
+	}
 
 	static function postRequests($request, $config){
 		$path = FileManager::resolvePath($request->path);
@@ -95,6 +102,12 @@ class FileManager
 							 $config['basepath'],
 							 $path,
 							 $request->id);
+				return back();
+			case 'upload':
+				FileManager::storeFiles($config['disk'],
+							$config['basepath'],
+							$path,
+							$request->file('files'));
 				return back();
 			default:
 				abort(403);
