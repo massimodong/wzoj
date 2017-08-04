@@ -323,4 +323,14 @@ return [
     'filename' => '文件名称',
     'cur_path' => '当前目录',
     'msg_confirm_delete_file' => '确认删除文件?',
+
+    'roles' => '用户角色',
+    'role' => '角色',
+    'assign_role' => '分配角色',
+
+    'rolename_admin' => '超级管理员',
+    'rolename_manager' => '管理员',
+    'rolename_group_manager' => '用户组管理员',
+    'rolename_problem_manager' => '题目管理员',
+    'rolename_problemset_manager' => '题库管理员',
 ];

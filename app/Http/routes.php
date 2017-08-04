@@ -151,6 +151,11 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				//judgers
 				Route::resource('judgers', 'AdminJudgerController');
 
+				//roles
+				Route::get('roles', 'AdminRolesController@getIndex');
+				Route::post('roles', 'AdminRolesController@postIndex');
+				Route::delete('roles', 'AdminRolesController@deleteIndex');
+
 				//database backup
 				Route::get('database-backup', 'AdminDatabaseBackupController@getIndex');
 				Route::post('database-backup/restrict-size', 'AdminDatabaseBackupController@postRestrictSize');
