@@ -97,6 +97,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
 		Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
 				Route::get('/', 'AdminHomeController@index');
+				Route::post('cache-clear', 'AdminHomeController@flushCache');
 				Route::post('options','AdminHomeController@postOptions');
 				//notice
 				Route::get('notice', 'AdminNoticeController@getNotice');

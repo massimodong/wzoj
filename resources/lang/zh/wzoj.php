@@ -333,4 +333,7 @@ return [
     'rolename_group_manager' => '用户组管理员',
     'rolename_problem_manager' => '题目管理员',
     'rolename_problemset_manager' => '题库管理员',
+
+    'flush_cache' => '清除所有缓存信息',
+    'msg_roles_admin_helper' => '所有修改在用户下次登陆时生效。若需要立即生效，请点击"清除所有缓存信息"按钮，强制所有用户退出登录(除了你)。',
 ];

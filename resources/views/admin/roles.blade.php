@@ -6,6 +6,10 @@
 
 @section ('content')
 <div class="col-xs-12">
+  <p><span style="color:red">{{trans('wzoj.msg_roles_admin_helper')}}</span></p>
+</div>
+
+<div class="col-xs-10">
   <form method="POST" class="form-inline">
     {{csrf_field()}}
     <div class="form-group">
@@ -27,6 +31,13 @@
       </select>
     </div>
     <button type="submit" class="btn btn-default">{{trans('wzoj.assign_role')}}</button>
+  </form>
+</div>
+
+<div class="col-xs-2">
+  <form method="POST" action="/admin/cache-clear">
+    {{csrf_field()}}
+    <button type="submit" class="btn btn-warning">{{trans('wzoj.flush_cache')}}</button>
   </form>
 </div>
 

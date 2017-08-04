@@ -12,9 +12,6 @@ use App\Role;
 
 class AdminRolesController extends Controller
 {
-	static function flushCache(){
-	}
-
 	public function getIndex(){
 		$users = User::all();
 		$roles = Role::all();
@@ -49,7 +46,6 @@ class AdminRolesController extends Controller
 		}
 
 		$user->roles()->detach($role->id);
-		$this->flushCache();
 		return back();
 	}
 }
