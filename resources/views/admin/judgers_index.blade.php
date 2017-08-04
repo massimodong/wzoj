@@ -27,11 +27,13 @@
     </div>
     <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
   </form>
+  <!--
   <form class="form-inline col-xs-3" action="/admin/judgers/{{$judger->id}}" method="POST">
     {{csrf_field()}}
     {{method_field('DELETE')}}
     <button type="submit" class="btn btn-danger">{{trans('wzoj.delete')}}</button>
   </form>
+  -->
 @endforeach
 </div>
 

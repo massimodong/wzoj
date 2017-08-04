@@ -93,7 +93,7 @@ class AdminJudgerController extends Controller
      */
     public function destroy($id)
     {
-	    Judger::destroy($id);
+	    //Judger::destroy($id);
 	    return back();
     }
 }
