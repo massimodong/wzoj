@@ -47,6 +47,12 @@
     @endforeach
   </tbody>
   </table>
+
+  <center><ul class="pagination">
+    @for ($i=1;$i <= $cnt_pages;++$i)
+      <li {{$i == $cur_page ? "class=active":""}}><a href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}</a></li>
+    @endfor
+  </ul></center>
 </div>
 <!-- home -->
 
