@@ -74,6 +74,7 @@ class AdminProblemController extends Controller
 			'disk' => 'data',
 			'basepath' => strval($problem->id),
 			'title' => $problem->id.'-'.$problem->name.'-'.trans('wzoj.testdata'),
+			'modify' => true,
 		]);
 	}
 

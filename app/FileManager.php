@@ -67,11 +67,13 @@ class FileManager
 			$userPath = FileManager::resolvePath($request->path);
 			$directories = Storage::disk($config['disk'])->directories($config['basepath'].$userPath);
 			$files = Storage::disk($config['disk'])->files($config['basepath'].$userPath);
+			$can_modify = isset($config['modify']) && $config['modify'];
 			return view('fileManager.index',[
 					'config' => $config,
 					'userPath' => $userPath,
 					'directories' => $directories,
 					'files' => $files,
+					'can_modify' => $can_modify,
 			]);
 		}
 	}

@@ -42,10 +42,14 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
 		Route::post('password/reset', 'Auth\PasswordController@postReset');
 
-
+		//users
 		Route::get('users/{id}','UserController@getId');
 		Route::put('users', 'UserController@putUsers')->middleware('admin');
 		Route::post('users/{id}','UserController@postId')->middleware('auth');
+
+		//user files
+		Route::get('users/{id}/files', 'UserController@getUserFiles')->middleware('auth');
+		Route::post('users/{id}/files', 'UserController@postUserFiles')->middleware('auth');
 
 		//problemsets
 		Route::get('s','ProblemsetController@getIndex');

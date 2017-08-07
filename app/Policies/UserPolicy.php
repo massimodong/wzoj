@@ -38,4 +38,12 @@ class UserPolicy
 	    return $auth->id == $user->id;
     }
 
+    public function view_files(User $auth, User $user){
+	    return $auth->id == $user->id;
+    }
+
+    public function modify_files(User $auth, User $user){
+	    return ($auth->id == $user->id) && ($auth->has_role('manager'));
+    }
+
 }

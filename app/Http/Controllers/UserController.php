@@ -10,6 +10,8 @@ use App\User;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\FileManager;
+
 class UserController extends Controller
 {
 	public function getId($id){
@@ -121,5 +123,31 @@ class UserController extends Controller
 				break;
 		}
 		return back();
+	}
+
+	public function getUserFiles($id, Request $request){
+		$user = User::findOrFail($id);
+
+		$this->authorize('view_files', $user);
+
+		$can_modify = Gate::allows('modify_files', $user);
+
+		return FileManager::getRequests($request, [
+			'disk' => 'files',
+			'basepath' => strval($user->id),
+			'title' => $user->name.'-'.trans('wzoj.files'),
+			'modify' => $can_modify,
+		]);
+	}
+
+	public function postUserFiles($id, Request $request){
+		$user = User::findOrFail($id);
+
+		$this->authorize('modify_files', $user);
+
+		return FileManager::postRequests($request, [
+			'disk' => 'files',
+			'basepath' => strval($user->id),
+		]);
 	}
 }

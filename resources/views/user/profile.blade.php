@@ -38,9 +38,13 @@
 							{{trans('wzoj.settings')}} </a>
 						</li>
 						<li>
-							<a data-toggle="tab" href="#homeworks">
-							<i class="glyphicon glyphicon-ok"></i>
-							{{trans('wzoj.homeworks')}} </a>
+							@can ('view_files', $user)
+							<a href="/users/{{$user->id}}/files">
+							@else
+							<a>
+							@endcan
+							<i class="glyphicon glyphicon-file"></i>
+							{{trans('wzoj.files')}} </a>
 						</li>
 						<li>
 							<a href="/faq#gravatar">
@@ -172,9 +176,6 @@
 			    @if (Auth::check() && $user->id == Auth::user()->id)
 			    <a href="/password/change">{{trans('wzoj.change_password')}}</a>
 			    @endif
-			</div>
-			<div id="homeworks" class="tab-pane">
-				{{trans('wzoj.at_home_page')}}
 			</div>
 		</div>
             </div>

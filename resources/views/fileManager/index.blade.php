@@ -7,6 +7,7 @@
 @section ('content')
 <div style="padding:10px;" class="col-xs-12">{{trans('wzoj.cur_path')}}:{{$userPath}} <a href="#" onclick="transit('..');return false;">{{trans('wzoj.back')}}</a></div>
 
+@if ($can_modify)
 <div class="col-xs-6">
   <form method="POST" enctype="multipart/form-data">
     {{csrf_field()}}
@@ -14,6 +15,9 @@
     <input id="fileManager_upload_input" name="files[]" type="file" class="file" multiple>
   </form>
 </div>
+@else
+<div class="col-xs-6"></div>
+@endif
 
 <form id="fileManager_form" class="form-inline col-xs-1"></form>
 <div class="col-xs-5">
@@ -24,8 +28,10 @@
     </button>
     <ul class="dropdown-menu">
       <li><a href="#" onclick="fileManager_action('download', 'GET');return false;">{{trans('wzoj.download')}}</a></li>
+      @if ($can_modify)
       <li role="separator" class="divider"></li>
       <li><a href="#" onclick="confirm('{{trans('wzoj.msg_confirm_delete_file')}}')&&fileManager_action('delete');return false;" style="color: red">{{trans('wzoj.delete')}}</a></li>
+      @endif
     </ul>
   </div>
 </div>
