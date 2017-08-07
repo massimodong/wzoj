@@ -1,4 +1,4 @@
-@extends ('admin.layout')
+@extends ('fileManager.layout')
 
 @section ('title')
 {{$config['title']}}

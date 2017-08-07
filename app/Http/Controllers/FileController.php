@@ -24,9 +24,7 @@ class FileController extends Controller
      */
     public function index()
     {
-	    foreach(Auth::user()->files as $file){
-		    echo $file->name."<br>";
-	    }
+	//
     }
 
     /**

@@ -324,6 +324,8 @@ return [
     'cur_path' => '当前目录',
     'msg_confirm_delete_file' => '确认删除文件?',
 
+    'file_manager' => '文件管理',
+
     'roles' => '用户角色',
     'role' => '角色',
     'assign_role' => '分配角色',
@@ -336,4 +338,7 @@ return [
 
     'flush_cache' => '清除所有缓存信息',
     'msg_roles_admin_helper' => '所有修改在用户下次登陆时生效。若需要立即生效，请点击"清除所有缓存信息"按钮，强制所有用户退出登录(除了你)。',
+
+    'file' => '文件',
+    'files' => '文件',
 ];
