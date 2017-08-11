@@ -31,16 +31,7 @@ class AjaxController extends Controller
 			$last_tid = $request->last_tid;
 		}
 
-		$all_testcases=Cache::tags(['solutions','testcases'])->remember($request->solution_id,1,function() use($solution){
-				return $solution->testcases;
-		});
-
-		$testcases = [];
-		foreach($all_testcases as $testcase){
-			if($testcase->id > $last_tid){
-				array_push($testcases, $testcase);
-			}
-		}
+		$testcases = $solution->testcases()->where('id', '>', $last_tid)->get();
 
 		return response()->json(['testcases' => $testcases,
 					'cnt_testcases' => $solution->cnt_testcases]);//total testcases

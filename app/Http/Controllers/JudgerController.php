@@ -91,7 +91,6 @@ class JudgerController extends Controller
 				$solution->sim_id = NULL;
 				$solution->judger_id = \Request::get('judger')->id;
 				Cache::tags(['solutions'])->put($solution->id, $solution, 1);
-				Cache::tags(['solutions', 'testcases'])->put($solution->id, collect(new \App\Testcase), 1);
 				return response()->json(["ok" => true]);
 			}else{
 				return response()->json(["ok" => false]);
@@ -195,11 +194,6 @@ class JudgerController extends Controller
 	}
 	public function postPostTestcase(Request $request){
 		$testcase = Testcase::create($request->except('judger_token'));
-		if(Cache::tags(['solutions', 'testcases'])->has($testcase->solution_id)){
-			$all_testcases = Cache::tags(['solutions', 'testcases'])->get($testcase->solution_id);
-			$all_testcases->push($testcase);
-			Cache::tags(['solutions', 'testcases'])->put($testcase->solution_id, $all_testcases, 1);
-		}
 	}
 
 	public function getGetAnswer(Request $request){

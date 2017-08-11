@@ -259,9 +259,7 @@ class SolutionController extends Controller
 	    }
 
 	    //$this->authorize('view',$solution);
-	    $testcases = Cache::tags(['solutions', 'testcases'])->remember($id, 1, function() use($solution){
-			return $solution->testcases;
-	    });
+	    $testcases = $solution->testcases;
 	    return view('solutions.show',['solution' => $solution,
 			    		'testcases' => $testcases,
 	    				'problemset' => $solution->problemset]);
