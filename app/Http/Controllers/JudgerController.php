@@ -103,9 +103,7 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
-			return \App\Solution::findOrFail($request->solution_id);
-		});
+		$solution = \App\Solution::findOrFail($request->solution_id);
 		return response()->json([
 			'id' => $solution->id,
 			'user_id' => $solution->user_id,
@@ -140,9 +138,9 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
-			return \App\Solution::findOrFail($request->solution_id);
-		});
+
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
 		$solution->ce = $request->ce;
 		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
@@ -153,9 +151,8 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
-			return \App\Solution::findOrFail($request->solution_id);
-		});
+
+		$solution = \App\Solution::findOrFail($request->solution_id);
 
 		$solution->time_used = $request->time_used;
 		$solution->memory_used = $request->memory_used;
@@ -176,9 +173,8 @@ class JudgerController extends Controller
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
-		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
-			return \App\Solution::findOrFail($request->solution_id);
-		});
+
+		$solution = \App\Solution::findOrFail($request->solution_id);
 
 		$solution->status = SL_JUDGED;
 		$solution->judged_at = date('Y-m-d H:i:s');

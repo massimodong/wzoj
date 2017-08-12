@@ -248,9 +248,7 @@ class SolutionController extends Controller
      */
     public function show($id)
     {
-	    $solution = Cache::tags(['solutions'])->remember($id, 1, function() use($id){
-			return Solution::findOrFail($id);
-	    });
+	    $solution = \App\Solution::findOrFail($id);
 
 	    if(!empty(\Request::get('contests'))){
 		    if(!in_array($solution->problemset_id, \Request::get('contests'))){

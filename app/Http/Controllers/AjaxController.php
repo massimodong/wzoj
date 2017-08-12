@@ -22,9 +22,8 @@ class AjaxController extends Controller
 			'solution_id' => 'required|integer',
 			'last_tid' => 'integer',
 		]);
-		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
-			return \App\Solution::findOrFail($request->solution_id);
-		});
+		
+		$solution = \App\Solution::findOrFail($request->solution_id);
 
 		$last_tid = 0;
 		if(isset($request->last_tid)){
@@ -41,9 +40,9 @@ class AjaxController extends Controller
 		$this->validate($request, [
 			'solution_id' => 'required|integer',
 		]);
-		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
-			return \App\Solution::findOrFail($request->solution_id);
-		});
+
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
 		return response()->json(['status' => $solution->status,
 					'score' => $solution->score,
 					'ce' => isset($solution->ce)?'1':'0']);
@@ -53,9 +52,9 @@ class AjaxController extends Controller
 		$this->validate($request, [
 			'solution_id' => 'required|integer',
 		]);
-		$solution = Cache::tags(['solutions'])->remember($request->solution_id, 1, function() use($request){
-			return \App\Solution::findOrFail($request->solution_id);
-		});
+
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
 		return response()->json(['score' => $solution->score,
 					 'time_used' => $solution->time_used,
 					 'memory_used' => $solution->memory_used,
