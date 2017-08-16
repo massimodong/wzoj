@@ -50,6 +50,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function has_role($role){
+	    if(isset(Session::get('roles', [])['admin'])) return true;
 	    return isset(Session::get('roles', [])[$role]);
     }
 
@@ -70,6 +71,19 @@ class User extends Model implements AuthenticatableContract,
     }
     public function replies(){
 	    return $this->hasMany('App\ForumReply');
+    }
+
+    public function manage_groups(){
+	    if($this->has_role('admin')) return DB::table('groups');
+	    return $this->hasMany('App\Group', 'manager_id');
+    }
+    public function manage_problems(){
+	    if($this->has_role('admin')) return DB::table('problems');
+	    return $this->hasMany('App\Problem', 'manager_id');
+    }
+    public function manage_problemsets(){
+	    if($this->has_role('admin')) return DB::table('problemsets');
+	    return $this->hasMany('App\Problemset', 'manager_id');
     }
 
     public function update_cnt_ac(){
@@ -154,5 +168,19 @@ class User extends Model implements AuthenticatableContract,
 		    Session::put('problemsets', $problemsets);
 		    return $problemsets;
 	    }
+    }
+
+    public function __get($key){
+	    if($this->has_role('admin')){
+		    switch($key){
+			    case 'manage_groups':
+				    return \App\Group::all();
+			    case 'manage_problems':
+				    return \App\Problem::all();
+			    case 'manage_problemsets':
+				    return \App\Problemset::all();
+		    }
+	    }
+	    return $this->getAttribute($key);
     }
 }

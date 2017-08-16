@@ -34,4 +34,12 @@ class ProblemsetPolicy
 	    }
 	    return false;
     }
+
+    public function update(User $user, Problemset $problemset){
+	    return $user->id === $problemset->manager_id;
+    }
+
+    public function create(User $user, $problemset){
+	    return $user->has_role('problemset_manager');
+    }
 }

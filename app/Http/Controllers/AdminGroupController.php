@@ -11,12 +11,14 @@ use App\Http\Controllers\Controller;
 
 class AdminGroupController extends Controller
 {
-	public function getGroups($id = -1){
+	public function getGroups(Request $request, $id = -1){
 		if($id == -1){
-			$groups = \App\Group::all();
+			$groups = $request->user()->manage_groups;
 			return view('admin.groups_index',['groups' => $groups]);
 		}else{
 			$group = \App\Group::findOrFail($id);
+			$this->authorize('manage', $group);
+
 			$ac_users = array();
 			$wa_users = array();
 
@@ -64,12 +66,14 @@ class AdminGroupController extends Controller
 
 	public function postGroups(Request $request){
 		$group = new \App\Group;
+		$group->manager_id = $request->user()->id;
 		$group->save();
 		return redirect('/admin/groups/'.$group->id);
 	}
 
 	public function postUsers($gid, Request $request){
 		$group = \App\Group::findOrFail($gid);
+		$this->authorize('manage', $group);
 
 		foreach($request->uids as $uid){
 			$arr = [];
@@ -86,6 +90,7 @@ class AdminGroupController extends Controller
 
 	public function postHomeworks($gid, Request $request){
 		$group = \App\Group::findOrFail($gid);
+		$this->authorize('manage', $group);
 
 		foreach($request->pids as $pid){
 			$arr = [];
@@ -102,6 +107,8 @@ class AdminGroupController extends Controller
 
 	public function putGroups(Request $request,$id){
 		$group = \App\Group::findOrFail($id);
+		$this->authorize('manage', $group);
+
 		$group->name = $request->name;
 		$group->notice = $request->notice;
 		$group->save();
@@ -110,12 +117,16 @@ class AdminGroupController extends Controller
 
 	public function deleteGroups($gid){
 		$group = \App\Group::findOrFail($gid);
+		$this->authorize('manage', $group);
+
 		$group->delete();
 		return redirect('/admin/groups');
 	}
 
 	public function deleteUsers($gid, Request $request){
 		$group = \App\Group::findOrFail($gid);
+		$this->authorize('manage', $group);
+
 		foreach($request->id as $uid){
 			$group->users()->detach($uid);
 		}
@@ -124,6 +135,8 @@ class AdminGroupController extends Controller
 
 	public function deleteHomeworks($gid, Request $request){
 		$group = \App\Group::findOrFail($gid);
+		$this->authorize('manage', $group);
+
 		foreach($request->id as $pid){
 			$group->homeworks()->detach($pid);
 		}

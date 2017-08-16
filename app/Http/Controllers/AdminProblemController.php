@@ -48,10 +48,11 @@ class AdminProblemController extends Controller
 					'nextpage_url' => $next_url,
 					'bottompage_url' => $bottom_url]);
 					*/
-			$problems = Problem::with('problemsets')->get();
+			$problems = $request->user()->manage_problems;
 			return view('admin.problems_index', ['problems' => $problems]);
 		}else{
 			$problem = \App\Problem::findOrFail($id);
+			$this->authorize('manage', $problem);
 			if(isset($request->preview)){
 				return view('admin.problems_preview',['problem' => $problem]);
 			}else{
@@ -70,6 +71,7 @@ class AdminProblemController extends Controller
 
 	public function getProblemsData(Request $request, $id){
 		$problem = Problem::findOrFail($id);
+		$this->authorize('manage', $problem);
 		return FileManager::getRequests($request, [
 			'disk' => 'data',
 			'basepath' => strval($problem->id),
@@ -78,14 +80,15 @@ class AdminProblemController extends Controller
 		]);
 	}
 
-	public function postProblems(){
-		$problem = \App\Problem::create(['name' =>'title','type'=>1,'spj'=>0,'timelimit'=>1000,'memorylimit'=>256.0]);
+	public function postProblems(Request $request){
+		$problem = \App\Problem::create(['name' =>'title','type'=>1,'spj'=>0,'timelimit'=>1000,'memorylimit'=>256.0, 'manager_id'=>$request->user()->id]);
 		Storage::disk('data')->makeDirectory('/'.$problem->id);
 		return redirect('/admin/problems/'.$problem->id);
 	}
 
 	public function postProblemsData(Request $request, $id){
 		$problem = Problem::findOrFail($id);
+		$this->authorize('manage', $problem);
 		return FileManager::postRequests($request, [
 			'disk' => 'data',
 			'basepath' => strval($problem->id),
@@ -94,6 +97,7 @@ class AdminProblemController extends Controller
 
 	public function putProblemsId(Request $request,$id){
 		$problem = \App\Problem::findOrFail($id);
+		$this->authorize('manage', $problem);
 		$this->validate($request,[
 			'name' => 'required|max:255',
 			'type' => 'required|in:1,2,3',
@@ -115,6 +119,7 @@ class AdminProblemController extends Controller
 	}
 	public function putProblems(Request $request){
 		$query = Problem::whereIn('id', $request->id);
+		//?????????????????
 		switch($request->action){
 			/*
 			case 'delete':
@@ -126,10 +131,4 @@ class AdminProblemController extends Controller
 		}
 		return back();
 	}
-	public function deleteProblems($id){
-		$problem = \App\Problem::findOrFail($id);
-		$problem->delete();
-		return redirect('/admin/problems');
-	}
-
 }

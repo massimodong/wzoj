@@ -12,8 +12,13 @@ use Cache;
 
 class AdminHomeController extends Controller
 {
-	public function index(){
-		return view('admin.home');
+	public function __construct(){
+		$this->middleware('role:admin', ['except' => ['index']]);
+	}
+
+	public function index(Request $request){
+		if($request->user()->has_role('admin')) return view('admin.home');
+		else return view('admin.manager_home');
 	}
 
 	public function postOptions(Request $request){

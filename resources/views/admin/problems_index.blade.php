@@ -19,7 +19,7 @@
     <form id='add_to_problemset_form' method='POST'>
         {{csrf_field()}}
     	<select id="pids" class="selectpicker" data-live-search="true" title="{{trans('wzoj.search_problemset')}}" required>
-	@foreach (\App\Problemset::orderBy('id', 'asc')->get() as $problemset)
+	@foreach (Auth::user()->manage_problemsets()->orderBy('id', 'asc')->get() as $problemset)
 	    <option value="{{$problemset->id}}">{{$problemset->id}}-{{$problemset->name}}</option>
 	@endforeach
 	</select>

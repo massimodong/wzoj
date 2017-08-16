@@ -68,8 +68,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::delete('s/{psid}/problems','ProblemsetController@deleteProblem');
 		//Route::get('s/{psid}/{pid}/submit','ProblemsetController@getSubmit')->middleware('auth');
 		//groups
-		Route::post('s/{psid}/groups','ProblemsetController@postGroup')->middleware('admin');
-		Route::delete('s/{psid}/groups/{gid}','ProblemsetController@deleteGroup')->middleware('admin');
+		Route::post('s/{psid}/groups','ProblemsetController@postGroup');
+		Route::delete('s/{psid}/groups/{gid}','ProblemsetController@deleteGroup');
 
 		Route::post('solutions/answerfile', 'SolutionController@postSubmitAnswerfile');
 		Route::resource('solutions','SolutionController');
@@ -99,80 +99,88 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		});
 
 		get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
-		Route::group(['prefix' => 'admin', 'middleware' => 'admin'], function(){
+		Route::group(['prefix' => 'admin', 'middleware' => 'role:manager'], function(){
 				Route::get('/', 'AdminHomeController@index');
 				Route::post('cache-clear', 'AdminHomeController@flushCache');
 				Route::post('options','AdminHomeController@postOptions');
 				//notice
-				Route::get('notice', 'AdminNoticeController@getNotice');
+				Route::get('notice', 'AdminNoticeController@getNotice')->middleware('role:admin');
 				//groups
-				Route::get('groups', 'AdminGroupController@getGroups');
-				Route::get('groups/{id}', 'AdminGroupController@getGroups');
-				Route::post('groups', 'AdminGroupController@postGroups');
-				Route::post('groups/{id}/users', 'AdminGroupController@postUsers');
-				Route::put('groups/{id}', 'AdminGroupController@putGroups');
-				Route::delete('groups/{gid}', 'AdminGroupController@deleteGroups');
-				Route::delete('groups/{gid}/users', 'AdminGroupController@deleteUsers');
-				Route::post('groups/{gid}/homeworks', 'AdminGroupController@postHomeworks');
-				Route::delete('groups/{gid}/homeworks', 'AdminGroupController@deleteHomeworks');
-
+				Route::group(['prefix' => 'groups', 'middleware' => 'role:group_manager'], function(){
+					Route::get('/', 'AdminGroupController@getGroups');
+					Route::get('{id}', 'AdminGroupController@getGroups');
+					Route::post('/', 'AdminGroupController@postGroups');
+					Route::post('{id}/users', 'AdminGroupController@postUsers');
+					Route::put('{id}', 'AdminGroupController@putGroups');
+					Route::delete('{gid}', 'AdminGroupController@deleteGroups');
+					Route::delete('{gid}/users', 'AdminGroupController@deleteUsers');
+					Route::post('{gid}/homeworks', 'AdminGroupController@postHomeworks');
+					Route::delete('{gid}/homeworks', 'AdminGroupController@deleteHomeworks');
+				});
 				//invitations
-				Route::get('invitations', 'AdminInvitationController@getInvitations');
-				Route::get('invitations/{id}', 'AdminInvitationController@getInvitations');
-				Route::post('invitations', 'AdminInvitationController@postInvitations');
-				Route::post('invitations/{id}', 'AdminInvitationController@postInvitations');
-				Route::put('invitations/{id}', 'AdminInvitationController@putInvitationsId');
-				Route::put('invitations', 'AdminInvitationController@putInvitations');
-				Route::delete('invitations/{iid}/{gid}', 'AdminInvitationController@deleteInvitations');
+				Route::group(['prefix' => 'invitations', 'middleware' => 'role:admin'], function(){
+					Route::get('/', 'AdminInvitationController@getInvitations');
+					Route::get('{id}', 'AdminInvitationController@getInvitations');
+					Route::post('/', 'AdminInvitationController@postInvitations');
+					Route::post('{id}', 'AdminInvitationController@postInvitations');
+					Route::put('{id}', 'AdminInvitationController@putInvitationsId');
+					Route::put('/', 'AdminInvitationController@putInvitations');
+					Route::delete('{iid}/{gid}', 'AdminInvitationController@deleteInvitations');
+				});
 
 				//problems
-				Route::get('problems', 'AdminProblemController@getProblems');
-				Route::get('problems/{id}', 'AdminProblemController@getProblems');
-				Route::get('problems/{id}/data', 'AdminProblemController@getProblemsData');
-				Route::post('problems/{id}/data', 'AdminProblemController@postProblemsData');
-				Route::post('problems', 'AdminProblemController@postProblems');
-				Route::put('problems/{id}', 'AdminProblemController@putProblemsId');
-				Route::put('problems', 'AdminProblemController@putProblems');
-				Route::delete('problems/{id}', 'AdminProblemController@deleteProblems');
+				Route::group(['prefix' => 'problems', 'middleware' => 'role:problem_manager'], function(){
+					Route::get('/', 'AdminProblemController@getProblems');
+					Route::get('{id}', 'AdminProblemController@getProblems');
+					Route::get('{id}/data', 'AdminProblemController@getProblemsData');
+					Route::post('{id}/data', 'AdminProblemController@postProblemsData');
+					Route::post('/', 'AdminProblemController@postProblems');
+					Route::put('{id}', 'AdminProblemController@putProblemsId');
+					Route::put('/', 'AdminProblemController@putProblems');
+					Route::delete('{id}', 'AdminProblemController@deleteProblems');
+				});
 
-				//import problems
-				Route::get('import-problems', 'AdminImportProblemsController@getImportProblems');
-				Route::post('import-problems', 'AdminImportProblemsController@postImportProblems');
+				Route::group(['middleware' => 'role:admin'], function(){
 
-				//ProblemTags
-				Route::get('problem-tags', 'AdminProblemTagController@index');
-				Route::post('problem-tags', 'AdminProblemTagController@store');
-				Route::put('problem-tags/{id}', 'AdminProblemTagController@update');
+					//import problems
+					Route::get('import-problems', 'AdminImportProblemsController@getImportProblems');
+					Route::post('import-problems', 'AdminImportProblemsController@postImportProblems');
 
-				//problem rejudge
-				Route::get('problem-rejudge', 'AdminProblemRejudgeController@getProblemRejudge');
-				Route::post('problem-rejudge', 'AdminProblemRejudgeController@postProblemRejudge');
-				Route::get('problem-rejudge/check', 'AdminProblemRejudgeController@getProblemRejudgeCheck');
+					//ProblemTags
+					Route::get('problem-tags', 'AdminProblemTagController@index');
+					Route::post('problem-tags', 'AdminProblemTagController@store');
+					Route::put('problem-tags/{id}', 'AdminProblemTagController@update');
 
-				//invitations generate
-				Route::get('invitations-generate', 'AdminInvitationsGenerateController@getIndex');
-				Route::post('invitations-generate', 'AdminInvitationsGenerateController@postIndex');
+					//problem rejudge
+					Route::get('problem-rejudge', 'AdminProblemRejudgeController@getProblemRejudge');
+					Route::post('problem-rejudge', 'AdminProblemRejudgeController@postProblemRejudge');
+					Route::get('problem-rejudge/check', 'AdminProblemRejudgeController@getProblemRejudgeCheck');
 
-				//judgers
-				Route::resource('judgers', 'AdminJudgerController');
+					//invitations generate
+					Route::get('invitations-generate', 'AdminInvitationsGenerateController@getIndex');
+					Route::post('invitations-generate', 'AdminInvitationsGenerateController@postIndex');
 
-				//roles
-				Route::get('roles', 'AdminRolesController@getIndex');
-				Route::post('roles', 'AdminRolesController@postIndex');
-				Route::delete('roles', 'AdminRolesController@deleteIndex');
+					//judgers
+					Route::resource('judgers', 'AdminJudgerController');
 
-				//database backup
-				Route::get('database-backup', 'AdminDatabaseBackupController@getIndex');
-				Route::post('database-backup/restrict-size', 'AdminDatabaseBackupController@postRestrictSize');
-				Route::delete('database-backup', 'AdminDatabaseBackupController@deleteBackup');
+					//roles
+					Route::get('roles', 'AdminRolesController@getIndex');
+					Route::post('roles', 'AdminRolesController@postIndex');
+					Route::delete('roles', 'AdminRolesController@deleteIndex');
 
-				//update system
-				Route::get('update-system', 'AdminUpdateSystemController@getUpdate');
-				Route::post('update-system', 'AdminUpdateSystemController@postUpdate');
+					//database backup
+					Route::get('database-backup', 'AdminDatabaseBackupController@getIndex');
+					Route::post('database-backup/restrict-size', 'AdminDatabaseBackupController@postRestrictSize');
+					Route::delete('database-backup', 'AdminDatabaseBackupController@deleteBackup');
 
-				//advanced settings
-				Route::get('advanced-settings', 'AdminAdvanced@getAdvanced');
-				Route::post('advanced-settings', 'AdminAdvanced@postAdvanced');
+					//update system
+					Route::get('update-system', 'AdminUpdateSystemController@getUpdate');
+					Route::post('update-system', 'AdminUpdateSystemController@postUpdate');
+
+					//advanced settings
+					Route::get('advanced-settings', 'AdminAdvanced@getAdvanced');
+					Route::post('advanced-settings', 'AdminAdvanced@postAdvanced');
+				});
 
 				//ajax
 				Route::controller('ajax', 'AdminAjaxController');

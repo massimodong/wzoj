@@ -79,7 +79,7 @@
 	<div class="form-group">
 	  <label for="pids" class="sr-only"></label>
 	  <select name="pids[]" id="pids" class="selectpicker" data-live-search="true" title="{{trans('wzoj.search_problem')}}" multiple>
-	  @foreach (\App\Problem::orderBy('id', 'desc')->get() as $problem)
+	  @foreach (Auth::user()->manage_problems()->orderBy('id', 'desc')->get() as $problem)
 	    <option value="{{$problem->id}}">{{$problem->id}}-{{$problem->name}}</option>
 	  @endforeach
 	  </select>

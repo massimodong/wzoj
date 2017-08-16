@@ -35,5 +35,6 @@ class Kernel extends HttpKernel
 	'judger'=> \App\Http\Middleware\VerifyIfJudger::class,
 	'contest' => \App\Http\Middleware\OnlyContest::class,
 	'forum' => \App\Http\Middleware\Forum::class,
+	'role' => \App\Http\Middleware\Role::class,
     ];
 }

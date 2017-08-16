@@ -57,25 +57,44 @@
 		    <li id='home_sidebar'>
 		    	<a href="/admin"> {{trans('wzoj.admin_home')}} </a>
 		    </li>
+
+		    @if (Auth::user()->has_role('admin'))
 		    <li id='notice_sidebar'>
                         <a href="/admin/notice"> {{trans('wzoj.notices')}} </a>
 		    </li>
+		    @endif
 
+		    @if (Auth::user()->has_role('group_manager'))
                     <li id='groups_sidebar'>
                         <a href="/admin/groups"> {{trans('wzoj.groups')}} </a>
                     </li>
+		    @endif
+
+		    @if (Auth::user()->has_role('admin'))
                     <li id='invitations_sidebar'>
                         <a href="/admin/invitations"> {{trans('wzoj.invitations')}} </a>
                     </li>
+		    @endif
+
+		    @if (Auth::user()->has_role('problem_manager'))
                     <li id='problems_sidebar'>
                         <a href="/admin/problems"> {{trans('wzoj.problems')}} </a>
                     </li>
+		    @endif
+
+		    @if (Auth::user()->has_role('admin'))
 		    <li id='problem_tags_sidebar'>
 		    	<a href="/admin/problem-tags"> {{trans('wzoj.tags')}} </a>
 		    </li>
+		    @endif
+
+		    @if (Auth::user()->has_role('problemset_manager'))
 		    <li id='problemsets_sidebar'>
 		    	<a href="/s"> {{trans('wzoj.problemsets')}} </a>
 		    </li>
+		    @endif
+
+		    @if (Auth::user()->has_role('admin'))
                     <li id='import-problems_sidebar'>
                         <a href="/admin/import-problems"> {{trans('wzoj.import_problems')}} </a>
                     </li>
@@ -100,6 +119,7 @@
 		    <li id='advanced-settings'>
 		    	<a href="/admin/advanced-settings"> {{trans('wzoj.advanced_settings')}} </a>
 		    </li>
+		    @endif
                 </ul>
             </div>
             <!-- /.navbar-collapse -->

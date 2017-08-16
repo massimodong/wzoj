@@ -195,9 +195,9 @@ class ProblemsetController extends Controller
 		return;
 	}
 
-	public function postNewProblemset(){
+	public function postNewProblemset(Request $request){
 		$this->authorize('create',Problemset::class);
-		$problemset = Problemset::create(['name'=>'problemset name','type'=>'set','public'=>'1']);
+		$problemset = Problemset::create(['name'=>'problemset name','type'=>'set','public'=>'1', 'manager_id'=>$request->user()->id]);
 		Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
 		return redirect('/s/'.$problemset->id.'/edit');
 	}
@@ -347,6 +347,10 @@ class ProblemsetController extends Controller
 		//for($i = count($request->pids)-1;$i >= 0;--$i){
 		for($i = 0;isset($pids[$i]);++$i){
 			$pid = $pids[$i];
+
+			$problem = \App\Problem::findOrFail($pid);
+			if(Gate::denies('manage', $problem)) continue;
+
 			$arr = [];
 			$arr['pid'] = $pid;
 			$validator = Validator::make($arr,[

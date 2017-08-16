@@ -83,7 +83,7 @@
 	        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->name}} <span class="caret"></span></a>
 		<ul class="dropdown-menu">
 		  <li><a href="/users/{{Auth::user()->id}}"> {{trans('wzoj.profile')}} </a></li>
-		  @if (Auth::user()->has_role('admin'))
+		  @if (Auth::user()->has_role('manager'))
 		  <li><a href="/admin"> {{trans('wzoj.admin')}} </a></li>
 		  @endif
 		  <li><a href="#" onclick="document.forms['logout_form'].submit();return false;"> {{trans('wzoj.logout')}} </a></li>
