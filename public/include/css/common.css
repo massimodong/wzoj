@@ -356,3 +356,8 @@ textarea {
   border-style: solid;
   border-width: 1px;
 }
+
+.navbar-logo {
+  float:left;
+  padding:7px;
+}
