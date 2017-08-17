@@ -343,4 +343,7 @@ return [
     'files' => '文件',
 
     'logo_url' => '图标地址',
+    'appearance' => '外观',
+    'sidebars' => '侧边栏',
+    'diy_pages' => '自定义页面',
 ];

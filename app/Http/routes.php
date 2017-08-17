@@ -105,6 +105,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				Route::post('options','AdminHomeController@postOptions');
 				//notice
 				Route::get('notice', 'AdminNoticeController@getNotice')->middleware('role:admin');
+				Route::get('appearance', 'AdminAppearanceController@getAppearance')->middleware('role:admin');
 				//groups
 				Route::group(['prefix' => 'groups', 'middleware' => 'role:group_manager'], function(){
 					Route::get('/', 'AdminGroupController@getGroups');
