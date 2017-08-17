@@ -31,13 +31,10 @@ class SolutionPolicy
 	    //return $solution->user_id == $user->id;
     }
 
-    public function judge(User $user,$solution){
-	    if($user->has_role('judger')){
-		    return true;
-	    }
-    }
-
     public function view_code(User $user, Solution $solution){
-	    return $solution->user_id == $user->id;
+	    if($solution->user_id == $user->id) return true;
+	    if($user->has_role('problem_manager') && $solution->problem->manager_id == $user->id) return true;
+	    if($user->has_role('problemset_manager') && $solution->problemset->manager_id == $user->id) return true;
+	    return false;
     }
 }

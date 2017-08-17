@@ -26,6 +26,6 @@ class GroupPolicy
     }
 
     public function manage(User $user, Group $group){
-	    return $user->id === $group->manager_id;
+	    return $user->has_role('group_manager') && ($user->id === $group->manager_id);
     }
 }

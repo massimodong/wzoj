@@ -26,6 +26,6 @@ class ProblemPolicy
     }
 
     public function manage(User $user, Problem $problem){
-	    return $user->id === $problem->manager_id;
+	    return $user->has_role('problem_manager') && ($user->id === $problem->manager_id);
     }
 }
