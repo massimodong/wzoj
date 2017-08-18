@@ -49,6 +49,7 @@ class AdminAppearanceController extends Controller
 
 	public function postDiyPages(){
 		$diyPage = DiyPage::create(['name' => 'title', 'url' => 'url', 'content' => '']);
+		Cache::tags(['diyPages'])->forget('url');
 		return redirect('/admin/appearance/diy-pages/'.$diyPage->id);
 	}
 
@@ -62,6 +63,7 @@ class AdminAppearanceController extends Controller
 	public function putDiyPages(Request $request, $id){
 		DiyPage::where('id', $id)
 			->update($request->except(['_token', '_method']));
+		Cache::tags(['diyPages'])->forget($request->url);
 		return back();
 	}
 }

@@ -177,7 +177,9 @@ class HomeController extends Controller
 	}
 
 	public function getDiyPage($url){
-		$diyPage = \App\DiyPage::where('url', $url)->first();
+		$diyPage = Cache::tags(['diyPages'])->rememberForever($url, function() use($url){
+			return \App\DiyPage::where('url', $url)->first();
+		});
 		if($diyPage){
 			return view('diy_page', [
 				'diyPage' => $diyPage,
