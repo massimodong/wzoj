@@ -111,6 +111,10 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 					Route::post('sidebars', 'AdminAppearanceController@postSidebar');
 					Route::put('sidebars/{id}', 'AdminAppearanceController@putSidebar');
 					Route::delete('sidebars/{id}', 'AdminAppearanceController@deleteSidebar');
+
+					Route::post('diy-pages', 'AdminAppearanceController@postDiyPages');
+					Route::get('diy-pages/{id}', 'AdminAppearanceController@getDiyPages');
+					Route::put('diy-pages/{id}', 'AdminAppearanceController@putDiyPages');
 				});
 				//groups
 				Route::group(['prefix' => 'groups', 'middleware' => 'role:group_manager'], function(){

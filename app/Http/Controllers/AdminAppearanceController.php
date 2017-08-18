@@ -8,13 +8,16 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Sidebar;
+use App\DiyPage;
 
 class AdminAppearanceController extends Controller
 {
 	public function getAppearance(){
 		$sidebars = Sidebar::all();
+		$diyPages = DiyPage::all();
 		return view('admin.appearance',[
 			'sidebars' => $sidebars,
+			'diyPages' => $diyPages,
 		]);
 	}
 
@@ -36,6 +39,24 @@ class AdminAppearanceController extends Controller
 	public function deleteSidebar(Request $request, $id){
 		$sidebar = Sidebar::findOrFail($id);
 		$sidebar->delete();
+		return back();
+	}
+
+	public function postDiyPages(){
+		$diyPage = DiyPage::create(['name' => 'title', 'url' => 'url', 'content' => '']);
+		return redirect('/admin/appearance/diy-pages/'.$diyPage->id);
+	}
+
+	public function getDiyPages($id){
+		$diyPage = DiyPage::findOrFail($id);
+		return view('admin.diy_page_edit', [
+			'diyPage' => $diyPage,
+		]);
+	}
+
+	public function putDiyPages(Request $request, $id){
+		DiyPage::where('id', $id)
+			->update($request->except(['_token', '_method']));
 		return back();
 	}
 }

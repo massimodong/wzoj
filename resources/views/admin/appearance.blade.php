@@ -73,7 +73,28 @@
   <!-- sidebars -->
 
   <div id="diy_pages" class="tab-pane">
-  3
+    <form action='/admin/appearance/diy-pages' method='POST'>
+      {{csrf_field()}}
+      <button type="submit" class="btn btn-default">+</button>
+    </form>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+	  <th>{{trans('wzoj.id')}}</th>
+	  <th>{{trans('wzoj.name')}}</th>
+	  <th>{{trans('wzoj.url')}}</th>
+	</tr>
+      </thead>
+      <tbody>
+      @foreach ($diyPages as $diyPage)
+	<tr>
+	  <th>{{$diyPage->id}}</th>
+	  <th><a href="/admin/appearance/diy-pages/{{$diyPage->id}}">{{$diyPage->name}}</a></th>
+	  <th><a href="{{$diyPage->url}}">{{$diyPage->url}}</a></th>
+	</tr>
+      @endforeach
+      </tbody>
+    </table>
   </div>
   <!-- diy_pages -->
 
