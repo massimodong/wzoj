@@ -178,4 +178,15 @@ class HomeController extends Controller
 			'rsolution' => $rsolution,
 		]);
 	}
+
+	public function getDiyPage($url){
+		$diyPage = \App\DiyPage::where('url', $url)->first();
+		if($diyPage){
+			return view('diy_page', [
+				'diyPage' => $diyPage,
+			]);
+		}else{
+			abort(404);
+		}
+	}
 }

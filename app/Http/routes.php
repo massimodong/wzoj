@@ -196,7 +196,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				//ajax
 				Route::controller('ajax', 'AdminAjaxController');
 		});
-
+		Route::get('{url}', 'HomeController@getDiyPage');
 });
 
 Route::controller('judger','JudgerController');
