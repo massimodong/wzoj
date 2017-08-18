@@ -33,8 +33,42 @@
     </form>
   </div>
   <!-- general -->
+
   <div id="sidebars" class="tab-pane">
-  2
+    <form action='/admin/appearance/sidebars' method='POST' class='form-inline col-xs-12'>
+      {{csrf_field()}}
+      <div class="form-group">
+        <label for="sidebar_name"> {{trans('wzoj.name')}}: </label>
+	<input type="text" class="form-control" id="sidebar_name" name="sidebar_name">
+      </div>
+      <div class="form-group">
+        <label for="url"> {{trans('wzoj.url')}}: </label>
+	<input type="text" class="form-control" id="url" name="url">
+      </div>
+      <button type="submit" class="btn btn-default">+</button>
+    </form>
+    <div class="col-xs-12" style="height:15px"></div>
+    @foreach ($sidebars as $sidebar)
+      <form action='/admin/appearance/sidebars/{{$sidebar->id}}' method='POST' class='form-inline col-xs-11'>
+        {{csrf_field()}}
+        {{method_field('PUT')}}
+        {{$sidebar->id}}:
+        <div class="form-group">
+          <label for="sidebar_name"> {{trans('wzoj.name')}}: </label>
+	  <input type="text" class="form-control" id="sidebar_name" name="name" value="{{$sidebar->name}}">
+        </div>
+        <div class="form-group">
+          <label for="url"> {{trans('wzoj.url')}}: </label>
+          <input type="text" class="form-control" id="url" name="url" value="{{$sidebar->url}}">
+        </div>
+        <button type="submit" class="btn btn-primary">{{trans('wzoj.edit')}}</button>
+      </form>
+      <form action='/admin/appearance/sidebars/{{$sidebar->id}}' method='POST' class='col-xs-1'>
+        {{csrf_field()}}
+        {{method_field('DELETE')}}
+        <button type="submit" class="btn btn-danger">{{trans('wzoj.delete')}}</button>
+      </form>
+    @endforeach
   </div>
   <!-- sidebars -->
 

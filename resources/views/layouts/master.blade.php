@@ -70,6 +70,9 @@
             <li id='forum_sidebar'><a href="/forum"> {{trans('wzoj.forum')}} </a></li>
             @endif
             <li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li>
+	    @foreach (\App\Sidebar::all() as $sidebar)
+	      <li><a href="{{$sidebar->url}}">{{$sidebar->name}}</a></li>
+	    @endforeach
           @show
 	  @else
 	  @section ('sidebar')

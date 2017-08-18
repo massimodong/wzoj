@@ -105,7 +105,13 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				Route::post('options','AdminHomeController@postOptions');
 				//notice
 				Route::get('notice', 'AdminNoticeController@getNotice')->middleware('role:admin');
-				Route::get('appearance', 'AdminAppearanceController@getAppearance')->middleware('role:admin');
+				//appearance
+				Route::group(['prefix' => 'appearance', 'middleware' => 'role:admin'], function(){
+					Route::get('/', 'AdminAppearanceController@getAppearance');
+					Route::post('sidebars', 'AdminAppearanceController@postSidebar');
+					Route::put('sidebars/{id}', 'AdminAppearanceController@putSidebar');
+					Route::delete('sidebars/{id}', 'AdminAppearanceController@deleteSidebar');
+				});
 				//groups
 				Route::group(['prefix' => 'groups', 'middleware' => 'role:group_manager'], function(){
 					Route::get('/', 'AdminGroupController@getGroups');

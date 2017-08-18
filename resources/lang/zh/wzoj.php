@@ -346,4 +346,5 @@ return [
     'appearance' => '外观',
     'sidebars' => '侧边栏',
     'diy_pages' => '自定义页面',
+    'url' => '地址',
 ];
