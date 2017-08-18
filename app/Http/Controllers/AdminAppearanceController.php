@@ -10,6 +10,8 @@ use App\Http\Controllers\Controller;
 use App\Sidebar;
 use App\DiyPage;
 
+use Cache;
+
 class AdminAppearanceController extends Controller
 {
 	public function getAppearance(){
@@ -27,18 +29,21 @@ class AdminAppearanceController extends Controller
 			'url' => 'required',
 		]);
 		$sidebar = Sidebar::create(['name' => $request->sidebar_name, 'url' => $request->url]);
+		Cache::tags(['wzoj'])->forget('sidebars');
 		return back();
 	}
 
 	public function putSidebar(Request $request, $id){
 		Sidebar::where('id', $id)
 			->update($request->except(['_token', '_method']));
+		Cache::tags(['wzoj'])->forget('sidebars');
 		return back();
 	}
 
 	public function deleteSidebar(Request $request, $id){
 		$sidebar = Sidebar::findOrFail($id);
 		$sidebar->delete();
+		Cache::tags(['wzoj'])->forget('sidebars');
 		return back();
 	}
 

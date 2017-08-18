@@ -76,7 +76,7 @@
           @show
 	  @endif
 
-          @foreach (\App\Sidebar::all() as $sidebar)
+          @foreach (Cache::tags(['wzoj'])->rememberForever('sidebars', function(){return \App\Sidebar::all();}) as $sidebar)
 	    <li><a href="{{$sidebar->url}}">{{$sidebar->name}}</a></li>
           @endforeach
           </ul>
