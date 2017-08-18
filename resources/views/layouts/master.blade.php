@@ -70,9 +70,6 @@
             <li id='forum_sidebar'><a href="/forum"> {{trans('wzoj.forum')}} </a></li>
             @endif
             <li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li>
-	    @foreach (\App\Sidebar::all() as $sidebar)
-	      <li><a href="{{$sidebar->url}}">{{$sidebar->name}}</a></li>
-	    @endforeach
           @show
 	  @else
 	  @section ('sidebar')
@@ -80,6 +77,10 @@
             <li id='solutions_faq'><a href="/faq"> {{trans('wzoj.faq')}} </a></li>
           @show
 	  @endif
+
+          @foreach (\App\Sidebar::all() as $sidebar)
+	    <li><a href="{{$sidebar->url}}">{{$sidebar->name}}</a></li>
+          @endforeach
           </ul>
           <ul class="nav navbar-nav navbar-right">
 	    @if (Auth::check())
