@@ -78,9 +78,6 @@ class HomeController extends Controller
 			'homework_problem_max_scores' => $homework_flag?$problem_max_scores:NULL,
 		]);
 	}
-	public function faq(){
-		return view('faq.'.Lang::locale());
-	}
 
 	public function ranklist(Request $request){
 		$this->validate($request, ['page' => 'integer']);
