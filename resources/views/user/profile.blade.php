@@ -70,12 +70,12 @@
 						{{date("Y-m-d",strtotime($user->created_at))}}</span><br>
 					{{trans('wzoj.last_login_time')}}:<span class="pull-right">NULL</span><br>
 					{{trans('wzoj.belong_groups')}}:<span class="pull-right">
-					@if (count($user->groups) == 0)
+					@if (count($groups) == 0)
 						{{trans('wzoj.none')}}
-					@elseif (count($user->groups) == 1)
-						{{$user->groups[0]->name}}
+					@elseif (count($groups) == 1)
+						{{$groups[0]->name}}
 					@else
-						<span title="{{trans('wzoj.belong_groups')}}:@foreach ($user->groups as $key => $group){{$key?', ':''}}{{$group->name}}@endforeach">{{$user->groups[0]->name.' '.trans('wzoj.ect')}}</span>
+						<span title="{{trans('wzoj.belong_groups')}}:@foreach ($groups as $key => $group){{$key?', ':''}}{{$group->name}}@endforeach">{{$groups[0]->name.' '.trans('wzoj.ect')}}</span>
 					@endif
 						</span><br>
 					</div>

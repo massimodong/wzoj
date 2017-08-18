@@ -9,6 +9,8 @@ use Validator;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Cache;
+
 class AdminGroupController extends Controller
 {
 	public function getGroups(Request $request, $id = -1){
@@ -83,6 +85,7 @@ class AdminGroupController extends Controller
 			]);
 			if(!$validator->fails()){
 				$group->users()->attach($uid);
+				Cache::tags(['user_groups'])->forget($uid);
 			}
 		}
 		return back();
@@ -120,6 +123,7 @@ class AdminGroupController extends Controller
 		$this->authorize('manage', $group);
 
 		$group->delete();
+		Cache::tags(['user_groups'])->flush();
 		return redirect('/admin/groups');
 	}
 
@@ -129,6 +133,7 @@ class AdminGroupController extends Controller
 
 		foreach($request->id as $uid){
 			$group->users()->detach($uid);
+			Cache::tags(['user_groups'])->forget($uid);
 		}
 		return back();
 	}

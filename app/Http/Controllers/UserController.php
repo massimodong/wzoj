@@ -12,10 +12,15 @@ use App\Http\Controllers\Controller;
 
 use App\FileManager;
 
+use Cache;
+
 class UserController extends Controller
 {
 	public function getId($id){
 		$user = User::findOrFail($id);
+		$groups = Cache::tags(['user_groups'])->rememberForever($user->id, function() use($user){
+			return $user->groups;
+		});
 		
 		$cur_month = intval(date("m")) + 1;
 		$cur_year = intval(date("Y"));
@@ -68,7 +73,9 @@ class UserController extends Controller
 						'month_submit_cnt' => $month_submit_cnt,
 						'month_ac_cnt' => $month_ac_cnt,
 						'cnt_submissions' => $cnt_submissions,
-						'last_solutions' => $last_solutions]);
+						'last_solutions' => $last_solutions,
+						'groups' => $groups,
+		]);
 	}
 
 	public function postId($id,Request $request){

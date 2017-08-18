@@ -47,17 +47,25 @@ class HomeController extends Controller
 			return User::orderBy('cnt_ac', 'desc')->take(10)->withoutAdmin()->get();
 		});
 
+		$groups = [];
+		if(Auth::check()){
+			$user = $request->user();
+			$groups = Cache::tags(['user_groups'])->rememberForever($user->id, function() use($user){
+				return $user->groups;
+			});
+		}
+
 		//homeworks
 		$homework_flag = false;
 		if(Auth::check()){
-			$request->user()->load('groups.homeworks');
 			$problem_cols = array();
 			$problem_max_scores = array();
+
 			foreach($request->user()->problemsets() as $problemset){
 				$problem_cols[$problemset->id] = collect(new \App\Problem);
 			}
 
-			foreach($request->user()->groups as $group){
+			foreach($groups as $group){
 				foreach($group->homeworks as $problem){
 					$problem_cols[$problem->pivot->problemset_id]->push($problem);
 					$homework_flag = true;
@@ -76,6 +84,7 @@ class HomeController extends Controller
 			'top_users' => $top_users,
 			'homework_problem_cols' => $homework_flag?$problem_cols:NULL,
 			'homework_problem_max_scores' => $homework_flag?$problem_max_scores:NULL,
+			'groups' => $groups,
 		]);
 	}
 
