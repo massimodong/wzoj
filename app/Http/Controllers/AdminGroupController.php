@@ -105,6 +105,7 @@ class AdminGroupController extends Controller
 				$group->homeworks()->attach($pid, ['problemset_id' => $request->psid]);
 			}
 		}
+		Cache::tags(['group_homeworks'])->forget($gid);
 		return back();
 	}
 
@@ -145,6 +146,7 @@ class AdminGroupController extends Controller
 		foreach($request->id as $pid){
 			$group->homeworks()->detach($pid);
 		}
+		Cache::tags(['group_homeworks'])->forget($gid);
 		return back();
 	}
 }

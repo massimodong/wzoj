@@ -66,7 +66,10 @@ class HomeController extends Controller
 			}
 
 			foreach($groups as $group){
-				foreach($group->homeworks as $problem){
+				$homeworks = Cache::tags(['group_homeworks'])->rememberForever($group->id, function() use($group){
+					return $group->homeworks;
+				});
+				foreach($homeworks as $problem){
 					$problem_cols[$problem->pivot->problemset_id]->push($problem);
 					$homework_flag = true;
 				}
