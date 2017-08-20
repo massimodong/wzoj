@@ -20,11 +20,17 @@ class AjaxController extends Controller
 	public function getTestcases(Request $request){
 		$this->validate($request, [
 			'solution_id' => 'required|integer',
+			'index' => 'required|integer',
 		]);
 		
 		$solution = \App\Solution::findOrFail($request->solution_id);
+		$testcases = Array();
 
-		return response()->json(['testcases' => $solution->testcases,
+		for($i=$request->index;isset($solution->testcases[$i]);++$i){
+			array_push($testcases, $solution->testcases[$i]);
+		}
+
+		return response()->json(['testcases' => $testcases,
 					'cnt_testcases' => $solution->cnt_testcases]);//total testcases
 	}
 

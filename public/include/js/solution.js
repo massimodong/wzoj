@@ -1,5 +1,5 @@
 function getTestcases( s ){
-	return $.get('/ajax/testcases', {solution_id: s.data('id')});
+	return $.get('/ajax/testcases', {solution_id: s.data('id'), index: s.data('index')});
 }
 
 function getSolution( s ){
@@ -77,7 +77,7 @@ function work( s, done){
 		}
 
 		if(typeof ts !== 'undefined' && ts.length > 0){
-			for(i=s.data('index');i<ts.length;++i){
+			for(i=0;i<ts.length;++i){
 				animateTestcase(s, ts[i]);
 			}
 		}
