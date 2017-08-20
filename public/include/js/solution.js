@@ -1,5 +1,5 @@
 function getTestcases( s ){
-	return $.get('/ajax/testcases', {solution_id: s.data('id'), last_tid: s.data('t_id')});
+	return $.get('/ajax/testcases', {solution_id: s.data('id')});
 }
 
 function getSolution( s ){
@@ -33,7 +33,6 @@ function setLabel(s, pos, label){
 function animateTestcase(s, testcase){
 	//++index;
 	s.data('index', s.data('index') + 1);
-	s.data('t_id', testcase.id);
 
 	var width = s.data('width');
 
@@ -78,7 +77,7 @@ function work( s, done){
 		}
 
 		if(typeof ts !== 'undefined' && ts.length > 0){
-			for(i=0;i<ts.length;++i){
+			for(i=s.data('index');i<ts.length;++i){
 				animateTestcase(s, ts[i]);
 			}
 		}
@@ -105,7 +104,6 @@ function work( s, done){
 function animateJudging( s ,done){
 	//s.date('id')
 	s.data('waiting', 0);
-	s.data('t_id', 0); //last testcase_id
 	s.data('index', 0); //index of current testcase
 	s.data('wait_time', 500); //time used by last testcase
 	s.data('score', 0);//score
