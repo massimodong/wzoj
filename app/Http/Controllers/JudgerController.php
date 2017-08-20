@@ -75,19 +75,18 @@ class JudgerController extends Controller
 				'status' => SL_COMPILING,
 				'score' => 0,
 				'ce' => NULL,
+				'testcases' => '[]',
 				'sim_id' => NULL,
 				'judger_id' => \Request::get('judger')->id,
 			]);
 
 			if($ok){
-				foreach($solution->testcases as $testcase){
-					$testcase->delete();
-				}
 				$solution->time_used = 0;
 				$solution->memory_used = 0.0;
 				$solution->status = SL_COMPILING;
 				$solution->score = 0;
 				$solution->ce = NULL;
+				$solution->testcases = Array();
 				$solution->sim_id = NULL;
 				$solution->judger_id = \Request::get('judger')->id;
 				Cache::tags(['solutions'])->put($solution->id, $solution, 1);
@@ -115,6 +114,7 @@ class JudgerController extends Controller
 			'status' => $solution->status,
 			'score' => $solution->score,
 			'ce' => $solution->ce,
+			'testcases' => $solution->testcases,
 			'cnt_testcases' => $solution->cnt_testcases,
 		]);
 	}
@@ -158,6 +158,7 @@ class JudgerController extends Controller
 		$solution->memory_used = $request->memory_used;
 		$solution->status = $request->status;
 		$solution->score = $request->score;
+		$solution->testcases = json_decode($request->testcases);
 		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->save();
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
@@ -187,9 +188,6 @@ class JudgerController extends Controller
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 		$solution->user->update_cnt_ac();
-	}
-	public function postPostTestcase(Request $request){
-		$testcase = Testcase::create($request->except('judger_token'));
 	}
 
 	public function getGetAnswer(Request $request){
