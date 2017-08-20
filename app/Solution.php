@@ -23,6 +23,7 @@ class Solution extends Model
 		'sim_id' => 'integer',
 		'judger_id' => 'integer',
 		'cnt_testcases' => 'integer',
+		'testcases' => 'array',
 	];
 
 	public function user(){
@@ -41,8 +42,8 @@ class Solution extends Model
 		return $this->belongsTo('App\Problem');
 	}
 
-	public function testcases(){
-		return $this->hasMany('App\Testcase');
+	public function getTestcasesAttribute($value){
+		return json_decode($value);
 	}
 
 	public function answerfiles(){
