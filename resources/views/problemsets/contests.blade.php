@@ -38,12 +38,8 @@
 	    @endif
 	</td>
 	<td>{{trans('wzoj.problem_type_'.$problemset->type)}}</td>
-	@if ($problemset->type != 'set')
 	<td>{{$problemset->contest_start_at}}</td>
 	<td>{{$problemset->contest_end_at}}</td>
-	@else
-	<td></td><td></td>
-	@endif
 	<td>{{$problemset->public?"Y":"N"}}</td>
     </tr>
 @endforeach

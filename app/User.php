@@ -136,7 +136,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function problemsets(){
-	    if($this->has_role('admin')) return \App\Problemset::all()->all();
+	    if($this->has_role('problemset_manager')) return \App\Problemset::all()->all();
 	    $problemsets_last_updated_at = Cache::tags(['wzoj'])->rememberForever('problemsets_last_updated_at', function(){
 			return time();
 	    });

@@ -53,13 +53,27 @@ class ProblemsetController extends Controller
 		}
 		return view('problemsets.index',['problemsets' => $problemsets, 'tags' => \App\ProblemTag::all()]);
 	}
-	public function getContestsIndex(){
-		$contests = Problemset::where('type', '<>', 'set')->orderBy('contest_start_at', 'desc');
-		if(!empty(\Request::get('contests'))){
-			$contests = $contests->whereIn('id', \Request::get('contests'));
+	public function getContestsIndex(Request $request){
+		if(!(Auth::check())){
+			$allcontests = Problemset::where('type', '<>', 'set')
+				->where('public', true)
+				->orderBy('contest_start_at', 'desc');
+			if(!empty(\Request::get('contests'))){
+				$allcontests = $allcontests->whereIn('id', \Request::get('contests'));
+			}
+
+			$allcontests = $allcontests->get();
+		}else{
+			$allcontests = $request->user()->problemsets();
+			usort($allcontests, function($a, $b){return $a->contest_start_at < $b->contest_start_at;});
 		}
 
-		$contests = $contests->get();
+		$contests = [];
+		foreach($allcontests as $problemset){
+			if($problemset->type != 'set'){
+				array_push($contests, $problemset);
+			}
+		}
 		return view('problemsets.contests',['problemsets' => $contests]);
 	}
 
@@ -143,7 +157,15 @@ class ProblemsetController extends Controller
 			//if not contest or contest not started
 			return back();
 		}
-		//ranklist requires no authorization
+		if(!$problemset->public){
+			if(Gate::denies('view', $problemset)){
+				if(Auth::check()){
+					abort(403);
+				}else{
+					return redirect('/auth/login');
+				}
+			}
+		}
 
 		$problems = $problemset->problems()->orderByIndex()->get();
 		$table = $this->getRanklistTable($problemset, $problems);
