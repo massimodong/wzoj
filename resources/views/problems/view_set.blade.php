@@ -70,6 +70,7 @@
 	  @endforeach
 	</div>
       </div>
+      @if (ojoption('forum_enabled'))
       <div class="panel panel-default">
         <div class="panel-heading"><a href="/forum?tags[]=p{{$problem->id}}">{{trans('wzoj.forum')}}</a></div>
         <div class="panel-body">
@@ -78,6 +79,7 @@
 	  @endforeach
 	</div>
       </div>
+      @endif
     </div>
   </div>
   <!-- problem -->
