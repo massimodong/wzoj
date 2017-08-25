@@ -347,4 +347,5 @@ return [
     'sidebars' => '侧边栏',
     'diy_pages' => '自定义页面',
     'url' => '地址',
+    'tutorial' => '题解',
 ];

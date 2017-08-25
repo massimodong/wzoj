@@ -42,4 +42,27 @@ class ProblemsetPolicy
     public function create(User $user, $problemset){
 	    return $user->has_role('problemset_manager');
     }
+
+    public function view_tutorial(User $user, Problemset $problemset){
+	    $flag = false;
+	    if($problemset->public) $flag = true;
+	    else{
+		    foreach($user->problemsets() as $ps){
+			    if($problemset->id == $ps->id){
+				    $flag = true;
+				    break;
+			    }
+		    }
+	    }
+	    if(!$flag) return false;
+
+	    if($problemset->type == 'set') return true;
+	    else{
+		    if(time() > strtotime($problemset->contest_end_at)){
+			    return true;
+		    }
+	    }
+
+	    return false;
+    }
 }

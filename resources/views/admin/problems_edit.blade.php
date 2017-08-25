@@ -125,6 +125,14 @@
       </select>
     </div>
   </div>
+
+  <div class="form-group">
+    <label for="tutorial" class="col-xs-2 control-label"> {{trans('wzoj.tutorial')}} </label>
+    <div class="col-xs-10">
+      <textarea class='ojeditor' id='tutorial' name='tutorial'>{{$problem->tutorial}}</textarea>
+    </div>
+  </div>
+
 </form>
 
 <form method='POST'>

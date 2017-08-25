@@ -15,6 +15,11 @@
   @if (Auth::check())
   <li><a data-toggle="tab" href="#submit"> {{trans('wzoj.submit')}} </a></li>
   @endif
+  @can ('view_tutorial', $problemset)
+    @if (strlen($problem->tutorial))
+    <li><a data-toggle="tab" href="#tutorial"> {{trans('wzoj.tutorial')}} </a></li>
+    @endif
+  @endcan
 </ul>
 <div class="tab-content">
   <div id="problem" class="tab-pane in active">
@@ -129,6 +134,12 @@
     @endif
   </div>
   <!-- submit -->
+
+  @can ('view_tutorial', $problemset)
+  <div id="tutorial" class="tab-pane">
+    {!! Purifier::clean($problem->tutorial) !!}
+  </div>
+  @endcan
 </div>
 <!-- tab-content -->
 
