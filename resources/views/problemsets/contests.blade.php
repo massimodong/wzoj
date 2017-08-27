@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 
 @section ('title')
-{{trans('wzoj.contests')}}
+{{trans('wzoj.contests')}} @if (isset($tag))- {{$tag}}@endif
 @endsection
 
 @section ('content')
@@ -22,7 +22,7 @@
 	<th>{{trans('wzoj.type')}}</th>
 	<th>{{trans('wzoj.contest_start_at')}}</th>
 	<th>{{trans('wzoj.contest_end_at')}}</th>
-	<th style="width:5%">{{trans('wzoj.public')}}</th>
+	<th style="width:5%">{{trans('wzoj.tag')}}</th>
     </tr>
 </thead>
 @foreach ($problemsets as $problemset)
@@ -40,7 +40,7 @@
 	<td>{{trans('wzoj.problem_type_'.$problemset->type)}}</td>
 	<td>{{$problemset->contest_start_at}}</td>
 	<td>{{$problemset->contest_end_at}}</td>
-	<td>{{$problemset->public?"Y":"N"}}</td>
+	<td>{{$problemset->tag}}</td>
     </tr>
 @endforeach
 </table>

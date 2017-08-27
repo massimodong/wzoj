@@ -69,12 +69,18 @@ class ProblemsetController extends Controller
 		}
 
 		$contests = [];
+		$tag = NULL;
+		if(isset($request->tag)) $tag = $request->tag;
 		foreach($allcontests as $problemset){
 			if($problemset->type != 'set'){
+				if($tag && $problemset->tag != $tag) continue;
 				array_push($contests, $problemset);
 			}
 		}
-		return view('problemsets.contests',['problemsets' => $contests]);
+		return view('problemsets.contests',[
+				'problemsets' => $contests,
+				'tag' => $tag,
+		]);
 	}
 
 	public function getProblemset($psid,Request $request){
