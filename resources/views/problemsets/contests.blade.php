@@ -1,7 +1,7 @@
 @extends ('layouts.master')
 
 @section ('title')
-{{trans('wzoj.problemsets')}}
+{{trans('wzoj.contests')}}
 @endsection
 
 @section ('content')

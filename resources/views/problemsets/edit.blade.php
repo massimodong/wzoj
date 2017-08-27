@@ -55,6 +55,14 @@
 	        <input type="text" class="form-control" name='contest_end_at' id="contest_end_at" value='{{$problemset->contest_end_at}}' data-date-format="yyyy-mm-dd hh:ii">
 	  </div>
     </div>
+
+    <div class="form-group">
+          <label class="control-label col-sm-2" for="tag">{{trans('wzoj.tag')}}:</label>
+	  <div class="col-sm-10">
+	        <input type="text" class="form-control" name='tag' id="tag" value='{{$problemset->tag}}'>
+	  </div>
+    </div>
+
     <div class="form-group">        
           <div class="col-sm-offset-2 col-sm-10">
 	      <div class="checkbox">
