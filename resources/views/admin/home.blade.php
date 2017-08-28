@@ -20,6 +20,12 @@
       <input type="text" class="form-control" id="logo_url" name="logo_url" value="{{ojoption('logo_url')}}">
     </div>
   </div>
+  <div class="form-group">
+    <label for="icp" class="col-sm-2 control-label">{{trans('wzoj.icp')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="icp" name="icp" value="{{ojoption('icp')}}">
+    </div>
+  </div>
 
   <h3 aria-describedby="helpBlockRelease">{{trans('wzoj.release_informations')}}</h3>
   <span id="helpBlockRelease" class="help-block">{{trans('wzoj.msg_release_help')}}</span>

@@ -349,4 +349,6 @@ return [
     'diy_pages' => '自定义页面',
     'url' => '地址',
     'tutorial' => '题解',
+
+    'icp' => 'ICP备案号',
 ];

@@ -137,7 +137,11 @@
 	    <p class="text-muted">
 	    	Copyright 2016
 		<a href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
-	    	{{ojoption('current_version_tag')}}</p>
+                {{ojoption('current_version_tag')}}
+                @if (strlen(ojoption('icp')))
+                  | <a href="http://www.miitbeian.gov.cn/" target="_blank" style="color:grey">{{ojoption('icp')}}</a>
+                @endif
+	    </p>
 	</div>
     </footer>
 
