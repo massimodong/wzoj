@@ -20,6 +20,15 @@ class HomeController extends Controller
 		if(!empty(\Request::get('contests'))){
 			return redirect('/contests');
 		}
+
+		$diyPage = NULL;
+		if(strlen(ojoption('home_diy'))){
+			$url = ojoption('home_diy');
+			$diyPage = Cache::tags(['diyPages'])->rememberForever($url, function() use($url){
+				return \App\DiyPage::where('url', $url)->first();
+			});
+		}
+
 		if(!(Auth::check())){
 			$recent_problemsets = Cache::tags(['wzoj'])->remember('recent_problemsets', 1, function(){
 				return \App\Problemset::where('type', '=', 'set')
@@ -82,6 +91,7 @@ class HomeController extends Controller
 		}
 
 		return view('home',[
+			'home_diy' => $diyPage,
 			'home_page_problemsets' => $home_page_problemsets,
 			'recent_contests' => $recent_contests,
 			'top_users' => $top_users,

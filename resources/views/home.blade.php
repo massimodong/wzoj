@@ -6,6 +6,11 @@
 
 @section ('content')
 <div class="col-xs-9 row">
+  @if (isset($home_diy))
+    <div class="col-xs-12">
+      {!! $home_diy->content !!}
+    </div>
+  @endif
   <div class="col-xs-12 row">
   @foreach ($home_page_problemsets as $problemset)
     <div class="col-xs-4">

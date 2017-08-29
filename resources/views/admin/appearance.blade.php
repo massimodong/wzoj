@@ -26,6 +26,12 @@
 	</div>
       </div>
       <div class="form-group">
+        <label for="home_diy" class="col-xs-2 control-label">{{trans('wzoj.home_diy')}}:</label>
+        <div class="col-xs-10">
+          <input type="text" class="form-control" id="home_diy" name="home_diy" value="{{ojoption('home_diy')}}">
+        </div>
+      </div>
+      <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
         </div>

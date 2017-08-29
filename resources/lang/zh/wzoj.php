@@ -351,4 +351,6 @@ return [
     'tutorial' => '题解',
 
     'icp' => 'ICP备案号',
+
+    'home_diy' => '主页的自定义页面',
 ];
