@@ -45,6 +45,10 @@
         <label for="url"> {{trans('wzoj.url')}}: </label>
 	<input type="text" class="form-control" id="url" name="url">
       </div>
+      <div class="form-group">
+        <label for="index"> {{trans('wzoj.index')}}: </label>
+	<input type="text" class="form-control" id="index" name="index">
+      </div>
       <button type="submit" class="btn btn-default">+</button>
     </form>
     <div class="col-xs-12" style="height:15px"></div>
@@ -60,6 +64,10 @@
         <div class="form-group">
           <label for="url"> {{trans('wzoj.url')}}: </label>
           <input type="text" class="form-control" id="url" name="url" value="{{$sidebar->url}}">
+        </div>
+	<div class="form-group">
+          <label for="index"> {{trans('wzoj.index')}}: </label>
+	  <input type="text" class="form-control" id="index" name="index" value="{{$sidebar->index}}">
         </div>
         <button type="submit" class="btn btn-primary">{{trans('wzoj.edit')}}</button>
       </form>

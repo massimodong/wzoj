@@ -15,7 +15,7 @@ use Cache;
 class AdminAppearanceController extends Controller
 {
 	public function getAppearance(){
-		$sidebars = Sidebar::all();
+		$sidebars = Sidebar::orderBy('index', 'asc')->get();
 		$diyPages = DiyPage::all();
 		return view('admin.appearance',[
 			'sidebars' => $sidebars,
@@ -28,7 +28,7 @@ class AdminAppearanceController extends Controller
 			'sidebar_name' => 'required',
 			'url' => 'required',
 		]);
-		$sidebar = Sidebar::create(['name' => $request->sidebar_name, 'url' => $request->url]);
+		$sidebar = Sidebar::create(['name' => $request->sidebar_name, 'url' => $request->url, 'index' => $request->index]);
 		Cache::tags(['wzoj'])->forget('sidebars');
 		return back();
 	}
