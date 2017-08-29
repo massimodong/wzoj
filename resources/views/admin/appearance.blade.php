@@ -90,7 +90,7 @@
 	<tr>
 	  <th>{{$diyPage->id}}</th>
 	  <th><a href="/admin/appearance/diy-pages/{{$diyPage->id}}">{{$diyPage->name}}</a></th>
-	  <th><a href="{{$diyPage->url}}">{{$diyPage->url}}</a></th>
+	  <th><a href="/{{$diyPage->url}}">{{$diyPage->url}}</a></th>
 	</tr>
       @endforeach
       </tbody>
