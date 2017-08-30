@@ -136,7 +136,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function problemsets(){
-	    if($this->has_role('problemset_manager')) return \App\Problemset::all()->all();
+	    if($this->has_role('admin')) return \App\Problemset::all()->all();
 	    $problemsets_last_updated_at = Cache::tags(['wzoj'])->rememberForever('problemsets_last_updated_at', function(){
 			return time();
 	    });
@@ -163,6 +163,14 @@ class User extends Model implements AuthenticatableContract,
 			    if(!isset($problemsets_id[$problemset->id])){
 				    $problemsets_id[$problemset->id] = true;
 				    array_push($problemsets, $problemset);
+			    }
+		    }
+		    if($this->has_role('problemset_manager')){
+			    foreach(\App\Problemset::where('manager_id', $this->id)->get() as $problemset){
+				    if(!isset($problemsets_id[$problemset->id])){
+					    $problemsets_id[$problemset->id] = true;
+					    array_push($problemsets, $problemset);
+				    }
 			    }
 		    }
 		    Session::put('problemsets', $problemsets);
