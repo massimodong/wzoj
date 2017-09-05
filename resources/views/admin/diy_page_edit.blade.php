@@ -6,7 +6,7 @@
 
 @section ('sidebar')
 @parent
-<li><a href='#' onclick="sendForm($('#diyPage_form')); return false;"> {{trans('wzoj.save')}} </a></li>
+<li><a href='#' onclick="tinymce.triggerSave();sendForm($('#diyPage_form'));return false;"> {{trans('wzoj.save')}} </a></li>
 @endsection
 
 @section ('content')
