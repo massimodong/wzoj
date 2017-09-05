@@ -353,4 +353,6 @@ return [
     'icp' => 'ICP备案号',
 
     'home_diy' => '主页的自定义页面',
+
+    'pass_rate' => '通过率',
 ];

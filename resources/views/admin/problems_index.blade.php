@@ -49,7 +49,9 @@
     <th style="width: 10%">{{trans('wzoj.type')}}</th>
     <th style="width: 5%">spj</th>
     <th style="width: 5%">{{trans('wzoj.source')}}</th>
-    <th style="width: 20%">{{trans('wzoj.problemsets')}}</th>
+    <th style="width: 10%">{{trans('wzoj.tags')}}</th>
+    <th style="width: 10%">{{trans('wzoj.pass_rate')}}</th>
+    <th style="width: 15%">{{trans('wzoj.problemsets')}}</th>
 </thead>
 <tbody>
 @foreach ($problems as $problem)
@@ -63,6 +65,12 @@
 	<td>{{trans('wzoj.problem_type_'.$problem->type)}}</td>
 	<td>{{$problem->spj?"Y":""}}</td>
 	<td>{{$problem->source}}</td>
+	<td>
+	@foreach ($problem->tags as $tag)
+          {{$tag->name}}
+	@endforeach
+	</td>
+	<td>{{$problem->cntAc}}/{{$problem->cntSubmits}}</td>
 	<td>
 	@foreach ($problem->problemsets as $problemset)
 		<a href="/s/{{$problemset->id}}/edit">{{$problemset->name}}</a>

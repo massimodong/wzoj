@@ -48,7 +48,11 @@ class AdminProblemController extends Controller
 					'nextpage_url' => $next_url,
 					'bottompage_url' => $bottom_url]);
 					*/
-			$problems = $request->user()->manage_problems;
+			$problems = $request->user()->manage_problems()
+						->leftJoin('solutions', 'problems.id', '=', 'solutions.problem_id')
+						->selectRaw('problems.*, count(solutions.id) as cntSubmits, sum(if(solutions.score >= 100, 1, 0)) as cntAc')
+						->groupBy('problems.id')
+						->get();
 			return view('admin.problems_index', ['problems' => $problems]);
 		}else{
 			$problem = \App\Problem::findOrFail($id);

@@ -74,15 +74,15 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function manage_groups(){
-	    if($this->has_role('admin')) return DB::table('groups');
+	    if($this->has_role('admin')) return \App\Group::query();
 	    return $this->hasMany('App\Group', 'manager_id');
     }
     public function manage_problems(){
-	    if($this->has_role('admin')) return DB::table('problems');
+	    if($this->has_role('admin')) return \App\Problem::query();
 	    return $this->hasMany('App\Problem', 'manager_id');
     }
     public function manage_problemsets(){
-	    if($this->has_role('admin')) return DB::table('problemsets');
+	    if($this->has_role('admin')) return \App\Problemset::query();
 	    return $this->hasMany('App\Problemset', 'manager_id');
     }
 
