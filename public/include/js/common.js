@@ -120,7 +120,7 @@ function createDatatableWithCheckboxs(table_id, rows_selected, form_id){
 			}
 		},
 		'autoWidth': false,
-		'lengthMenu':[[-1, 10, 100, 500],[TRANS['all'], 10, 100, 500]]
+		'lengthMenu':[[100, 500, -1],[100, 500, TRANS['all']]]
 	});
 
 	// Handle click on checkbox

@@ -48,7 +48,7 @@
     <th>{{trans('wzoj.name')}}</th>
     <th style="width: 10%">{{trans('wzoj.type')}}</th>
     <th style="width: 5%">spj</th>
-    <th style="width: 5%">{{trans('wzoj.source')}}</th>
+    <th style="width: 10%">{{trans('wzoj.source')}}</th>
     <th style="width: 10%">{{trans('wzoj.tags')}}</th>
     <th style="width: 10%">{{trans('wzoj.pass_rate')}}</th>
     <th style="width: 15%">{{trans('wzoj.problemsets')}}</th>
