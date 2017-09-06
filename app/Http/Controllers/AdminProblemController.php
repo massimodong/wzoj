@@ -52,6 +52,7 @@ class AdminProblemController extends Controller
 						->leftJoin('solutions', 'problems.id', '=', 'solutions.problem_id')
 						->selectRaw('problems.*, count(solutions.id) as cntSubmits, sum(if(solutions.score >= 100, 1, 0)) as cntAc')
 						->groupBy('problems.id')
+						->with(['tags', 'problemsets'])
 						->get();
 			return view('admin.problems_index', ['problems' => $problems]);
 		}else{
