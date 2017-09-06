@@ -73,6 +73,9 @@
 	      @else
 	        {{trans('wzoj.solution_status_'.$solution->status)}}
 	      @endif
+	      @if (!$contest_running && $row->problem_corrected_scores[$problem->id] >= 0)
+		({{$row->problem_corrected_scores[$problem->id]}})
+	      @endif
 	    </div>
 	  </div>
 	  @else
@@ -104,6 +107,7 @@ var indicator_template = "<li class='col-xs-12'><div class='rank_num sortable_li
 @endsection
 
 @section ('scripts')
+@if ($contest_running)
 <script>
 jQuery(document).ready(function($) {
 	//initiate table
@@ -127,11 +131,10 @@ jQuery(document).ready(function($) {
 		sortBy: ['score', 'penalty', 'id']
 	});
 
-	@if (time() < strtotime($problemset->contest_end_at))
 	ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
-	@endif
 
 	updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
 });
 </script>
+@endif
 @endsection

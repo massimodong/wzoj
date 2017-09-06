@@ -22,6 +22,7 @@ class RanklistUser{
 	public $score;
 	public $penalty;
 	public $problem_scores;
+	public $problem_corrected_scores;
 	public $problem_solutions;
 	function __construct($u, $p){
 		$this->user = $u;
@@ -29,6 +30,7 @@ class RanklistUser{
 		$this->penalty = 0;
 		foreach($p as $s){
 			$this->problem_scores[$s->id] = 0;
+			$this->problem_corrected_scores[$s->id] = -1;
 		}
 	}
 }
@@ -127,7 +129,7 @@ class ProblemsetController extends Controller
 				'cur_page' => $page]);
 	}
 
-	public function getRanklistTable($problemset, $problems){
+	public function getRanklistTable($problemset, $problems, $contest_running){
 		$solutions = $problemset->solutions()
 			->where('created_at', '>=', $problemset->contest_start_at)
 			->where('created_at', '<=', $problemset->contest_end_at)
@@ -152,6 +154,20 @@ class ProblemsetController extends Controller
 				$table[$id]->problem_solutions[$solution->problem_id] = $solution;
 			}
 		}
+
+		if(!$contest_running){//ended
+			$solutions = $problemset->solutions()
+				->where('created_at', '>', $problemset->contest_end_at)
+				->public()
+				->get();
+			foreach($solutions as $solution){
+				if(!isset($users_id[$solution->user_id])) continue;
+				$id = $users_id[$solution->user_id];
+				if($solution->score > $table[$id]->problem_corrected_scores[$solution->problem_id])
+					$table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
+			}
+		}
+
 		usort($table, "ranklist_cmp_user");
 
 		return $table;
@@ -173,12 +189,15 @@ class ProblemsetController extends Controller
 			}
 		}
 
+		$contest_running = time() <= strtotime($problemset->contest_end_at);
 		$problems = $problemset->problems()->orderByIndex()->get();
-		$table = $this->getRanklistTable($problemset, $problems);
+		$table = $this->getRanklistTable($problemset, $problems, $contest_running);
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
 				'problems' => $problems,
 				'table' => $table,
-				'last_solution_id' => $problemset->solutions()->max('id')]);
+				'last_solution_id' => $problemset->solutions()->max('id'),
+				'contest_running' => $contest_running,
+		]);
 	}
 
 	public function getRanklistCSV($psid, Request $request){
