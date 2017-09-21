@@ -12,6 +12,8 @@ use Storage;
 use App\Problem;
 use App\FileManager;
 
+use Purifier;
+
 class AdminProblemController extends Controller
 {
 	const LIMIT = 20;
@@ -113,6 +115,10 @@ class AdminProblemController extends Controller
 
 		$newval = $request->except('tags');
 		if(!isset($newval['spj'])) $newval['spj'] = 0;
+		$newval['description'] = Purifier::clean($newval['description']);
+		$newval['inputformat'] = Purifier::clean($newval['inputformat']);
+		$newval['outputformat'] = Purifier::clean($newval['outputformat']);
+		$newval['hint'] = Purifier::clean($newval['hint']);
 
 		$problem->update($newval);
 		Cache::tags(['problems'])->flush();

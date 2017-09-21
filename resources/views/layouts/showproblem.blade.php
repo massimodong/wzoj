@@ -19,17 +19,17 @@
 
 @if (strlen($problem->description))
 <h3>{{trans('wzoj.problem_description')}}:</h3>
-{!! Purifier::clean($problem->description) !!}
+{!! $problem->description !!}
 @endif
 
 @if (strlen($problem->inputformat))
 <h3>{{trans('wzoj.input_format')}}:</h3>
-{!! Purifier::clean($problem->inputformat) !!}
+{!! $problem->inputformat !!}
 @endif
 
 @if (strlen($problem->outputformat))
 <h3>{{trans('wzoj.output_format')}}:</h3>
-{!! Purifier::clean($problem->outputformat) !!}
+{!! $problem->outputformat !!}
 @endif
 
 @if (strlen($problem->sampleinput))
@@ -52,7 +52,7 @@
 
 @if (strlen($problem->hint))
 <h3>{{trans('wzoj.hints')}}:</h3>
-{!! Purifier::clean($problem->hint) !!}
+{!! $problem->hint !!}
 @endif
 
 {{trans('wzoj.time_limit')}}:{{$problem->timelimit}}ms<br>
