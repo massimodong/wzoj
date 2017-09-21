@@ -119,6 +119,7 @@ class AdminProblemController extends Controller
 		$newval['inputformat'] = Purifier::clean($newval['inputformat']);
 		$newval['outputformat'] = Purifier::clean($newval['outputformat']);
 		$newval['hint'] = Purifier::clean($newval['hint']);
+		$newval['tutorial'] = Purifier::clean($newval['tutorial']);
 
 		$problem->update($newval);
 		Cache::tags(['problems'])->flush();

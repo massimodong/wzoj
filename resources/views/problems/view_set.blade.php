@@ -139,7 +139,7 @@
 
   @can ('view_tutorial', $problemset)
   <div id="tutorial" class="tab-pane">
-    {!! Purifier::clean($problem->tutorial) !!}
+    {!! $problem->tutorial !!}
   </div>
   @endcan
 </div>
