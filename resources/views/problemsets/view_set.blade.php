@@ -12,7 +12,7 @@
 @endif
 
 <div id="home" class="tab-pane fade in active">
-  {!! Purifier::clean($problemset->description) !!}
+  {!! $problemset->description !!}
 
   <center><ul class="pagination">
     @for ($i=1;$i <= $cnt_pages;++$i)

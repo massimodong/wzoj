@@ -16,6 +16,7 @@ use App\Http\Controllers\Controller;
 use Cache;
 use Auth;
 use Storage;
+use Purifier;
 
 class RanklistUser{
 	public $user;
@@ -283,6 +284,8 @@ class ProblemsetController extends Controller
 
 		$newval = $request->all();
 		if(!isset($newval['public'])) $newval['public'] = 0;
+
+		$newval['description'] = Purifier::clean($newval['description']);
 
 		$problemset->update($newval);
 
