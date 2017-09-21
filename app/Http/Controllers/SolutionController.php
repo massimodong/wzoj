@@ -218,12 +218,16 @@ class SolutionController extends Controller
 		    $solution_meta["code"] = file_get_contents($file->getRealPath());
 	    }
 
-	    if(strlen($solution_meta["code"]) <= 10){
+	    $solution_meta["code_length"] = strlen($solution_meta["code"]);
+	    if($solution_meta["code_length"] <= 10){
 		    return back()
 			    ->withErrors(trans('wzoj.code_too_short'))
 			    ->withInput();
+	    }else if($solution_meta["code_length"] > 102400){ //100kb
+		    return back()
+			    ->withErrors(trans('wzoj.code_too_long'))
+			    ->withInput();
 	    }
-	    $solution_meta["code_length"] = strlen($solution_meta["code"]);
 
 	    $solution = $request->user()->solutions()->create($solution_meta);
 
