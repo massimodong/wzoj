@@ -79,7 +79,7 @@
   <div class="form-group">
     <label for="description" class="col-xs-2 control-label"> {{trans('wzoj.description')}} </label>
     <div class="col-xs-10">
-      <textarea class='ojeditor' id='description' name='description'>{{$problem->description}}</textarea>
+      <textarea class='ojeditor' id='description' name='description'>{{htmlspecialchars($problem->description)}}</textarea>
     </div>
   </div>
 
@@ -90,14 +90,14 @@
   <div class="form-group">
     <label for="inputformat" class="col-xs-2 control-label"> {{trans('wzoj.input_format')}} </label>
     <div class="col-xs-10">
-      <textarea class='ojeditor' id='inputformat' name='inputformat'>{{$problem->inputformat}}</textarea>
+      <textarea class='ojeditor' id='inputformat' name='inputformat'>{{htmlspecialchars($problem->inputformat)}}</textarea>
     </div>
   </div>
 
   <div class="form-group">
     <label for="outputformat" class="col-xs-2 control-label"> {{trans('wzoj.output_format')}} </label>
     <div class="col-xs-10">
-      <textarea class='ojeditor' id='outputformat' name='outputformat'>{{$problem->outputformat}}</textarea>
+      <textarea class='ojeditor' id='outputformat' name='outputformat'>{{htmlspecialchars($problem->outputformat)}}</textarea>
     </div>
   </div>
 
@@ -126,7 +126,7 @@
   <div class="form-group">
     <label for="hint" class="col-xs-2 control-label"> {{trans('wzoj.hints')}} </label>
     <div class="col-xs-10">
-      <textarea class='ojeditor' id='hint' name='hint'>{{$problem->hint}}</textarea>
+      <textarea class='ojeditor' id='hint' name='hint'>{{htmlspecialchars($problem->hint)}}</textarea>
     </div>
   </div>
 
@@ -159,7 +159,7 @@
   <div class="form-group">
     <label for="tutorial" class="col-xs-2 control-label"> {{trans('wzoj.tutorial')}} </label>
     <div class="col-xs-10">
-      <textarea class='ojeditor' id='tutorial' name='tutorial'>{{$problem->tutorial}}</textarea>
+      <textarea class='ojeditor' id='tutorial' name='tutorial'>{{htmlspecialchars($problem->tutorial)}}</textarea>
     </div>
   </div>
 
