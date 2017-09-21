@@ -76,6 +76,12 @@
 	      <textarea class="form-control ojeditor" name="description" id="description">{{$problemset->description}}</textarea>
 	  </div>
     </div>
+    <div class="form-group">
+          <label class="control-label col-sm-2" for="remark">{{trans('wzoj.remark')}}:</label>
+	  <div class="col-sm-10">
+	      <textarea class="form-control" name="remark" id="remark">{{$problemset->remark}}</textarea>
+	  </div>
+    </div>
     </form>
 
 </div>
