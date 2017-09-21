@@ -116,6 +116,7 @@ class AdminGroupController extends Controller
 		$group->name = $request->name;
 		$group->notice = $request->notice;
 		$group->save();
+		Cache::tags(['user_groups'])->flush();
 		return back();
 	}
 
