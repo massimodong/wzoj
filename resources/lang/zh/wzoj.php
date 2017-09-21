@@ -356,4 +356,9 @@ return [
 
     'pass_rate' => '通过率',
     'remark' => '备注',
+
+    'problem_basic' => '基本设置',
+    'io_format' => '输入输出格式',
+    'samples' => '样例',
+    'others' => '其他',
 ];

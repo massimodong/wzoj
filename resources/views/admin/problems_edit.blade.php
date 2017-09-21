@@ -17,10 +17,23 @@
 </p>
 <hr>
 
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#basic"> {{trans('wzoj.problem_basic')}} </a></li>
+  <li><a data-toggle="tab" href="#io_format"> {{trans('wzoj.io_format')}} </a></li>
+  <li><a data-toggle="tab" href="#samples"> {{trans('wzoj.samples')}} </a></li>
+  <li><a data-toggle="tab" href="#hints"> {{trans('wzoj.hints')}} </a></li>
+  <li><a data-toggle="tab" href="#others"> {{trans('wzoj.others')}} </a></li>
+</ul>
+
+<div class="top-buffer-sm"></div>
+
 <form method='POST' id='problem_form' class="form-horizontal">
   {{csrf_field()}}
   {{method_field('PUT')}}
 
+  <div class="tab-content">
+
+  <div id="basic" class="tab-pane in active">
   <div class="form-group">
     <label for="name" class="col-xs-2 control-label"> {{trans('wzoj.name')}} </label>
     <div class="col-xs-10">
@@ -70,6 +83,10 @@
     </div>
   </div>
 
+  </div>
+  <!-- basic -->
+
+  <div id="io_format" class="tab-pane">
   <div class="form-group">
     <label for="inputformat" class="col-xs-2 control-label"> {{trans('wzoj.input_format')}} </label>
     <div class="col-xs-10">
@@ -84,6 +101,10 @@
     </div>
   </div>
 
+  </div>
+  <!-- io_format -->
+
+  <div id="samples" class="tab-pane">
   <div class="form-group">
     <label for="sampleinput" class="col-xs-2 control-label"> {{trans('wzoj.sample_input')}} </label>
     <div class="col-xs-10">
@@ -98,6 +119,10 @@
     </div>
   </div>
 
+  </div>
+  <!-- samples -->
+
+  <div id="hints" class="tab-pane">
   <div class="form-group">
     <label for="hint" class="col-xs-2 control-label"> {{trans('wzoj.hints')}} </label>
     <div class="col-xs-10">
@@ -111,6 +136,11 @@
       <input type="text" class="form-control" id="source" name="source" value="{{$problem->source}}" required>
     </div>
   </div>
+
+  </div>
+  <!-- hints -->
+
+  <div id="others" class="tab-pane">
   <div class="form-group">
     <label for="source" class="col-xs-2 control-label"> {{trans('wzoj.tags')}} </label>
     <div class="col-xs-10">
@@ -139,6 +169,12 @@
       <textarea class='form-control' id='remark' name='remark'>{{$problem->remark}}</textarea>
     </div>
   </div>
+
+  </div>
+  <!-- others -->
+
+  </div>
+  <!-- tab-content -->
 
 </form>
 
