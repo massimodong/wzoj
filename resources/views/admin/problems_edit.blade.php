@@ -133,6 +133,13 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <label for="remark" class="col-xs-2 control-label"> {{trans('wzoj.remark')}} </label>
+    <div class="col-xs-10">
+      <textarea class='form-control' id='remark' name='remark'>{{$problem->remark}}</textarea>
+    </div>
+  </div>
+
 </form>
 
 <form method='POST'>
