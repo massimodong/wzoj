@@ -163,11 +163,6 @@ class JudgerController extends Controller
 		$solution->save();
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
-		$cache_path = $solution->user_id.'-'.$solution->problemset_id.'-'.$solution->problem_id;
-		if($solution->score > Cache::tags(['problemsets', 'max_score'])->get($cache_path, -1)){
-			Cache::tags(['problemsets', 'max_score'])->put($cache_path, $solution->score, CACHE_ONE_DAY);
-		}
-
 		return response()->json(["ok" => true]);
 	}
 	public function postFinishJudging(Request $request){
@@ -186,6 +181,11 @@ class JudgerController extends Controller
 		
 		$solution->save();
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
+
+		$cache_path = $solution->user_id.'-'.$solution->problemset_id.'-'.$solution->problem_id;
+		if($solution->score > Cache::tags(['problemsets', 'max_score'])->get($cache_path, -1)){
+			Cache::tags(['problemsets', 'max_score'])->put($cache_path, $solution->score, CACHE_ONE_DAY);
+		}
 
 		$solution->user->update_cnt_ac();
 	}
