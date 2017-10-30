@@ -114,7 +114,7 @@ function animateJudging( s ,done){
 function updatePendings( finish , last_time){
 	$.get('/ajax/solutions-judging', {last_time: last_time}).done(function(data){
 		$.each(data.solutions, function(key, value){
-			var id = value.id, td = $('#solution-'+id);
+			var id = value, td = $('#solution-'+id);
 			if(td.length && td.data('waiting') == 1){
 				animateJudging(td, finish);
 			}

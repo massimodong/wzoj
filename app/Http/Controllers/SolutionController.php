@@ -14,6 +14,8 @@ use App\Http\Controllers\Controller;
 use Cache;
 use Storage;
 
+use Illuminate\Support\Facades\Redis;
+
 class SolutionController extends Controller
 {
     /**
@@ -230,6 +232,9 @@ class SolutionController extends Controller
 	    }
 
 	    $solution = $request->user()->solutions()->create($solution_meta);
+
+	    Redis::lpush('wzoj_recent_solution_ids', $solution->id);             // push the solution to redis list
+	    Redis::ltrim('wzoj_recent_solution_ids', 0, self::PAGE_LIMIT -1);    // save only `PAGE_LIMIT` solutions
 
 	    $request->user()->answerfiles()
 		    ->where('problemset_id', $request->problemset_id)

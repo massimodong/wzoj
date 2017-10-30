@@ -17,6 +17,8 @@ use App\Problem;
 use App\Testcase;
 use App\Sim;
 
+use Illuminate\Support\Facades\Redis;
+
 class JudgerController extends Controller
 {
 	public function __construct(){
@@ -90,6 +92,7 @@ class JudgerController extends Controller
 				$solution->sim_id = NULL;
 				$solution->judger_id = \Request::get('judger')->id;
 				Cache::tags(['solutions'])->put($solution->id, $solution, 1);
+				Redis::sadd('wzoj_judging_solution_ids', $solution->id);
 				return response()->json(["ok" => true]);
 			}else{
 				return response()->json(["ok" => false]);
@@ -188,6 +191,8 @@ class JudgerController extends Controller
 		}
 
 		$solution->user->update_cnt_ac();
+
+		Redis::srem('wzoj_judging_solution_ids', $solution->id);
 	}
 
 	public function getGetAnswer(Request $request){

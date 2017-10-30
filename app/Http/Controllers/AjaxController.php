@@ -11,6 +11,8 @@ use App\Solution;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Illuminate\Support\Facades\Redis;
+
 class AjaxController extends Controller
 {
 	public function getIndex(){
@@ -64,14 +66,15 @@ class AjaxController extends Controller
 		$this->validate($request, [
 			'last_time' => 'required|date',
 		]);
-		$solutions_judging = \App\Solution::where('status', SL_COMPILING)
-						->orWhere('status', SL_RUNNING)
-						->select('id');
+		$solutions_judging = Redis::smembers('wzoj_judging_solution_ids');
 		$solutions = \App\Solution::where('judged_at', '>=', $request->last_time)
+						->whereIn('id', Redis::lrange('wzoj_recent_solution_ids', 0, -1))
 						->select('id')
-						->union($solutions_judging)
 						->get();
-		return response()->json(['solutions' => $solutions, 'cur_time' => date('Y-m-d H:i:s')]);
+		foreach($solutions as $solution){
+			array_push($solutions_judging, $solution->id);
+		}
+		return response()->json(['solutions' => $solutions_judging, 'cur_time' => date('Y-m-d H:i:s')]);
 	}
 
 	public function getContestSolutions(Request $request){
