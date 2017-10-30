@@ -8,6 +8,18 @@
 
 <div class="col-xs-12 row">
 
+<div class="col-xs-12 dropdown">
+  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{$top}}
+  <span class="caret"></span></button>
+  <ul class="dropdown-menu">
+    @for ($i=0;$i<=$bottom;$i+=100)
+      <li><a href="/admin/problems?top={{$i}}">{{$i}}</a></li>
+    @endfor
+  </ul>
+</div>
+
+<div class="col-xs-12" style="height:10px"></div>
+
 <div class="col-xs-1">
     <form action='/admin/problems' method='POST'>
     {{csrf_field()}}

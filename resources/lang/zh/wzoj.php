@@ -362,4 +362,6 @@ return [
     'io_format' => '输入输出格式',
     'samples' => '样例',
     'others' => '其他',
+
+    'choose_range' => '选择区间',
 ];
