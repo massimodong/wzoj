@@ -210,8 +210,9 @@ class ProblemsetController extends Controller
 		
 		download_send_headers($problemset->name . '-' . date("Y-m-d") . ".csv");
 
+		$contest_running = time() <= strtotime($problemset->contest_end_at);
 		$problems = $problemset->problems()->orderByIndex()->get();
-		$table = $this->getRanklistTable($problemset, $problems);
+		$table = $this->getRanklistTable($problemset, $problems, $contest_running);
 
 		$df = fopen("php://output", "w");
 
