@@ -135,6 +135,16 @@ class HomeController extends Controller
 	}
 
 	public function problemSearch(Request $request){
+		$this->validate($request, [
+			'tags' => 'array',
+		]);
+
+		if(strlen($request->name) == 0 && count($request->tags) == 0){
+			return back()
+			    ->withErrors(trans('wzoj.no_search'))
+			    ->withInput();
+		}
+
 		$problemsets_id = [];
 		$problemset_ids = [];
 

@@ -260,6 +260,7 @@ return [
     'msg_problem_search_name_helper' => '*将返回包含所给字符的所有题目',
 
     'no_result' => '没有结果',
+    'no_search' => '无搜索内容',
 
     'new_post' => '发帖',
     'bbs' => '论坛',

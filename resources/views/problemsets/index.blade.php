@@ -32,10 +32,9 @@
       <select id="tag-select" class="selectpicker" data-live-search="true" data-width="70%">
         <option style="display:none"></option>
         @foreach ($tags as $tag)
-	  <option data-tokens="{{$tag->aliases}}" value="{{$tag->id}}">{{$tag->name}}</option>
+	  <option data-tokens="{{$tag->aliases}} {{$tag->name}}" value="{{$tag->id}}">{{$tag->name}}</option>
 	@endforeach
       </select>
-      <button type="submit" class="btn btn-default" onclick="searchAddTag();return false;">{{trans('wzoj.add')}}</button>
     </div>
     <div id="tags" class="col-xs-7">
     </div>
@@ -95,5 +94,8 @@ function searchAddTag(){
 function searchRemoveTag(tag_id){
 	$('#tag-' + tag_id).remove();
 }
+$( "#tag-select" ).change(function() {
+		searchAddTag();
+});
 </script>
 @endsection
