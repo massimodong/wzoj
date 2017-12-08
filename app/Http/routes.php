@@ -141,6 +141,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				//problems
 				Route::group(['prefix' => 'problems', 'middleware' => 'role:problem_manager'], function(){
 					Route::get('/', 'AdminProblemController@getProblems');
+					Route::get('/dataTablesAjax', 'AdminProblemController@getDataTablesAjax');
 					Route::get('{id}', 'AdminProblemController@getProblems');
 					Route::get('{id}/data', 'AdminProblemController@getProblemsData');
 					Route::post('{id}/data', 'AdminProblemController@postProblemsData');

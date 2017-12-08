@@ -147,6 +147,7 @@ return [
 	Barryvdh\Debugbar\ServiceProvider::class,
 	Mews\Purifier\PurifierServiceProvider::class,
 	Mews\Captcha\CaptchaServiceProvider::class,
+	Yajra\Datatables\DatatablesServiceProvider::class,
 
     ],
 
@@ -197,6 +198,7 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
 	'Purifier' => Mews\Purifier\Facades\Purifier::class,
 	'Captcha' => Mews\Captcha\Facades\Captcha::class,
+	'DataTables' => Yajra\DataTables\Facades\DataTables::class,
 
     ],
 

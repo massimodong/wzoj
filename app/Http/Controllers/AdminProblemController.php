@@ -12,6 +12,9 @@ use Storage;
 use App\Problem;
 use App\FileManager;
 
+use DB;
+use Yajra\Datatables\Datatables;
+
 use Purifier;
 
 class AdminProblemController extends Controller
@@ -59,6 +62,11 @@ class AdminProblemController extends Controller
 				]);
 			}
 		}
+	}
+
+	public function getDataTablesAjax(Request $request){
+		$query = $request->user()->manage_problems();
+		return Datatables::of($query)->make(true);
 	}
 
 	public function getProblemsData(Request $request, $id){
