@@ -8,13 +8,11 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use Cache;
-use App\Problemset;
 use DB;
 
 use Log;
 use App\Solution;
 use App\Problem;
-use App\Testcase;
 use App\Sim;
 
 use Illuminate\Support\Facades\Redis;
