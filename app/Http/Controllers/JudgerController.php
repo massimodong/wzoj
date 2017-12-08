@@ -164,6 +164,7 @@ class JudgerController extends Controller
 		$solution->save();
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
+		Redis::srem('wzoj_judging_solution_ids', $solution->id);
 		return response()->json(["ok" => true]);
 	}
 	public function postFinishJudging(Request $request){
