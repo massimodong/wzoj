@@ -25,25 +25,7 @@ class AdminProblemController extends Controller
 			'top' => 'integer',
 		]);
 		if($id == -1){
-			$top = 1;
-			if(isset($request->top)){
-				$top = $request->top;
-			}
-
-			$bottom = max(\App\Problem::count(), 1);
-
-			$problems = $request->user()->manage_problems()
-						->where('problems.id', '>=', $top)
-						->limit(self::LIMIT)
-						->leftJoin('solutions', 'problems.id', '=', 'solutions.problem_id')
-						->selectRaw('problems.*, count(solutions.id) as cntSubmits, sum(if(solutions.score >= 100, 1, 0)) as cntAc')
-						->groupBy('problems.id')
-						->with(['tags', 'problemsets'])
-						->get();
 			return view('admin.problems_index', [
-					'problems' => $problems,
-					'top' => $top,
-					'bottom' => $bottom,
 			]);
 		}else{
 			$problem = \App\Problem::findOrFail($id);
@@ -65,7 +47,7 @@ class AdminProblemController extends Controller
 	}
 
 	public function getDataTablesAjax(Request $request){
-		$query = $request->user()->manage_problems();
+		$query = $request->user()->manage_problems()->with(['tags', 'problemsets']);
 		return Datatables::of($query)->make(true);
 	}
 

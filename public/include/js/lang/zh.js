@@ -14,6 +14,9 @@ const TRANS = {
 	cnt_solutions: '提交数',
 	estimate_time: '预计时间',
 	confirm_rejudge: '确认重测',
+	problem_type_1: '传统题',
+	problem_type_2: '交互题',
+	problem_type_3: '提交答案题',
 }
 
 const LANG = ['C', 'C++', 'Pascal'];

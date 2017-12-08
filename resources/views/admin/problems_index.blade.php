@@ -20,10 +20,13 @@
 <table id="problems_table" class="table table-striped">
   <thead>
     <tr>
-      <th style="width: 5%">id</th>
-      <th>name</th>
-      <th>a</th>
-      <th>b</th>
+      <th style="width: 5%">{{trans('wzoj.id')}}</th>
+      <th>{{trans('wzoj.name')}}</th>
+      <th style="width: 10%">{{trans('wzoj.type')}}</th>
+      <th style="width: 5%">spj</th>
+      <th style="width: 10%">{{trans('wzoj.source')}}</th>
+      <th style="width: 10%">{{trans('wzoj.tags')}}</th>
+      <th style="width: 15%">{{trans('wzoj.problemsets')}}</th>
     </tr>
   </thead>
 </table>
@@ -49,8 +52,46 @@ $(function() {
                          return '<a href="/admin/problems/' + row.id + '">' + data + '</a>';
                        }
 	    },
-            { data: 'created_at', name: 'created_at' },
-            { data: 'updated_at', name: 'updated_at' }
+            { data: 'type', name: 'type',
+	      render: function ( data, type, row, meta) {
+	                return TRANS['problem_type_' + data];
+	              }
+	    },
+            { data: 'spj', name: 'spj',
+	      render: function ( data, type, row, meta) {
+	                return data?"Y":"N";
+	              }
+	    },
+	    { data: 'source', name: 'name' },
+	    { data: 'tags', name: 'tags.name',
+	       render: function ( data, type, row, meta) {
+			       console.log(row.problemsets);
+			       if(data.length >= 1){
+				       ret = data[0].name;
+			       }else{
+				       ret = '';
+			       }
+
+			       for(i = 1; i < data.length; ++i){
+				       ret = ret + ' ' + data[i].name;
+			       }
+			       return ret;
+		       }
+	    },
+	    { data: 'problemsets', name: 'problemsets.name',
+	      render: function ( data, type, row, meta) {
+			      if(data.length >= 1){
+				       ret = data[0].name;
+			       }else{
+				       ret = '';
+			       }
+
+			       for(i = 1; i < data.length; ++i){
+				       ret = ret + ' ' + data[i].name;
+			       }
+			       return ret;
+		      }
+	    }
         ]
     });
 });
