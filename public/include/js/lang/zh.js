@@ -17,6 +17,7 @@ const TRANS = {
 	problem_type_1: '传统题',
 	problem_type_2: '交互题',
 	problem_type_3: '提交答案题',
+	testdata: '测试数据',
 }
 
 const LANG = ['C', 'C++', 'Pascal'];

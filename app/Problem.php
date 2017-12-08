@@ -30,6 +30,19 @@ class Problem extends Model
 		return $this->belongsToMany('App\ProblemTag');
 	}
 
+	public function update_cnt_submit(){
+		$this->cnt_submit = $this->solutions()
+			->count();
+		$this->save();
+	}
+
+	public function update_cnt_ac(){
+		$this->cnt_ac = $this->solutions()
+			->where('score', '>=', 100)
+			->count();
+		$this->save();
+	}
+
 	public function scopeOrderByIndex($query){
 		return $query->orderBy('problem_problemset.index','asc');
 	}
