@@ -42,8 +42,8 @@ class AdminProblemTagController extends Controller
      */
     public function store(Request $request)
     {
-	    ProblemTag::create();
-	    return back();
+	    $tag = ProblemTag::create();
+	    return redirect('/admin/problem-tags#'.$tag->id);
     }
 
     /**

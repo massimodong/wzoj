@@ -52,6 +52,13 @@
     <button type="submit" class="btn btn-default" onclick="tagsExpandAll();return false;"> {{trans('wzoj.expand_all')}} </button>
     <button type="submit" class="btn btn-default" onclick="tagsCollapseAll();return false;"> {{trans('wzoj.collapse_all')}} </button>
   </form>
+
+  <div class="col-xs-12" style="height:10px;"></div>
+
+  <form class="col-xs-12 fixed-form" action="/admin/problem-tags" method="POST">
+    {{csrf_field()}}
+    <button type="submit" class="btn btn-default"> {{trans('wzoj.create_tag')}} </button>
+  </form>
 </div>
 
 @endsection
