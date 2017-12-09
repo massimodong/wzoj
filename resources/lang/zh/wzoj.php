@@ -255,6 +255,8 @@ return [
     'forum' => '讨论版',
     'tags' => '标签',
     'tag' => '标签',
+    'aliases' => '别名',
+    'reference_url' => 'URL',
 
     'problem_name' => '题目名称',
     'msg_problem_search_name_helper' => '*将返回包含所给字符的所有题目',
