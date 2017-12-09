@@ -21,17 +21,22 @@
   <form id="tag-form" method="POST">
     {{csrf_field()}}
     {{method_field('PUT')}}
+
+    <div class="form-group">
+      <label for="showTagId"> {{trans('wzoj.id')}} </label>
+      <input type="text" class="form-control" id="showTagId" size="80" disabled>
+    </div>
     <div class="form-group">
       <label for="name"> {{trans('wzoj.name')}} </label>
-      <input type="text" class="form-control" id="name" name="name">
+      <input type="text" class="form-control" id="name" name="name" size="80">
     </div>
     <div class="form-group">
       <label for="aliases"> {{trans('wzoj.aliases')}} </label>
-      <input type="text" class="form-control" id="aliases" name="aliases">
+      <input type="text" class="form-control" id="aliases" name="aliases" size="80">
     </div>
     <div class="form-group">
       <label for="reference_url"> {{trans('wzoj.reference_url')}} </label>
-      <input type="text" class="form-control" id="reference_url" name="reference_url">
+      <input type="text" class="form-control" id="reference_url" name="reference_url" size="80">
     </div>
     <button type="submit" class="btn btn-default"> {{trans('wzoj.save')}} </button>
   </form>
@@ -54,6 +59,7 @@ var tags = {
 
 function tagFormSetId(tagId){
 	$('#tag-form').attr('action', '/admin/problem-tags/' + tagId);
+	$('#showTagId').val(tagId);
 	$('#name').val(tags[tagId].name);
 	$('#aliases').val(tags[tagId].aliases);
 	$('#reference_url').val(tags[tagId].reference_url);

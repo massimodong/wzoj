@@ -361,3 +361,11 @@ textarea {
   float:left;
   padding:7px;
 }
+
+#tag-form {
+  position:fixed;
+  padding: 10px;
+  border-style: dashed;
+  border-width: 2px;
+  border-color: grey;
+}
