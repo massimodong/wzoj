@@ -12,7 +12,7 @@
 @section ('content')
 
 <div class="dd-nestable col-xs-6" id="tags-nestable">
-  @include ('admin.problem_tags_recursive', ['tags' => $tags])
+  @include ('admin.problem_tags_recursive', ['tags' => \App\ProblemTag::where('parent_id', 0)->get()])
 </div>
 
 <div class="col-xs-6">
