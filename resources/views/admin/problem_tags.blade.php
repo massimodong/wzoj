@@ -12,7 +12,9 @@
 @section ('content')
 
 <div class="dd-nestable col-xs-6" id="tags-nestable">
-  @include ('admin.problem_tags_recursive', ['tags' => \App\ProblemTag::where('parent_id', 0)->get()])
+  @include ('admin.problem_tags_recursive', ['tags' => $tags->filter(function($value){
+			    return $value->parent_id == 0;
+			  })])
 </div>
 
 <div class="col-xs-6">
