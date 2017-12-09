@@ -33,6 +33,7 @@ return [
     'edit' => '编辑',
     'description' => '说明',
     'save' => '保存',
+    'update' => '更新',
     'index' => '序号',
     'operations' => '操作',
     'submit' => '提交',

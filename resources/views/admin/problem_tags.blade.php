@@ -38,7 +38,7 @@
       <label for="reference_url"> {{trans('wzoj.reference_url')}} </label>
       <input type="text" class="form-control" id="reference_url" name="reference_url" size="80">
     </div>
-    <button type="submit" class="btn btn-default"> {{trans('wzoj.save')}} </button>
+    <button type="submit" class="btn btn-default"> {{trans('wzoj.update')}} </button>
   </form>
 </div>
 
