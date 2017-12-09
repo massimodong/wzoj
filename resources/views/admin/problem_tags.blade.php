@@ -37,7 +37,7 @@
       <label for="reference_url"> {{trans('wzoj.reference_url')}} </label>
       <input type="text" class="form-control" id="reference_url" name="reference_url">
     </div>
-    <button type="submit" class="btn btn-default"> {{trans('wzoj.update')}} </button>
+    <button type="submit" class="btn btn-default" id="update-hierarchy-button"> {{trans('wzoj.update')}} </button>
   </form>
 
   <div class="col-xs-12" style="height:10px;"></div>
@@ -79,6 +79,7 @@ function tagFormSetId(tagId){
 	$('#name').val(tags[tagId].name);
 	$('#aliases').val(tags[tagId].aliases);
 	$('#reference_url').val(tags[tagId].reference_url);
+	document.getElementById("name").focus();
 }
 
 function tagsExpandAll(){
@@ -105,6 +106,7 @@ $(document).ready(function() {
     $('#tags-nestable').on('change', function() {
 	$('#save-changes-button').prop('disabled', false);
 	$('#undo-changes-button').prop('disabled', false);
+	$('#update-hierarchy-button').prop('disabled', true);
     });
 });
 </script>
