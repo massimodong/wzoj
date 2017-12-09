@@ -49,6 +49,8 @@
     <button type="submit" class="btn btn-default" id="save-changes-button" disabled onclick="$('#tags-hierarchy').val(JSON.stringify($('#tags-nestable').nestable('serialize'),null,2))">
     {{trans('wzoj.save_changes')}} </button>
     <button type="submit" class="btn btn-default" id="undo-changes-button" disabled onclick="location.reload();return false;"> {{trans('wzoj.undo_changes')}} </button>
+    <button type="submit" class="btn btn-default" onclick="tagsExpandAll();return false;"> {{trans('wzoj.expand_all')}} </button>
+    <button type="submit" class="btn btn-default" onclick="tagsCollapseAll();return false;"> {{trans('wzoj.collapse_all')}} </button>
   </form>
 </div>
 
@@ -70,6 +72,14 @@ function tagFormSetId(tagId){
 	$('#name').val(tags[tagId].name);
 	$('#aliases').val(tags[tagId].aliases);
 	$('#reference_url').val(tags[tagId].reference_url);
+}
+
+function tagsExpandAll(){
+	$('#tags-nestable').nestable('expandAll');
+}
+
+function tagsCollapseAll(){
+	$('#tags-nestable').nestable('collapseAll');
 }
 
 $('.dd3-content').click(function(){

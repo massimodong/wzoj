@@ -371,4 +371,7 @@ return [
 
     'save_changes' => '保存修改',
     'undo_changes' => '撤销修改',
+
+    'expand_all' => '全部展开',
+    'collapse_all' => '全部缩回',
 ];
