@@ -2,33 +2,31 @@
 
 @section ('title')
 {{trans('wzoj.tags')}}
+@endsection (title')
+
+@section ('head')
+@parent
+<link href="/include/css/dd-nestable.css" rel="stylesheet">
 @endsection
 
 @section ('content')
 
-<div>
-    <form action='/admin/problem-tags' method='POST'>
-    {{csrf_field()}}
-    <button type="submit" class="btn btn-default">+</button>
-    </form>
+<div class="dd-nestable col-xs-6" id="tags-nestable">
+  @include ('admin.problem_tags_recursive', ['tags' => $tags])
 </div>
 
-@foreach ($tags as $tag)
-  <form class="form-inline" action="/admin/problem-tags/{{$tag->id}}" method="POST">
-    {{csrf_field()}}
-    {{method_field('PUT')}}
-    #{{$tag->id}}:
-    <div class="form-group">
-      <input type="text" value="{{$tag->name}}" class="form-control" id="name" name="name" size="5">
-    </div>
-    <div class="form-group">
-      <input type="text" value="{{$tag->aliases}}" class="form-control" id="aliases" name="aliases" size="10">
-    </div>
-    <div class="form-group">
-      <input type="text" value="{{$tag->reference_url}}" class="form-control" id="reference_url" name="reference_url" size="10">
-    </div>
-    <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
-  </form>
-@endforeach
+<div class="col-xs-6">
+</div>
 
+@endsection
+
+@section ('scripts')
+<script src="/include/js/jquery.nestable.js"></script>
+<script>
+$(document).ready(function() {
+    $('#tags-nestable').nestable({
+	maxDepth: {{$tags->count()}},
+    });
+});
+</script>
 @endsection

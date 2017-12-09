@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    @section ('head')
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=1024">
@@ -22,6 +23,7 @@
 
     <script src="{{ojcache('/include/js/lang/zh.js')}}"></script>
     <script src="{{ojcache('/include/js/common.js')}}"></script>
+    @show
 </head>
 
 <body>

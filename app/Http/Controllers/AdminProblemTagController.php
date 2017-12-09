@@ -18,7 +18,7 @@ class AdminProblemTagController extends Controller
      */
     public function index()
     {
-	    $tags = ProblemTag::all();
+	    $tags = ProblemTag::where('parent_id', 0)->get();
 	    return view('admin.problem_tags',[
 		'tags' => $tags,
 	    ]);
