@@ -86,6 +86,22 @@ class AdminProblemTagController extends Controller
 	    return redirect('/admin/problem-tags#'.$id);
     }
 
+    static function resolveTags($tags, $parent_id, &$index){
+	    foreach($tags as $tag){
+		    ++$index;
+		    ProblemTag::where('id', $tag->id)->update(['parent_id' => $parent_id, 'index' => $index]);
+		    if(!empty($tag->children)){
+			    self::resolveTags($tag->children, $tag->id, $index);
+		    }
+	    }
+    }
+    public function updateHierarchy(Request $request){
+	    $tags = json_decode($request->tags);
+	    $index = 0;
+	    self::resolveTags($tags, 0, $index);
+	    return back();
+    }
+
     /**
      * Remove the specified resource from storage.
      *

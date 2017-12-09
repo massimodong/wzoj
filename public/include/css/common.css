@@ -362,10 +362,13 @@ textarea {
   padding:7px;
 }
 
-#tag-form {
-  position:fixed;
+.fixed-form {
   padding: 10px;
   border-style: dashed;
   border-width: 2px;
   border-color: grey;
+}
+
+.fixed {
+  position:fixed;
 }

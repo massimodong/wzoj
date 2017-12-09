@@ -368,4 +368,7 @@ return [
     'others' => '其他',
 
     'choose_range' => '选择区间',
+
+    'save_changes' => '保存修改',
+    'undo_changes' => '撤销修改',
 ];

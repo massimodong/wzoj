@@ -11,38 +11,45 @@
 
 @section ('content')
 
-<div class="dd-nestable col-xs-6" id="tags-nestable">
+<div class="dd-nestable col-xs-4" id="tags-nestable">
   @include ('admin.problem_tags_recursive', ['tags' => $tags->filter(function($value){
 			    return $value->parent_id == 0;
-			  })])
+			  })->sortBy('index')])
 </div>
-
-<div class="col-xs-4">
-  <form id="tag-form" method="POST">
+<div class="col-xs-offset-4 col-xs-3 fixed row">
+  <form id="tag-form" method="POST" class="col-xs-12 fixed-form">
     {{csrf_field()}}
     {{method_field('PUT')}}
 
     <div class="form-group">
       <label for="showTagId"> {{trans('wzoj.id')}} </label>
-      <input type="text" class="form-control" id="showTagId" size="80" disabled>
+      <input type="text" class="form-control" id="showTagId" disabled>
     </div>
     <div class="form-group">
       <label for="name"> {{trans('wzoj.name')}} </label>
-      <input type="text" class="form-control" id="name" name="name" size="80">
+      <input type="text" class="form-control" id="name" name="name">
     </div>
     <div class="form-group">
       <label for="aliases"> {{trans('wzoj.aliases')}} </label>
-      <input type="text" class="form-control" id="aliases" name="aliases" size="80">
+      <input type="text" class="form-control" id="aliases" name="aliases">
     </div>
     <div class="form-group">
       <label for="reference_url"> {{trans('wzoj.reference_url')}} </label>
-      <input type="text" class="form-control" id="reference_url" name="reference_url" size="80">
+      <input type="text" class="form-control" id="reference_url" name="reference_url">
     </div>
     <button type="submit" class="btn btn-default"> {{trans('wzoj.update')}} </button>
   </form>
-</div>
 
-<div class="col-xs-2">
+  <div class="col-xs-12" style="height:10px;"></div>
+
+  <form class="col-xs-12 fixed-form" action="/admin/problem-tags/hierarchy" method="POST">
+    {{csrf_field()}}
+    {{method_field('PUT')}}
+    <input hidden name="tags" id="tags-hierarchy">
+    <button type="submit" class="btn btn-default" id="save-changes-button" disabled onclick="$('#tags-hierarchy').val(JSON.stringify($('#tags-nestable').nestable('serialize'),null,2))">
+    {{trans('wzoj.save_changes')}} </button>
+    <button type="submit" class="btn btn-default" id="undo-changes-button" disabled onclick="location.reload();return false;"> {{trans('wzoj.undo_changes')}} </button>
+  </form>
 </div>
 
 @endsection
@@ -77,6 +84,10 @@ $(document).ready(function() {
     }
     $('#tags-nestable').nestable({
 	maxDepth: {{$tags->count()}},
+    });
+    $('#tags-nestable').on('change', function() {
+	$('#save-changes-button').prop('disabled', false);
+	$('#undo-changes-button').prop('disabled', false);
     });
 });
 </script>

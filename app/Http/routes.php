@@ -160,6 +160,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 					//ProblemTags
 					Route::get('problem-tags', 'AdminProblemTagController@index');
 					Route::post('problem-tags', 'AdminProblemTagController@store');
+					Route::put('problem-tags/hierarchy', 'AdminProblemTagController@updateHierarchy');
 					Route::put('problem-tags/{id}', 'AdminProblemTagController@update');
 
 					//problem rejudge
