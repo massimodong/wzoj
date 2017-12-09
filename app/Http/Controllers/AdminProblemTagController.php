@@ -83,7 +83,7 @@ class AdminProblemTagController extends Controller
 			'aliases' => $request->aliases,
 			'reference_url' => $request->reference_url,
 		    ]);
-	    return back();
+	    return redirect('/admin/problem-tags#'.$id);
     }
 
     /**

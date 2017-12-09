@@ -70,6 +70,11 @@ $('.dd3-content').click(function(){
 });
 
 $(document).ready(function() {
+    if(window.location.hash != ''){
+	tid = window.location.hash.substr(1)
+	tagFormSetId(tid);
+	$(window).scrollTop($('#tag-' + tid).offset().top - 60);
+    }
     $('#tags-nestable').nestable({
 	maxDepth: {{$tags->count()}},
     });
