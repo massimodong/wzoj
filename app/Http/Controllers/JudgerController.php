@@ -215,7 +215,7 @@ class JudgerController extends Controller
 					});
 			})
 			->select('solutions.id')
-			->take(5)
+			->take(500)
 			->get();
 		return response()->json($solutions);
 	}
