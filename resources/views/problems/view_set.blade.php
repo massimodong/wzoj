@@ -61,13 +61,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">{{trans('wzoj.tags')}}</div>
         <div class="panel-body">
-	  @foreach ($tags as $tag)
-	    @if ($tag->reference_url <> '')
-	      <a href="{{$tag->reference_url}}"><span class="label label-default">{{$tag->name}}</span></a>
-	    @else
-	      <span class="label label-default">{{$tag->name}}</span>
-	    @endif
-	  @endforeach
+	  @include ('layouts.problem_tags', ['problem' => $problem])
 	</div>
       </div>
       @if (ojoption('forum_enabled'))

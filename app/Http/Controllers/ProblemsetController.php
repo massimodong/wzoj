@@ -376,9 +376,6 @@ class ProblemsetController extends Controller
 				->get();
 		});
 		
-		$tags = Cache::tags(['problem_tags'])->rememberForever($problem->id, function() use($problem){
-			return $problem->tags;
-		});
 		return view('problems.view_'.$problemset->type,['problemset' => $problemset,
 				'problem' => $problem,
 				'answerfiles' => $answerfiles,
@@ -387,7 +384,6 @@ class ProblemsetController extends Controller
 				'cnt_submit' => $problem_status['cnt_submit'],
 				'cnt_ac' => $problem_status['cnt_ac'],
 				'topics' => $topics,
-				'tags' => $tags,
 		]);
 	}
 
