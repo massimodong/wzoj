@@ -376,4 +376,5 @@ return [
     'expand_all' => '全部展开',
     'collapse_all' => '全部缩回',
     'create_tag' => '新标签',
+    'show_problem_tags' => '显示题目标签',
 ];

@@ -279,12 +279,14 @@ class ProblemsetController extends Controller
 			'name' => 'required|max:255',
 			'type' => 'required|in:set,oi,acm,apio',
 			'public' => 'in:1',
+			'show_problem_tags' => 'in:1',
 			'contest_start_at' => 'required',
 			'contest_end_at' => 'required',
 		]);
 
 		$newval = $request->all();
 		if(!isset($newval['public'])) $newval['public'] = 0;
+		if(!isset($newval['show_problem_tags'])) $newval['show_problem_tags'] = 0;
 
 		$newval['description'] = Purifier::clean($newval['description']);
 

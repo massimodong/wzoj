@@ -63,10 +63,15 @@
 	  </div>
     </div>
 
-    <div class="form-group">        
-          <div class="col-sm-offset-2 col-sm-10">
+    <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-1">
 	      <div class="checkbox">
                   <label><input type="checkbox" name='public' value='1' {{$problemset->public?"checked":""}}>{{trans('wzoj.public')}}</label>
+	      </div>
+	  </div>
+          <div class="col-sm-9">
+	      <div class="checkbox">
+                  <label><input type="checkbox" name='show_problem_tags' value='1' {{$problemset->show_problem_tags?"checked":""}}>{{trans('wzoj.show_problem_tags')}}</label>
 	      </div>
 	  </div>
     </div>
