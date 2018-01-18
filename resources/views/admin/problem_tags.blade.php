@@ -16,7 +16,7 @@
 			    return $value->parent_id == 0;
 			  })->sortBy('index')])
 </div>
-<div class="col-xs-offset-4 col-xs-3 fixed row">
+<div class="col-xs-offset-6 col-xs-3 fixed row" id="rightbar">
   <form id="tag-form" method="POST" class="col-xs-12 fixed-form">
     {{csrf_field()}}
     {{method_field('PUT')}}
@@ -103,6 +103,29 @@ $(document).ready(function() {
     $('#tags-nestable').nestable({
 	maxDepth: {{$tags->count()}},
     });
+    $(window).scroll(function() {
+	const buff_up = 80;
+	const buff_bottom = 30;
+
+	coord = $('#rightbar').offset();
+	height = $('#rightbar').height();
+	windowtop = $(window).scrollTop();
+	windowheight = $(window).height();
+
+	if(windowheight > height + buff_up + buff_bottom){
+	    coord.top = buff_up + windowtop;
+	    $('#rightbar').offset(coord);
+	}else{
+	    if(coord.top - windowtop > buff_up){
+	        coord.top = buff_up + windowtop;
+	        $('#rightbar').offset(coord);
+	    }else if(windowheight - coord.top + windowtop - height > buff_bottom){
+	        coord.top = windowheight + windowtop - height - buff_bottom;
+	        $('#rightbar').offset(coord);
+	    }
+	}
+    });
+
     $('#tags-nestable').on('change', function() {
 	$('#save-changes-button').prop('disabled', false);
 	$('#undo-changes-button').prop('disabled', false);
