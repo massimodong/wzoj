@@ -27,6 +27,8 @@
       <li><a href="#" onclick="invitations_action('set_private');"> {{trans('wzoj.set_private')}} </a></li>
       <li><a href="#" onclick="invitations_action('set_public');"> {{trans('wzoj.set_public')}} </a></li>
       <li role="separator" class="divider"></li>
+      <li><a href="#" onclick="invitations_action('download');"> {{trans('wzoj.download')}} </a></li>
+      <li role="separator" class="divider"></li>
       <li><a href="#" onclick="invitations_action('delete');" style="color: red"> {{trans('wzoj.delete_invitations')}} </a></li>
     </ul>
   </div>

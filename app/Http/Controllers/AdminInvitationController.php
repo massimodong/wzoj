@@ -54,6 +54,24 @@ class AdminInvitationController extends Controller
 		$invitation->save();
 		return back();
 	}
+
+	public function downloadInvitations($invitations){
+		download_send_headers('invitations-' . date("Y-m-d") . ".csv");
+
+		$df = fopen("php://output", "w");
+
+		$head = array(trans('wzoj.id'),trans('wzoj.description'),trans('wzoj.fullname'),trans('wzoj.class'),trans('wzoj.invitation_token'));
+		fputcsv($df, $head);
+
+		foreach($invitations as $invitation){
+			$item = array($invitation->id, $invitation->description, $invitation->fullname, $invitation->class, $invitation->token);
+			fputcsv($df, $item);
+		}
+
+		fclose($df);
+		return;
+	}
+
 	public function putInvitations(Request $request){
 		$query = Invitation::whereIn('id', $request->id);
 		switch($request->action){
@@ -72,6 +90,8 @@ class AdminInvitationController extends Controller
 			case 'set_public':
 				$query->update(['private' => false]);
 				break;
+			case 'download':
+				return $this->downloadInvitations($query->get());
 			case 'delete':
 				$query->delete();
 				break;

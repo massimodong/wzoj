@@ -116,6 +116,7 @@ return [
     'code_too_short' => '提交的代码过短!',
     'code_too_long' => '提交的代码过长!',
 
+    'invitation_token' => '邀请码',
     'available_tokens' => '请选择注册通道',
     'invalid_token' => '无效的邀请码!',
 
