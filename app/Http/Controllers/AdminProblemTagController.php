@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Cache;
 use App\ProblemTag;
 
 class AdminProblemTagController extends Controller
@@ -83,6 +84,8 @@ class AdminProblemTagController extends Controller
 			'aliases' => $request->aliases,
 			'reference_url' => $request->reference_url,
 		    ]);
+	    $tags = Cache::tags(['problem_tags'])->flush();
+
 	    return redirect('/admin/problem-tags#'.$id);
     }
 
