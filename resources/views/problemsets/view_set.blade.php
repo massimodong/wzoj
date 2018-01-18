@@ -36,12 +36,18 @@
         @if (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 100)
 	  <span class="glyphicon glyphicon-ok" style="color:green"></span>
         @elseif (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 0)
-	  <span style="color:red">
+          <span style="color:red">
 	  {{$max_scores[$problem->id]}}</span>
 	@endif
       </td>
       <td>{{$problem->pivot->index}}</td>
-      <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></td>
+      <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a>
+        @if ($problemset->show_problem_tags)
+        <span class="pull-right">
+	  @include ('layouts.problem_tags', ['problem' => $problem])
+        </span>
+        @endif
+      </td>
       <td>{{$problem->source}}</td>
     </tr>
     @endforeach
