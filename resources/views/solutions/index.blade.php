@@ -105,7 +105,7 @@
 	@else
 	<td class='solution-score'>
 	  {{$solution->score}}
-	    @if (isset($solution->sim) && $solution->sim->rate > ojoption('sim_threshold'))
+	    @if (isset($solution->sim) && $solution->shouldShowSim())
 	      <span style="color:yellow" title="{{trans('wzoj.sim_warning', ['sid' => $solution->sim->solution2_id, 'rate' => $solution->sim->rate])}}" class="glyphicon glyphicon-warning-sign"></span>
 	    @endif
 	</td>

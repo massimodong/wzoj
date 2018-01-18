@@ -61,7 +61,7 @@
 </table>
 <hr>
 
-@if (isset($solution->sim) && $solution->sim->rate > ojoption('sim_threshold'))
+@if (isset($solution->sim) && $solution->shouldShowSim())
 <span style="color:yellow" class="glyphicon glyphicon-warning-sign"></span>
 {{trans('wzoj.sim_warning', ['sid' => $solution->sim->solution2_id, 'rate' => $solution->sim->rate])}}
   @if (Auth::check() && Auth::user()->has_role('admin'))

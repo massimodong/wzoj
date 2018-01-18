@@ -56,7 +56,7 @@ class Solution extends Model
 
 	//public part of the solutions
 	public function scopePublic($query){
-		$query->select(['solutions.id', 'solutions.user_id', 'solutions.problem_id', 'solutions.score', 'solutions.status',
+		$query->select(['solutions.id', 'solutions.user_id', 'solutions.problem_id', 'solutions.problemset_id', 'solutions.score', 'solutions.status',
 				'solutions.time_used', 'solutions.memory_used','solutions.language', 'solutions.code_length',
 				'solutions.judger_id', 'solutions.judged_at', 'solutions.sim_id', 'solutions.created_at'])
 			->addSelect(DB::raw('solutions.ce is NOT NULL as ce'))
@@ -69,6 +69,19 @@ class Solution extends Model
 			->with(['judger' => function($query){
 				$query->select(['id', 'name']);
 			  }])
+			->with(['problemset' => function($query){
+				$query->select(['id', 'type']);
+			  }])
 			->with('sim');
+	}
+
+	public function shouldShowSim(){
+		if($this->sim->rate < ojoption('sim_threshold')) return false;
+		if($this->problemset->type === 'set'){
+			if($this->score < 100) return false;
+		}else{
+			if($this->score < 30) return false;
+		}
+		return true;
 	}
 }
