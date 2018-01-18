@@ -10,9 +10,7 @@
     <li class="list-group-item">
       <a href="/s/{{$problem->pivot->problemset_id}}">{{$problemsets[$problem->pivot->problemset_id]->name}}</a> /
       <a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{$problem->name}}</a>
-      @foreach ($problem->tags as $tag)
-	<span class="label label-default">{{$tag->name}}</span>
-      @endforeach
+      @include ('layouts.problem_tags', ['problem' => $problem])
     </li>
   @endforeach
 </ul>
