@@ -128,7 +128,11 @@
 	<tr>
 	    <td></td>
 	    <td>{{$problem->pivot->index}}</td>
-	    <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->id}}-{{$problem->name}}</a></td>
+	    <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->id}}-{{$problem->name}}</a>
+	      <span class="pull-right">
+	        @include ('layouts.problem_tags', ['problem' => $problem])
+	      </span>
+	    </td>
 	</tr>
     @endforeach
     <tbody>
