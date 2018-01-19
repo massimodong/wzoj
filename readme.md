@@ -16,6 +16,8 @@
 [SyntaxHighlighter](http://alexgorbatchev.com/SyntaxHighlighter/)
 [Chart.js](http://www.chartjs.org/)
 [bootstrap-datetimepicker](http://www.malot.fr/bootstrap-datetimepicker/index.php)
+[Nestable](https://github.com/dbushell/Nestable)
+[Treant.js](http://fperucic.github.io/treant-js/)
 
 ## Laravel PHP Framework
 
