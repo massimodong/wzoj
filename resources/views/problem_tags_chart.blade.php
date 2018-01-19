@@ -22,6 +22,7 @@
     var chart_config = {
         chart: {
             container: "#tags-chart",
+            rootOrientation: "WEST",
 
             animateOnInit: false,
             
