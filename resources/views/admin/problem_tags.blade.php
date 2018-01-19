@@ -67,8 +67,6 @@
 <script src="/include/js/jquery.nestable.js"></script>
 <script>
 
-var rightbar_init_top = 0;
-
 var tags = {
 	@foreach ($tags as $tag)
 		{{$tag->id}}: {!! $tag->toJson() !!},
@@ -106,11 +104,11 @@ $(document).ready(function() {
 	maxDepth: {{$tags->count()}},
     });
 
-    rightbar_init_top = $('#rightbar').offset().top;
     $(window).scroll(function() {
 	const buff_up = 80;
 	const buff_bottom = 30;
 
+	mintop = $('#tags-nestable').offset().top;
 	coord = $('#rightbar').offset();
 	height = $('#rightbar').height();
 	windowtop = $(window).scrollTop();
@@ -125,7 +123,7 @@ $(document).ready(function() {
 	        coord.top = windowheight + windowtop - height - buff_bottom;
 	    }
 	}
-	if(coord.top < rightbar_init_top) coord.top = rightbar_init_top;
+	if(coord.top < mintop) coord.top = mintop;
 	$('#rightbar').offset(coord);
     });
 
