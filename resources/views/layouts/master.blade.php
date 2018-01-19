@@ -138,6 +138,15 @@
 	</div>
     </footer>
 
+    <div class="wrapper">
+      <div id="popup" style="display: none; height: 630px; width: 930px" class="floating-div">
+        <iframe id="popup-iframe" src="" style="height: 630px; width: 930px">
+            <p>Your browser does not support iframes.</p>
+        </iframe>
+        <a href="#" id="close-popup">X</a>
+      </div>
+    </div>
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
@@ -148,6 +157,7 @@
     <!-- bootstrap-datetimepicker -->
     <script src="{{ojcache('/include/js/bootstrap-datetimepicker.min.js')}}"></script>
     <script src="{{ojcache('/include/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
+    <script src="{{ojcache('/include/js/iframe-popup.js')}}"></script>
     @yield ('scripts')
   </body>
 </html>

@@ -52,8 +52,13 @@
     tree = new Treant( chart_config );
 
     if(window.location.hash != ''){
-	    $('#tags-chart').scrollLeft($(window.location.hash).offset().left - $('#tags-chart').width()/2);
-	    $('#tags-chart').scrollTop($(window.location.hash).offset().top - $('#tags-chart').height()/2);
+	    leftc = $(window.location.hash).offset().left + $('#tags-chart').scrollLeft() - $('#tags-chart').width()/2;
+	    topc = $(window.location.hash).offset().top + $('#tags-chart').scrollTop() - $('#tags-chart').height()/2;
+	    if(leftc < 0) leftc = 0;
+	    if(topc < 0) topc = 0;
+	    $('#tags-chart').scrollLeft(leftc);
+	    $('#tags-chart').scrollTop(topc);
+	    window.location.hash="";
     }
     </script>
 </body>
