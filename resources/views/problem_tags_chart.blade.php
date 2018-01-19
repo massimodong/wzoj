@@ -50,6 +50,11 @@
         }
     };
     tree = new Treant( chart_config );
+
+    if(window.location.hash != ''){
+	    $('#tags-chart').scrollLeft($(window.location.hash).offset().left - $('#tags-chart').width()/2);
+	    $('#tags-chart').scrollTop($(window.location.hash).offset().top - $('#tags-chart').height()/2);
+    }
     </script>
 </body>
 </html>
