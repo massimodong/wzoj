@@ -58,21 +58,31 @@
 	  </div>
         </div>
       </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">{{trans('wzoj.tags')}}</div>
-        <div class="panel-body">
-	  @include ('layouts.problem_tags', ['problem' => $problem])
-	</div>
+
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#tags-body" class="collapsed">{{trans('wzoj.tags')}}</a>
+            </h4>
+          </div>
+          <div id="tags-body" class="panel-collapse collapse">
+	    <div class="panel-body">
+              @include ('layouts.problem_tags', ['problem' => $problem])
+            </div>
+          </div>
+        </div>
       </div>
+
       @if (ojoption('forum_enabled'))
       <div class="panel panel-default">
         <div class="panel-heading"><a href="/forum?tags[]=p{{$problem->id}}">{{trans('wzoj.forum')}}</a></div>
-        <div class="panel-body">
-	  @foreach ($topics as $topic)
-	    <a href="/forum/{{$topic->id}}">{{$topic->title}}</a><br>
-	  @endforeach
-	</div>
-      </div>
+          <div class="panel-body">
+            @foreach ($topics as $topic)
+              <a href="/forum/{{$topic->id}}">{{$topic->title}}</a><br>
+            @endforeach
+          </div>
+        </div>
       @endif
     </div>
   </div>
