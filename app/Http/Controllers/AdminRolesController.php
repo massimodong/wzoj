@@ -14,7 +14,7 @@ use DB;
 class AdminRolesController extends Controller
 {
 	public function getIndex(){
-		$users = User::all();
+		$users = User::with('roles')->get();
 		$roles = Role::all();
 		return view('admin.roles',[
 			'users' => $users,
