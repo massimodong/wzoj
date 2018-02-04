@@ -121,9 +121,6 @@
 		    <li id='update-system'>
 		    	<a href="/admin/update-system"> {{trans('wzoj.update_system')}} </a>
 		    </li>
-		    <li id='advanced-settings'>
-		    	<a href="/admin/advanced-settings"> {{trans('wzoj.advanced_settings')}} </a>
-		    </li>
 		    @endif
                 </ul>
             </div>
