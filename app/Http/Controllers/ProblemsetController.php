@@ -321,6 +321,14 @@ class ProblemsetController extends Controller
 				->get();
 		}
 
+		$has_test_data = Cache::tags(['problems', 'has_test_data'])->get($pid, false);
+		if(!$has_test_data){
+			$has_test_data = count(Storage::disk('data')->files('/'.$problem->id)) > 0;
+			if($has_test_data){
+				Cache::tags(['problems', 'has_test_data'])->put($pid, true, CACHE_ONE_MONTH);
+			}
+		}
+
 		$download_url = NULL;
 		if(Storage::disk('data')->has('/'.$problem->id.'/'.'download.zip')){
 			$download_url = '/s/'.$problemset->id.'/'.$problem->id.'?download_attached_file=true';
@@ -380,6 +388,7 @@ class ProblemsetController extends Controller
 				'problem' => $problem,
 				'answerfiles' => $answerfiles,
 				'download_url' => $download_url,
+				'has_test_data' => $has_test_data,
 				'best_solutions' => $problem_status['best_solutions'],
 				'cnt_submit' => $problem_status['cnt_submit'],
 				'cnt_ac' => $problem_status['cnt_ac'],

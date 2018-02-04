@@ -377,4 +377,6 @@ return [
     'collapse_all' => '全部缩回',
     'create_tag' => '新标签',
     'show_problem_tags' => '显示题目标签',
+
+    'no_test_data' => '本题没有测试数据',
 ];

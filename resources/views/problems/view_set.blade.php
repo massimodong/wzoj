@@ -31,6 +31,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">{{trans('wzoj.status')}}</div>
         <div class="panel-body">
+          @if (!$has_test_data)
+            <span style="color:red"><strong>{{trans('wzoj.no_test_data')}}</strong></span><br>
+          @endif
 	  {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: {{$cnt_submit}}/{{$cnt_ac}}
 	  <hr>
 	  <div class="limited_text">

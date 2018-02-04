@@ -8,6 +8,7 @@ define('SL_JUDGED' , 4);
 define('SL_CANCELED' ,5);
 
 define('CACHE_ONE_DAY', 1440);
+define('CACHE_ONE_MONTH', 43200);
 
 function ojoption($name){
 	return Cache::tags(['options'])->rememberForever($name, function() use ($name){
