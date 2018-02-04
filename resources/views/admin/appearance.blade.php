@@ -32,6 +32,12 @@
         </div>
       </div>
       <div class="form-group">
+        <label for="mathjax_url" class="col-xs-2 control-label">{{trans('wzoj.mathjax_url')}}:</label>
+        <div class="col-xs-10">
+          <input type="text" class="form-control" id="mathjax_url" name="mathjax_url" value="{{ojoption('mathjax_url')}}">
+        </div>
+      </div>
+      <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
           <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
         </div>

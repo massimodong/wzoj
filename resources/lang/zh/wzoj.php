@@ -379,4 +379,6 @@ return [
     'show_problem_tags' => '显示题目标签',
 
     'no_test_data' => '本题没有测试数据',
+
+    'mathjax_url' => 'MathJax 服务器地址',
 ];

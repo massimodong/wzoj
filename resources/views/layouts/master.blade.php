@@ -158,6 +158,7 @@
     <script src="{{ojcache('/include/js/bootstrap-datetimepicker.min.js')}}"></script>
     <script src="{{ojcache('/include/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
     <script src="{{ojcache('/include/js/iframe-popup.js')}}"></script>
+    <script src="{{ojoption('mathjax_url')}}"></script>
     @yield ('scripts')
   </body>
 </html>
