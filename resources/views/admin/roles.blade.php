@@ -30,6 +30,10 @@
       @endforeach
       </select>
     </div>
+    <div class="form-group">
+      <label class="sr-only" for="remark">{{trans('wzoj.remark')}}</label>
+      <input type='text' class='form-control' name='remark' id='remark' placeholder="{{trans('wzoj.remark')}}" size="40">
+    </div>
     <button type="submit" class="btn btn-default">{{trans('wzoj.assign_role')}}</button>
   </form>
 </div>
@@ -44,8 +48,9 @@
 <table class="table col-xs-12">
   <thead>
     <tr>
-      <th style="width:40%">{{trans('wzoj.username')}}</th>
-      <th style="width:40%">{{trans('wzoj.role')}}</th>
+      <th style="width:30%">{{trans('wzoj.username')}}</th>
+      <th style="width:20%">{{trans('wzoj.remark')}}</th>
+      <th style="width:30%">{{trans('wzoj.role')}}</th>
       <th style="width:20%"></th>
     </tr>
   </thead>
@@ -54,6 +59,7 @@
     @foreach ($user->roles as $role)
       <tr>
         <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
+        <td>{{$role->pivot->remark}}</td>
 	<td>{{trans('wzoj.rolename_'.$role->name)}}</td>
 	<td>
 	@if ($role->name !== 'admin')
