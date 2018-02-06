@@ -72,7 +72,7 @@
   <div class="col-xs-12">
     <h3>{{trans('wzoj.user_rank_list')}}</h3>
     <hr>
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped table-bordered" id="user-ranklist-table">
       <thead>
         <tr>
 	  <th style="width:7%">{{trans('wzoj.rank')}}</th>
@@ -81,16 +81,6 @@
 	  <th style="width:10%">{{trans('wzoj.count_ac')}}</th>
 	</tr>
       </thead>
-      <tbody>
-        @foreach ($top_users as $key=>$user)
-	<tr>
-	  <td>{{$key + 1}}</td>
-	  <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
-	  <td><div style="overflow-y: auto;max-height: 58px">{{$user->description}}</div></td>
-	  <td>{{$user->cnt_ac}}</td>
-	</tr>
-	@endforeach
-      </tbody>
     </table>
     <center><a href="/ranklist">{{trans('wzoj.user_rank_list')}}</a></center>
   </div>
@@ -120,6 +110,30 @@ jQuery(document).ready(function($) {
 	$(".problemset-dock").click(function() {
 		window.document.location = $(this).data("href");
 	});
+	$('#user-ranklist-table').DataTable( {
+		ajax: '/ajax/top-users',
+		searching: false,
+		ordering: false,
+		paging: false,
+		bInfo: false,
+		columns: [
+		    {   render: function ( data, type, row, meta){
+				return meta.row+1;
+		        }
+		    },
+		    { data: 'name',
+			render: function ( data, type, row, meta){
+				return "<a href='/users/" + row.id + "'>" + data + "</a>";
+			}
+		    },
+		    { data: 'description',
+			render: function ( data, type, row, meta){
+				return "<div style='overflow-y: auto;max-height: 58px'>" + data + "</div>";
+			}
+		    },
+		    { data: 'cnt_ac' },
+		],
+	} );
 });
 </script>
 @endsection

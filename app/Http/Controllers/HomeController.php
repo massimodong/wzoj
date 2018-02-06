@@ -52,10 +52,6 @@ class HomeController extends Controller
 			}
 		}
 
-		$top_users = Cache::tags(['wzoj'])->remember('top_users', 1, function(){
-			return User::orderBy('cnt_ac', 'desc')->take(10)->withoutAdmin()->get();
-		});
-
 		$groups = [];
 		if(Auth::check()){
 			$user = $request->user();
@@ -94,7 +90,6 @@ class HomeController extends Controller
 			'home_diy' => $diyPage,
 			'home_page_problemsets' => $home_page_problemsets,
 			'recent_contests' => $recent_contests,
-			'top_users' => $top_users,
 			'homework_problem_cols' => $homework_flag?$problem_cols:NULL,
 			'homework_problem_max_scores' => $homework_flag?$problem_max_scores:NULL,
 			'groups' => $groups,
