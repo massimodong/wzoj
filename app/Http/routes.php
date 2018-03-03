@@ -103,8 +103,6 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 				Route::get('/', 'AdminHomeController@index');
 				Route::post('cache-clear', 'AdminHomeController@flushCache');
 				Route::post('options','AdminHomeController@postOptions');
-				//notice
-				Route::get('notice', 'AdminNoticeController@getNotice')->middleware('role:admin');
 				//appearance
 				Route::group(['prefix' => 'appearance', 'middleware' => 'role:admin'], function(){
 					Route::get('/', 'AdminAppearanceController@getAppearance');

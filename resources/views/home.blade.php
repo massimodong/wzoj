@@ -89,7 +89,7 @@
 <div class="col-xs-3 row">
   <div class="panel panel-wzoj">
     <div class="panel-heading">{{trans('wzoj.notices')}}</div>
-    <div class="panel-body" style="white-space:pre-wrap">{{ojoption('notice')}}</div>
+    <div class="panel-body" style="white-space:pre-wrap">dded</div>
   </div>
   @if (Auth::check())
     @foreach ($groups as $group)

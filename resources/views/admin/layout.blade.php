@@ -64,9 +64,6 @@
 		    <li id='appearance_sidebar'>
                         <a href="/admin/appearance"> {{trans('wzoj.appearance')}} </a>
 		    </li>
-		    <li id='notice_sidebar'>
-                        <a href="/admin/notice"> {{trans('wzoj.notices')}} </a>
-		    </li>
 		    @endif
 
 		    @if (Auth::user()->has_role('group_manager'))
