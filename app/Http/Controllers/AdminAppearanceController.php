@@ -57,7 +57,17 @@ class AdminAppearanceController extends Controller
 	}
 
 	public function getSidePanels(Request $request, $id){
-		return $id;
+		$sidePanel = sidePanel::findOrFail($id);
+		return view('admin.side_panel_edit', [
+			'sidePanel' => $sidePanel,
+		]);
+	}
+
+	public function putSidePanels(Request $request, $id){
+		SidePanel::where('id', $id)
+			->update($request->except(['_token', '_method']));
+		Cache::tags(['wzoj'])->forget('sidepanels');
+		return back();
 	}
 
 	public function postDiyPages(){

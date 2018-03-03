@@ -112,6 +112,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 
 					Route::post('side-panels', 'AdminAppearanceController@postSidePanels');
 					Route::get('side-panels/{id}', 'AdminAppearanceController@getSidePanels');
+					Route::put('side-panels/{id}', 'AdminAppearanceController@putSidePanels');
 
 					Route::post('diy-pages', 'AdminAppearanceController@postDiyPages');
 					Route::get('diy-pages/{id}', 'AdminAppearanceController@getDiyPages');
