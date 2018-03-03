@@ -86,6 +86,10 @@ class HomeController extends Controller
 			}
 		}
 
+		$sidePanels = Cache::tags(['wzoj'])->rememberForever('sidepanels', function(){
+			return \App\SidePanel::where('index', '>', 0)->orderBy('index', 'asc')->get();
+		});
+
 		return view('home',[
 			'home_diy' => $diyPage,
 			'home_page_problemsets' => $home_page_problemsets,
@@ -93,6 +97,7 @@ class HomeController extends Controller
 			'homework_problem_cols' => $homework_flag?$problem_cols:NULL,
 			'homework_problem_max_scores' => $homework_flag?$problem_max_scores:NULL,
 			'groups' => $groups,
+			'sidePanels' => $sidePanels,
 		]);
 	}
 

@@ -87,16 +87,18 @@
   <div class="col-xs-12" style="height:50px"></div>
 </div>
 <div class="col-xs-3 row">
-  <div class="panel panel-wzoj">
-    <div class="panel-heading">{{trans('wzoj.notices')}}</div>
-    <div class="panel-body" style="white-space:pre-wrap">dded</div>
-  </div>
+  @foreach ($sidePanels as $sidePanel)
+    <div class="panel panel-wzoj">
+      <div class="panel-heading"> {{$sidePanel->title}} </div>
+      <div class="panel-body">{!!$sidePanel->content!!}</div>
+    </div>
+  @endforeach
   @if (Auth::check())
     @foreach ($groups as $group)
       @if (strlen($group->notice))
         <div class="panel panel-wzoj">
           <div class="panel-heading">{{$group->name}}-{{trans('wzoj.notice')}}</div>
-          <div class="panel-body" style="white-space:pre-wrap">{{$group->notice}}</div>
+          <div class="panel-body">{{$group->notice}}</div>
         </div>
       @endif
     @endforeach

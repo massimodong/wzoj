@@ -256,6 +256,8 @@ textarea {
 .panel-wzoj .panel-body {
   color:#93a3b5;
   padding: 15px;
+  white-space:pre-line;
+  word-break:break-all;
 }
 
 .thumbnail {
