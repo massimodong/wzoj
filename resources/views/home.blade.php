@@ -87,19 +87,29 @@
   <div class="col-xs-12" style="height:50px"></div>
 </div>
 <div class="col-xs-3 row">
+  @if (strlen(ojoption('logo_url')))
+    <div class="col-xs-12">
+      <img src="{{ojoption('logo_url')}}" class="navbar-logo" width="200" height="200">
+    </div>
+  @endif
+  <div class="col-xs-12" style="height: 55px;"></div>
   @foreach ($sidePanels as $sidePanel)
-    <div class="panel panel-wzoj">
-      <div class="panel-heading"> {{$sidePanel->title}} </div>
-      <div class="panel-body">{!!$sidePanel->content!!}</div>
+    <div class="col-xs-12">
+      <div class="panel panel-wzoj">
+        <div class="panel-heading"> {{$sidePanel->title}} </div>
+        <div class="panel-body">{!!$sidePanel->content!!}</div>
+      </div>
     </div>
   @endforeach
   @if (Auth::check())
     @foreach ($groups as $group)
       @if (strlen($group->notice))
-        <div class="panel panel-wzoj">
-          <div class="panel-heading">{{$group->name}}-{{trans('wzoj.notice')}}</div>
-          <div class="panel-body">{{$group->notice}}</div>
-        </div>
+	<div class="col-xs-12">
+          <div class="panel panel-wzoj">
+            <div class="panel-heading">{{$group->name}}-{{trans('wzoj.notice')}}</div>
+            <div class="panel-body">{{$group->notice}}</div>
+          </div>
+	</div>
       @endif
     @endforeach
   @endif
