@@ -69,14 +69,14 @@ class JudgerController extends Controller
 
 		if(!count($solutions)){
 			$solutions = Solution::where('status', 0)
-				->take(5)
+				->take(1)
 				->select('id')
 				->get();
 		}
 
 		if(!count($solutions)){
 			$solutions = Solution::where('status', 1)
-				->take(5)
+				->take(1)
 				->select('id')
 				->get();
 		}
