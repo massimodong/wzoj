@@ -98,7 +98,7 @@ class User extends Model implements AuthenticatableContract,
 	    return $query->whereNotIn('id', function($query){
 			    $query->select('user_id')
 			          ->from('role_user')
-				  ->where('role_id', 1);//role_id 1 must be admin
+				  ->whereIn('role_id', [1, 2]);
 		});
     }
 
