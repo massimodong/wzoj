@@ -1,6 +1,6 @@
 ## WZOJ在线评测系统
-本项目评测机：[wzoj-judger](https://github.com/massimodong/wzoj-judger)
-开发中
+本项目评测机: [wzoj-judger](https://github.com/massimodong/wzoj-judger)  
+开发中 Demo: [WZMS ONLINE JUDGE](https://wzoi.cc/)  
 
 ## Thanks:
 [hustoj](https://github.com/zhblue/hustoj)  
