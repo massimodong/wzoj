@@ -12,7 +12,7 @@ define('CACHE_ONE_MONTH', 43200);
 
 function ojoption($name){
 	return Cache::tags(['options'])->rememberForever($name, function() use ($name){
-		return \App\Option::where('name', $name)->first()['value'];
+		return \App\Option::where('name', $name)->first()->value;
 	});
 }
 
