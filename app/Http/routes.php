@@ -110,6 +110,9 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 					Route::put('sidebars/{id}', 'AdminAppearanceController@putSidebar');
 					Route::delete('sidebars/{id}', 'AdminAppearanceController@deleteSidebar');
 
+					Route::post('side-panels', 'AdminAppearanceController@postSidePanels');
+					Route::get('side-panels/{id}', 'AdminAppearanceController@getSidePanels');
+
 					Route::post('diy-pages', 'AdminAppearanceController@postDiyPages');
 					Route::get('diy-pages/{id}', 'AdminAppearanceController@getDiyPages');
 					Route::put('diy-pages/{id}', 'AdminAppearanceController@putDiyPages');

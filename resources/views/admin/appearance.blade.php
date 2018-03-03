@@ -8,6 +8,7 @@
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#general"> {{trans('wzoj.general_options')}} </a></li>
   <li><a data-toggle="tab" href="#sidebars"> {{trans('wzoj.sidebars')}} </a></li>
+  <li><a data-toggle="tab" href="#sidepanels"> {{trans('wzoj.sidepanels')}} </a></li>
   <li><a data-toggle="tab" href="#diy_pages"> {{trans('wzoj.diy_pages')}} </a></li>
 </ul>
 
@@ -91,6 +92,30 @@
     @endforeach
   </div>
   <!-- sidebars -->
+
+  <div id="sidepanels" class="tab-pane">
+    <form action='/admin/appearance/side-panels' method='POST'>
+      {{csrf_field()}}
+      <button type="submit" class="btn btn-default">+</button>
+    </form>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+	  <th style="width:5%">{{trans('wzoj.index')}}</th>
+	  <th>{{trans('wzoj.title')}}</th>
+	</tr>
+      </thead>
+      <tbody>
+      @foreach ($sidePanels as $sidePanel)
+	<tr>
+	  <th>{{$sidePanel->index}}</th>
+	  <th><a href="/admin/appearance/side-panels/{{$sidePanel->id}}">{{$sidePanel->title}}</a></th>
+	</tr>
+      @endforeach
+      </tbody>
+    </table>
+  </div>
+  <!-- sidepanels -->
 
   <div id="diy_pages" class="tab-pane">
     <form action='/admin/appearance/diy-pages' method='POST'>

@@ -381,4 +381,7 @@ return [
     'no_test_data' => '本题没有测试数据',
 
     'mathjax_url' => 'MathJax 服务器地址',
+
+    'sidepanel' => '侧面板',
+    'sidepanels' => '侧面板',
 ];

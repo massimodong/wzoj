@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 use App\Sidebar;
 use App\DiyPage;
+use App\SidePanel;
 
 use Cache;
 
@@ -16,9 +17,11 @@ class AdminAppearanceController extends Controller
 {
 	public function getAppearance(){
 		$sidebars = Sidebar::orderBy('index', 'asc')->get();
+		$sidePanels = SidePanel::orderBy('index', 'asc')->get();
 		$diyPages = DiyPage::all();
 		return view('admin.appearance',[
 			'sidebars' => $sidebars,
+			'sidePanels' => $sidePanels,
 			'diyPages' => $diyPages,
 		]);
 	}
@@ -45,6 +48,16 @@ class AdminAppearanceController extends Controller
 		$sidebar->delete();
 		Cache::tags(['wzoj'])->forget('sidebars');
 		return back();
+	}
+
+	public function postSidePanels(Request $request){
+		$sidePanel = SidePanel::create(['title' => 'title', 'content' => '', 'index' => 0]);
+		Cache::tags(['wzoj'])->forget('sidepanels');
+		return back();
+	}
+
+	public function getSidePanels(Request $request, $id){
+		return $id;
 	}
 
 	public function postDiyPages(){
