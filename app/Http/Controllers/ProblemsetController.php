@@ -284,11 +284,15 @@ class ProblemsetController extends Controller
 			'contest_end_at' => 'required',
 		]);
 
-		$newval = $request->all();
+		$newval = $request->except(['manager']);
 		if(!isset($newval['public'])) $newval['public'] = 0;
 		if(!isset($newval['show_problem_tags'])) $newval['show_problem_tags'] = 0;
 
 		$newval['description'] = Purifier::clean($newval['description']);
+
+		if($request->user()->has_role('admin')){
+			$newval['manager_id'] = $request->manager;
+		}
 
 		$problemset->update($newval);
 

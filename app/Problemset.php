@@ -26,4 +26,8 @@ class Problemset extends Model
 	public function solutions(){
 		return $this->hasMany('App\Solution');
 	}
+
+	public function manager(){
+		return $this->belongsTo('App\User');
+	}
 }

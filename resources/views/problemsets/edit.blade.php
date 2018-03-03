@@ -87,8 +87,21 @@
 	      <textarea class="form-control" name="remark" id="remark">{{$problemset->remark}}</textarea>
 	  </div>
     </div>
-    </form>
 
+    @if (Auth::user()->has_role('admin'))
+    <div class="form-group">
+          <label class="control-label col-sm-2" for="tag">{{trans('wzoj.manager')}}:</label>
+	  <div class="col-sm-1">
+	        <input type="text" class="form-control" name='manager' id="manager" value='{{$problemset->manager?$problemset->manager->id:''}}'>
+	  </div>
+	  <div class="col-xs-9">
+	    @if (isset($problemset->manager))
+	      <a href="/users/{{$problemset->manager->id}}">{{$problemset->manager->name}}</a>
+	    @endif
+	  </div>
+    </div>
+    @endif
+    </form>
 </div>
 <!-- problemset -->
 

@@ -385,4 +385,6 @@ return [
     'sidepanel' => '侧面板',
     'sidepanels' => '侧面板',
     'msg_panel_index_help' => '面板按序号升序显示，序号为0的面板不显示',
+
+    'manager' => '管理员',
 ];
