@@ -299,6 +299,7 @@ class ProblemsetController extends Controller
 	//problems
 	public function getProblem($psid, $pid, Request $request){
 		$problemset = Problemset::findOrFail($psid);
+		if(!ojCanViewProblems($problemset)) return redirect('/s/'.$psid);
 		if(!$problemset->public){
 			$this->authorize('view',$problemset);
 		}
@@ -306,7 +307,6 @@ class ProblemsetController extends Controller
 		$problem = Cache::tags(['problems', $problemset->id])->rememberForever($pid, function() use($problemset, $pid){
 			return $problemset->problems()->findOrFail($pid);
 		});
-		if(!ojCanViewProblems($problemset)) return redirect('/s/'.$psid);
 
 		if(isset($request->download_attached_file)){//download file, do not render page
 			$storagePath = Storage::disk('data')->getDriver()->getAdapter()->getPathPrefix();
