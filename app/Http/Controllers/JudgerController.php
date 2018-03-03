@@ -32,7 +32,7 @@ class JudgerController extends Controller
 		$solutions = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
 				->leftJoin('users', 'solutions.user_id', '=', 'users.id')
 				->where('users.bot_tendency', '<', 100)
-				->where('solutions.status', '<=', 1)
+				->where('solutions.status', 0)
 				->where(function($query){
 					$query->where('problemsets.type', '<>', 'oi')
 					      ->orWhere('solutions.problemset_id', '<', 0)
@@ -45,7 +45,7 @@ class JudgerController extends Controller
 				->select(DB::raw('MIN(solutions.id) as id'));
 
 		$solutions_oi = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
-				->where('solutions.status', '<=', 1)
+				->where('solutions.status', 0)
 				->where('problemsets.type', 'oi')
 				->where('problemsets.contest_end_at', '<', DB::raw('now()'))
 				->where('solutions.created_at', '>=', DB::raw('problemsets.contest_start_at'))
@@ -56,6 +56,31 @@ class JudgerController extends Controller
 		$solutions = $solutions->union($solutions_oi);
 
 		$solutions = $solutions->get();
+
+		if(!count($solutions)){
+			$solutions = Solution::leftJoin('users', 'solutions.user_id', '=', 'users.id')
+				->where('users.bot_tendency', '<', 100)
+				->where('solutions.status', 1)
+				->take(20)
+				->orderBy('solutions.id', 'asc')
+				->select('solutions.id')
+				->get();
+		}
+
+		if(!count($solutions)){
+			$solutions = Solution::where('status', 0)
+				->take(5)
+				->select('id')
+				->get();
+		}
+
+		if(!count($solutions)){
+			$solutions = Solution::where('status', 1)
+				->take(5)
+				->select('id')
+				->get();
+		}
+
 		return response()->json($solutions);
 	}
 	public function postCheckout(Request $request){
