@@ -115,6 +115,9 @@ class AdminGroupController extends Controller
 
 		$group->name = $request->name;
 		$group->notice = $request->notice;
+		if($request->user()->has_role('admin')){
+			$group->manager_id = $request->manager;
+		}
 		$group->save();
 		Cache::tags(['user_groups'])->flush();
 		return back();

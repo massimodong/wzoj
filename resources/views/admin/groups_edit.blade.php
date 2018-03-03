@@ -29,6 +29,19 @@
           <textarea class='form-control' name='notice' id='notice' rows='5'>{{$group->notice}}</textarea>
         </div>
       </div>
+      @if (Auth::user()->has_role('admin'))
+      <div class="form-group">
+        <label for="manager" class="col-xs-2 control-label"> {{trans('wzoj.manager')}} </label>
+	<div class="col-xs-1">
+          <input type='text' class='form-control' name='manager' id='manager' value='{{$group->manager?$group->manager->id:""}}'>
+	</div>
+	<div class="col-xs-9">
+	  @if (isset($group->manager))
+	    <a href="/users/{{$group->manager->id}}">{{$group->manager->name}}</a>
+	  @endif
+	</div>
+      </div>
+      @endif
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
 	  <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>

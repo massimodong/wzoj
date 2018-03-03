@@ -27,4 +27,8 @@ class Group extends Model
 	public function homeworks(){
 		return $this->belongsToMany('App\Problem', 'homeworks')->withPivot('problemset_id');
 	}
+
+	public function manager(){
+		return $this->belongsTo('App\User');
+	}
 }
