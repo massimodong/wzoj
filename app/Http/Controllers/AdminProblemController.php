@@ -88,13 +88,17 @@ class AdminProblemController extends Controller
 			'memorylimit' => 'required|numeric',
 		]);
 
-		$newval = $request->except('tags');
+		$newval = $request->except(['tags', 'manager']);
 		if(!isset($newval['spj'])) $newval['spj'] = 0;
 		$newval['description'] = Purifier::clean($newval['description']);
 		$newval['inputformat'] = Purifier::clean($newval['inputformat']);
 		$newval['outputformat'] = Purifier::clean($newval['outputformat']);
 		$newval['hint'] = Purifier::clean($newval['hint']);
 		$newval['tutorial'] = Purifier::clean($newval['tutorial']);
+
+		if($request->user()->has_role('admin')){
+			$newval['manager_id'] = $request->manager;
+		}
 
 		$problem->update($newval);
 		Cache::tags(['problems'])->flush();

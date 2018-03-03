@@ -170,6 +170,20 @@
     </div>
   </div>
 
+  @if (Auth::user()->has_role('admin'))
+  <div class="form-group">
+    <label for="manager" class="col-xs-2 control-label"> {{trans('wzoj.manager')}} </label>
+    <div class="col-xs-1">
+      <input type="text" class="form-control" id="manager" name="manager" value="{{$problem->manager?$problem->manager->id:''}}">
+    </div>
+    <div class="col-xs-9">
+    @if (isset($problem->manager))
+      <a href="/users/{{$problem->manager->id}}">({{$problem->manager->name}})</a>
+    @endif
+    </div>
+  </div>
+  @endif
+
   </div>
   <!-- others -->
 

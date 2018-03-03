@@ -30,6 +30,10 @@ class Problem extends Model
 		return $this->belongsToMany('App\ProblemTag');
 	}
 
+	public function manager(){
+		return $this->belongsTo('App\User');
+	}
+
 	public function update_cnt_submit(){
 		$this->cnt_submit = $this->solutions()
 			->count();
