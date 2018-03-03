@@ -47,7 +47,9 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a href="/"><img src="{{ojoption('logo_url')}}" class="navbar-logo" width="50" height="50"></a>
+          @if (strlen(ojoption('logo_url')))
+            <a href="/"><img src="{{ojoption('logo_url')}}" class="navbar-logo" width="50" height="50"></a>
+          @endif
           <a class="navbar-brand" href=
 	  @section ('home_href')
 	  "/"
