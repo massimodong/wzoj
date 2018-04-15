@@ -305,6 +305,7 @@ return [
     'terminate_homework' => '终止作业',
     'uncompleted_users' => '未完成用户',
     'homework_not_started' => '本题未做',
+    'homework_status' => '作业情况',
 
     'at_home_page' => '见主页',
 

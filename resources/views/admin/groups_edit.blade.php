@@ -149,6 +149,7 @@
         </select>
       </div>
       <button type="submit" class="btn btn-primary">{{trans('wzoj.new_homework')}}</button>
+      <a href="/groups/{{$group->id}}/homework">{{trans('wzoj.homework_status')}}</a>
     </form>
     <div class="col-xs-12">
       <ul class="list-group">

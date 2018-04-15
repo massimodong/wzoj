@@ -22,7 +22,7 @@
     </thead>
     <tbody>
     @foreach ($group->users as $user)
-      <tr>
+      <tr @if (Auth::check() && ($user->id == Auth::user()->id)) class="info" id="my-row" @endif>
         <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
 	<td>{{$user->fullname}}</td>
 	<td>{{$user_total_scores[$user->id]}}</td>
@@ -54,5 +54,6 @@ $('#homework-status-table').DataTable({
 	bInfo: false,
 	order: [[2, "desc"]],
 });
+window.location.hash='my-row';
 </script>
 @endsection

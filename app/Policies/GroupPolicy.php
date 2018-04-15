@@ -6,6 +6,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 
 use App\User;
 use App\Group;
+use Cache;
 
 class GroupPolicy
 {
@@ -27,6 +28,17 @@ class GroupPolicy
 
     public function view($user, $group){
 	    if($user->has_role('group_manager') && ($user->id === $group->manager_id)) return true;
+
+	    $my_groups = Cache::tags(['user_groups'])->rememberForever($user->id, function() use($user){
+		    return $user->groups;
+	    });
+
+	    foreach($my_groups as $g){
+		    if($g->id === $group->id) return true;
+	    }
+
+	    return false;
+
     }
 
     public function manage(User $user, Group $group){
