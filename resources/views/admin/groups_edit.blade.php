@@ -139,8 +139,8 @@
       <div class="form-group">
 	<label for="psid" class="sr-only"></label>
         <select name="psid" id="psid" class="selectpicker" data-live-search="true" title="{{trans('wzoj.problemset')}}">
-	@foreach (\App\Problemset::all() as $problemset)
-	  <option value="{{$problemset->id}}">{{$problemset->name}}</option>
+	@foreach (Auth::user()->problemsets() as $problemset)
+	  <option value="{{$problemset->id}}">{{$problemset->id}} - {{$problemset->name}}</option>
 	@endforeach
 	</select>
 
