@@ -37,13 +37,15 @@
 	  <li class="list-group-item row">
 	    <div class="col-xs-6"><a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{$problem->name}}</a></div>
 	    <div class="col-xs-6">
+	      <a href="/groups/{{$problem->pivot->group_id}}/homework">
 	      @if (($score = $homework_problem_max_scores[$problem->pivot->problemset_id][$problem->id]) >= 100)
-	        <span style="color:green">{{$score}}</span>
+	        <span class="glyphicon glyphicon-ok" style="color:green"></span>
 	      @elseif ($score >= 0)
 	        <span style="color:red">{{$score}}</span>
 	      @else
-	        <a style="color:red" href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{trans('wzoj.homework_not_started')}}</a>
+	        <span style="color:red">{{trans('wzoj.homework_not_started')}}</span>
 	      @endif
+	      </a>
 	    </div>
 	  </li>
 	@endforeach
