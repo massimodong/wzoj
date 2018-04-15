@@ -10,6 +10,8 @@ define('SL_CANCELED' ,5);
 define('CACHE_ONE_DAY', 1440);
 define('CACHE_ONE_MONTH', 43200);
 
+define('OJ_UDP_PORT', 13107);
+
 function ojoption($name){
 	return Cache::tags(['options'])->rememberForever($name, function() use ($name){
 		return \App\Option::where('name', $name)->first()->value;
@@ -68,4 +70,10 @@ function download_send_headers($filename) {
     // disposition / encoding on response body
     header("Content-Disposition: attachment;filename={$filename}");
     header("Content-Transfer-Encoding: binary");
+}
+
+function ojUdpSend($ip, $port, $msg){
+	if($socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP)) {
+		socket_sendto($socket, $msg, strlen($msg), 0, $ip, $port);
+	}
 }

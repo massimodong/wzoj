@@ -246,6 +246,10 @@ class SolutionController extends Controller
 
 	    $this->bot_check($request->user());
 
+	    foreach(\App\Judger::all() as $judger){
+		    ojUdpSend($judger->ip_addr, OJ_UDP_PORT, $judger->token);
+	    }
+
 	    return redirect('/solutions/'.$solution->id);
     }
 

@@ -81,6 +81,7 @@ class AdminJudgerController extends Controller
 		    ->update([
 			    'name' => $request->name,
 			    'token' => $request->token,
+			    'ip_addr' => $request->ip_addr,
 		    ]);
 	    return back();
     }
