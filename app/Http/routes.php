@@ -71,6 +71,8 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::post('s/{psid}/groups','ProblemsetController@postGroup');
 		Route::delete('s/{psid}/groups/{gid}','ProblemsetController@deleteGroup');
 
+		Route::get('/groups/{id}/homework', 'GroupController@getHomeworkStatus');
+
 		Route::post('solutions/answerfile', 'SolutionController@postSubmitAnswerfile');
 		Route::resource('solutions','SolutionController');
 
