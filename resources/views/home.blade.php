@@ -27,28 +27,24 @@
     </div>
   @endforeach
   </div>
-  @if (isset($homework_problem_cols))
+  @if (isset($group_homeworks))
   <div class="col-xs-12">
     <h3>{{trans('wzoj.homework')}}</h3>
     <div style="width:795;padding:15px">
     <ul class="list-group">
-      @foreach ($homework_problem_cols as $problems)
-        @foreach ($problems as $problem)
+      @foreach ($group_homeworks as $group_homework)
 	  <li class="list-group-item row">
-	    <div class="col-xs-6"><a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{$problem->name}}</a></div>
 	    <div class="col-xs-6">
-	      <a href="/groups/{{$problem->pivot->group_id}}/homework">
-	      @if (($score = $homework_problem_max_scores[$problem->pivot->problemset_id][$problem->id]) >= 100)
-	        <span class="glyphicon glyphicon-ok" style="color:green"></span>
-	      @elseif ($score >= 0)
-	        <span style="color:red">{{$score}}</span>
-	      @else
-	        <span style="color:red">{{trans('wzoj.homework_not_started')}}</span>
-	      @endif
-	      </a>
+              <a href="/groups/{{($group=$group_homework['group'])->id}}/homework">{{$group->name}}</a>
+	    </div>
+	    <div class="col-xs-6">
+	      <div class="progress">
+	        <div class="progress-bar progress-bar-success progress-bar-striped" style="width:{{$group_homework['user_score']/$group_homework['total_score'] * 100}}%">
+		    {{$group_homework['user_score']}}/{{$group_homework['total_score']}}
+	        </div>
+	      </div>
 	    </div>
 	  </li>
-	@endforeach
       @endforeach
     </ul>
     </div>

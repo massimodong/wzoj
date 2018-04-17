@@ -67,6 +67,7 @@ class JudgerController extends Controller
 				->get();
 		}
 
+		/*
 		if(!count($solutions)){
 			$solutions = Solution::where('status', 0)
 				->take(1)
@@ -80,6 +81,7 @@ class JudgerController extends Controller
 				->select('id')
 				->get();
 		}
+		*/
 
 		return response()->json($solutions);
 	}

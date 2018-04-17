@@ -62,27 +62,35 @@ class HomeController extends Controller
 
 		//homeworks
 		$homework_flag = false;
+		$group_homeworks = array();
 		if(Auth::check()){
-			$problem_cols = array();
-			$problem_max_scores = array();
-
-			foreach($request->user()->problemsets() as $problemset){
-				$problem_cols[$problemset->id] = collect(new \App\Problem);
-			}
-
 			foreach($groups as $group){
+				$problem_cols = array();
+				$problem_max_scores = array();
+				$total_score = 0;
+				$user_score = 0;
+
 				$homeworks = Cache::tags(['group_homeworks'])->rememberForever($group->id, function() use($group){
 					return $group->homeworks;
 				});
 				foreach($homeworks as $problem){
+					if(!isset($problem_cols[$problem->pivot->problemset_id])) $problem_cols[$problem->pivot->problemset_id] = collect(new \App\Problem);
 					$problem_cols[$problem->pivot->problemset_id]->push($problem);
 					$homework_flag = true;
+					$total_score += 100;
 				}
-			}
+				foreach($problem_cols as $psid => $problems) if(!$problems->isEmpty()){
+					$problem_max_scores[$psid] = $request->user()->max_scores($psid, $problems);
+					foreach($problem_max_scores[$psid] as $s) if($s>0) $user_score += $s;
+				}
 
-			foreach($problem_cols as $problems) if(!$problems->isEmpty()){
-				$psid = $problems[0]->pivot->problemset_id;
-				$problem_max_scores[$psid] = $request->user()->max_scores($psid, $problems);
+				if($total_score){
+					array_push($group_homeworks, [
+							'group' => $group,
+							'total_score' => $total_score,
+							'user_score' => $user_score,
+					]);
+				}
 			}
 		}
 
@@ -94,8 +102,7 @@ class HomeController extends Controller
 			'home_diy' => $diyPage,
 			'home_page_problemsets' => $home_page_problemsets,
 			'recent_contests' => $recent_contests,
-			'homework_problem_cols' => $homework_flag?$problem_cols:NULL,
-			'homework_problem_max_scores' => $homework_flag?$problem_max_scores:NULL,
+			'group_homeworks' => $homework_flag?$group_homeworks:NULL,
 			'groups' => $groups,
 			'sidePanels' => $sidePanels,
 		]);
