@@ -60,22 +60,18 @@
             <div class="profile-content">
 	    	<div class="tab-content">
 			<div id="overview" class="tab-pane in active row">
-				<div class="col-xs-4" style="height:250px;">
+				<div class="col-xs-4" style="height:310px;">
 					<div class="panel panel-wzoj">
 					<div class="panel-heading">{{trans('wzoj.overview')}}</div>
 					<div class="panel-body">
 					{{trans('wzoj.count_submit')}}:<span class="pull-right">{{$cnt_submissions}}</span><br>
 					{{trans('wzoj.count_ac_problems')}}:<span class="pull-right">{{$user->cnt_ac}}</span><br>
-					{{trans('wzoj.register_time')}}:<span class="pull-right">
-						{{date("Y-m-d",strtotime($user->created_at))}}</span><br>
+					{{trans('wzoj.register_time')}}:<span class="pull-right">{{date("Y-m-d",strtotime($user->created_at))}}</span><br>
 					{{trans('wzoj.last_login_time')}}:<span class="pull-right">NULL</span><br>
-					{{trans('wzoj.belong_groups')}}:<span class="pull-right">
-					@if (count($groups) == 0)
+					{{trans('wzoj.belong_groups')}}:<span class="pull-right"> @if (count($groups) == 0)
 						{{trans('wzoj.none')}}
-					@elseif (count($groups) == 1)
-						{{$groups[0]->name}}
-					@else
-						<span title="{{trans('wzoj.belong_groups')}}:@foreach ($groups as $key => $group){{$key?', ':''}}{{$group->name}}@endforeach">{{$groups[0]->name.' '.trans('wzoj.ect')}}</span>
+					@elseif (count($groups) == 1) {{$groups[0]->name}}
+					@else <span title="{{trans('wzoj.belong_groups')}}:@foreach ($groups as $key => $group){{$key?', ':''}}{{$group->name}}@endforeach">{{$groups[0]->name.' '.trans('wzoj.ect')}}</span>
 					@endif
 						</span><br>
 					</div>
