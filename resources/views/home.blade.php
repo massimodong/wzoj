@@ -35,7 +35,7 @@
       @foreach ($group_homeworks as $group_homework)
 	  <li class="list-group-item row">
 	    <div class="col-xs-6">
-              <a href="/groups/{{($group=$group_homework['group'])->id}}/homework">{{$group->name}}</a>
+              <a href="/groups/{{$group_homework['group']->id}}/homework">{{$group_homework['group']->name}}</a>
 	    </div>
 	    <div class="col-xs-6">
 	      <div class="progress">
