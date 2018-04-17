@@ -10,6 +10,7 @@
   <table id="homework-status-table" class="table table-striped">
     <thead>
       <tr>
+        <th style="display: none"></th>
         <th style="width: 8%">{{trans('wzoj.username')}}</th>
         <th style="width: 8%">{{trans('wzoj.fullname')}}</th>
         <th style="width: 9%">x/{{$total_score}}</th>
@@ -22,7 +23,8 @@
     </thead>
     <tbody>
     @foreach ($group->users as $user)
-      <tr @if (Auth::check() && ($user->id == Auth::user()->id)) class="info" id="my-row" @endif>
+      <tr @if (Auth::check() && ($user->id == Auth::user()->id)) class="info" @endif>
+        <td style="display: none">@if (Auth::check() && ($user->id == Auth::user()->id)) 1 @endif</td>
         <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
 	<td>{{$user->fullname}}</td>
 	<td>{{$user_total_scores[$user->id]}}</td>
@@ -52,8 +54,7 @@ $('#homework-status-table').DataTable({
 	searching: false,
 	paging: false,
 	bInfo: false,
-	order: [[2, "desc"]],
+	order: [[0, "desc"], [3, "desc"]],
 });
-window.location.hash='my-row';
 </script>
 @endsection
