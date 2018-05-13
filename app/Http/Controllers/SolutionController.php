@@ -258,9 +258,7 @@ class SolutionController extends Controller
 
 	    $this->bot_check($request->user());
 
-	    foreach(\App\Judger::where('ip_addr', '<>', '')->get() as $judger){
-		    ojUdpSend($judger->ip_addr, OJ_UDP_PORT, $judger->token);
-	    }
+	    wakeJudgers();
 
 	    return redirect('/solutions/'.$solution->id);
     }

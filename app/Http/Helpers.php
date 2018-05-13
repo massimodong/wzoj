@@ -77,3 +77,9 @@ function ojUdpSend($ip, $port, $msg){
 		socket_sendto($socket, $msg, strlen($msg), 0, $ip, $port);
 	}
 }
+
+function wakeJudgers(){
+	foreach(\App\Judger::where('ip_addr', '<>', '')->get() as $judger){
+		ojUdpSend($judger->ip_addr, OJ_UDP_PORT, $judger->token);
+	}
+}

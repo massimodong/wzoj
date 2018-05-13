@@ -72,6 +72,7 @@ class AdminProblemRejudgeController extends Controller
 	public function postProblemRejudge(Request $request){
 		$solutions = $this->genSolutionsQuery($request);
 		$this->rejudgeSolutions($solutions);
+		wakeJudgers();
 		return back();
 	}
 
