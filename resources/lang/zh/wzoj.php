@@ -388,4 +388,6 @@ return [
     'msg_panel_index_help' => '面板按序号升序显示，序号为0的面板不显示',
 
     'manager' => '管理员',
+
+    'submit_too_frequent' => '提交过于频繁',
 ];
