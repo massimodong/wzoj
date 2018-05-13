@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 
 use Cache;
 use Storage;
+use DB;
 
 use Illuminate\Support\Facades\Redis;
 
@@ -195,15 +196,6 @@ class SolutionController extends Controller
 		    }
 	    }
 
-	    $cnt_second_solutions = $request->user()->solutions()
-		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-3 second')))
-		    ->count();
-	    if($cnt_second_solutions){
-		    return back()
-			    ->withErrors(trans('wzoj.submit_too_frequent'))
-			    ->withInput();
-	    }
-
 	    $this->validate($request,[
 		'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
 		'language' => 'required|in:0,1,2,4', //c,cpp,pas,java,python
@@ -231,7 +223,27 @@ class SolutionController extends Controller
 			    ->withInput();
 	    }
 
-	    $solution = $request->user()->solutions()->create($solution_meta);
+	    DB::insert('insert into `solutions` (`problemset_id`, `problem_id`, `language`, `code`, `code_length`, `user_id`, `updated_at`, `created_at`)
+			    select ?, ?, ?, ?, ?, ?, ?, ? from dual where not exists(
+				    select `id` from `solutions` where `user_id` = ? and `created_at` >= ? limit 1)',
+				    [
+					$solution_meta['problemset_id'],
+					$solution_meta['problem_id'],
+					$solution_meta['language'],
+					$solution_meta['code'],
+					$solution_meta['code_length'],
+					$request->user()->id,
+					date('Y-m-d H:i:s', strtotime('+0 second')),
+					date('Y-m-d H:i:s', strtotime('+0 second')),
+					$request->user()->id,
+					date('Y-m-d H:i:s', strtotime('-3 second')),
+				    ]);
+	    $solution = Solution::find(DB::getPdo()->lastInsertId());
+	    if($solution==NULL){
+		    return back()
+			    ->withErrors(trans('wzoj.submit_too_frequent'))
+			    ->withInput();
+	    }
 
 	    Redis::lpush('wzoj_recent_solution_ids', $solution->id);             // push the solution to redis list
 	    Redis::ltrim('wzoj_recent_solution_ids', 0, self::PAGE_LIMIT -1);    // save only `PAGE_LIMIT` solutions
