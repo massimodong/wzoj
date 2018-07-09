@@ -157,7 +157,11 @@
     <script src="{{ojcache('/include/js/bootstrap-datetimepicker.min.js')}}"></script>
     <script src="{{ojcache('/include/js/bootstrap-datetimepicker.zh-CN.js')}}"></script>
     <script src="{{ojcache('/include/js/iframe-popup.js')}}"></script>
+    <script src="{{ojcache('/include/js/socket.io.js')}}"></script>
     <script src="{{ojoption('mathjax_url')}}"></script>
+    <script>
+      var socket = io('http://localhost:9000');
+    </script>
     @yield ('scripts')
   </body>
 </html>
