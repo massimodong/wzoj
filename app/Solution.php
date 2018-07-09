@@ -57,7 +57,7 @@ class Solution extends Model
 	//public part of the solutions
 	public function scopePublic($query){
 		$query->select(['solutions.id', 'solutions.user_id', 'solutions.problem_id', 'solutions.problemset_id', 'solutions.score', 'solutions.status',
-				'solutions.time_used', 'solutions.memory_used','solutions.language', 'solutions.code_length',
+				'solutions.time_used', 'solutions.memory_used','solutions.language', 'solutions.code_length', 'solutions.testcases', 'solutions.cnt_testcases',
 				'solutions.judger_id', 'solutions.judged_at', 'solutions.sim_id', 'solutions.created_at'])
 			->addSelect(DB::raw('solutions.ce is NOT NULL as ce'))
 			->with(['user' => function($query){

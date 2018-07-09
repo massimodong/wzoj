@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Event;
+use App\Events\SolutionUpdated;
+
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -116,6 +119,7 @@ class JudgerController extends Controller
 				$solution->testcases = Array();
 				$solution->sim_id = NULL;
 				$solution->judger_id = \Request::get('judger')->id;
+				Event::fire(new SolutionUpdated($solution));
 				Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 				Redis::sadd('wzoj_judging_solution_ids', $solution->id);
 				return response()->json(["ok" => true]);
@@ -172,6 +176,7 @@ class JudgerController extends Controller
 		$solution->ce = $request->ce;
 		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
+		Event::fire(new SolutionUpdated($solution));
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 		Redis::srem('wzoj_judging_solution_ids', $solution->id);
 		return response()->json(["ok" => true]);
@@ -190,6 +195,7 @@ class JudgerController extends Controller
 		$solution->testcases = json_decode($request->testcases);
 		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->save();
+		Event::fire(new SolutionUpdated($solution));
 		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 		return response()->json(["ok" => true]);
@@ -219,6 +225,7 @@ class JudgerController extends Controller
 		}
 
 		$solution->user->update_cnt_ac();
+		Event::fire(new SolutionUpdated($solution));
 
 		Redis::srem('wzoj_judging_solution_ids', $solution->id);
 	}

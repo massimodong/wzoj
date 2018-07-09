@@ -73,17 +73,16 @@
 <table class="table table-striped">
 <thead>
     <tr>
-    	<th style='width:6%'>{{trans('wzoj.id')}}</th>
-	<th style='width:9%'>{{trans('wzoj.user')}}</th>
-	<th style='width:15%'>{{trans('wzoj.problem')}}</th>
-	<th style='width:12%'>{{trans('wzoj.status')}}</th>
-	<th style='width:8%'>{{trans('wzoj.score')}}</th>
-	<th style='width:7%'>{{trans('wzoj.time_used')}}</th>
-	<th style='width:10%'>{{trans('wzoj.memory_used')}}</th>
-	<th style='width:7%'>{{trans('wzoj.language')}}</th>
-	<th style='width:7%'>{{trans('wzoj.code_length')}}</th>
-	<th style='width:7%'>{{trans('wzoj.judger')}}</th>
-	<th style='width:12%'>{{trans('wzoj.submitted_at')}}</th>
+        <th style='width:7%'>{{trans('wzoj.id')}}</th>
+        <th style='width:10%'>{{trans('wzoj.user')}}</th>
+        <th style='width:18%'>{{trans('wzoj.problem')}}</th>
+        <th style='width:9%'>{{trans('wzoj.score')}}</th>
+        <th style='width:8%'>{{trans('wzoj.time_used')}}</th>
+        <th style='width:11%'>{{trans('wzoj.memory_used')}}</th>
+        <th style='width:8%'>{{trans('wzoj.language')}}</th>
+        <th style='width:8%'>{{trans('wzoj.code_length')}}</th>
+        <th style='width:8%'>{{trans('wzoj.judger')}}</th>
+        <th style='width:13%'>{{trans('wzoj.submitted_at')}}</th>
     </tr>
 </thead>
 <tbody id='solutions-tbody'>
@@ -92,24 +91,24 @@
         <td>{{$solution->id}}</td>
 	<td>{{$solution->user?$solution->user->name:""}}</td>
 	<td>{{$solution->problem?$solution->problem->name:""}}</td>
-	<td>
-	@if ($solution->status == SL_RUNNING)
-	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1'></div>
-	@else
-	    <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1'>
-	    {{trans('wzoj.solution_status_'.$solution->status)}}</div>
-	@endif
-	</td>
-	@if ($solution->ce)
-	<td class='solution-score'>{{trans('wzoj.compile_error')}}</td>
-	@else
+
 	<td class='solution-score'>
-	  {{$solution->score}}
+	@if ($solution->status == SL_JUDGED)
+	  @if ($solution->ce)
+	    {{trans('wzoj.compile_error')}}
+	  @else
+	    {{$solution->score}}
 	    @if (isset($solution->sim) && $solution->shouldShowSim())
 	      <span style="color:yellow" title="{{trans('wzoj.sim_warning', ['sid' => $solution->sim->solution2_id, 'rate' => $solution->sim->rate])}}" class="glyphicon glyphicon-warning-sign"></span>
 	    @endif
-	</td>
+	  @endif
+	@else
+	    <div id='solution-{{$solution->id}}' @if($solution->status==3)class="running-solution"@endif data-testcases='{{json_encode($solution->testcases)}}' data-cnttestcases="{{$solution->cnt_testcases}}">
+              {{trans('wzoj.solution_status_'.$solution->status)}}
+	    </div>
 	@endif
+	</td>
+
 	<td class='solution-timeused'>{{$solution->time_used}}ms</td>
 	<td class='solution-memoryused'>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
 	<td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
@@ -148,8 +147,10 @@ jQuery(document).ready(function($) {
 	$(".clickable-row").click(function() {
 		window.document.location = $(this).data("href");
 	});
-	solutions_update({{$last_solution_id}});
-	updatePendings(fillTable, "{{date('Y-m-d H:i:s')}}");
+	$('.running-solution').each(function(index){
+		solutions_update_progress($(this));
+	})
+	solutions_progress();
 });
 </script>
 @endsection
