@@ -186,7 +186,7 @@ class JudgerController extends Controller
 		$solution->time_used = $request->time_used;
 		$solution->memory_used = $request->memory_used;
 		$solution->status = $request->status;
-		$solution->score = $request->cnt_testcases?intdiv($request->score, $request->cnt_testcases):0;
+		$solution->score = $request->cnt_testcases?floor($request->score / $request->cnt_testcases):0;
 		$solution->testcases = json_decode($request->testcases);
 		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->save();
