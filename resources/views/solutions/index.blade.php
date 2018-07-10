@@ -149,8 +149,9 @@ jQuery(document).ready(function($) {
 	});
 	$('.running-solution').each(function(index){
 		solutions_update_progress($(this));
-	})
+	});
 	solutions_progress();
+	solutions_new_update();
 });
 </script>
 @endsection

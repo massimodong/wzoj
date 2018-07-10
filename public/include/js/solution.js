@@ -52,7 +52,6 @@ function solutions_fill(s, solution){
 		s.text(solution.score);
 	}
 	$('#' + id + ' .solution-timeused').text(solution.time_used + 'ms');
-	console.log('#' + id + ' .solution-timeused');
 
 	var m = new Number(solution.memory_used / 1024 / 1024);
 	$('#' + id + ' .solution-memoryused').text(m.toFixed(2) + 'MB');
@@ -61,21 +60,49 @@ function solutions_fill(s, solution){
 		$('#' + id + ' .solution-judger').text(solution.judger.name);
 	}
 
-	$('#' + id + ' .solution-submitted_at').text(solution.created_at);
+	$('#' + id + ' .solution-submitted_at').text(solution.created_at.date.split('.')[0]);
 }
 
 function solutions_progress(){
-	socket.on('solutions:App\\Events\\SolutionUpdated', function(data){
-		var solution = data.solution;
+	socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
 		var s = $('#solution-' + solution.id);
-		console.log(solution);
 		if(solution.status >= 4){ //completed judging
 			solutions_fill(s, solution);
 		}else if(solution.status <=2){ //waiting or compiling
 			s.html(TRANS['solution_status_' + solution.status]);
 		}else{
 			s.data('testcases', solution.testcases);
+			s.data('cnttestcases', solution.cnt_testcases);
 			solutions_update_progress(s);
 		}
 	})
+}
+
+function solutions_new_update(){
+	socket.on('solutions:App\\Events\\NewSolution', function(solution){
+		var row = $("<tr class='clickable-row'></tr>");
+		row.attr('id', 'tr-' + solution.id);
+		row.data('href', '/solutions/' + solution.id);
+		row.append("<td>" + solution.id + "</td>");
+		row.append("<td>" + solution.user.name + "</td>");
+		row.append("<td>" + solution.problem.name + "</td>");
+
+		var soldiv = $("<div></div>");
+		soldiv.attr('id', 'solution-' + solution.id);
+		soldiv.data('testcases', solution.testcases);
+		soldiv.data('cnttestcases', solution.cnt_testcases);
+		soldiv.html(TRANS['solution_status_' + solution.status]);
+		row.append($("<td></td>").append(soldiv));
+
+		row.append("<td class='solution-timeused'>0ms</td>");
+		row.append("<td class='solution-memoryused'>0.00MB</td>");
+		row.append("<td>" + LANG[solution.language] + "</td>");
+		row.append("<td>" + solution.code_length +"B</td>");
+		row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.name:"") + "</td>");
+		row.append("<td class='solution-submitted_at'>" + solution.created_at.date.split('.')[0] + "</td>");
+		$('#solutions-tbody').prepend(row);
+		$(".clickable-row").click(function() {
+			window.document.location = $(this).data("href");
+		});
+	});
 }

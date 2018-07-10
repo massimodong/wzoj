@@ -84,4 +84,61 @@ class Solution extends Model
 		}
 		return true;
 	}
+
+	public function publicAttr(){
+		return [
+			'id' => $this->id,
+			'user_id' => $this->user_id,
+			'problem_id' => $this->problem_id,
+			'problemset_id' => $this->problemset_id,
+			'language' => $this->language,
+			'code_length' => $this->code_length,
+			'time_used' => $this->time_used,
+			'memory_used' => $this->memory_used,
+			'status' => $this->status,
+			'score' => $this->score,
+			'ce' => $this->ce,
+			'testcases' => $this->testcases,
+			'sim_id' => $this->sim_id,
+			'judged_at' => $this->judged_at,
+			'judger_id' => $this->judger_id,
+			'cnt_testcases' => $this->cnt_testcases,
+			'created_at' => $this->created_at,
+
+			'user' => [
+				'name' => $this->user->name,
+			],
+			'problem' => [
+				'name' => $this->problem->name,
+			],
+			'judger' => [
+				'name' => isset($this->judger)?$this->judger->name:'',
+			],
+		];
+	}
+
+	public function publicAttrLess(){
+		return [
+			'id' => $this->id,
+			'user_id' => $this->user_id,
+			'problem_id' => $this->problem_id,
+			'problemset_id' => $this->problemset_id,
+			'language' => $this->language,
+			'code_length' => $this->code_length,
+			'time_used' => $this->time_used,
+			'memory_used' => $this->memory_used,
+			'status' => $this->status,
+			'score' => $this->score,
+			'ce' => $this->ce,
+			'testcases' => $this->testcases,
+			'sim_id' => $this->sim_id,
+			'judged_at' => $this->judged_at,
+			'judger_id' => $this->judger_id,
+			'cnt_testcases' => $this->cnt_testcases,
+			'created_at' => $this->created_at,
+			'judger' => [
+				'name' => isset($this->judger)?$this->judger->name:'',
+			],
+		];
+	}
 }

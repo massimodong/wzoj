@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Event;
+use App\Events\NewSolution;
+
 use Illuminate\Http\Request;
 
 use App\Solution;
@@ -238,12 +241,13 @@ class SolutionController extends Controller
 					$request->user()->id,
 					date('Y-m-d H:i:s', strtotime('-3 second')),
 				    ]);
-	    $solution = Solution::find(DB::getPdo()->lastInsertId());
+	    $solution = Solution::with(['user', 'problem', 'judger'])->where('id', DB::getPdo()->lastInsertId())->first();
 	    if($solution==NULL){
 		    return back()
 			    ->withErrors(trans('wzoj.submit_too_frequent'))
 			    ->withInput();
 	    }
+	    Event::fire(new NewSolution($solution));
 
 	    Redis::lpush('wzoj_recent_solution_ids', $solution->id);             // push the solution to redis list
 	    Redis::ltrim('wzoj_recent_solution_ids', 0, self::PAGE_LIMIT -1);    // save only `PAGE_LIMIT` solutions

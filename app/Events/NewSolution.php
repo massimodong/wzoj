@@ -7,7 +7,7 @@ use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class SolutionUpdated extends Event implements ShouldBroadcast
+class NewSolution extends Event implements ShouldBroadcast
 {
     use SerializesModels;
 
@@ -18,7 +18,7 @@ class SolutionUpdated extends Event implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(Solution $solution)
+    public function __construct($solution)
     {
 	    $this->solution = $solution;
     }
@@ -33,7 +33,8 @@ class SolutionUpdated extends Event implements ShouldBroadcast
         return ['solutions'];
     }
 
-    public function broadcastWith(){
-	    return $this->solution->publicAttrLess();
+    public function broadcastWith()
+    {
+	    return $this->solution->publicAttr();
     }
 }
