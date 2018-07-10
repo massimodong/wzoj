@@ -47,7 +47,7 @@ function ranklist_addSolution(solution){
 
 	var ps = row.children('.problem-' + solution.problem_id);
 	var msg = '';
-	if(solution.ce && parseInt(solution.ce)){
+	if(solution.ce){
 		msg = TRANS['compile_error'];
 	}else if(solution.status == 4){ //judged
 		msg = solution.score;
@@ -55,7 +55,9 @@ function ranklist_addSolution(solution){
 		msg = TRANS["solution_status_" + solution.status];
 	}
 
-	ps.html("<div id='solution-" + solution.id + "' class='judging-solution' data-id='" + solution.id + "' data-waiting='1' data-score='" + solution.score + "'>" +msg + "</div>");
+	ps.html("<div id='solution-" + solution.id + "'>" + msg + "</div>");
+	$('#solution-' + solution.id).data('testcases', solution.testcases);
+	$('#solution-' + solution.id).data('cnttestcases', solution.cnt_testcases);
 
 	if(solution.status == 4){
 		ranklist_updateScore(row, ps, solution.score);
@@ -64,17 +66,10 @@ function ranklist_addSolution(solution){
 	if(solution.status == 4) ranklist_setColor(ps);
 }
 
-function ranklist_updateSolutions(problemset_id, last_solution_id){
-	$.get('/ajax/contest-solutions',{
-		problemset_id: problemset_id,
-		top: last_solution_id
-	})
-	.done(function(data){
-		$.each(data.solutions, function(key, solution){
+function ranklist_updateSolutions(problemset_id){
+	socket.on('solutions:App\\Events\\NewSolution', function(solution){
+			if(solution.problemset_id != problemset_id) return;
 			ranklist_addSolution(solution);
-			last_solution_id = solution.id;
-		})
-		setTimeout(ranklist_updateSolutions.bind(this, problemset_id, last_solution_id), 1000);
 	});
 }
 
@@ -94,15 +89,15 @@ function ranklist_setColor(ps){//too hard coloring
 	*/
 }
 
-function ranklist_fillCell(s){
+function ranklist_fillCell(s, solution){
 	s.attr('class', '');
 	if(s.data('ce')){
 		s.text(TRANS['compile_error']);
 	}else{
-		s.text(s.data('score'));
+		s.text(solution.score);
 	}
 
-	var ps = s.parent(), newscore = s.data('score');
+	var ps = s.parent(), newscore = solution.score;
 	ranklist_updateScore(ps.parent(), ps, newscore);
 	ranklist_setColor(ps);
 }

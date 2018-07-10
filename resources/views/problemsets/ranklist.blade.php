@@ -107,7 +107,6 @@ var indicator_template = "<li class='col-xs-12'><div class='rank_num sortable_li
 @endsection
 
 @section ('scripts')
-@if ($contest_running)
 <script>
 jQuery(document).ready(function($) {
 	//initiate table
@@ -131,10 +130,9 @@ jQuery(document).ready(function($) {
 		sortBy: ['score', 'penalty', 'id']
 	});
 
-	ranklist_updateSolutions({{$problemset->id}}, {{$last_solution_id}});
+	ranklist_updateSolutions({{$problemset->id}});
 
-	updatePendings(ranklist_fillCell, "{{date('Y-m-d H:i:s')}}");
+	solutions_progress(ranklist_fillCell);
 });
 </script>
-@endif
 @endsection

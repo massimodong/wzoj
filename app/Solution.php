@@ -106,12 +106,17 @@ class Solution extends Model
 			'created_at' => $this->created_at,
 
 			'user' => [
+				'id' => $this->user->id,
 				'name' => $this->user->name,
+				'fullname' => $this->user->fullname,
+				'class' => $this->user->class,
 			],
 			'problem' => [
+				'id' => $this->problem->id,
 				'name' => $this->problem->name,
 			],
 			'judger' => [
+				'id' => isset($this->judger)?$this->judger->id:0,
 				'name' => isset($this->judger)?$this->judger->name:'',
 			],
 		];
