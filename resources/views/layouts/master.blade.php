@@ -160,7 +160,7 @@
     <script src="{{ojcache('/include/js/socket.io.js')}}"></script>
     <script src="{{ojoption('mathjax_url')}}"></script>
     <script>
-      var socket = io('http://localhost:9000');
+      var socket = io("{{env('SOCKET_IO_SERVER')}}");
     </script>
     @yield ('scripts')
   </body>
