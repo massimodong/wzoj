@@ -130,7 +130,7 @@ jQuery(document).ready(function($) {
 		sortBy: ['score', 'penalty', 'id']
 	});
 
-	ranklist_updateSolutions({{$problemset->id}});
+	ranklist_updateSolutions({{$problemset->id}}, '{{$problemset->contest_start_at}}', '{{$problemset->contest_end_at}}');
 
 	solutions_progress(ranklist_fillCell);
 });

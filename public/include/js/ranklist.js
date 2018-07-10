@@ -66,9 +66,14 @@ function ranklist_addSolution(solution){
 	if(solution.status == 4) ranklist_setColor(ps);
 }
 
-function ranklist_updateSolutions(problemset_id){
+function ranklist_updateSolutions(problemset_id, contest_start_at, contest_end_at){
 	socket.on('solutions:App\\Events\\NewSolution', function(solution){
+			var submitted_at = solution.created_at.date.split('.')[0];
+
 			if(solution.problemset_id != problemset_id) return;
+			if(submitted_at < contest_start_at) return;
+			if(submitted_at > contest_end_at) return;
+
 			ranklist_addSolution(solution);
 	});
 }
