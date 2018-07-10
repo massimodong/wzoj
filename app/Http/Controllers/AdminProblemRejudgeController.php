@@ -19,6 +19,7 @@ class AdminProblemRejudgeController extends Controller
 		$solutions->update(['time_used' => 0,
 				    'memory_used' => 0.0,
 				    'status' => SL_PENDING_REJUDGING,
+				    'testcases' => '[]',
 				    'score' => 0,
 				    'ce' => NULL,
 				    'sim_id' => NULL,
