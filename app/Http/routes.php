@@ -202,4 +202,3 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 });
 
 Route::controller('judger','JudgerController');
-Route::controller('ajax','AjaxController');
