@@ -66,6 +66,7 @@ function solutions_fill(s, solution){
 function solutions_progress(done){
 	socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
 		var s = $('#solution-' + solution.id);
+		if(!s.length) return;
 		if(solution.status >= 4){ //completed judging
 			s.data('testcases', solution.testcases);
 			s.data('cnttestcases', solution.cnt_testcases);
