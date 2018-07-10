@@ -17,7 +17,6 @@
     	<th style='width:6%'>{{trans('wzoj.id')}}</th>
 	<th style='width:9%'>{{trans('wzoj.user')}}</th>
 	<th style='width:15%'>{{trans('wzoj.problem')}}</th>
-	<th style='width:12%'>{{trans('wzoj.status')}}</th>
 	<th style='width:8%'>{{trans('wzoj.score')}}</th>
 	<th style='width:6%'>{{trans('wzoj.time_used')}}</th>
 	<th style='width:10%'>{{trans('wzoj.memory_used')}}</th>
@@ -45,11 +44,14 @@
 	    @endif
 	@endif
 	<td>
-	  <div id='solution-{{$solution->id}}' class='judging-solution' data-id='{{$solution->id}}' data-waiting='1'>
+	@if ($solution->status >= 4)
+	  {{$solution->score}}
+	@else
+	  <div id='solution-{{$solution->id}}' data-testcases="{{json_encode($solution->testcases)}}", data-cnttestcases="{{$solution->cnt_testcases}}">
 	  {{trans('wzoj.solution_status_'.$solution->status)}}</div>
+	@endif
 	</td>
 
-	<td>{{$solution->score}}</td>
 	<td>{{$solution->time_used}}ms</td>
 	<td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
 	<td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
@@ -132,13 +134,10 @@
 <script>
 $( document ).ready(function() {
 	showOrHideCode();
-
-	@if ($solution->status < 4)
-	animateJudging($('#solution-{{$solution->id}}') ,function(s){
-		fillTable(s);
-		location.reload();
-			});
+	@if ($solution->status == 3)
+		solutions_update_progress($("{{'#solution-'.$solution->id}}"));
 	@endif
+	solutions_progress();
 });
 </script>
 @endsection
