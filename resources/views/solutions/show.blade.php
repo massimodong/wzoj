@@ -137,7 +137,9 @@ $( document ).ready(function() {
 	@if ($solution->status == 3)
 		solutions_update_progress($("{{'#solution-'.$solution->id}}"));
 	@endif
-	solutions_progress();
+	solutions_progress(function(s, solution){
+		location.reload();
+	});
 });
 </script>
 @endsection

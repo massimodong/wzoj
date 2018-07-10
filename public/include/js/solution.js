@@ -63,11 +63,14 @@ function solutions_fill(s, solution){
 	$('#' + id + ' .solution-submitted_at').text(solution.created_at.date.split('.')[0]);
 }
 
-function solutions_progress(){
+function solutions_progress(done){
 	socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
 		var s = $('#solution-' + solution.id);
 		if(solution.status >= 4){ //completed judging
-			solutions_fill(s, solution);
+			s.data('testcases', solution.testcases);
+			s.data('cnttestcases', solution.cnt_testcases);
+			solutions_update_progress(s);
+			setTimeout(done.bind(this, s, solution), 300);
 		}else if(solution.status <=2){ //waiting or compiling
 			s.html(TRANS['solution_status_' + solution.status]);
 		}else{

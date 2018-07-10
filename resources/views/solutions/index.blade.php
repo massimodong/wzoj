@@ -150,7 +150,7 @@ jQuery(document).ready(function($) {
 	$('.running-solution').each(function(index){
 		solutions_update_progress($(this));
 	});
-	solutions_progress();
+	solutions_progress(solutions_fill);
 	solutions_new_update();
 });
 </script>
