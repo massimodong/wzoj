@@ -148,7 +148,6 @@ class SolutionController extends Controller
 	    				'prev_url' => $prev_url,
 	    				'next_url' => $next_url,
 					'url_limits' => $url_limits,
-	    				'last_solution_id' => $all_solutions?$top:-1,
 	    				'problemset' => $problemset]);
     }
 

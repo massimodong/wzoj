@@ -196,7 +196,6 @@ class ProblemsetController extends Controller
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
 				'problems' => $problems,
 				'table' => $table,
-				'last_solution_id' => $problemset->solutions()->max('id'),
 				'contest_running' => $contest_running,
 		]);
 	}
