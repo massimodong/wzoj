@@ -14,10 +14,8 @@
         <th style="width: 8%">{{trans('wzoj.username')}}</th>
         <th style="width: 8%">{{trans('wzoj.fullname')}}</th>
         <th style="width: 9%">x/{{$total_score}}</th>
-	@foreach ($problem_cols as $psid=>$problems)
-	  @foreach ($problems as $problem)
-	    <th><a href="/s/{{$psid}}/{{$problem->id}}" style="color:black">{{$problem->name}}</a></th>
-	  @endforeach
+	@foreach ($problems as $problem)
+	  <th><a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}" style="color:black">{{$problem->name}}</a></th>
 	@endforeach
       </tr>
     </thead>
@@ -28,18 +26,16 @@
         <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
 	<td>{{$user->fullname}}</td>
 	<td>{{$user_total_scores[$user->id]}}</td>
-	@foreach ($problem_cols as $psid=>$problems)
-	  @foreach ($problems as $problem)
-	    <td>
-	    @if (($score = ($user_max_scores[$user->id][$psid][$problem->id])) >= 100)
-	      <a href="/solutions?problemset_id={{$psid}}&user_name={{$user->name}}&problem_id={{$problem->id}}"><span style="color: green;">{{$score}}</span></a>
-	    @elseif ($score >= 0)
-	      <a href="/solutions?problemset_id={{$psid}}&user_name={{$user->name}}&problem_id={{$problem->id}}"><span style="color: red;">{{$score}}</span></a>
-	    @else
-	      <span style="color: grey">0</span>
-	    @endif
-	    </td>
-	  @endforeach
+	@foreach ($problems as $problem)
+	  <td>
+	  @if (($score = ($user_max_scores[$user->id][$problem->pivot->problemset_id][$problem->id])) >= 100)
+	    <a href="/solutions?problemset_id={{$problem->pivot->problemset_id}}&user_name={{$user->name}}&problem_id={{$problem->id}}"><span style="color: green;">{{$score}}</span></a>
+	  @elseif ($score >= 0)
+	    <a href="/solutions?problemset_id={{$problem->pivot->problemset_id}}&user_name={{$user->name}}&problem_id={{$problem->id}}"><span style="color: red;">{{$score}}</span></a>
+	  @else
+	    <span style="color: grey">0</span>
+	  @endif
+	  </td>
 	@endforeach
       </tr>
     @endforeach

@@ -83,3 +83,62 @@ function wakeJudgers(){
 		ojUdpSend($judger->ip_addr, OJ_UDP_PORT, $judger->token);
 	}
 }
+
+function max_scores($user_ids, $problemset_ids, $problem_ids){
+	$result = [];
+	$uncached_user_ids = [];
+	$uncached_problemset_ids = [];
+	$uncached_problem_ids = [];
+	$cache_updated = [];
+	$miss = false;
+
+	$cnt=0;
+	foreach($user_ids as $uid){
+		$result[$uid] = [];
+		foreach($problemset_ids as $psid){
+			$result[$uid][$psid] = [];
+			foreach($problem_ids as $pid){
+				$path = $uid.'-'.$psid.'-'.$pid;
+				if(Cache::tags(['problemsets', 'max_score'])->has($path)){
+					$result[$uid][$psid][$pid] = Cache::tags(['problemsets', 'max_score'])->get($path);
+				}else{
+					$result[$uid][$psid][$pid] = -1;
+					array_push($uncached_user_ids, $uid);
+					array_push($uncached_problemset_ids, $psid);
+					array_push($uncached_problem_ids, $pid);
+					$miss = true;
+				}
+				++$cnt;
+			}
+		}
+	}
+	$uncached_user_ids = array_unique($uncached_user_ids);
+	$uncached_problemset_ids = array_unique($uncached_problemset_ids);
+	$uncached_problem_ids = array_unique($uncached_problem_ids);
+
+	if(!$miss) return $result;
+
+	$solutions = \App\Solution::whereIn('user_id', $uncached_user_ids)
+		->whereIn('problemset_id', $uncached_problemset_ids)
+		->whereIn('problem_id', $uncached_problem_ids)
+		->select(['user_id', 'problemset_id', 'problem_id', 'score'])
+		->get();
+	foreach($solutions as $solution){
+		$uid = $solution->user_id;
+		$psid = $solution->problemset_id;
+		$pid = $solution->problem_id;
+
+		$path = $uid.'-'.$psid.'-'.$pid;
+		if($solution->score > $result[$uid][$psid][$pid]){
+			$result[$uid][$psid][$pid] = $solution->score;
+			array_push($cache_updated, [$uid, $psid, $pid]);
+		}
+	}
+
+	$cache_updated = array_unique($cache_updated, SORT_REGULAR);
+	foreach($cache_updated as $item){
+		$path = $item[0].'-'.$item[1].'-'.$item[2];
+		Cache::tags(['problemsets', 'max_score'])->put($path, $result[$item[0]][$item[1]][$item[2]], CACHE_ONE_DAY);
+	}
+	return $result;
+}
