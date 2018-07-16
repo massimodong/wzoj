@@ -116,6 +116,7 @@ class ProblemsetController extends Controller
 				return $problemset->problems()->orderByIndex()
 					->where('problem_problemset.index', '>', ($page-1) * self::PAGE_LIMIT)
 					->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT)
+					->with(['tags'])
 					->get();
 			});
 		}else{
