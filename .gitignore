@@ -8,3 +8,4 @@ public/vendor
 bower
 build
 dump.rdb
+server.js
