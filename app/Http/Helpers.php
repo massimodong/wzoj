@@ -89,7 +89,6 @@ function max_scores($user_ids, $problemset_ids, $problem_ids){
 	$uncached_user_ids = [];
 	$uncached_problemset_ids = [];
 	$uncached_problem_ids = [];
-	$cache_updated = [];
 	$miss = false;
 
 	$cnt=0;
@@ -131,14 +130,16 @@ function max_scores($user_ids, $problemset_ids, $problem_ids){
 		$path = $uid.'-'.$psid.'-'.$pid;
 		if($solution->score > $result[$uid][$psid][$pid]){
 			$result[$uid][$psid][$pid] = $solution->score;
-			array_push($cache_updated, [$uid, $psid, $pid]);
 		}
 	}
 
-	$cache_updated = array_unique($cache_updated, SORT_REGULAR);
-	foreach($cache_updated as $item){
-		$path = $item[0].'-'.$item[1].'-'.$item[2];
-		Cache::tags(['problemsets', 'max_score'])->put($path, $result[$item[0]][$item[1]][$item[2]], CACHE_ONE_DAY);
+	foreach($uncached_user_ids as $uid){
+		foreach($uncached_problemset_ids as $psid){
+			foreach($uncached_problem_ids as $pid){
+				$path = $uid.'-'.$psid.'-'.$pid;
+				Cache::tags(['problemsets', 'max_score'])->put($path, $result[$uid][$psid][$pid], CACHE_ONE_DAY);
+			}
+		}
 	}
 	return $result;
 }

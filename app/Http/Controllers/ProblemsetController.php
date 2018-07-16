@@ -123,10 +123,14 @@ class ProblemsetController extends Controller
 			$problems = [];
 		}
 
+		$problem_ids = $problems->map(function($item, $key){
+			return $item->id;
+		})->toArray();
+
 		return view('problemsets.view_'.$problemset->type,[
 				'problemset' => $problemset,
 				'problems' => $problems,
-				'max_scores' => Auth::check()?Auth::user()->max_scores($problemset->id, $problems):[],
+				'max_scores' => Auth::check()?max_scores([Auth::user()->id], [$problemset->id], $problem_ids)[Auth::user()->id][$problemset->id]:[],
 				'cnt_pages' => $cnt_pages,
 				'cur_page' => $page]);
 	}
