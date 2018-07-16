@@ -106,35 +106,6 @@ class User extends Model implements AuthenticatableContract,
 	    User::where('id', $this->id)->increment('bot_tendency', $v);
     }
 
-    public function max_scores($problemset_id, $problems){
-	    $max_scores = [];
-	    $uncached_problems = [];
-	    foreach($problems as $problem){
-		    $path = $this->id.'-'.$problemset_id.'-'.$problem->id;
-		    if(Cache::tags(['problemsets', 'max_score'])->has($path)){
-			    $max_scores[$problem->id] = Cache::tags(['problemsets', 'max_score'])->get($path);
-		    }else{
-			    $max_scores[$problem->id] = -1;
-			    array_push($uncached_problems, $problem->id);
-			    Cache::tags(['problemsets', 'max_score'])->put($path, -1, CACHE_ONE_DAY);
-		    }
-	    }
-	    if(!empty($uncached_problems)){
-		    $mc = $this->solutions()
-			    ->where('problemset_id', '=', $problemset_id)
-			    ->whereIn('problem_id', $uncached_problems)
-			    ->groupBy('problem_id')
-			    ->select(DB::raw('problem_id, max(score) as score'))
-			    ->get();
-		    foreach($mc as $problem){
-			    $max_scores[$problem->problem_id] = $problem->score;
-			    $path = $this->id.'-'.$problemset_id.'-'.$problem->problem_id;
-			    Cache::tags(['problemsets', 'max_score'])->put($path, $problem->score, CACHE_ONE_DAY);
-		    }
-	    }
-	    return $max_scores;
-    }
-
     public function problemsets(){
 	    if($this->has_role('admin')) return \App\Problemset::all()->all();
 	    $problemsets_last_updated_at = Cache::tags(['wzoj'])->rememberForever('problemsets_last_updated_at', function(){

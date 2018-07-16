@@ -65,8 +65,8 @@ class HomeController extends Controller
 		$group_homeworks = array();
 		if(Auth::check()){
 			foreach($groups as $group){
-				$problem_cols = array();
-				$problem_max_scores = array();
+				$problemset_ids = [];
+				$problem_ids = [];
 				$total_score = 0;
 				$user_score = 0;
 
@@ -74,14 +74,16 @@ class HomeController extends Controller
 					return $group->homeworks;
 				});
 				foreach($homeworks as $problem){
-					if(!isset($problem_cols[$problem->pivot->problemset_id])) $problem_cols[$problem->pivot->problemset_id] = collect(new \App\Problem);
-					$problem_cols[$problem->pivot->problemset_id]->push($problem);
+					array_push($problemset_ids, $problem->pivot->problemset_id);
+					array_push($problem_ids, $problem->id);
 					$homework_flag = true;
 					$total_score += 100;
 				}
-				foreach($problem_cols as $psid => $problems) if(!$problems->isEmpty()){
-					$problem_max_scores[$psid] = $request->user()->max_scores($psid, $problems);
-					foreach($problem_max_scores[$psid] as $s) if($s>0) $user_score += $s;
+
+				$max_scores = max_scores([Auth::user()->id], $problemset_ids, $problem_ids);
+				foreach($homeworks as $problem){
+					$sc = $max_scores[Auth::user()->id][$problem->pivot->problemset_id][$problem->id];
+					if($sc>0) $user_score+=$sc;
 				}
 
 				if($total_score){
