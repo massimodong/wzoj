@@ -139,7 +139,7 @@ class ProblemsetController extends Controller
 		$solutions = $problemset->solutions()
 			->where('created_at', '>=', $problemset->contest_start_at)
 			->where('created_at', '<=', $problemset->contest_end_at)
-			->public()
+			->with(['user'])
 			->get();
 
 		$table = array();
@@ -164,7 +164,6 @@ class ProblemsetController extends Controller
 		if(!$contest_running){//ended
 			$solutions = $problemset->solutions()
 				->where('created_at', '>', $problemset->contest_end_at)
-				->public()
 				->get();
 			foreach($solutions as $solution){
 				if(!isset($users_id[$solution->user_id])) continue;
