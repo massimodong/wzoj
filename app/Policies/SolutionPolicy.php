@@ -33,6 +33,7 @@ class SolutionPolicy
 
     public function view_code(User $user, Solution $solution){
 	    if($solution->user_id == $user->id) return true;
+	    if($user->has_role('code_viewer')) return true;
 	    if($user->has_role('problem_manager') && $solution->problem->manager_id == $user->id) return true;
 	    if($user->has_role('problemset_manager') && $solution->problemset->manager_id == $user->id) return true;
 	    return false;
