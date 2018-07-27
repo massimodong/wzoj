@@ -66,6 +66,12 @@
 		    </li>
 		    @endif
 
+		    @if (Auth::user()->has_role('admin'))
+		    <li id='functions_sidebar'>
+                        <a href="/admin/functions"> {{trans('wzoj.functions')}} </a>
+		    </li>
+		    @endif
+
 		    @if (Auth::user()->has_role('group_manager'))
                     <li id='groups_sidebar'>
                         <a href="/admin/groups"> {{trans('wzoj.groups')}} </a>

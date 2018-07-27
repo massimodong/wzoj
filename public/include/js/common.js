@@ -260,3 +260,10 @@ function sec2text( sec ){
 function ms2text( ms ){
 	return sec2text(ms / 1000);
 }
+
+
+function socket_init(){
+	socket.on('wzoj:App\\Events\\Broadcast', function(msg){
+		alert(msg.title+':\n'+msg.content);
+	});
+}

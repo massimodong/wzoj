@@ -395,4 +395,7 @@ return [
     'manager' => '管理员',
 
     'submit_too_frequent' => '提交过于频繁',
+
+    'functions' => '功能',
+    'broadcast' => '广播',
 ];

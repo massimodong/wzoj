@@ -120,6 +120,12 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 					Route::get('diy-pages/{id}', 'AdminAppearanceController@getDiyPages');
 					Route::put('diy-pages/{id}', 'AdminAppearanceController@putDiyPages');
 				});
+				//functions
+				Route::group(['prefix' => 'functions', 'middleware' => 'role:admin'], function(){
+					Route::get('/', 'AdminFunctionsController@getFunctions');
+					Route::post('broadcast', 'AdminFunctionsController@postBroadcast');
+				});
+
 				//groups
 				Route::group(['prefix' => 'groups', 'middleware' => 'role:group_manager'], function(){
 					Route::get('/', 'AdminGroupController@getGroups');
