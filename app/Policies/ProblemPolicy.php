@@ -25,6 +25,10 @@ class ProblemPolicy
 	    if($user->has_role('admin')) return true;
     }
 
+    public function create(User $user, $problem){
+	    return $user->has_role('problem_creator');
+    }
+
     public function manage(User $user, Problem $problem){
 	    return $user->has_role('problem_manager') && ($user->id === $problem->manager_id);
     }

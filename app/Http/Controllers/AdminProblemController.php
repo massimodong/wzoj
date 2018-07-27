@@ -63,6 +63,7 @@ class AdminProblemController extends Controller
 	}
 
 	public function postProblems(Request $request){
+		$this->authorize('create', Problem::class);
 		$problem = \App\Problem::create(['name' =>'title','type'=>1,'spj'=>0,'timelimit'=>1000,'memorylimit'=>256.0, 'manager_id'=>$request->user()->id]);
 		Storage::disk('data')->makeDirectory('/'.$problem->id);
 		return redirect('/admin/problems/'.$problem->id);

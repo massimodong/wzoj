@@ -8,12 +8,14 @@
 
 <div class="col-xs-12 row">
 
+@can ('create',App\Problem::class)
 <div class="col-xs-12">
     <form action='/admin/problems' method='POST'>
     {{csrf_field()}}
     <button type="submit" class="btn btn-default">+</button>
     </form>
 </div>
+@endcan
 
 <div class="col-xs-12" style="height:10px"></div>
 

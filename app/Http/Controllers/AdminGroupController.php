@@ -28,6 +28,7 @@ class AdminGroupController extends Controller
 	}
 
 	public function postGroups(Request $request){
+		$this->authorize('create', \App\Group::class);
 		$group = new \App\Group;
 		$group->manager_id = $request->user()->id;
 		$group->save();

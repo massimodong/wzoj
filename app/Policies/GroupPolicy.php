@@ -41,6 +41,10 @@ class GroupPolicy
 
     }
 
+    public function create(User $user, $group){
+	    return $user->has_role('group_creator');
+    }
+
     public function manage(User $user, Group $group){
 	    return $user->has_role('group_manager') && ($user->id === $group->manager_id);
     }

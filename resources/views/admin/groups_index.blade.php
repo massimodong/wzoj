@@ -8,10 +8,12 @@
 
 <div class='col-lg-12'>
 
+@can ('create',App\Group::class)
 <form method='POST'>
     {{csrf_field()}}
     <button type="submit" class="btn btn-default">+</button>
 </form>
+@endcan
 
 <table class="table table-striped">
 <thead>

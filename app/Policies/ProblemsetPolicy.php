@@ -40,7 +40,7 @@ class ProblemsetPolicy
     }
 
     public function create(User $user, $problemset){
-	    return $user->has_role('problemset_manager');
+	    return $user->has_role('problemset_creator');
     }
 
     public function view_tutorial(User $user, Problemset $problemset){
