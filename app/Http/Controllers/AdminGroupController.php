@@ -21,47 +21,8 @@ class AdminGroupController extends Controller
 			$group = \App\Group::findOrFail($id);
 			$this->authorize('manage', $group);
 
-			$ac_users = array();
-			$wa_users = array();
-
-			$homework_done = array();
-
-			foreach($group->homeworks as $problem){
-				$ac_users[$problem->id] = \App\User::whereIn('id', function($query) use($group, $problem){
-					$query->select('user_id')
-					      ->distinct()
-					      ->from('solutions')
-					      ->where('problem_id', '=', $problem->id)
-					      ->where('score', '>=', 100)
-					      ->whereIn('user_id', function($query) use($group){
-						      $query->select('user_id')
-							    ->from('group_user')
-							    ->where('group_id', '=', $group->id);
-					      });
-				})->get();
-				if(count($ac_users[$problem->id]) == count($group->users)){
-					$homework_done[$problem->id] = true;
-				}else{
-					$homework_done[$problem->id] = false;
-
-					$ac_users_id = array();
-					foreach($ac_users[$problem->id] as $user){
-						$ac_users_id[$user->id] = true;
-					}
-
-					$wa_users[$problem->id] = array();
-					foreach($group->users as $user){
-						if(!isset($ac_users_id[$user->id])){
-							array_push($wa_users[$problem->id], $user);
-						}
-					}
-				}
-			}
 			return view('admin.groups_edit',[
 				'group' => $group,
-				'ac_users' => $ac_users,
-				'wa_users' => $wa_users,
-				'homework_done' => $homework_done,
 			]);
 		}
 	}

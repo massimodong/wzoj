@@ -157,36 +157,11 @@
 	  <li class="list-group-item">
 	    <div class="row">
 	      <span class="col-xs-4"><a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}">{{$problem->name}}</a></span>
-	      <span class="col-xs-4">
-	        @if ($homework_done[$problem->id])
-		  <span style="color:green">
-		    {{count($ac_users[$problem->id])}}
-		  </span>
-		@else
-		  <div class="dropdown">
-		    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">{{trans('wzoj.uncompleted_users')}}
-		    <span class="caret"></span></button>
-		    <ul class="dropdown-menu">
-		    @foreach ($wa_users[$problem->id] as $user)
-		      <li><a href="/users/{{$user->id}}">{{$user->class}} - {{$user->name}}</a></li>
-		    @endforeach
-		    </ul>
-		  </div>
-		  <span style="color:red">
-		    {{count($ac_users[$problem->id])}}
-		  </span>
-		@endif
-		/ <span style="color:green">{{count($group->users)}}</span>
-	      </span>
 	      <form class="col-xs-4" action="/admin/groups/{{$group->id}}/homeworks" method="POST">
 		{{csrf_field()}}
 		{{method_field('DELETE')}}
 		<input name="id[]" value="{{$problem->id}}" hidden>
-		@if ($homework_done[$problem->id])
-		  <button type="submit" class="btn btn-success">{{trans('wzoj.complete_homework')}}</button>
-		@else
-		  <button type="submit" class="btn btn-danger">{{trans('wzoj.terminate_homework')}}</button>
-		@endif
+		<button type="submit" class="btn btn-danger">{{trans('wzoj.terminate_homework')}}</button>
 	      </form>
 	    </div>
 	  </li>
