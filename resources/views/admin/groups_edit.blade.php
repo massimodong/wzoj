@@ -199,7 +199,7 @@ $('#psid').on('changed.bs.select', function (e) {
 	$.get("/admin/ajax/problemset-problems", {problemset_id: psid}).done(function(data){
 		$('#pids').html("");
 		data.forEach(function(value, index, ar){
-			$('#pids').append("<option value='" + value.id + "'>" + value.id + "-" + value.name + "</option>");
+			$('#pids').append("<option value='" + value.id + "'>" + value.id + "-" + escapeHtml(value.name) + "</option>");
 		});
 		$('#pids').selectpicker('refresh');
 	});

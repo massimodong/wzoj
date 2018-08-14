@@ -133,12 +133,12 @@ jQuery(document).ready(function($) {
 		    },
 		    { data: 'name',
 			render: function ( data, type, row, meta){
-				return "<a href='/users/" + row.id + "'>" + data + "</a>";
+				return "<a href='/users/" + row.id + "'>" + escapeHtml(data) + "</a>";
 			}
 		    },
 		    { data: 'description',
 			render: function ( data, type, row, meta){
-				return "<div style='overflow-y: auto;max-height: 58px'>" + data + "</div>";
+				return "<div style='overflow-y: auto;max-height: 58px'>" + escapeHtml(data) + "</div>";
 			}
 		    },
 		    { data: 'cnt_ac' },

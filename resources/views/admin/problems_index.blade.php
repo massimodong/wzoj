@@ -53,7 +53,7 @@ $(function() {
             { data: 'id', name: 'id' },
             { data: 'name', name: 'name',
               render : function ( data, type, row, meta ) {
-                         return '<a href="/admin/problems/' + row.id + '">' + data + '</a> <a href="/admin/problems/' + row.id + '/data">[' + TRANS['testdata'] + ']</a>';
+                         return '<a href="/admin/problems/' + row.id + '">' + escapeHtml(data) + '</a> <a href="/admin/problems/' + row.id + '/data">[' + TRANS['testdata'] + ']</a>';
                        }
 	    },
             { data: 'type', name: 'type',
@@ -71,13 +71,13 @@ $(function() {
 	       render: function ( data, type, row, meta) {
 			       console.log(row.problemsets);
 			       if(data.length >= 1){
-				       ret = data[0].name;
+				       ret = escapeHtml(data[0].name);
 			       }else{
 				       ret = '';
 			       }
 
 			       for(i = 1; i < data.length; ++i){
-				       ret = ret + ' ' + data[i].name;
+				       ret = ret + ' ' + escapeHtml(data[i].name);
 			       }
 			       return ret;
 		       }
@@ -89,13 +89,13 @@ $(function() {
 	    { data: 'problemsets', name: 'problemsets.name',
 	      render: function ( data, type, row, meta) {
 			      if(data.length >= 1){
-				       ret = data[0].name;
+				       ret = escapeHtml(data[0].name);
 			       }else{
 				       ret = '';
 			       }
 
 			       for(i = 1; i < data.length; ++i){
-				       ret = ret + ' ' + data[i].name;
+				       ret = ret + ' ' + escapeHtml(data[i].name);
 			       }
 			       return ret;
 		      }

@@ -1,7 +1,13 @@
+function escapeHtml(str){
+	var div = document.createElement('div');
+	div.appendChild(document.createTextNode(str));
+	return div.innerHTML;
+}
+
 function addAlertSuccess(message){
 	$('#alerts').append("<div class='alert alert-success alert-dismissable fade in'>"
 		    	    + "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"
-			    + message
+			    + escapeHtml(message)
 			    + "</div>");
 	window.setTimeout(function() { $(".alert-success").alert('close') }, 800);
 }
@@ -9,7 +15,7 @@ function addAlertSuccess(message){
 function addAlertWarning(message){
 	$("#alerts").append("<div class='alert alert-warning alert-dismissable'>"
 			    + "<a href='#' class='close' data-dismiss='alert' aria-label='close'>&times;</a>"
-			    + message
+			    + escapeHtml(message)
 			    + "</div>");
 }
 

@@ -88,8 +88,8 @@ function solutions_new_update(){
 		row.attr('id', 'tr-' + solution.id);
 		row.data('href', '/solutions/' + solution.id);
 		row.append("<td>" + solution.id + "</td>");
-		row.append("<td>" + solution.user.name + "</td>");
-		row.append("<td>" + solution.problem.name + "</td>");
+		row.append("<td>" + escapeHtml(solution.user.name) + "</td>");
+		row.append("<td>" + escapeHtml(solution.problem.name) + "</td>");
 
 		var soldiv = $("<div></div>");
 		soldiv.attr('id', 'solution-' + solution.id);
@@ -102,7 +102,7 @@ function solutions_new_update(){
 		row.append("<td class='solution-memoryused'>0.00MB</td>");
 		row.append("<td>" + LANG[solution.language] + "</td>");
 		row.append("<td>" + solution.code_length +"B</td>");
-		row.append("<td class='solution-judger'>" + (solution.judger?solution.judger.name:"") + "</td>");
+		row.append("<td class='solution-judger'>" + escapeHtml(solution.judger?solution.judger.name:"") + "</td>");
 		row.append("<td class='solution-submitted_at'>" + solution.created_at.date.split('.')[0] + "</td>");
 		$('#solutions-tbody').prepend(row);
 		$(".clickable-row").click(function() {

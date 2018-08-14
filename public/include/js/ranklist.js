@@ -11,9 +11,9 @@ function ranklist_addRow(user){
 	$('#rank-table').append(row)
 		.isotope('appended', row);
 
-	$('#user-' + user.id + ' .rank-user').html("<a href='/users/" + user.id + "'>" + user.name + "</a>");
-	$('#user-' + user.id + ' .rank-fullname').html(user.fullname);
-	$('#user-' + user.id + ' .rank-class').html(user.class);
+	$('#user-' + user.id + ' .rank-user').html("<a href='/users/" + user.id + "'>" + escapeHtml(user.name) + "</a>");
+	$('#user-' + user.id + ' .rank-fullname').html(escapeHtml(user.fullname));
+	$('#user-' + user.id + ' .rank-class').html(escapeHtml(user.class));
 	$('#user-' + user.id + ' .rank-score').html(0);
 
 	var indicator = $(indicator_template);

@@ -43,12 +43,12 @@ function addTopic(topic, index){
 	$row = $("<div class='topic_index row'></div>");
 
 	$div_content = $("<div class='col-xs-10'></div>");
-	$div_content.append("<a href='/forum/" + topic.id + "'>" + topic.title + "</a><br>");
-	$div_content.append("<div class='topic_index_content'>" + topic.preview + "</div>");
+	$div_content.append("<a href='/forum/" + topic.id + "'>" + escapeHtml(topic.title) + "</a><br>");
+	$div_content.append("<div class='topic_index_content'>" + escapeHtml(topic.preview) + "</div>");
 	$row.append($($div_content));
 
 	$div_user = $("<div class='col-xs-2'></div>");
-	$div_user.append("<a href='/users/" + topic.user_id + "'>" + topic.user_name + "</a><br>");
+	$div_user.append("<a href='/users/" + topic.user_id + "'>" + escapeHtml(topic.user_name) + "</a><br>");
 	$div_user.append(topic.updated_time + "<br>");
 	$div_user.append("<span class='glyphicon glyphicon-eye-open' style='color:grey'></span>" + topic.cnt_views);
 	$row.append($($div_user));
