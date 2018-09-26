@@ -43,7 +43,7 @@ class PasswordController extends Controller
     public function postChangePassword(Request $request){
 	    if(!Auth::check()) return redirect('/');
 	    $this->validate($request, [
-		'name' => 'required|min:3|max:31|unique:users,name,'.Auth::user()->id,
+		'name' => 'required|username|unique:users,name,'.Auth::user()->id,
 		'email' => 'required|email|max:255|unique:users,email,'.Auth::user()->id,
 		'new_password' => 'confirmed|min:6',
 		'old_password' => 'required',
