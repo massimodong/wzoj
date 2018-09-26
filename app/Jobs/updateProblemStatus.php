@@ -2,6 +2,9 @@
 
 namespace App\Jobs;
 
+use Event;
+use App\Events\ProblemStatusUpdate;
+
 use Cache;
 use DB;
 
@@ -57,7 +60,10 @@ class updateProblemStatus extends Job implements SelfHandling, ShouldQueue
 					->where('problem_id', $problem->id)
 					->where('user_id', $meta->user_id)
 					->where('rate', $meta->rate)
-					->public()
+					->with(['user' => function($query){
+						$query->select(['id', 'name']);
+						}])
+					->select(['id', 'score', 'time_used', 'memory_used', 'user_id'])
 					->first()
 				  );
 			}
@@ -70,6 +76,13 @@ class updateProblemStatus extends Job implements SelfHandling, ShouldQueue
 			->where('problem_id', $problem->id)
 			->where('score', '>=', 100)
 			->count();
+
+		Event::fire(new ProblemStatusUpdate($problemset->id,
+							$problem->id,
+							$best_solutions,
+							$cnt_submit,
+							$cnt_ac));
+
 		return [
 			'best_solutions' => $best_solutions,
 			'cnt_submit' => $cnt_submit,

@@ -34,9 +34,9 @@
           @if (!$has_test_data)
             <span style="color:red"><strong>{{trans('wzoj.no_test_data')}}</strong></span><br>
           @endif
-	  {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: {{$cnt_submit}}/{{$cnt_ac}}
+	  {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: <span id="problem_status_ac_rate">{{$cnt_submit}}/{{$cnt_ac}}</span>
 	  <hr>
-	  <div class="limited_text">
+	  <div id="problem_status_best_solutions" class="limited_text">
 	    @foreach ($best_solutions as $index => $solution)
 	      @if ($index == 0)
 	        <span class="label label-success">1</span>
@@ -46,16 +46,15 @@
 	        <span class="label label-info">3</span>
 	      @endif
 	      <a href="/users/{{$solution->user->id}}">{{$solution->user->name}}</a><br>
-	      <span class="best_solution_status">
-	        <a style="color:grey" href="/solutions/{{$solution->id}}">#{{$solution->id}}</a>
-	        @if ($solution->score == 100)
+	      <a style="color:grey" href="/solutions/{{$solution->id}}">#{{$solution->id}}</a>
+	      @if ($solution->score == 100)
 	        <span style="color:green"><strong>{{$solution->score}}</strong></span>
-	        @else
+	      @else
 	        <span style="color:red"><strong>{{$solution->score}}</strong></span>
-	        @endif
-	        {{$solution->time_used}}ms
-	        {{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB
-	      </span><br>
+	      @endif
+	      {{$solution->time_used}}ms
+	      {{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB
+	      <br>
 	      <div class="top-buffer-sm"></div>
 	    @endforeach
 	  </div>
@@ -193,6 +192,34 @@ function detectLanguage(){
 		}
 	}
 }
+
+socket.on('wzoj:App\\Events\\ProblemStatusUpdate', function(data){
+	if(data.psid == {{$problemset->id}} && data.pid == {{$problem->id}}){
+		$('#problem_status_ac_rate').text(data.cnt_submit + '/' + data.cnt_ac);
+
+		var bs = $('#problem_status_best_solutions');
+		bs.text("");
+		for(var i=0;i<data.best_solutions.length;i++){
+			var solution = data.best_solutions[i];
+			if(i==0) bs.append("<span class='label label-success'>1</span>\n");
+			else if(i==1) bs.append("<span class='label label-primary'>2</span>\n");
+			else bs.append("<span class='label label-info'>3</span>\n");
+
+			bs.append("<a href='/users/" + solution.user.id + "'>" + escapeHtml(solution.user.name) + "</a><br>");
+			bs.append("<a style='color:grey' href='/solutions/" + solution.id + "'>#" + solution.id + "</a>\n");
+
+			if(solution.score == 100)
+				bs.append("<span style='color:green'><strong>" + solution.score + "</strong></span>\n");
+			else
+				bs.append("<span style='color:red'><strong>" + solution.score + "</strong></span>\n");
+
+			bs.append(solution.time_used + "ms\n");
+			bs.append((solution.memory_used / 1024 / 1024).toFixed(2) + "MB\n");
+			bs.append("<br><div class='top-buffer-sm'></div>");
+		}
+	}
+});
+
 </script>
 @if ($problem->type == 3)
 	<script>

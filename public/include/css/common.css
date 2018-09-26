@@ -288,9 +288,6 @@ textarea {
   text-overflow:ellipsis
 }
 
-.best_solution_status {
-}
-
 .clickable {
   cursor: pointer;
 }
