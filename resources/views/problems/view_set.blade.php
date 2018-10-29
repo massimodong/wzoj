@@ -37,6 +37,7 @@
 	  {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: <span id="problem_status_ac_rate">{{$cnt_submit}}/{{$cnt_ac}}</span>
 	  <hr>
 	  <div id="problem_status_best_solutions" class="limited_text">
+	  @if (isset($best_solutions))
 	    @foreach ($best_solutions as $index => $solution)
 	      @if ($index == 0)
 	        <span class="label label-success">1</span>
@@ -57,6 +58,11 @@
 	      <br>
 	      <div class="top-buffer-sm"></div>
 	    @endforeach
+	  @else
+	    <center>
+	      <div class="loader"></div>
+	    </center>
+	  @endif
 	  </div>
         </div>
       </div>
