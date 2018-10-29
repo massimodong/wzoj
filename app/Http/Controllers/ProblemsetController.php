@@ -142,7 +142,7 @@ class ProblemsetController extends Controller
 			->where('created_at', '>=', $problemset->contest_start_at)
 			->where('created_at', '<=', $problemset->contest_end_at)
 			->with(['user'])
-			->get();
+			->get(['id', 'user_id', 'problem_id', 'problemset_id', 'score', 'status', 'ce']);
 
 		$table = array();
 		$users_id = [];
