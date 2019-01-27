@@ -25,7 +25,7 @@
     <tr>
       <th style='width:5%'></th>
       <th style='width:5%'>{{trans('wzoj.index')}}</th>
-      <th>{{trans('wzoj.name')}}</th>
+      <th class="text-left">{{trans('wzoj.name')}}</th>
       <th style='width:13%'>{{trans('wzoj.source')}}</th>
     </tr>
   </thead>
@@ -41,7 +41,7 @@
         @endif
       </td>
       <td>{{$problem->pivot->index}}</td>
-      <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></td>
+      <td class="text-left"><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></td>
       <td>{{$problem->source}}</td>
     </tr>
     @endforeach
