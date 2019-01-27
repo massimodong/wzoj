@@ -11,22 +11,6 @@
       {!! $home_diy->content !!}
     </div>
   @endif
-  <div class="col-xs-12 row">
-  @foreach ($home_page_problemsets as $problemset)
-    <div class="col-xs-4">
-      <div class="thumbnail problemset-dock" data-href="/s/{{$problemset->id}}">
-        <div class="row">
-          <div class="col-xs-12">
-            <div style="padding: 9px;min-height: 130px;">
-              <div class="dock-heading">{{$problemset->name}}</div>
-  		{!! Purifier::clean($problemset->description) !!}
-	    </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  @endforeach
-  </div>
   @if (isset($group_homeworks))
   <div class="col-xs-12">
     <h3>{{trans('wzoj.homework')}}</h3>

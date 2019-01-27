@@ -29,28 +29,9 @@ class HomeController extends Controller
 			});
 		}
 
-		if(!(Auth::check())){
-			$recent_problemsets = Cache::tags(['wzoj'])->remember('recent_problemsets', 1, function(){
-				return \App\Problemset::where('type', '=', 'set')
-							->where('public', true)
-							->orderBy('updated_at', 'desc')
-							->take(6)->get();
-			});
-		}else{
-			$recent_problemsets = $request->user()->problemsets();
-			usort($recent_problemsets, function($a, $b){
-				return $a->updated_at < $b->updated_at;
-			});
-		}
 		$recent_contests = Cache::tags(['wzoj'])->remember('recent_contests', 1, function(){
 			return \App\Problemset::where('type','<>', 'set')->orderBy('contest_start_at', 'desc')->take(6)->get();
 		});
-		$home_page_problemsets=[];
-		foreach($recent_problemsets as $problemset){
-			if($problemset->type == 'set'){
-				array_push($home_page_problemsets,$problemset);
-			}
-		}
 
 		$groups = [];
 		if(Auth::check()){
@@ -102,7 +83,6 @@ class HomeController extends Controller
 
 		return view('home',[
 			'home_diy' => $diyPage,
-			'home_page_problemsets' => $home_page_problemsets,
 			'recent_contests' => $recent_contests,
 			'group_homeworks' => $homework_flag?$group_homeworks:NULL,
 			'groups' => $groups,
