@@ -5,6 +5,7 @@
 @endsection
 
 @section ('content')
+{!! Breadcrumbs::render('home') !!}
 <div class="col-xs-9 row">
   @if (isset($home_diy))
     <div class="col-xs-12">

@@ -57,7 +57,6 @@ class ProblemsetController extends Controller
 			}
 		}
 		return view('problemsets.index',[
-				'breadcrumb' => 'problemsets',
 				'problemsets' => $problemsets,
 				'tags' => \App\ProblemTag::all()]);
 	}
@@ -86,7 +85,6 @@ class ProblemsetController extends Controller
 			}
 		}
 		return view('problemsets.contests',[
-				'breadcrumb' => 'contests',
 				'problemsets' => $contests,
 				'tag' => $tag,
 		]);

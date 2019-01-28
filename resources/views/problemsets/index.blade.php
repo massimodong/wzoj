@@ -5,6 +5,7 @@
 @endsection
 
 @section ('content')
+{!! Breadcrumbs::render('problemsets') !!}
 <div class='col-xs-12'>
 
 @can ('create',App\Problemset::class)
