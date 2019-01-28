@@ -5,6 +5,7 @@
 @endsection
 
 @section ('content')
+{!! Breadcrumbs::render('ranklist') !!}
 <table class="table table-striped table-bordered">
   <thead>
     <tr>

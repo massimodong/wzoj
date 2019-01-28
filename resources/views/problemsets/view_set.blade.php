@@ -5,7 +5,7 @@
 @endsection
 
 @section ('content')
-
+{!! Breadcrumbs::render('problemset', $problemset) !!}
 <h1 class='page-header text-center'>{{$problemset->name}}</h1>
 @can ('update', $problemset)
 <div class="pull-right"><a href="/s/{{$problemset->id}}/edit">{{trans('wzoj.edit')}}</a></div>

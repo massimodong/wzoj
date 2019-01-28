@@ -5,5 +5,6 @@
 @endsection
 
 @section ('content')
+{!! Breadcrumbs::render('diy_page', $diyPage) !!}
 {!!$diyPage->content!!}
 @endsection

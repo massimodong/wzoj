@@ -17,6 +17,7 @@
 @include ('layouts.contest_header')
 
 @section ('content')
+{!! Breadcrumbs::render('contest_ranklist', $problemset) !!}
 @if (Auth::check() && Auth::user()->has_role('admin'))
 <div class="col-xs-12">
 <a href="./ranklist_csv" class="pull-right">{{trans('wzoj.download')}}</a>

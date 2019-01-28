@@ -5,6 +5,7 @@
 @endsection
 
 @section ('content')
+{!! Breadcrumbs::render('user', $user) !!}
 	<div class="row profile">
 		<div class="col-md-3">
 			<div class="profile-sidebar">

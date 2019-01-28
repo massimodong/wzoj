@@ -9,6 +9,7 @@
 @endif
 
 @section ('content')
+{!! Breadcrumbs::render('solution', $solution) !!}
 <div class="col-xs-12">
 
 <table class="table table-striped">

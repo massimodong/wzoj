@@ -9,6 +9,7 @@
 @endif
 
 @section ('content')
+{!! Breadcrumbs::render('solutions') !!}
 <div class='col-xs-12'>
 
 <center><form class="form-inline" method="GET">
