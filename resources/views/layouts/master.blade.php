@@ -115,6 +115,7 @@
     </div>
 
 
+    {!! Breadcrumbs::render($breadcrumb) !!}
     <div class="container">
     	@yield ('content')
     </div> <!-- /container -->

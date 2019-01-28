@@ -56,7 +56,10 @@ class ProblemsetController extends Controller
 				array_push($problemsets,$problemset);
 			}
 		}
-		return view('problemsets.index',['problemsets' => $problemsets, 'tags' => \App\ProblemTag::all()]);
+		return view('problemsets.index',[
+				'breadcrumb' => 'problemsets',
+				'problemsets' => $problemsets,
+				'tags' => \App\ProblemTag::all()]);
 	}
 	public function getContestsIndex(Request $request){
 		if(!(Auth::check())){
@@ -83,6 +86,7 @@ class ProblemsetController extends Controller
 			}
 		}
 		return view('problemsets.contests',[
+				'breadcrumb' => 'contests',
 				'problemsets' => $contests,
 				'tag' => $tag,
 		]);

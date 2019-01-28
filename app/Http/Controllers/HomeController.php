@@ -82,6 +82,7 @@ class HomeController extends Controller
 		});
 
 		return view('home',[
+			'breadcrumb' => 'home',
 			'home_diy' => $diyPage,
 			'recent_contests' => $recent_contests,
 			'group_homeworks' => $homework_flag?$group_homeworks:NULL,
