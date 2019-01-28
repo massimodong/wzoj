@@ -1,7 +1,7 @@
 @extends ('fileManager.layout')
 
 @section ('title')
-{{$config['title']}}
+{!! $config['title'] !!}
 @endsection
 
 @section ('content')
