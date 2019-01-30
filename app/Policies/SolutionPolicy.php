@@ -27,8 +27,11 @@ class SolutionPolicy
     }
 
     public function view(User $user,Solution $solution){
+	    if($solution->user_id == $user->id) return true;
+	    $problemset = $solution->problemset;
+	    $contest_running = ($problemset->type === 'apio')  && (time() <= strtotime($problemset->contest_end_at));
+	    if($contest_running) return false;
 	    return true;
-	    //return $solution->user_id == $user->id;
     }
 
     public function view_code(User $user, Solution $solution){

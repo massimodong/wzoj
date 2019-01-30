@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use Cache;
 use Storage;
 use DB;
+use Auth;
 
 use Illuminate\Support\Facades\Redis;
 
@@ -53,11 +54,12 @@ class SolutionController extends Controller
 		    $top = $max_id;
 	    }
 
-	    $solutions = Solution::where('id', '<>', 0);
+	    $solutions = Solution::nohidden();
 	    // limits
 	    //todo: abandon url_limits
 	    $url_limits = '';
 	    $problemset = NULL;
+
 	    if(isset($request->problemset_id) && $request->problemset_id <> ''){
 		    if(!empty(\Request::get('contests'))){
 			    if(!in_array($request->problemset_id, \Request::get('contests'))) abort(403);
@@ -246,7 +248,9 @@ class SolutionController extends Controller
 			    ->withErrors(trans('wzoj.submit_too_frequent'))
 			    ->withInput();
 	    }
-	    Event::fire(new NewSolution($solution));
+
+	    $contest_running = ($problemset->type === 'apio')  && (time() <= strtotime($problemset->contest_end_at));
+	    if(!$contest_running) Event::fire(new NewSolution($solution));
 
 	    Redis::lpush('wzoj_recent_solution_ids', $solution->id);             // push the solution to redis list
 	    Redis::ltrim('wzoj_recent_solution_ids', 0, self::PAGE_LIMIT -1);    // save only `PAGE_LIMIT` solutions
@@ -282,7 +286,9 @@ class SolutionController extends Controller
 		    }
 	    }
 
-	    //$this->authorize('view',$solution);
+	    if(Auth::check()) $this->authorize('view', $solution);
+	    else return redirect('/auth/login');
+
 	    $testcases = $solution->testcases;
 	    return view('solutions.show',['solution' => $solution,
 			    		'testcases' => $testcases,

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use DB;
+use Auth;
 
 class Solution extends Model
 {
@@ -73,6 +74,22 @@ class Solution extends Model
 				$query->select(['id', 'type']);
 			  }])
 			->with('sim');
+	}
+
+	/**
+	  * show only solutions not in a running contest
+	  */
+	public function scopeNohidden($query){
+		$query->where(function($query){
+			$query = $query->whereNotIn('problemset_id', function($query){
+				$query->select('id')
+					->from('problemsets')
+					->where('type', 'apio')
+					->where('contest_end_at', '>=', date('Y-m-d H:i:s'));
+
+			});
+			if(Auth::check()) $query->orWhere('user_id', Auth::user()->id);
+		});
 	}
 
 	public function shouldShowSim(){
