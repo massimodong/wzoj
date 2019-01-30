@@ -28,41 +28,49 @@
     </div>
     <div class="col-xs-3">
       <div style="height:85px"></div>
-      <div class="panel panel-default">
-        <div class="panel-heading">{{trans('wzoj.status')}}</div>
-        <div class="panel-body">
-          @if (!$has_test_data)
-            <span style="color:red"><strong>{{trans('wzoj.no_test_data')}}</strong></span><br>
-          @endif
-	  {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: <span id="problem_status_ac_rate">{{$cnt_submit}}/{{$cnt_ac}}</span>
-	  <hr>
-	  <div id="problem_status_best_solutions" class="limited_text">
-	  @if (isset($best_solutions))
-	    @foreach ($best_solutions as $index => $solution)
-	      @if ($index == 0)
-	        <span class="label label-success">1</span>
-	      @elseif ($index == 1)
-	        <span class="label label-primary">2</span>
+      @if (!$has_test_data)
+        <span style="color:red"><strong>{{trans('wzoj.no_test_data')}}</strong></span><br>
+      @endif
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">
+              <a data-toggle="collapse" href="#status-body" class="collapsed">{{trans('wzoj.status')}}</a>
+            </h4>
+	  </div>
+          <div id="status-body" class="panel-collapse collapse">
+            <div class="panel-body">
+	      {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: <span id="problem_status_ac_rate">{{$cnt_submit}}/{{$cnt_ac}}</span>
+	      <hr>
+	      <div id="problem_status_best_solutions" class="limited_text">
+	      @if (isset($best_solutions))
+	        @foreach ($best_solutions as $index => $solution)
+	          @if ($index == 0)
+	            <span class="label label-success">1</span>
+	          @elseif ($index == 1)
+	            <span class="label label-primary">2</span>
+	          @else
+	            <span class="label label-info">3</span>
+	          @endif
+	          <a href="/users/{{$solution->user->id}}">{{$solution->user->name}}</a><br>
+	          <a style="color:grey" href="/solutions/{{$solution->id}}">#{{$solution->id}}</a>
+	          @if ($solution->score == 100)
+	            <span style="color:green"><strong>{{$solution->score}}</strong></span>
+	          @else
+	            <span style="color:red"><strong>{{$solution->score}}</strong></span>
+	          @endif
+	          {{$solution->time_used}}ms
+	          {{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB
+	          <br>
+	          <div class="top-buffer-sm"></div>
+	        @endforeach
 	      @else
-	        <span class="label label-info">3</span>
+	        <center>
+	          <div class="loader"></div>
+	        </center>
 	      @endif
-	      <a href="/users/{{$solution->user->id}}">{{$solution->user->name}}</a><br>
-	      <a style="color:grey" href="/solutions/{{$solution->id}}">#{{$solution->id}}</a>
-	      @if ($solution->score == 100)
-	        <span style="color:green"><strong>{{$solution->score}}</strong></span>
-	      @else
-	        <span style="color:red"><strong>{{$solution->score}}</strong></span>
-	      @endif
-	      {{$solution->time_used}}ms
-	      {{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB
-	      <br>
-	      <div class="top-buffer-sm"></div>
-	    @endforeach
-	  @else
-	    <center>
-	      <div class="loader"></div>
-	    </center>
-	  @endif
+	      </div>
+            </div>
 	  </div>
         </div>
       </div>
