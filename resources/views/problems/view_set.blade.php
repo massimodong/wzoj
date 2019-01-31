@@ -31,6 +31,8 @@
       @if (!$has_test_data)
         <span style="color:red"><strong>{{trans('wzoj.no_test_data')}}</strong></span><br>
       @endif
+      @if (($problemset->type === 'apio')  && (time() <= strtotime($problemset->contest_end_at)))
+      @else
       <div class="panel-group">
         <div class="panel panel-default">
           <div class="panel-heading">
@@ -74,6 +76,7 @@
 	  </div>
         </div>
       </div>
+      @endif
 
       <div class="panel-group">
         <div class="panel panel-default">
