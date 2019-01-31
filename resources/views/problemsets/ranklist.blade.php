@@ -80,7 +80,13 @@
 	    </div>
 	  </div>
 	  @else
-	  <div class='problem-{{$problem->id}} sortable_list_cell' style=''>-</div>
+	  <div class='problem-{{$problem->id}} sortable_list_cell' style=''>
+	    @if (!$contest_running && $row->problem_corrected_scores[$problem->id] >= 0)
+	      ({{$row->problem_corrected_scores[$problem->id]}})
+	    @else
+	      -
+	    @endif
+	  </div>
 	  @endif
 	@endforeach
     </li>
