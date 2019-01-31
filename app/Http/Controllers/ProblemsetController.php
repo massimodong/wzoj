@@ -198,7 +198,7 @@ class ProblemsetController extends Controller
 			}
 		}
 
-		$contest_running = time() <= strtotime($problemset->contest_end_at);
+		$contest_running = $problemset->isContestRunning();
 		$problems = $problemset->problems()->orderByIndex()->get();
 		$table = $this->getRanklistTable($problemset, $problems, $contest_running);
 		return  view('problemsets.ranklist', ['problemset' => $problemset,
@@ -217,7 +217,7 @@ class ProblemsetController extends Controller
 		
 		download_send_headers($problemset->name . '-' . date("Y-m-d") . ".csv");
 
-		$contest_running = time() <= strtotime($problemset->contest_end_at);
+		$contest_running = $problemset->isContestRunning();
 		$problems = $problemset->problems()->orderByIndex()->get();
 		$table = $this->getRanklistTable($problemset, $problems, $contest_running);
 

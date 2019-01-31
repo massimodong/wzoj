@@ -249,8 +249,8 @@ class SolutionController extends Controller
 			    ->withInput();
 	    }
 
-	    $contest_running = ($problemset->type === 'apio')  && (time() <= strtotime($problemset->contest_end_at));
-	    if(!$contest_running) Event::fire(new NewSolution($solution));
+	    $hide_solutions = $problemset->isHideSolutions();
+	    if(!$hide_solutions) Event::fire(new NewSolution($solution));
 
 	    Redis::lpush('wzoj_recent_solution_ids', $solution->id);             // push the solution to redis list
 	    Redis::ltrim('wzoj_recent_solution_ids', 0, self::PAGE_LIMIT -1);    // save only `PAGE_LIMIT` solutions

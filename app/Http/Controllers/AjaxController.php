@@ -31,8 +31,8 @@ class AjaxController extends Controller
 
 		$problemset = Problemset::findOrFail($request->psid);
 
-		$contest_running = ($problemset->type === 'apio')  && (time() <= strtotime($problemset->contest_end_at));
-		if($contest_running) return response()->json(['ok' => False]);
+		$hide_solutions = $problemset->isHideSolutions();
+		if($hide_solutions) return response()->json(['ok' => False]);
 
 		$problem = Cache::tags(['problems', $problemset->id])->rememberForever($request->pid, function() use($problemset, $request){
 			return $problemset->problems()->findOrFail($request->pid);

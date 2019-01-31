@@ -30,4 +30,12 @@ class Problemset extends Model
 	public function manager(){
 		return $this->belongsTo('App\User');
 	}
+
+	public function isContestRunning(){
+		return ($this->type != 'set')  && (time() <= strtotime($this->contest_end_at));
+	}
+
+	public function isHideSolutions(){
+		return $this->isContestRunning() && ($this->type != 'acm');
+	}
 }
