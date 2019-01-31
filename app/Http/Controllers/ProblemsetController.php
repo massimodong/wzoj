@@ -347,10 +347,6 @@ class ProblemsetController extends Controller
 
 		//problem status
 		$problem_status = ['best_solutions' => NULL, 'cnt_submit' => 0, 'cnt_ac' => 0];
-		if(Cache::tags(['problem_status', $problemset->id])->has($problem->id))
-			$problem_status = Cache::tags(['problem_status', $problemset->id])->get($problem->id);
-		else
-			$this->dispatch(new updateProblemStatus($problemset, $problem));
 
 		$topics = Cache::tags(['problem_topics'])->remember($problem->id, 1, function() use($problem){
 			return \App\ForumTopic::whereIn('id', function($query) use($problem){

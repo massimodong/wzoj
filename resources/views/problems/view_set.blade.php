@@ -35,7 +35,7 @@
         <div class="panel panel-default">
           <div class="panel-heading">
             <h4 class="panel-title">
-              <a data-toggle="collapse" href="#status-body" class="collapsed">{{trans('wzoj.status')}}</a>
+              <a data-toggle="collapse" href="#status-body" class="collapsed" onclick="problemStatusRequest();">{{trans('wzoj.status')}}</a>
             </h4>
 	  </div>
           <div id="status-body" class="panel-collapse collapse">
@@ -233,6 +233,10 @@ socket.on('wzoj:App\\Events\\ProblemStatusUpdate', function(data){
 		}
 	}
 });
+
+function problemStatusRequest(){
+	$.get( "/ajax/problem-status-request?psid={{$problemset->id}}&pid={{$problem->id}}", function( data ) {});
+}
 
 </script>
 @if ($problem->type == 3)
