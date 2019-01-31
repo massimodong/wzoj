@@ -50,4 +50,8 @@ class Problem extends Model
 	public function scopeOrderByIndex($query){
 		return $query->orderBy('problem_problemset.index','asc');
 	}
+
+	public function subtasks(){
+		return $this->hasMany('App\Subtask');
+	}
 }

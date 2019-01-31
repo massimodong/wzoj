@@ -85,12 +85,14 @@ class AdminProblemController extends Controller
 			'name' => 'required|max:255',
 			'type' => 'required|in:1,2,3',
 			'spj'  => 'in:1',
+			'use_subtasks' => 'in:1',
 			'timelimit' => 'required|integer',
 			'memorylimit' => 'required|numeric',
 		]);
 
 		$newval = $request->except(['tags', 'manager']);
 		if(!isset($newval['spj'])) $newval['spj'] = 0;
+		if(!isset($newval['use_subtasks'])) $newval['use_subtasks'] = 0;
 		$newval['description'] = Purifier::clean($newval['description']);
 		$newval['inputformat'] = Purifier::clean($newval['inputformat']);
 		$newval['outputformat'] = Purifier::clean($newval['outputformat']);

@@ -22,6 +22,7 @@
   <li><a data-toggle="tab" href="#io_format"> {{trans('wzoj.io_format')}} </a></li>
   <li><a data-toggle="tab" href="#samples"> {{trans('wzoj.samples')}} </a></li>
   <li><a data-toggle="tab" href="#hints"> {{trans('wzoj.hints')}} </a></li>
+  <li><a data-toggle="tab" href="#subtasks"> {{trans('wzoj.subtasks')}} </a></li>
   <li><a data-toggle="tab" href="#others"> {{trans('wzoj.others')}} </a></li>
 </ul>
 
@@ -139,6 +140,20 @@
 
   </div>
   <!-- hints -->
+
+  <div id="subtasks" class="tab-pane">
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="use_subtasks" value="1" {{$problem->use_subtasks?"checked":""}}> {{trans('wzoj.use_subtasks')}}
+        </label>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <!-- subtasks -->
 
   <div id="others" class="tab-pane">
   <div class="form-group">
