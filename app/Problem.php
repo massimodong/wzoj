@@ -14,6 +14,8 @@ class Problem extends Model
 		'id' => 'integer',
 		'type' => 'integer',
 		'spj' => 'boolean',
+		'use_subtasks' => 'boolean',
+		'subtasks' => 'array',
 		'timelimit' => 'integer',
 		'memorylimit' => 'double',
 	];
@@ -49,9 +51,5 @@ class Problem extends Model
 
 	public function scopeOrderByIndex($query){
 		return $query->orderBy('problem_problemset.index','asc');
-	}
-
-	public function subtasks(){
-		return $this->hasMany('App\Subtask');
 	}
 }

@@ -14,6 +14,7 @@ class ProblemAddSubtasks extends Migration
     {
         Schema::table('problems', function (Blueprint $table) {
 		$table->boolean('use_subtasks')->after('spj');
+		$table->longText('subtasks')->after('use_subtasks');
         });
     }
 
@@ -26,6 +27,7 @@ class ProblemAddSubtasks extends Migration
     {
         Schema::table('problems', function (Blueprint $table) {
 		$table->dropColumn('use_subtasks');
+		$table->dropColumn('subtasks');
         });
     }
 }
