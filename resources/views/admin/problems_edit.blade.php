@@ -152,6 +152,13 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <label for="subtasks" class="col-xs-2 control-label"> {{trans('wzoj.subtasks')}} </label>
+    <div class="col-xs-10">
+      <textarea class='form-control' rows='20' id='subtasks' name='subtasks'>{{htmlspecialchars(json_encode($problem->subtasks, JSON_PRETTY_PRINT))}}</textarea>
+    </div>
+  </div>
+
   </div>
   <!-- subtasks -->
 

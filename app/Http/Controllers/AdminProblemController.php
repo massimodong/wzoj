@@ -98,6 +98,7 @@ class AdminProblemController extends Controller
 		$newval['outputformat'] = Purifier::clean($newval['outputformat']);
 		$newval['hint'] = Purifier::clean($newval['hint']);
 		$newval['tutorial'] = Purifier::clean($newval['tutorial']);
+		$newval['subtasks'] = json_decode($newval['subtasks']);
 
 		if($request->user()->has_role('admin')){
 			$newval['manager_id'] = $request->manager;
