@@ -289,7 +289,7 @@ class SolutionController extends Controller
 	    if(Auth::check()) $this->authorize('view', $solution);
 	    else return redirect('/auth/login');
 
-	    $testcases = $solution->testcases;
+	    $testcases = $solution->testcaseByName();
 	    return view('solutions.show',['solution' => $solution,
 			    		'testcases' => $testcases,
 	    				'problemset' => $solution->problemset]);

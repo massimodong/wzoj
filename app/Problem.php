@@ -15,7 +15,7 @@ class Problem extends Model
 		'type' => 'integer',
 		'spj' => 'boolean',
 		'use_subtasks' => 'boolean',
-		'subtasks' => 'array',
+		'subtasks' => 'object',
 		'timelimit' => 'integer',
 		'memorylimit' => 'double',
 	];

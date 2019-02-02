@@ -163,4 +163,49 @@ class Solution extends Model
 			],
 		];
 	}
+
+	public function testcaseByName(){
+		if(!is_array($this->testcases)) return [];
+		$testcases = [];
+		foreach($this->testcases as $testcase){
+			$testcases[$testcase->filename] = $testcase;
+		}
+		return $testcases;
+	}
+
+	public function calc_score(){
+		if(!$this->problem->use_subtasks) return;
+		$this->score = 0;
+		$tot_score = 0;
+
+		if(!is_array($this->problem->subtasks)) return;
+
+		$testcases = $this->testcaseByName();
+
+		foreach($this->problem->subtasks as $subtask){
+			$tot_score += $subtask->score;
+			$subtask_score = 100;
+			foreach($subtask->testcases as $name){
+				$tsc = 0;
+				if(isset($testcases[$name])) $tsc = $testcases[$name]->score;
+				switch($subtask->type){
+					case "min":
+						$subtask_score = min($subtask_score, $tsc);
+						break;
+					case "mul":
+						$subtask_score *= $tsc / 100;
+						break;
+					case "ave":
+						$subtask_score += $tsc;
+						break;
+				}
+			}
+
+			if($subtask->type == "ave") $subtask_score = ($subtask_score - 100) / count($subtask->testcases);
+
+			$this->score += floor($subtask->score * ($subtask_score / 100));
+		}
+
+		if($tot_score != 100) $this->score = 0;
+	}
 }

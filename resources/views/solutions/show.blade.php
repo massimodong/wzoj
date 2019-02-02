@@ -103,26 +103,29 @@
  		   </tr>
 		</thead>
 		<tbody>
-		@foreach ($testcases as $testcase)
+		@if ($solution->problem->use_subtasks)
+		  @foreach ($solution->problem->subtasks as $subtask)
 		    <tr>
-		    	@if ($solution->problem->type == 3)
-		    	  @can ('view_code', $solution)
-			    <td><a href='#' title="{{trans('wzoj.download_answerfile')}}">{{$testcase->filename}}</a></td>
-			  @else
-			    <td>{{$testcase->filename}}</td>
-			  @endcan
-			@else
-			    <td>{{$testcase->filename}}</td>
-			@endif
-			<td>{{$testcase->score}}</td>
-			<td>{{$testcase->time_used}}ms</td>
-			<td>{{sprintf('%.2f', $testcase->memory_used / 1024 / 1024)}}MB</td>
-			<td>{{$testcase->verdict}}</td>
-			<td>{{$testcase->checklog}}</td>
+		      <td colspan="6">{{trans('wzoj.subtask')}} ({{$subtask->score}} pts)</td>
 		    </tr>
-		@endforeach
+		    @foreach ($subtask->testcases as $name)
+		      @if (isset($testcases[$name]) && ($testcase = $testcases[$name]))
+			@include ('layouts.showsolution')
+		      @else
+		        <tr>
+			  <td>{{$name}}</td>
+			  <td colspan="5"> -- no data -- </td>
+			</tr>
+		      @endif
+		    @endforeach
+		  @endforeach
+		@else
+		  @foreach ($testcases as $testcase)
+		    @include ('layouts.showsolution')
+		  @endforeach
+		@endif
 		</tbody>
-	</table>
+		</table>
 
 	@endif
 

@@ -399,6 +399,7 @@ return [
     'functions' => '功能',
     'broadcast' => '广播',
 
+    'subtask' => '测试组',
     'subtasks' => '测试组',
     'use_subtasks' => '启用测试组',
 ];

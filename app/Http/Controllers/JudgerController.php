@@ -208,6 +208,7 @@ class JudgerController extends Controller
 		$solution = \App\Solution::findOrFail($request->solution_id);
 		$solution->problem->update_cnt_submit();
 		$solution->problem->update_cnt_ac();
+		if($solution->problem->use_subtasks) $solution->calc_score();
 
 		$solution->status = SL_JUDGED;
 		$solution->judged_at = date('Y-m-d H:i:s');
