@@ -147,6 +147,7 @@
       <div class="checkbox">
         <label>
           <input type="checkbox" name="use_subtasks" value="1" {{$problem->use_subtasks?"checked":""}}> {{trans('wzoj.use_subtasks')}}
+          <a href="https://github.com/massimodong/wzoj/wiki/Subtasks" target="_blank"> ({{trans('wzoj.help')}}) </a>
         </label>
       </div>
     </div>
