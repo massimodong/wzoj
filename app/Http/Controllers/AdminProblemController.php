@@ -100,6 +100,10 @@ class AdminProblemController extends Controller
 		$newval['tutorial'] = Purifier::clean($newval['tutorial']);
 		$newval['subtasks'] = json_decode($newval['subtasks']);
 
+		if($newval['use_subtasks'] && !isset($newval['subtasks'])){
+			return response()->json(['message' => trans('wzoj.invalid_subtasks_description')], 500);
+		}
+
 		if($request->user()->has_role('admin')){
 			$newval['manager_id'] = $request->manager;
 		}

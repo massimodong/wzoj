@@ -103,7 +103,7 @@
  		   </tr>
 		</thead>
 		<tbody>
-		@if ($solution->problem->use_subtasks)
+		@if ($solution->problem->use_subtasks && is_array($solution->problem->subtasks))
 		  @foreach ($solution->problem->subtasks as $subtask)
 		    <tr>
 		      <td colspan="6">{{trans('wzoj.subtask')}} ({{$subtask->score}} pts)</td>

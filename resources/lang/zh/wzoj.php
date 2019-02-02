@@ -402,4 +402,5 @@ return [
     'subtask' => '测试组',
     'subtasks' => '测试组',
     'use_subtasks' => '启用测试组',
+    'invalid_subtasks_description' => '不合法的测试组',
 ];
