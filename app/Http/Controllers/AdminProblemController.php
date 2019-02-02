@@ -111,7 +111,8 @@ class AdminProblemController extends Controller
 		$problem->update($newval);
 		Cache::tags(['problems'])->flush();
 
-		$problem->tags()->sync($request->tags);
+		if(isset($request->tags)) $problem->tags()->sync($request->tags);
+		else $problem->tags()->detach();
 		Cache::tags(['problem_tags'])->forever($problem->id, $problem->tags);
 
 		return back();
