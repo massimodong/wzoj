@@ -296,6 +296,7 @@ class ProblemsetController extends Controller
 		$newval = $request->except(['manager']);
 		if(!isset($newval['public'])) $newval['public'] = 0;
 		if(!isset($newval['show_problem_tags'])) $newval['show_problem_tags'] = 0;
+		if(!isset($newval['contest_hide_solutions'])) $newval['contest_hide_solutions'] = 0;
 
 		$newval['description'] = Purifier::clean($newval['description']);
 

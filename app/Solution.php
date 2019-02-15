@@ -85,6 +85,7 @@ class Solution extends Model
 			$query = $query->whereNotIn('problemset_id', function($query){
 				$query->select('id')
 					->from('problemsets')
+					->where('contest_hide_solutions', 1)
 					->where('type', 'apio')
 					->where('contest_end_at', '>=', date('Y-m-d H:i:s'));
 

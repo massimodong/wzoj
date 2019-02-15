@@ -11,7 +11,7 @@ class Problemset extends Model
 {
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
-	protected $fillable = ['name','type','public','description','contest_start_at','contest_end_at', 'tag', 'remark', 'show_problem_tags', 'manager_id'];
+	protected $fillable = ['name','type','public','description','contest_start_at','contest_end_at', 'tag', 'remark', 'show_problem_tags', 'contest_hide_solutions', 'manager_id'];
 	protected $casts = [
 		'id' => 'integer',
 		'public' => 'boolean',
@@ -38,6 +38,7 @@ class Problemset extends Model
 	}
 
 	public function isHideSolutions(){
+		if(!$this->contest_hide_solutions) return false;
 		if(Auth::check() && Auth::user()->has_role('admin')) return false;
 		return $this->isContestRunning() && ($this->type != 'acm');
 	}

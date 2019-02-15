@@ -403,4 +403,6 @@ return [
     'subtasks' => '测试组',
     'use_subtasks' => '启用测试组',
     'invalid_subtasks_description' => '不合法的测试组',
+
+    'contest_hide_solutions' => '比赛时隐藏提交',
 ];
