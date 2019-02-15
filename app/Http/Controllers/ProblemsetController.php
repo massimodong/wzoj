@@ -198,6 +198,8 @@ class ProblemsetController extends Controller
 			}
 		}
 
+		if($problemset->isHideSolutions()) abort(403);
+
 		$contest_running = $problemset->isContestRunning();
 		$problems = $problemset->problems()->orderByIndex()->get();
 		$table = $this->getRanklistTable($problemset, $problems, $contest_running);
