@@ -80,6 +80,7 @@ class Solution extends Model
 	  * show only solutions not in a running contest
 	  */
 	public function scopeNohidden($query){
+		if(Auth::check() && Auth::user()->has_role('admin')) return;
 		$query->where(function($query){
 			$query = $query->whereNotIn('problemset_id', function($query){
 				$query->select('id')

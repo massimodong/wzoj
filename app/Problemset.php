@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+use Auth;
+
 class Problemset extends Model
 {
 	use SoftDeletes;
@@ -36,6 +38,7 @@ class Problemset extends Model
 	}
 
 	public function isHideSolutions(){
+		if(Auth::check() && Auth::user()->has_role('admin')) return false;
 		return $this->isContestRunning() && ($this->type != 'acm');
 	}
 }
