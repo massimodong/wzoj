@@ -81,17 +81,12 @@ class Solution extends Model
 	  */
 	public function scopeNohidden($query){
 		if(Auth::check() && Auth::user()->has_role('admin')) return;
-		$query->where(function($query){
-			$query = $query->whereNotIn('problemset_id', function($query){
-				$query->select('id')
-					->from('problemsets')
-					->where('contest_hide_solutions', 1)
-					->where('type', 'apio')
-					->where('contest_end_at', '>=', date('Y-m-d H:i:s'));
 
+		$query->leftJoin(DB::raw("(SELECT `id` as `aux_id` FROM `problemsets` WHERE `contest_hide_solutions` = 1 AND `type` = 'apio' AND `contest_end_at` >= '".date('Y-m-d H:i:s')."') aux"), 'solutions.problemset_id', '=', 'aux.aux_id')
+			->where(function($query){
+				$query = $query->whereNull('aux.aux_id');
+				if(Auth::check()) $query->orWhere('solutions.user_id', Auth::user()->id);
 			});
-			if(Auth::check()) $query->orWhere('user_id', Auth::user()->id);
-		});
 	}
 
 	public function shouldShowSim(){
