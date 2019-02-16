@@ -22,7 +22,7 @@ class FileManager
 	}
 	static function downloadFiles($disk, $basePath, $userPath, $files,$name){
 		$zip = new ZipArchive;
-		$zip_name = $name.'.zip';
+		$zip_name = time().'.zip';
 		$zip_file = tempnam("","");
 		$zip->open($zip_file, ZipArchive::CREATE);
 
