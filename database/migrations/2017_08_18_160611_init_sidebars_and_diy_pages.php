@@ -43,19 +43,62 @@ class InitSidebarsAndDiyPages extends Migration
 		    <h3>如何自定义头像?</h3>
 		    <p>你一定听说过<a href="http://cn.gravatar.com/" target="_blank" rel="noopener noreferrer">gravatar</a>(全球公认的头像).<br />用你的注册邮箱注册一个gravatar头像就好了。</p>
 	    	    <h3>错误代码都是什么意思?</h3>
-		    <p>TLE(Time Limit Exceeded): 程序运行的时间已经超出了这个题目的时间限制，请检查有没有死循环，或者需要设计更优秀的算法。</p>
-		    </p>MLE(Memory Limit Exceeded):程序运行的内存已经超出了这个题目的内存限制。</p>
-		    </p>OLE(Output Limit Exceeded):程序的输出已经超出了这个题目的输出限制。</p>
-		    </p>PLE(Problem rule Limit Exceeded):违反问题规则。提交的代码不符合题目的规则，请确认提交的代码前面部分与问题中的预置代码一致。</p>
-		    </p>RE(Runtime Error):程序可以通过编译，但是在运行过程中出错。</p>
-		    </p>CE(Compile Error):编译器不能编译你的程序。</p>
-		    </p>WA(Wrong Answer):某个测试数据的输出答案不正确。</p>
-		    </p>PE(Presentation Error)：你的程序给出了正确的答案，但你的输出格式不符合题目的要求，请检查空格和换行符是否符合要求。</p>
-		    </p>WAIT：你的程序正在等待测试，请稍等再查看结果。</p>
-		    </p>TESTING：系统正在测试你的程序。</p>
-		    </p>TESTED：系统已经测试完你的程序(OI类型的竞赛特有)</p>
-		    </p>JE(Judge Error)：判题系统内部错误，请联系管理员。</p>
-		    </p>AC(Accept):恭喜你，答案完全正确</p>';
+		    <table border="1">
+		    <tbody>
+		    <tr>
+		    <td style="padding: 0 6px;">TLE(Time Limit Exceeded)</td>
+		    <td style="padding: 0 6px;">程序运行的时间已经超出了这个题目的时间限制，请检查有没有死循环，或者需要设计更优秀的算法。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">MLE(Memory Limit Exceeded)</td>
+		    <td style="padding: 0 6px;">程序运行的内存已经超出了这个题目的内存限制。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">OLE(Output Limit Exceeded)</td>
+		    <td style="padding: 0 6px;">程序的输出已经超出了这个题目的输出限制。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">PLE(Problem rule Limit Exceeded)</td>
+		    <td style="padding: 0 6px;">违反问题规则。提交的代码不符合题目的规则，请确认提交的代码前面部分与问题中的预置代码一致。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">RE(Runtime Error)</td>
+		    <td style="padding: 0 6px;">程序可以通过编译，但是在运行过程中出错。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">CE(Compile Error)</td>
+		    <td style="padding: 0 6px;">编译器不能编译你的程序。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">WA(Wrong Answer)</td>
+		    <td style="padding: 0 6px;">某个测试数据的输出答案不正确。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">PE(Presentation Error)</td>
+		    <td style="padding: 0 6px;">你的程序给出了正确的答案，但你的输出格式不符合题目的要求，请检查空格和换行符是否符合要求。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">WAIT</td>
+		    <td style="padding: 0 6px;">你的程序正在等待测试，请稍等再查看结果。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">TESTING</td>
+		    <td style="padding: 0 6px;">系统正在测试你的程序。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">TESTED</td>
+		    <td style="padding: 0 6px;">系统已经测试完你的程序(OI类型的竞赛特有)</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">JE(Judge Error)</td>
+		    <td style="padding: 0 6px;">判题系统内部错误，请联系管理员。</td>
+		    </tr>
+		    <tr>
+		    <td style="padding: 0 6px;">AC(Accept)</td>
+		    <td style="padding: 0 6px;">恭喜你，答案完全正确</td>
+		    </tr>
+		    </tbody>
+		    </table>';
 	    Sidebar::create(['name' => 'FAQ' ,'url' => '/faq']);
 	    DiyPage::create(['name' => 'FAQ' ,'url' => 'faq', 'content' => $faq_content]);
     }
