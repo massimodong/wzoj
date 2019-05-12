@@ -191,6 +191,9 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 					Route::post('roles', 'AdminRolesController@postIndex');
 					Route::delete('roles', 'AdminRolesController@deleteIndex');
 
+					//users
+					Route::resource('users', 'AdminUserController');
+
 					//database backup
 					Route::get('database-backup', 'AdminDatabaseBackupController@getIndex');
 					Route::post('database-backup/restrict-size', 'AdminDatabaseBackupController@postRestrictSize');

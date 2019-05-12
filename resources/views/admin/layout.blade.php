@@ -118,6 +118,9 @@
 		    <li id='roles_sidebar'>
 		    	<a href="/admin/roles"> {{trans('wzoj.roles')}} </a>
 		    </li>
+		    <li id='users_sidebar'>
+          <a href="/admin/users"> {{trans('wzoj.users')}} </a>
+		    </li>
 		    <li id='database_backup_sidebar'>
 		    	<a href="/admin/database-backup"> {{trans('wzoj.database_backup')}} </a>
 		    </li>

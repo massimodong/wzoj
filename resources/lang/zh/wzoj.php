@@ -405,4 +405,8 @@ return [
     'invalid_subtasks_description' => '不合法的测试组',
 
     'contest_hide_solutions' => '比赛时隐藏提交',
+    'msg_users_update_id_name_match' => 'ID 与 用户名需相对应',
+    'msg_users_update_bot_tendency_explain' => '设置成 0 用于解除封禁， 设置成 1000 以上用于封禁， 留空表示不修改',
+
+    'msg_blank_no_effect' => '留空表示不修改',
 ];
