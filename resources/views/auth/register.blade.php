@@ -25,7 +25,7 @@
       @else
         value="{{old('fullname')}}"
       @endif
-      required>
+      >
     </div>
   </div>
 
@@ -38,7 +38,7 @@
       @else
 	value="{{ old('class')}}"
       @endif
-      required>
+      >
     </div>
   </div>
 
