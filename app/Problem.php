@@ -44,7 +44,7 @@ class Problem extends Model
 
 	public function update_cnt_ac(){
 		$this->cnt_ac = $this->solutions()
-			->where('score', '>=', 100)
+			->where('score', 100)
 			->count();
 		$this->save();
 	}
