@@ -15,7 +15,7 @@
     <title>@yield('title')</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="{{ojcache('/include/css/_bower.min.css')}}" rel="stylesheet">
+    <link href="{{ojcache('/include/css/_concated.min.css')}}" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="{{ojcache('/include/css/common.css')}}" rel="stylesheet">
@@ -148,7 +148,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ojcache('/include/js/_bower.min.js')}}"></script>
+    <script src="{{ojcache('/include/js/_concated.min.js')}}"></script>
     <!-- tinymce -->
     <script src="{{ojcache('/vendor/tinymce/tinymce.min.js')}}"></script>
     <script src="{{ojcache('/include/js/tinymce.js')}}"></script>
