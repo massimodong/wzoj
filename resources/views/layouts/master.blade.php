@@ -39,10 +39,10 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item dropdown">
         @if (Auth::check())
-          <a class="nav-link dropdown-toggle col-xs-6" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="dropdown01" aria-haspopup="true" role="button">
             <img src="//cn.gravatar.com/avatar/{{md5(strtolower(trim(Auth::user()->email)))}}?d=retro&s=32">
           </a>
-          <div class="dropdown-menu" aria-labelledby="dropdown01">
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
             <a class="dropdown-item" href="/users/{{Auth::user()->id}}"> {{Auth::user()->name}} </a>
             @if (Auth::user()->has_role('manager'))
               <a class="dropdown-item" href="/admin"> {{trans('wzoj.admin')}} </a>
@@ -50,8 +50,8 @@
             <a class="dropdown-item" href="#" onclick="document.forms['logout_form'].submit();return false;"> {{trans('wzoj.logout')}} </a>
           </div>
         @else
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('wzoj.account')}}</a>
-          <div class="dropdown-menu" aria-labelledby="dropdown01">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="dropdown01" aria-haspopup="true" role="button">{{trans('wzoj.account')}}</a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
             <a class="dropdown-item" href="/auth/login"> {{trans('wzoj.login')}} </a>
             <a class="dropdown-item" href="/auth/register"> {{trans('wzoj.register')}} </a>
           </div>
