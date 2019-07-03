@@ -15,11 +15,7 @@
 <label for="password" class="sr-only">{{trans('wzoj.password')}}</label>
 <input type="password" name="password" id="password" class="form-control" placeholder="{{trans('wzoj.password')}}" required>
 
-<div class="checkbox">
-  <label>
-    <input type="checkbox" name="remember"> Remember Me
-  </label>
-</div>
+<input type="checkbox" name="remember" checked style="display: none">
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">{{trans('wzoj.login')}}</button>
 <a href='/password/email'>{{trans('wzoj.forgot_password')}}?</a>
