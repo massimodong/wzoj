@@ -42,3 +42,11 @@ body {
 #home_sidebar {
   height: 83vh;
 }
+
+.overflow-auto::-webkit-scrollbar { width: 0 !important }
+.overflow-auto {
+  overflow: -moz-scrollbars-none;
+}
+.overflow-auto {
+  -ms-overflow-style: none;
+}
