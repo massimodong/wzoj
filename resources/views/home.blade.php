@@ -37,13 +37,21 @@
         <input type="text" class="form-control" placeholder="{{trans('wzoj.search')}}">
       </div>
       <div class="d-table-cell align-middle">
-        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="collapse" data-target="#search_options" aria-expanded="false" aria-controls="search_options">
           <span class="sr-only">Toggle Dropdown</span>
         </button>
-        <div class="dropdown-menu dropdown-menu-right">
-          AAA
-          <input type="text">
-        </div>
+      </div>
+      <div class="collapse" id="search_options">
+        <div class="card px-0 py-0"><div class="card-body">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="search_item" id="search_problems" value="problems" checked>
+            <label class="form-check-label" for="search_problems">{{trans('wzoj.problems')}}</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="search_item" id="search_users" value="users">
+            <label class="form-check-label" for="search_users">{{trans('wzoj.users')}}</label>
+          </div>
+        </div></div>
       </div>
     </form>
     <div class="overflow-auto" id="home_sidebar">
