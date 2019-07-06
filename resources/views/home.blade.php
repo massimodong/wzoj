@@ -7,7 +7,29 @@
 @section ('content')
 <div class="row">
   <div class="col-xl-9 col-md-8">
-  A
+    @if (isset($home_diy))
+      {!! $home_diy->content !!}
+    @endif
+    @if (isset($group_homeworks))
+      <div class="card">
+        <div class="card-header">{{trans('wzoj.homeworks')}}</div>
+        <ul class="list-group list-group-flush">
+        @foreach ($group_homeworks as $group_homework)
+          <li class="list-group-item">
+            <div class="row">
+              <a class="col-6" href="/groups/{{$group_homework['group']->id}}/homework">{{$group_homework['group']->name}}</a>
+              <div class="col-6">
+                <div class="progress" style="height: 24px;">
+                  <div class="progress-bar bg-success" role="progressbar" style="width: {{100 * $group_homework['user_score'] / $group_homework['total_score']}}%"
+                  aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{$group_homework['user_score']}} / {{$group_homework['total_score']}}</div>
+                </div>
+              </div>
+            </div>
+          </li>
+        @endforeach
+        </ul>
+      </div>
+    @endif
   </div>
   <div class="col-xl-3 col-md-4">
     <form>
