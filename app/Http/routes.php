@@ -79,7 +79,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('files/{user_id}/{name}','FileController@showfile');
 		Route::resource('files','FileController');
 
-		Route::get('problem-search', 'HomeController@problemSearch')->middleware('auth');
+		Route::get('search', 'HomeController@search')->middleware('auth');
 
 		Route::get('source-compare', 'HomeController@sourceCompare')->middleware('admin');
 
