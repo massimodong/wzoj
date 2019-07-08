@@ -32,7 +32,7 @@
     @endif
   </div>
   <div class="col-xl-3 col-md-4">
-    <form>
+    <form action="/search" method="GET">
       <div class="d-table-cell w-100">
         <input type="text" class="form-control" placeholder="{{trans('wzoj.search')}}">
       </div>
@@ -50,6 +50,13 @@
           <div class="form-check form-check-inline">
             <input class="form-check-input" type="radio" name="search_item" id="search_users" value="users">
             <label class="form-check-label" for="search_users">{{trans('wzoj.users')}}</label>
+          </div>
+          <div class="form-group">
+            <select id="tags-select" name="tags[]" class="selectpicker form-control" data-live-search="true" title="{{trans('wzoj.tags')}}" multiple>
+            @foreach (\App\ProblemTag::all() as $tag)
+              <option data-tokens="{{$tag->aliases}}" value="{{$tag->id}}">{{$tag->name}}</option>
+            @endforeach
+            </select>
           </div>
         </div></div>
       </div>

@@ -28,13 +28,15 @@ module.exports = function(grunt) {
         src: [
           'node_modules/jquery/dist/jquery.min.js',
           'node_modules/popper.js/dist/umd/popper.min.js',
-          'node_modules/bootstrap/dist/js/bootstrap.min.js'
+          'node_modules/bootstrap/dist/js/bootstrap.min.js',
+          'node_modules/bootstrap-select/dist/js/bootstrap-select.min.js'
         ],
         dest: 'build/_concated.js'
       },
       css: {
         src: [
-          'node_modules/bootstrap/dist/css/bootstrap.min.css'
+          'node_modules/bootstrap/dist/css/bootstrap.min.css',
+          'node_modules/bootstrap-select/dist/css/bootstrap-select.min.css'
         ],
         dest: 'build/_concated.css'
       }
