@@ -34,7 +34,7 @@
   <div class="col-xl-3 col-md-4">
     <form action="/search" method="GET">
       <div class="d-table-cell w-100">
-        <input type="text" class="form-control" placeholder="{{trans('wzoj.search')}}">
+        <input type="text" class="form-control" name="name" placeholder="{{trans('wzoj.search')}}">
       </div>
       <div class="d-table-cell align-middle">
         <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="collapse" data-target="#search_options" aria-expanded="false" aria-controls="search_options">
@@ -58,6 +58,7 @@
             @endforeach
             </select>
           </div>
+          <button class="btn btn-primary" type="submit">{{trans('wzoj.search')}}</button>
         </div></div>
       </div>
     </form>
@@ -73,4 +74,21 @@
     </div>
   </div>
 </div>
+@endsection
+
+@section ('scripts')
+<script>
+$(document).ready(function(){
+  $("#search_problems").change(function(){
+    $('#tags-select').prop("disabled", false);
+    $('#tags-select').selectpicker("refresh");
+  });
+});
+$(document).ready(function(){
+  $("#search_users").change(function(){
+    $('#tags-select').prop("disabled", true);
+    $('#tags-select').selectpicker("refresh");
+  });
+});
+</script>
 @endsection
