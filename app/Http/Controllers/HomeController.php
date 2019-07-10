@@ -145,20 +145,27 @@ class HomeController extends Controller
                ->orderBy("count", "desc")
                ->take(20)
                ->get();
-      $problems = \App\Problem::whereIn('id', array_map(function($key){return $key->id;}, $res))->with('tags')->get();
-      $problemsets = \App\Problemset::whereIn('id', array_map(function($key){return $key->problemset_id;}, $res))->get();
-
-      $problem_by_ids = array_by_id($problems);
-      $problemset_by_ids = array_by_id($problemsets);
-
-      return view('problem_search', [
-        "result" => $res,
-        "problems" => $problem_by_ids,
-        "problemsets" => $problemset_by_ids,
-      ]);
     }else{
-      return '1';
+      $res = \App\Problem::join('problem_problemset', 'problems.id', '=', 'problem_problemset.problem_id')
+                         ->whereIn('problem_problemset.problemset_id', $psids)
+                         ->where('problems.name', 'like', '%'.$request->name.'%')
+                         ->select('problems.id', 'problem_problemset.problemset_id')
+                         ->take(20)
+                         ->get()
+                         ->all();
     }
+
+    $problems = \App\Problem::whereIn('id', array_map(function($key){return $key->id;}, $res))->with('tags')->get();
+    $problemsets = \App\Problemset::whereIn('id', array_map(function($key){return $key->problemset_id;}, $res))->get();
+
+    $problem_by_ids = array_by_id($problems);
+    $problemset_by_ids = array_by_id($problemsets);
+
+    return view('problem_search', [
+      "result" => $res,
+      "problems" => $problem_by_ids,
+      "problemsets" => $problemset_by_ids,
+    ]);
   }
 
   private function searchUser($request){
