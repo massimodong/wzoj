@@ -107,7 +107,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function problemsets(){
-	    if($this->has_role('admin')) return \App\Problemset::all()->all();
+	    if($this->has_role('admin')) return \App\Problemset::all();
 	    $problemsets_last_updated_at = Cache::tags(['wzoj'])->rememberForever('problemsets_last_updated_at', function(){
 			return time();
 	    });
@@ -119,13 +119,13 @@ class User extends Model implements AuthenticatableContract,
 		    Session::put('problemsets_last_updated_at', time());
 		    //problemsets
 		    $problemsets_id = [];
-		    $problemsets = [];
+		    $problemsets = collect();
 		    $groups = $this->groups()->with('problemsets')->get();
 		    foreach($groups as $group){
 			    foreach($group->problemsets as $problemset){
 				    if(!isset($problemsets_id[$problemset->id])){
 					    $problemsets_id[$problemset->id] = true;
-					    array_push($problemsets, $problemset);
+              $problemsets->push($problemset);
 				    }
 			    }
 		    }
@@ -133,14 +133,14 @@ class User extends Model implements AuthenticatableContract,
 		    foreach($public_problemsets as $problemset){
 			    if(!isset($problemsets_id[$problemset->id])){
 				    $problemsets_id[$problemset->id] = true;
-				    array_push($problemsets, $problemset);
+            $problemsets->push($problemset);
 			    }
 		    }
 		    if($this->has_role('problemset_manager')){
 			    foreach(\App\Problemset::where('manager_id', $this->id)->get() as $problemset){
 				    if(!isset($problemsets_id[$problemset->id])){
 					    $problemsets_id[$problemset->id] = true;
-					    array_push($problemsets, $problemset);
+              $problemsets->push($problemset);
 				    }
 			    }
 		    }

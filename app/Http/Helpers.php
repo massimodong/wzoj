@@ -143,3 +143,9 @@ function max_scores($user_ids, $problemset_ids, $problem_ids){
 	}
 	return $result;
 }
+
+function array_by_id($col){
+  $res = [];
+  foreach($col as $item) $res[$item->id] = $item;
+  return $res;
+}

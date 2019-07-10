@@ -12,6 +12,7 @@ use Cache;
 use Lang;
 use Gate;
 use Auth;
+use DB;
 
 class HomeController extends Controller
 {
@@ -124,8 +125,40 @@ class HomeController extends Controller
 	}
 
   private function searchProblem($request){
-    //TODO
-    return "1";
+    $user = Auth::user();
+    $psids = $user->problemsets()->map(function($item, $key){
+      return $item->id;
+    })->toArray();
+
+    if(isset($request->tags)){
+      $subquery = \App\Problem::join('problem_problem_tag', 'problems.id', '=', 'problem_problem_tag.problem_id')
+                         ->join('problem_problemset', 'problems.id', '=', 'problem_problemset.problem_id')
+                         ->whereIn('problem_problemset.problemset_id', $psids)
+                         ->whereIn('problem_problem_tag.problem_tag_id', $request->tags)
+                         ->where('problems.name', 'like', '%'.$request->name.'%')
+                         ->select('problems.id', 'problem_problem_tag.problem_tag_id', 'problem_problemset.problemset_id')
+                         ->distinct();
+      $res = DB::table(DB::raw("({$subquery->toSql()}) as sub"))
+               ->mergeBindings($subquery->getQuery())
+               ->select(DB::raw('id, problemset_id, COUNT(*) as count'))
+               ->groupBy("id", 'problemset_id')
+               ->orderBy("count", "desc")
+               ->take(20)
+               ->get();
+      $problems = \App\Problem::whereIn('id', array_map(function($key){return $key->id;}, $res))->with('tags')->get();
+      $problemsets = \App\Problemset::whereIn('id', array_map(function($key){return $key->problemset_id;}, $res))->get();
+
+      $problem_by_ids = array_by_id($problems);
+      $problemset_by_ids = array_by_id($problemsets);
+
+      return view('problem_search', [
+        "result" => $res,
+        "problems" => $problem_by_ids,
+        "problemsets" => $problemset_by_ids,
+      ]);
+    }else{
+      return '1';
+    }
   }
 
   private function searchUser($request){
