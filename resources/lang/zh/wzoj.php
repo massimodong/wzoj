@@ -191,7 +191,7 @@ return [
     'notices' => '公告',
     
     'groups' => '用户组',
-    'search_user' => '选择用户',
+    'search_user' => '搜索用户',
     'new_user' => '添加用户',
     'expel_from_group' => '从用户组中删除',
 

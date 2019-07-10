@@ -169,8 +169,13 @@ class HomeController extends Controller
   }
 
   private function searchUser($request){
-    //TODO
-    return "2";
+    $users = \App\User::where('name', 'like', '%'.$request->name.'%')
+                      ->orWhere('fullname', 'like', '%'.$request->name.'%')
+                      ->take(20)
+                      ->get();
+    return view('user_search', [
+        "users" => $users,
+    ]);
   }
 
 	public function search(Request $request){
