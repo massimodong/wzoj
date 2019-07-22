@@ -18,3 +18,9 @@
 <filesMatch ".(css|jpg|jpeg|png|gif|js|ico)$">
 Header set Cache-Control "max-age=31536000"
 </filesMatch>
+
+php_value file_uploads On
+php_value upload_max_filesize 2048M
+php_value post_max_size 2048M
+php_value memory_limit 1024M
+php_value max_file_uploads 200
