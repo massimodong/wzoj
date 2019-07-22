@@ -41,54 +41,52 @@ class RanklistUser{
 class ProblemsetController extends Controller
 {
 	const PAGE_LIMIT = 100;
-	public function getIndex(Request $request){
-		if(!(Auth::check())){
-			$allproblemsets = Problemset::where('type', '=', 'set')
-							->where('public', true)
-							->get();
-		}else{
-			$allproblemsets = $request->user()->problemsets();
-			usort($allproblemsets, function($a, $b){return $a->id > $b->id;});
-		}
-		$problemsets=[];
-		foreach($allproblemsets as $problemset){
-			if($problemset->type == 'set'){
-				array_push($problemsets,$problemset);
-			}
-		}
-		return view('problemsets.index',[
-				'problemsets' => $problemsets,
-				'tags' => \App\ProblemTag::all()]);
-	}
-	public function getContestsIndex(Request $request){
-		if(!(Auth::check())){
-			$allcontests = Problemset::where('type', '<>', 'set')
-				->where('public', true)
-				->orderBy('contest_start_at', 'desc');
-			if(!empty(\Request::get('contests'))){
-				$allcontests = $allcontests->whereIn('id', \Request::get('contests'));
-			}
+  public function getIndex(Request $request){
+    if(!(Auth::check())){
+      $allproblemsets = Problemset::where('type', '=', 'set')
+                                  ->where('public', true)
+                                  ->get();
+    }else{
+      $allproblemsets = $request->user()->problemsets()->sortBy('id');
+    }
+    $problemsets = collect();
+    foreach($allproblemsets as $problemset){
+      if($problemset->type == 'set'){
+        $problemsets->push($problemset);
+      }
+    }
+    return view('problemsets.index',[
+      'problemsets' => $problemsets,
+    ]);
+  }
+  public function getContestsIndex(Request $request){
+    if(!(Auth::check())){
+      $allcontests = Problemset::where('type', '<>', 'set')
+                               ->where('public', true)
+                               ->orderBy('contest_start_at', 'desc');
+      if(!empty(\Request::get('contests'))){
+        $allcontests = $allcontests->whereIn('id', \Request::get('contests'));
+      }
 
-			$allcontests = $allcontests->get();
-		}else{
-			$allcontests = $request->user()->problemsets();
-			usort($allcontests, function($a, $b){return $a->contest_start_at < $b->contest_start_at;});
-		}
+      $allcontests = $allcontests->get();
+    }else{
+      $allcontests = $request->user()->problemsets()->sortBy('contest_start_at');
+    }
 
-		$contests = [];
-		$tag = NULL;
-		if(isset($request->tag)) $tag = $request->tag;
-		foreach($allcontests as $problemset){
-			if($problemset->type != 'set'){
-				if($tag && $problemset->tag != $tag) continue;
-				array_push($contests, $problemset);
-			}
-		}
-		return view('problemsets.contests',[
-				'problemsets' => $contests,
-				'tag' => $tag,
-		]);
-	}
+    $contests = collect();
+    $tag = NULL;
+    if(isset($request->tag)) $tag = $request->tag;
+    foreach($allcontests as $problemset){
+      if($problemset->type != 'set'){
+        if($tag && $problemset->tag != $tag) continue;
+        $contests->push($problemset);
+      }
+    }
+    return view('problemsets.contests',[
+        'problemsets' => $contests,
+        'tag' => $tag,
+    ]);
+  }
 
 	public function getProblemset($psid,Request $request){
 		$problemset = Problemset::findOrFail($psid);

@@ -9,16 +9,16 @@
  <table class="table table-striped">
   <thead>
     <tr>
-      <th class='text-left'>{{trans('wzoj.problemset')}}</th>
-      <th class="text-left">{{trans('wzoj.name')}}</th>
+      <th>{{trans('wzoj.problemset')}}</th>
+      <th>{{trans('wzoj.name')}}</th>
       <th>{{trans('wzoj.source')}}</th>
     </tr>
   </thead>
   <tbody>
     @foreach ($result as $item)
     <tr>
-      <td class="text-left">{{$problemsets[$item->problemset_id]->name}}</td>
-      <td class="text-left"><a href='/s/{{$item->problemset_id}}/{{$item->id}}'>{{$problems[$item->id]->name}}</a>
+      <td>{{$problemsets[$item->problemset_id]->name}}</td>
+      <td><a href='/s/{{$item->problemset_id}}/{{$item->id}}'>{{$problems[$item->id]->name}}</a>
         <span class="pull-right">
 	        @include ('partials.problem_tags', ['problem' => $problems[$item->id]])
         </span>
