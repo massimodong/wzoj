@@ -15,7 +15,7 @@
           <div class="card-body">
             <h4 class="card-title">{{$user->fullname}}</h4>
             <h6>{{$user->name}}</h6>
-            <div class="overflow-auto">
+            <div>
               {{$user->description}}
             </div>
           </div>
