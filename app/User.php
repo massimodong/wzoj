@@ -14,6 +14,8 @@ use Cache;
 use Session;
 use DB;
 
+use Auth;
+
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
@@ -149,17 +151,37 @@ class User extends Model implements AuthenticatableContract,
 	    }
     }
 
+    public function get_description(){
+      if(Auth::check() && Auth::user()->id == $this->id){
+        return $this->new_description;
+      }else{
+        if(strtotime('-6 hours') > strtotime($this->description_changed_at)){
+          if($this->stored_description != $this->new_description){
+            $this->stored_description = $this->new_description;
+            $this->save();
+          }
+        }
+        return $this->stored_description;
+      }
+    }
+
     public function __get($key){
-	    if($this->has_role('admin')){
-		    switch($key){
-			    case 'manage_groups':
-				    return \App\Group::all();
-			    case 'manage_problems':
-				    return \App\Problem::all();
-			    case 'manage_problemsets':
-				    return \App\Problemset::all();
-		    }
-	    }
-	    return $this->getAttribute($key);
+      if($this->has_role('admin')){
+        switch($key){
+          case 'manage_groups':
+            return \App\Group::all();
+          case 'manage_problems':
+            return \App\Problem::all();
+          case 'manage_problemsets':
+            return \App\Problemset::all();
+        }
+      }
+
+      switch($key){
+        case 'description':
+          return $this->get_description();
+      }
+
+      return $this->getAttribute($key);
     }
 }
