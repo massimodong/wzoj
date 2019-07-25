@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 
 use App\FileManager;
 
+use Auth;
 use Cache;
 use DB;
 
@@ -105,6 +106,11 @@ class UserController extends Controller
     }
     if(Gate::allows('change_description', $user)){
       $profile_changed = true;
+
+      if(Auth::user()->has_role('admin')){
+        $user->stored_description = $request->description;
+      }
+
       $user->new_description = $request->description;
       $user->description_changed_at = DB::raw('now()');
     }

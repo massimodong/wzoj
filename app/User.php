@@ -152,7 +152,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function get_description(){
-      if(Auth::check() && Auth::user()->id == $this->id){
+      if(Auth::check() && (Auth::user()->id == $this->id || Auth::user()->has_role('admin'))){
         return $this->new_description;
       }else{
         if(strtotime('-6 hours') > strtotime($this->description_changed_at)){
