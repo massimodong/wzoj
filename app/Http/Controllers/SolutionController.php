@@ -36,121 +36,98 @@ class SolutionController extends Controller
     const PAGE_LIMIT = 20;
     public function index(Request $request)
     {
-	    $this->validate($request, [
-		    'top' => 'integer',
-		    'problemset_id' => 'integer|exists:problemsets,id',
-		    'user_name' => 'exists:users,name',
-		    'problem_id' => 'integer|exists:problems,id',
-		    'score_min' => 'integer|min:0|max:100',
-		    'score_max' => 'integer|min:0|max:100',
-		    'language' => 'integer|in:0,1,2,4',
-	    ]);
-	    $all_solutions = true;
-	    $max_id = Solution::max('id');
-	    if(isset($request->top)){
-		    $top = $request->top;
-		    $all_solutions = false;
-	    }else{
-		    $top = $max_id;
-	    }
+      $this->validate($request, [
+          'top' => 'integer',
+          'problemset_id' => 'integer|exists:problemsets,id',
+          'user_name' => 'exists:users,name',
+          'problem_id' => 'integer|exists:problems,id',
+          'score_min' => 'integer|min:0|max:100',
+          'score_max' => 'integer|min:0|max:100',
+          'language' => 'integer|in:0,1,2,4',
+      ]);
+      $max_id = Solution::max('id');
+      if(isset($request->top)){
+        $top = $request->top;
+      }else{
+        $top = $max_id;
+      }
 
-	    $solutions = Solution::nohidden();
-	    // limits
-	    //todo: abandon url_limits
-	    $url_limits = '';
-	    $problemset = NULL;
+      $solutions = Solution::nohidden();
+      // limits
 
-	    if(isset($request->problemset_id) && $request->problemset_id <> ''){
-		    if(!empty(\Request::get('contests'))){
-			    if(!in_array($request->problemset_id, \Request::get('contests'))) abort(403);
-		    }
-		    $problemset = Problemset::find($request->problemset_id);
-		    if($problemset){
-			    $solutions = $solutions->where('problemset_id', $problemset->id);
-			    $url_limits.='&problemset_id='.$problemset->id;
-		    }
-		    $all_solutions = false;
-	    }else{
-		    if(!empty(\Request::get('contests'))){
-			    abort(403);
-		    }
-	    }
+      if(isset($request->problemset_id) && $request->problemset_id <> ''){
+        if(!empty(\Request::get('contests'))){
+          if(!in_array($request->problemset_id, \Request::get('contests'))) abort(403);
+        }
+        $problemset = Problemset::find($request->problemset_id);
+        if($problemset){
+          $solutions = $solutions->where('problemset_id', $problemset->id);
+        }
+      }else{
+        if(!empty(\Request::get('contests'))){
+          abort(403);
+        }
+      }
 
-	    if(isset($request->user_name) && $request->user_name <> ''){
-		    $user = \App\User::where('name', $request->user_name)->first();
-		    if($user){
-			    $solutions = $solutions->where('user_id', $user->id);
-		    }else{
-			    $solutions = $solutions->where('user_id', -1);
-		    }
-		    $url_limits.='&user_name='.$request->user_name;
-		    $all_solutions = false;
-	    }
+      if(isset($request->user_name) && $request->user_name <> ''){
+        $user = \App\User::where('name', $request->user_name)->first();
+        if($user){
+          $solutions = $solutions->where('user_id', $user->id);
+        }else{
+          $solutions = $solutions->where('user_id', -1);
+        }
+      }
 
-	    if(isset($request->problem_id) && $request->problem_id <> ''){
-		    $problem = \App\Problem::find($request->problem_id);
-		    if($problem){
-			    $solutions = $solutions->where('problem_id', $problem->id);
-			    $url_limits.='&problem_id='.$problem->id;
-		    }
-		    $all_solutions = false;
-	    }
+      if(isset($request->problem_id) && $request->problem_id <> ''){
+        $problem = \App\Problem::find($request->problem_id);
+        if($problem){
+          $solutions = $solutions->where('problem_id', $problem->id);
+        }
+      }
 
-	    if(isset($request->score_min) && $request->score_min <> ''){
-		    $solutions = $solutions->where('score', '>=', $request->score_min);
-		    $url_limits.='&score_min='.$request->score_min;
-		    $all_solutions = false;
-	    }
+      if(isset($request->score_min) && $request->score_min <> ''){
+        $solutions = $solutions->where('score', '>=', $request->score_min);
+      }
 
-	    if(isset($request->score_max) && $request->score_max <> ''){
-		    $solutions = $solutions->where('score', '<=', $request->score_max);
-		    $url_limits.='&score_max='.$request->score_max;
-		    $all_solutions = false;
-	    }
+      if(isset($request->score_max) && $request->score_max <> ''){
+        $solutions = $solutions->where('score', '<=', $request->score_max);
+      }
 
-	    if(isset($request->language) && $request->language <> ''){
-		    $solutions = $solutions->where('language', $request->language);
-		    $url_limits.='&language='.$request->language;
-		    $all_solutions = false;
-	    }
-	    if(isset($request->status) && $request->status <> ''){
-		    $solutions = $solutions->where('status', $request->status);
-		    $url_limits.='&status='.$request->status;
-		    $all_solutions = false;
-	    }
-	    //limits end
+      if(isset($request->language) && $request->language <> ''){
+        $solutions = $solutions->where('language', $request->language);
+      }
+      if(isset($request->status) && $request->status <> ''){
+        $solutions = $solutions->where('status', $request->status);
+      }
+      //limits end
 
-	    //get prev top
-	    $prev_url = '';
-	    if($top <> $max_id){
-		$tq = clone $solutions;
-	    	$prev = $tq->where('id', '>=', $top)->orderBy('id', 'asc')->skip(self::PAGE_LIMIT)->first();
-		if($prev){
-			$prev_top = $prev->id;
-		}else{
-			$prev_top = $max_id;
-		}
-		$prev_url = '/solutions?top='.$prev_top;
-	    }
-	    //echo "prev_url:".$prev_url."<br>";
+      //get prev top
+      $prev_id = -1;
+      if($top <> $max_id){
+        $tq = clone $solutions;
+        $prev = $tq->where('id', '>=', $top)->orderBy('id', 'asc')->skip(self::PAGE_LIMIT)->first();
+        if($prev){
+          $prev_id = $prev->id;
+        }else{
+          $prev_id = $max_id;
+        }
+      }
 
-	    //get next top
-	    $next_url = '';
-	    $tq = clone $solutions;
-	    $next = $tq->where('id', '<=', $top)->orderBy('id', 'desc')->skip(self::PAGE_LIMIT)->first();
-	    if($next){
-		    $next_url = '/solutions?top='.$next->id;
-	    }
-	    //echo "next_url:".$next_url."<br>";
+      //get next top
+      $next_id = -1;
+      $tq = clone $solutions;
+      $next = $tq->where('id', '<=', $top)->orderBy('id', 'desc')->skip(self::PAGE_LIMIT)->first();
+      if($next){
+        $next_id = $next->id;
+      }
 
-	    $solutions = $solutions->where('id', '<=', $top)->public()->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
+      $solutions = $solutions->where('id', '<=', $top)->public()->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
 
-	    return view('solutions.index',['solutions' => $solutions,
-			    		'request' => $request,
-	    				'prev_url' => $prev_url,
-	    				'next_url' => $next_url,
-					'url_limits' => $url_limits,
-	    				'problemset' => $problemset]);
+      return view('solutions.index',['solutions' => $solutions,
+          'request' => $request,
+          'prev_id' => $prev_id,
+          'next_id' => $next_id,
+      ]);
     }
 
     /**
