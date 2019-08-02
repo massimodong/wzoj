@@ -1,4 +1,4 @@
-<nav class="pull-right" aria-label="solutions pagination">
+<nav aria-label="solutions pagination">
   <ul class="pagination">
     @if ($prev_id == -1)
       <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">{{trans('wzoj.prevpage')}}</a></li>
