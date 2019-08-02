@@ -24,7 +24,7 @@
 <div class="tab-content">
   <div id="problem" class="tab-pane in active">
     <div class="col-xs-9 row">
-      @include ('layouts.showproblem')
+      @include ('partials.showproblem')
     </div>
     <div class="col-xs-3">
       <div style="height:85px"></div>
@@ -87,7 +87,7 @@
           </div>
           <div id="tags-body" class="panel-collapse collapse">
 	    <div class="panel-body">
-              @include ('layouts.problem_tags', ['problem' => $problem])
+              @include ('partials.problem_tags', ['problem' => $problem])
             </div>
           </div>
         </div>
@@ -172,7 +172,6 @@
 
 @section ('scripts')
 <script>
-selectHashTab();
 function detectLanguage(){
 	if($('#language').val() != -1) return true;
 	if($('#srcfile').val()){ //uploading file
@@ -209,33 +208,6 @@ function detectLanguage(){
 		}
 	}
 }
-
-socket.on('wzoj:App\\Events\\ProblemStatusUpdate', function(data){
-	if(data.psid == {{$problemset->id}} && data.pid == {{$problem->id}}){
-		$('#problem_status_ac_rate').text(data.cnt_submit + '/' + data.cnt_ac);
-
-		var bs = $('#problem_status_best_solutions');
-		bs.text("");
-		for(var i=0;i<data.best_solutions.length;i++){
-			var solution = data.best_solutions[i];
-			if(i==0) bs.append("<span class='label label-success'>1</span>\n");
-			else if(i==1) bs.append("<span class='label label-primary'>2</span>\n");
-			else bs.append("<span class='label label-info'>3</span>\n");
-
-			bs.append("<a href='/users/" + solution.user.id + "'>" + escapeHtml(solution.user.name) + "</a><br>");
-			bs.append("<a style='color:grey' href='/solutions/" + solution.id + "'>#" + solution.id + "</a>\n");
-
-			if(solution.score == 100)
-				bs.append("<span style='color:green'><strong>" + solution.score + "</strong></span>\n");
-			else
-				bs.append("<span style='color:red'><strong>" + solution.score + "</strong></span>\n");
-
-			bs.append(solution.time_used + "ms\n");
-			bs.append((solution.memory_used / 1024 / 1024).toFixed(2) + "MB\n");
-			bs.append("<br><div class='top-buffer-sm'></div>");
-		}
-	}
-});
 
 function problemStatusRequest(){
 	$.get( "/ajax/problem-status-request?psid={{$problemset->id}}&pid={{$problem->id}}", function( data ) {});

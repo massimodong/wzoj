@@ -11,55 +11,68 @@
 <div class="pull-right"><a href="/s/{{$problemset->id}}/edit">{{trans('wzoj.edit')}}</a></div>
 @endif
 
-<div id="home" class="tab-pane fade in active">
-  {!! $problemset->description !!}
+{!! $problemset->description !!}
 
-  <center><ul class="pagination">
+<nav aria-label="pagination">
+  <ul class="pagination">
     @for ($i=1;$i <= $cnt_pages;++$i)
-      <li {{$i == $cur_page ? "class=active":""}}><a href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}</a></li>
+      @if ($i == $cur_page)
+        <li class="page-item active"><a class="page-link" href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}<span class="sr-only">(current)</span></a></li>
+      @else
+        <li class="page-item"><a class="page-link" href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}</a></li>
+      @endif
     @endfor
-  </ul></center>
+  </ul>
+</nav>
 
-  <table class="table table-striped">
-  <thead>
-    <tr>
-      <th style='width:5%'></th>
-      <th style='width:5%'>{{trans('wzoj.index')}}</th>
-      <th class="text-left">{{trans('wzoj.name')}}</th>
-      <th style='width:13%'>{{trans('wzoj.source')}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach ($problems as $problem)
-    <tr>
-      <td>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <tr>
+        <th></th>
+        <th>{{trans('wzoj.index')}}</th>
+        <th>{{trans('wzoj.name')}}</th>
+        <th>{{trans('wzoj.tags')}}</th>
+        <th>{{trans('wzoj.source')}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach ($problems as $problem)
+      <tr>
+        <td>
         @if (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 100)
-	  <span class="glyphicon glyphicon-ok" style="color:green"></span>
+          <span class="glyphicon glyphicon-ok" style="color:green"></span>
         @elseif (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 0)
           <span style="color:red">
-	  {{$max_scores[$problem->id]}}</span>
-	@endif
+         {{$max_scores[$problem->id]}}</span>
+        @endif
       </td>
       <td>{{$problem->pivot->index}}</td>
-      <td class="text-left"><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a>
+      <td class="text-left"><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></td>
+      <td>
         @if ($problemset->show_problem_tags)
-        <span class="pull-right">
-	  @include ('layouts.problem_tags', ['problem' => $problem])
+        <span>
+          @include ('partials.problem_tags', ['problem' => $problem])
         </span>
         @endif
       </td>
       <td>{{$problem->source}}</td>
-    </tr>
-    @endforeach
-  </tbody>
+      </tr>
+      @endforeach
+    </tbody>
   </table>
-
-  <center><ul class="pagination">
-    @for ($i=1;$i <= $cnt_pages;++$i)
-      <li {{$i == $cur_page ? "class=active":""}}><a href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}</a></li>
-    @endfor
-  </ul></center>
 </div>
-<!-- home -->
+
+<nav aria-label="pagination">
+  <ul class="pagination">
+    @for ($i=1;$i <= $cnt_pages;++$i)
+      @if ($i == $cur_page)
+        <li class="page-item active"><a class="page-link" href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}<span class="sr-only">(current)</span></a></li>
+      @else
+        <li class="page-item"><a class="page-link" href="/s/{{$problemset->id}}?page={{$i}}">{{$i}}</a></li>
+      @endif
+    @endfor
+  </ul>
+</nav>
 
 @endsection
