@@ -100,6 +100,7 @@
 <!-- TODO: footer -->
 
 <script src="/include/js/_concated.min.js"></script>
+<script src="/include/js/common.js"></script>
 @yield ('scripts')
 </body>
 </html>

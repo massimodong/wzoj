@@ -409,4 +409,7 @@ return [
     'msg_users_update_bot_tendency_explain' => '设置成 0 用于解除封禁， 设置成 1000 以上用于封禁， 留空表示不修改',
 
     'msg_blank_no_effect' => '留空表示不修改',
+
+    'language_auto' => '自动检测语言',
+    'submit_helper' => '请选择文件，或在此处粘贴代码',
 ];

@@ -10,142 +10,69 @@
 
 @section ('content')
 {!! Breadcrumbs::render('problem', $problemset, $problem) !!}
-<ul class="nav nav-tabs" id="problemTabs">
-  <li class="active"><a data-toggle="tab" href="#problem"> {{trans('wzoj.problem')}} </a></li>
+<ul class="nav nav-tabs" id="problemTabs" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link  active" id="problem-tab" data-toggle="tab" href="#problem" role="tab" aria-controls="problem" aria-selected="true"> {{trans('wzoj.problem')}} </a>
+  </li>
   @if (Auth::check())
-  <li><a data-toggle="tab" href="#submit"> {{trans('wzoj.submit')}} </a></li>
+  <li class="nav-item">
+    <a class="nav-link" id="submit-tab" data-toggle="tab" href="#submit" role="tab" aria-controls="submit" aria-selected="false"> {{trans('wzoj.submit')}} </a>
+  </li>
   @endif
   @can ('view_tutorial', $problemset)
     @if (strlen($problem->tutorial))
-    <li><a data-toggle="tab" href="#tutorial"> {{trans('wzoj.tutorial')}} </a></li>
+    <li class="nav-item">
+      <a class="nav-link" id="tutorial-tab" data-toggle="tab" href="#tutorial" role="tab" aria-controls="tutorial" aria-selected="true"> {{trans('wzoj.tutorial')}} </a>
+    </li>
     @endif
   @endcan
 </ul>
 <div class="tab-content">
-  <div id="problem" class="tab-pane in active">
-    <div class="col-xs-9 row">
-      @include ('partials.showproblem')
-    </div>
-    <div class="col-xs-3">
-      <div style="height:85px"></div>
-      @if (!$has_test_data)
-        <span style="color:red"><strong>{{trans('wzoj.no_test_data')}}</strong></span><br>
-      @endif
-      @if (($problemset->type === 'apio')  && (time() <= strtotime($problemset->contest_end_at)))
-      @else
-      <div class="panel-group">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" href="#status-body" class="collapsed" onclick="problemStatusRequest();">{{trans('wzoj.status')}}</a>
-            </h4>
-	  </div>
-          <div id="status-body" class="panel-collapse collapse">
-            <div class="panel-body">
-	      {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac')}}: <span id="problem_status_ac_rate">{{$cnt_submit}}/{{$cnt_ac}}</span>
-	      <hr>
-	      <div id="problem_status_best_solutions" class="limited_text">
-	      @if (isset($best_solutions))
-	        @foreach ($best_solutions as $index => $solution)
-	          @if ($index == 0)
-	            <span class="label label-success">1</span>
-	          @elseif ($index == 1)
-	            <span class="label label-primary">2</span>
-	          @else
-	            <span class="label label-info">3</span>
-	          @endif
-	          <a href="/users/{{$solution->user->id}}">{{$solution->user->name}}</a><br>
-	          <a style="color:grey" href="/solutions/{{$solution->id}}">#{{$solution->id}}</a>
-	          @if ($solution->score == 100)
-	            <span style="color:green"><strong>{{$solution->score}}</strong></span>
-	          @else
-	            <span style="color:red"><strong>{{$solution->score}}</strong></span>
-	          @endif
-	          {{$solution->time_used}}ms
-	          {{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB
-	          <br>
-	          <div class="top-buffer-sm"></div>
-	        @endforeach
-	      @else
-	        <center>
-	          <div class="loader"></div>
-	        </center>
-	      @endif
-	      </div>
-            </div>
-	  </div>
-        </div>
+  <div id="problem" class="tab-pane fade show active" role="tabpanel" aria-labelledby="problem-tab">
+    <div class="row">
+      <div class="col-sm-9">
+        @include ('partials.showproblem')
       </div>
-      @endif
-
-      <div class="panel-group">
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h4 class="panel-title">
-              <a data-toggle="collapse" href="#tags-body" class="collapsed">{{trans('wzoj.tags')}}</a>
-            </h4>
-          </div>
-          <div id="tags-body" class="panel-collapse collapse">
-	    <div class="panel-body">
-              @include ('partials.problem_tags', ['problem' => $problem])
-            </div>
-          </div>
-        </div>
+      <div class="col-sm-3">
+       ??
       </div>
-
-      @if (ojoption('forum_enabled'))
-      <div class="panel panel-default">
-        <div class="panel-heading"><a href="/forum?tags[]=p{{$problem->id}}">{{trans('wzoj.forum')}}</a></div>
-          <div class="panel-body">
-            @foreach ($topics as $topic)
-              <a href="/forum/{{$topic->id}}">{{$topic->title}}</a><br>
-            @endforeach
-          </div>
-        </div>
-      @endif
     </div>
   </div>
   <!-- problem -->
 
-  <div id="submit" class="tab-pane">
-    <div class="top-buffer-sm"></div>
+  <div id="submit" class="tab-pane fade" role="tabpanel" aria-labelledby="submit-tab">
     @if ($problem->type <> 3)
-    <form action='/solutions' method='POST' enctype='multipart/form-data'>
+    <form id='sol-form' action='/solutions' method='POST' enctype='multipart/form-data'>
       {{csrf_field()}}
       <input name='problemset_id' value='{{$problemset->id}}' hidden>
       <input name='problem_id' value='{{$problem->id}}' hidden>
-      <div class='form-group row'>
-        <label for='language' class='col-xs-1 col-form-label'> {{trans('wzoj.language')}}: </label>
-	<div class='col-xs-3'>
-          <select name='language' id='language' class='form-control input-sm'>
-      	    <option value='-1'>{{trans('wzoj.auto')}}</option>
-      	    <option value='0'>C</option>
-	    <option value='1'>C++</option>
-	    <option value='2'>Pascal</option>
-	    <option value='4'>Python</option>
-          </select>
-	</div>
-	<label for='srcfile' class='col-xs-1 col-form-label'> {{trans('wzoj.choosefile')}}</label>
-	<div class='col-xs-7'>
-	  <input type="file" class="file" name="srcfile" id="srcfile">
-	</div>
-      </div>
-      <!-- form-group -->
 
-      <div class='form-group'>
-        <textarea class="form-control" name="code" id="code" rows="9">{{old('code')}}</textarea>
+      <div class="form-group">
+        <select class="custom-select" name="language" id="language">
+          <option selected value="-1">{{trans('wzoj.language_auto')}}</option>
+          <option value='0'>C</option>
+          <option value='1'>C++</option>
+          <option value='2'>Pascal</option>
+          <option value='4'>Python</option>
+        </select>
       </div>
-      <!-- form-group -->
+      <div class="form-group">
+        <input type="file" class="file" name="srcfile" id="srcfile">
+      </div>
 
-      <button type="submit" class="btn btn-primary" onclick="return detectLanguage()"> {{trans('wzoj.submit')}} </button>
+      <div class="form-group">
+        <textarea class="form-control" name="code" id="code" rows="9" placeholder="{{trans('wzoj.submit_helper')}}">{{old('code')}}</textarea>
+      </div>
+
+      <button type="submit" class="btn btn-primary" onclick="submit_solution();return false;"> {{trans('wzoj.submit')}} </button>
     </form>
     @else
-      @if (count($answerfiles))
-	{{trans('wzoj.uploaded_files')}}:<br>
-	@foreach ($answerfiles as $answerfile)
-	  {{$answerfile->filename}}.out<br>
-	@endforeach
-      @endif
+    @if (count($answerfiles))
+      {{trans('wzoj.uploaded_files')}}:<br>
+      @foreach ($answerfiles as $answerfile)
+      {{$answerfile->filename}}.out<br>
+      @endforeach
+    @endif
     <form action='/solutions' method='POST' enctype='multipart/form-data'>
       {{csrf_field()}}
       <input name='problemset_id' value='{{$problemset->id}}' hidden>
@@ -161,7 +88,7 @@
   <!-- submit -->
 
   @can ('view_tutorial', $problemset)
-  <div id="tutorial" class="tab-pane">
+  <div id="tutorial" class="tab-pane fade" role="tabpanel" aria-labelledby="tutorial-tab">
     {!! $problem->tutorial !!}
   </div>
   @endcan
@@ -209,10 +136,17 @@ function detectLanguage(){
 	}
 }
 
-function problemStatusRequest(){
-	$.get( "/ajax/problem-status-request?psid={{$problemset->id}}&pid={{$problem->id}}", function( data ) {});
-}
+function submit_solution(){
+  if(!detectLanguage()) return false;
 
+  $.post('/solutions', $('#sol-form').serialize())
+    .done(function(data){
+      alert('ok');
+    })
+    .fail(function(data){
+      alert('not ok');
+    });
+}
 </script>
 @if ($problem->type == 3)
 	<script>

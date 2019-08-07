@@ -1,4 +1,3 @@
-<div class="col-xs-12">
 <h1 class="page-header text-center">{{$problem->name}}</h1>
 @if (Auth::check() && Auth::user()->has_role('admin'))
   <div class="pull-right"><a href="/admin/problems/{{$problem->id}}">{{trans('wzoj.edit')}}</a></div>
@@ -56,11 +55,9 @@
 @endif
 
 {{trans('wzoj.time_limit')}}:{{$problem->timelimit}}ms<br>
-{{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MByte<br>
+{{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MB<br>
 
 <hr>
 @if (strlen($problem->source))
 <p>{{trans('wzoj.source')}}:{{$problem->source}}</p>
 @endif
-
-</div>
