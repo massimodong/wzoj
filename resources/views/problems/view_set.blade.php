@@ -64,7 +64,14 @@
         <textarea class="form-control" name="code" id="code" rows="9" placeholder="{{trans('wzoj.submit_helper')}}">{{old('code')}}</textarea>
       </div>
 
-      <button type="submit" class="btn btn-primary" onclick="submit_solution();return false;"> {{trans('wzoj.submit')}} </button>
+      <button id="submit-btn" type="submit" class="btn btn-primary" onclick="submit_solution();return false;">
+        <div id="submit-text">
+        {{trans('wzoj.submit')}}
+        </div>
+        <div id="submit-spin" class="spinner-border spinner-border-sm" role="status" style="display:none">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </button>
     </form>
     @else
     @if (count($answerfiles))
@@ -136,15 +143,31 @@ function detectLanguage(){
 	}
 }
 
+function disable_submit(){
+  $('#submit-btn').attr('disabled', true);
+  document.getElementById('submit-text').style.display = 'none';
+  document.getElementById('submit-spin').style.display = 'block';
+}
+
+function enable_submit(){
+  $('#submit-btn').attr('disabled', false);
+  document.getElementById('submit-text').style.display = 'block';
+  document.getElementById('submit-spin').style.display = 'none';
+}
+
 function submit_solution(){
   if(!detectLanguage()) return false;
+
+  disable_submit();
 
   $.post('/solutions', $('#sol-form').serialize())
     .done(function(data){
       alert('ok');
+      enable_submit();
     })
     .fail(function(data){
-      alert('not ok');
+      addAlertWarning(data.responseJSON.msg);
+      enable_submit();
     });
 }
 </script>

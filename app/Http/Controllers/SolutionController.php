@@ -183,7 +183,7 @@ class SolutionController extends Controller
 	    ]);
 
 	    if(!ojCanViewProblems($problemset)){
-		    return back();
+		    return response()->json(['msg' => 'not allowed'], 422);
 	    }
 
 	    $solution_meta = $request->except(['_token', 'srcfile']);
@@ -195,13 +195,9 @@ class SolutionController extends Controller
 
 	    $solution_meta["code_length"] = strlen($solution_meta["code"]);
 	    if($solution_meta["code_length"] <= 10){
-		    return back()
-			    ->withErrors(trans('wzoj.code_too_short'))
-			    ->withInput();
+		    return response()->json(['msg' => trans('wzoj.code_too_short')], 422);
 	    }else if($solution_meta["code_length"] > 102400){ //100kb
-		    return back()
-			    ->withErrors(trans('wzoj.code_too_long'))
-			    ->withInput();
+		    return response()->json(['msg' => trans('wzoj.code_too_long')], 422);
 	    }
 
 	    DB::insert('insert into `solutions` (`problemset_id`, `problem_id`, `language`, `code`, `code_length`, `user_id`, `updated_at`, `created_at`)
@@ -221,9 +217,7 @@ class SolutionController extends Controller
 				    ]);
 	    $solution = Solution::with(['user', 'problem', 'judger'])->where('id', DB::getPdo()->lastInsertId())->first();
 	    if($solution==NULL){
-		    return back()
-			    ->withErrors(trans('wzoj.submit_too_frequent'))
-			    ->withInput();
+		    return response()->json(['msg' => trans('wzoj.submit_too_frequent')], 422);
 	    }
 
 	    $hide_solutions = $problemset->isHideSolutions();
@@ -244,7 +238,7 @@ class SolutionController extends Controller
 
 	    wakeJudgers();
 
-	    return redirect('/solutions/'.$solution->id);
+	    return response()->json(['id' => $solution->id]);
     }
 
     /**

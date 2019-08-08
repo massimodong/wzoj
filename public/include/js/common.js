@@ -1,3 +1,23 @@
+function escapeHtml(str){
+	var div = document.createElement('div');
+	div.appendChild(document.createTextNode(str));
+	return div.innerHTML;
+}
+
+function addAlertSuccess(message){
+  $('#alerts').append("<div class='alert alert-success alert-dismissable fade show' role='alert'>"
+      + escapeHtml(message)
+      + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+      + "</div>");
+}
+
+function addAlertWarning(message){
+  $("#alerts").append("<div class='alert alert-warning alert-dismissable fade show' role='alert'>"
+      + escapeHtml(message)
+      + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+      + "</div>");
+}
+
 function codeDetectLanguage( code ){
   const langs = {
     1: ['include', '{', '}', 'stdio', 'iostream', 'using', ' namespace ', 'int ', 'main(', //cpp
