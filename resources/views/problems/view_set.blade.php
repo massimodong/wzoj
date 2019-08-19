@@ -200,8 +200,11 @@ function new_pending_solution(id){
   nb = $('#sol-table-template').clone();
   nb.attr('style', 'display: block');
   nb.attr('id', 'solt-' + id);
+
   nb.data('id', id);
-  $('#pending-sol').append(nb);
+  nb.data('testcase_num', 0);
+
+  $('#pending-sol').prepend(nb);
 }
 
 function submit_solution(){
@@ -219,6 +222,73 @@ function submit_solution(){
       enable_submit();
     });
 }
+
+function append_ce(pr){
+  bar = jQuery("<div></div>");
+  bar.addClass("progress-bar");
+  bar.addClass("bg-dark");
+
+  bar.attr("role", "progressbar");
+  bar.attr("style", "width: 100%");
+  bar.attr("aria-valuenow", 100);
+  bar.attr("aria-valuemin", 0);
+  bar.attr("aria-valuemax", 100);
+
+  bar.html("Compile Error");
+  pr.html(bar);
+}
+
+function append_testcase(pr, solution, testcase){
+  bar = jQuery("<div></div>");
+  bar.addClass("progress-bar");
+  switch(testcase.verdict){
+    case "AC":
+      bar.addClass("bg-success");
+      break;
+    case "WA":
+      bar.addClass("bg-danger");
+      break;
+    case "RE":
+    case "TLE":
+      bar.addClass("bg-warning");
+      break;
+    default:
+      bar.addClass("bg-info");
+  }
+
+  var v = 100 / solution.cnt_testcases;
+
+  bar.attr("role", "progressbar");
+  bar.attr("aria-valuenow", v);
+  bar.attr("aria-valuemin", 0);
+  bar.attr("aria-valuemax", 100);
+
+  pr.append(bar);
+
+  bar.animate({width: v + "%"}, {duration: 300});
+}
+
+socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
+  b = $('#solt-' + solution.id);
+  //TODO: check if b exists
+  if(solution.status >= 4){
+    if(solution.ce){
+      append_ce(b.find('.progress'));
+    }
+    b.find('.solt-score').html(solution.score);
+    b.find('.solt-time-used').html(solution.time_used + " ms");
+    b.find('.solt-memory-used').html((solution.memory_used / 1024 / 1024).toFixed(2) + " MB");
+  }else{
+    if(b.data('testcase_num') == 0){
+      b.find('.progress').html("");
+    }
+
+    for(var i = b.data('testcase_num'); i < solution.testcases.length; i++){
+      append_testcase(b.find('.progress'), solution, solution.testcases[i]);
+      b.data('testcase_num', i + 1);
+    }
+  }
+});
 </script>
 @if ($problem->type == 3)
 	<script>

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Event;
-use App\Events\NewSolution;
 
 use Illuminate\Http\Request;
 
@@ -221,7 +220,6 @@ class SolutionController extends Controller
 	    }
 
 	    $hide_solutions = $problemset->isHideSolutions();
-	    if(!$hide_solutions) Event::fire(new NewSolution($solution));
 
 	    Redis::lpush('wzoj_recent_solution_ids', $solution->id);             // push the solution to redis list
 	    Redis::ltrim('wzoj_recent_solution_ids', 0, self::PAGE_LIMIT -1);    // save only `PAGE_LIMIT` solutions
