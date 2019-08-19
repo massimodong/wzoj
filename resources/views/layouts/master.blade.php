@@ -101,6 +101,10 @@
 
 <script src="/include/js/_concated.min.js"></script>
 <script src="/include/js/common.js"></script>
+<script>
+  var socket = io("{{env('SOCKET_IO_SERVER')}}");
+  socket_init();
+</script>
 @yield ('scripts')
 </body>
 </html>

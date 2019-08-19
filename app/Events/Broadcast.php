@@ -4,9 +4,9 @@ namespace App\Events;
 
 use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
-class Broadcast extends Event implements ShouldBroadcast
+class Broadcast extends Event implements ShouldBroadcastNow
 {
     use SerializesModels;
 

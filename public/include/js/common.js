@@ -45,3 +45,9 @@ function codeDetectLanguage( code ){
   }
   return cur_lang;
 }
+
+function socket_init(){
+  socket.on('wzoj:App\\Events\\Broadcast', function(msg){
+    alert(msg.title+':\n'+msg.content);
+  });
+}

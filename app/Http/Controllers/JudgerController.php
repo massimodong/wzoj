@@ -120,8 +120,6 @@ class JudgerController extends Controller
 				$solution->sim_id = NULL;
 				$solution->judger_id = \Request::get('judger')->id;
 				Event::fire(new SolutionUpdated($solution));
-				Cache::tags(['solutions'])->put($solution->id, $solution, 1);
-				Redis::sadd('wzoj_judging_solution_ids', $solution->id);
 				return response()->json(["ok" => true]);
 			}else{
 				return response()->json(["ok" => false]);
@@ -177,8 +175,6 @@ class JudgerController extends Controller
 		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
 		Event::fire(new SolutionUpdated($solution));
-		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
-		Redis::srem('wzoj_judging_solution_ids', $solution->id);
 		return response()->json(["ok" => true]);
 	}
 	public function postUpdateSolution(Request $request){
@@ -196,7 +192,6 @@ class JudgerController extends Controller
 		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->save();
 		Event::fire(new SolutionUpdated($solution));
-		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 		return response()->json(["ok" => true]);
 	}
@@ -218,7 +213,6 @@ class JudgerController extends Controller
 					- $solution->code_length;
 		
 		$solution->save();
-		Cache::tags(['solutions'])->put($solution->id, $solution, 1);
 
 		$cache_path = $solution->user_id.'-'.$solution->problemset_id.'-'.$solution->problem_id;
 		if($solution->score > Cache::tags(['problemsets', 'max_score'])->get($cache_path, -1)){
@@ -227,8 +221,6 @@ class JudgerController extends Controller
 
 		$solution->user->update_cnt_ac();
 		Event::fire(new SolutionUpdated($solution));
-
-		Redis::srem('wzoj_judging_solution_ids', $solution->id);
 	}
 
 	public function getGetAnswer(Request $request){

@@ -91,6 +91,47 @@
       <button type="submit" class="btn btn-primary"> {{trans('wzoj.submit_and_judge')}} </button>
     </form>
     @endif
+
+    <hr>
+    <div id="pending-sol"></div>
+    <div id="sol-table-template" style="display: none" class="row pb-3">
+      <div class="col-12">
+        <div class="progress position-relative" style="height: 30px;">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary"
+            role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            {{trans('wzoj.solution_status_0')}}
+          </div>
+        </div>
+      </div>
+      <div class="col-12 pt-1">
+        <ul class="list-group list-group-horizontal-sm">
+          <li class="list-group-item flex-fill">
+            <b>{{trans('wzoj.score')}}: </b>
+            <span class="solt-score">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </li>
+          <li class="list-group-item flex-fill">
+            <b>{{trans('wzoj.time_used')}}: </b>
+            <span class="solt-time-used">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </li>
+          <li class="list-group-item flex-fill">
+            <b>{{trans('wzoj.memory_used')}} :</b>
+            <span class="solt-memory-used">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
   <!-- submit -->
 
@@ -155,6 +196,14 @@ function enable_submit(){
   document.getElementById('submit-spin').style.display = 'none';
 }
 
+function new_pending_solution(id){
+  nb = $('#sol-table-template').clone();
+  nb.attr('style', 'display: block');
+  nb.attr('id', 'solt-' + id);
+  nb.data('id', id);
+  $('#pending-sol').append(nb);
+}
+
 function submit_solution(){
   if(!detectLanguage()) return false;
 
@@ -162,7 +211,7 @@ function submit_solution(){
 
   $.post('/solutions', $('#sol-form').serialize())
     .done(function(data){
-      alert('ok');
+      new_pending_solution(data.id);
       enable_submit();
     })
     .fail(function(data){
