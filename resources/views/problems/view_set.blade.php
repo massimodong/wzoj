@@ -96,7 +96,7 @@
     <div id="pending-sol"></div>
     <div id="sol-table-template" style="display: none" class="row pb-3">
       <div class="col-12">
-        <div class="progress position-relative" style="height: 30px;">
+        <div class="progress" style="height: 30px;" onclick="progress_click(this);">
           <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary"
             role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
             {{trans('wzoj.solution_status_0')}}
@@ -201,7 +201,6 @@ function new_pending_solution(id){
   nb.attr('style', 'display: block');
   nb.attr('id', 'solt-' + id);
 
-  nb.data('id', id);
   nb.data('testcase_num', 0);
 
   $('#pending-sol').prepend(nb);
@@ -270,7 +269,7 @@ function append_testcase(pr, solution, testcase){
 
 socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
   b = $('#solt-' + solution.id);
-  //TODO: check if b exists
+  if(b.length == 0) return;
   if(solution.status >= 4){
     if(solution.ce){
       append_ce(b.find('.progress'));
@@ -278,6 +277,9 @@ socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
     b.find('.solt-score').html(solution.score);
     b.find('.solt-time-used').html(solution.time_used + " ms");
     b.find('.solt-memory-used').html((solution.memory_used / 1024 / 1024).toFixed(2) + " MB");
+
+    b.data("id", solution.id);
+    b.find('.progress').addClass("clickable");
   }else{
     if(b.data('testcase_num') == 0){
       b.find('.progress').html("");
@@ -289,6 +291,13 @@ socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
     }
   }
 });
+
+function progress_click(e){
+  b = $(e).parent().parent();
+  if(b.data("id")){
+    window.open("/solutions/" + b.data("id"), '_blank');
+  }
+}
 </script>
 @if ($problem->type == 3)
 	<script>
