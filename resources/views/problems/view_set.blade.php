@@ -32,8 +32,10 @@
     <div class="row">
       <div class="col-sm-12">
         @include ('partials.showproblem')
-        <hr>
-        <p>{{trans('wzoj.count_submit')}}: {{$cnt_submit}}, {{trans('wzoj.avrg_score')}}: {{round($tot_score / $cnt_submit, 2)}}</p>
+        @if ($cnt_submit)
+          <hr>
+          <p>{{trans('wzoj.count_submit')}}: {{$cnt_submit}}, {{trans('wzoj.avrg_score')}}: {{round($tot_score / $cnt_submit, 2)}}</p>
+        @endif
       </div>
     </div>
   </div>
