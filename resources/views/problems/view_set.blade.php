@@ -30,11 +30,10 @@
 <div class="tab-content">
   <div id="problem" class="tab-pane fade show active" role="tabpanel" aria-labelledby="problem-tab">
     <div class="row">
-      <div class="col-sm-9">
+      <div class="col-sm-12">
         @include ('partials.showproblem')
-      </div>
-      <div class="col-sm-3">
-       ??
+        <hr>
+        <p>{{trans('wzoj.count_submit')}}: {{$cnt_submit}}, {{trans('wzoj.avrg_score')}}: {{round($tot_score / $cnt_submit, 2)}}</p>
       </div>
     </div>
   </div>

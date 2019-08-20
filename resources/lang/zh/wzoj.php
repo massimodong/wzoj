@@ -412,4 +412,6 @@ return [
 
     'language_auto' => '自动检测语言',
     'submit_helper' => '请选择文件，或在此处粘贴代码',
+
+    'avrg_score' => '平均分',
 ];

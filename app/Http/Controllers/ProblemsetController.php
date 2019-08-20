@@ -346,9 +346,6 @@ class ProblemsetController extends Controller
 			$download_url = '/s/'.$problemset->id.'/'.$problem->id.'?download_attached_file=true';
 		}
 
-		//problem status
-		$problem_status = ['best_solutions' => NULL, 'cnt_submit' => 0, 'cnt_ac' => 0];
-
 		$topics = Cache::tags(['problem_topics'])->remember($problem->id, 1, function() use($problem){
 			return \App\ForumTopic::whereIn('id', function($query) use($problem){
 					$query->select('forum_topic_id')
@@ -359,15 +356,21 @@ class ProblemsetController extends Controller
 				->take(3)
 				->get();
 		});
+
+    $cnt_submit = Solution::where("problemset_id", $psid)
+                          ->where("problem_id", $pid)
+                          ->count();
+    $tot_score = Solution::where("problemset_id", $psid)
+                         ->where("problem_id", $pid)
+                         ->sum("score");
 		
 		return view('problems.view_'.$problemset->type,['problemset' => $problemset,
 				'problem' => $problem,
 				'answerfiles' => $answerfiles,
 				'download_url' => $download_url,
 				'has_test_data' => $has_test_data,
-				'best_solutions' => $problem_status['best_solutions'],
-				'cnt_submit' => $problem_status['cnt_submit'],
-				'cnt_ac' => $problem_status['cnt_ac'],
+				'cnt_submit' => $cnt_submit,
+				'tot_score' => $tot_score,
 				'topics' => $topics,
 		]);
 	}
