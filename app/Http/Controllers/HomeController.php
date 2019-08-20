@@ -104,7 +104,7 @@ class HomeController extends Controller
 				'users' => $users,
 				'start_rank' => ($page-1) * self::USER_LIMIT,
 				'cur_page' => $page,
-				'max_page' => (User::count()-1) / self::USER_LIMIT + 1]);
+				'max_page' => intval((User::count()-1) / self::USER_LIMIT + 1)]);
 	}
 
 	public function getSorry(Request $request){

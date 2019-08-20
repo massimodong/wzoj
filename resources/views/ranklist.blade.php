@@ -6,13 +6,13 @@
 
 @section ('content')
 {!! Breadcrumbs::render('ranklist') !!}
-<table class="table table-striped table-bordered">
+<table class="table table-bordered">
   <thead>
     <tr>
-      <th style="width: 7%">{{trans('wzoj.rank')}}</th>
-      <th style="width: 15%">{{trans('wzoj.username')}}</th>
+      <th>{{trans('wzoj.rank')}}</th>
+      <th>{{trans('wzoj.username')}}</th>
       <th>{{trans('wzoj.user_description')}}</th>
-      <th style="width: 10%">{{trans('wzoj.count_ac')}}</th>
+      <th>{{trans('wzoj.count_ac')}}</th>
     </tr>
   </thead>
   <tbody>
@@ -26,19 +26,24 @@
   @endforeach
   </tbody>
 </table>
-<center>
+
+<nav>
   <ul class="pagination">
-    @for ($p = $cur_page - 5;$p < $cur_page;++$p)
-    	@if ($p > 0)
-	  <li><a href="/ranklist?page={{$p}}">{{$p}}</a></li>
-	@endif
+    @if ($cur_page != 1)
+      <li class="page-item"><a class="page-link" href="/ranklist">{{trans('wzoj.toppage')}}</a></li>
+    @endif
+    @for ($p = max($cur_page - 5, 1); $p <= min($cur_page + 5, $max_page); ++$p)
+      @if ($p == $cur_page)
+        <li class="page-item active" aria-current="page">
+          <a class="page-link" href="/ranklist?page={{$p}}">{{$p}}<span class="sr-only">(current)</span></a>
+        </li>
+      @else
+        <li class="page-item"><a class="page-link" href="/ranklist?page={{$p}}">{{$p}}</a></li>
+      @endif
     @endfor
-    <li class="active"><a href="/ranklist?page={{$cur_page}}">{{$cur_page}}</a></li>
-    @for ($p = $cur_page + 1;$p < $cur_page + 5;++$p)
-    	@if ($p <= $max_page)
-	  <li><a href="/ranklist?page={{$p}}">{{$p}}</a></li>
-	@endif
-    @endfor
+    @if ($cur_page != $max_page)
+      <li class="page-item"><a class="page-link" href="/ranklist?page={{$max_page}}">{{trans('wzoj.bottompage')}}</a></li>
+    @endif
   </ul>
-</center>
+</nav>
 @endsection
