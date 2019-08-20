@@ -6,6 +6,7 @@
 
 @section ('content')
 {!! Breadcrumbs::render('ranklist') !!}
+<div class="table-responsive">
 <table class="table table-bordered">
   <thead>
     <tr>
@@ -26,13 +27,14 @@
   @endforeach
   </tbody>
 </table>
+</div>
 
 <nav>
   <ul class="pagination">
     @if ($cur_page != 1)
       <li class="page-item"><a class="page-link" href="/ranklist">{{trans('wzoj.toppage')}}</a></li>
     @endif
-    @for ($p = max($cur_page - 5, 1); $p <= min($cur_page + 5, $max_page); ++$p)
+    @for ($p = max($cur_page - 2, 1); $p <= min($cur_page + 2, $max_page); ++$p)
       @if ($p == $cur_page)
         <li class="page-item active" aria-current="page">
           <a class="page-link" href="/ranklist?page={{$p}}">{{$p}}<span class="sr-only">(current)</span></a>
