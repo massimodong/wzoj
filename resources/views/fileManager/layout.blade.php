@@ -10,16 +10,14 @@
 
     <title>{{trans('wzoj.file_manager')}}:@yield('title')</title>
 
-    <link href="{{ojcache('/include/css/_bower.min.css')}}" rel="stylesheet">
-
-    <!-- Custom CSS -->
+    <link href="{{ojcache('/include/css/_concated.min.css')}}" rel="stylesheet">
+    <link href="{{ojcache('/include/css/fileinput.min.css')}}" rel="stylesheet">
     <link href="{{ojcache('/include/css/common.css')}}" rel="stylesheet">
 
     <script>
     var csrf_token = '{{csrf_token()}}'
     </script>
 
-    <script src="{{ojcache('/include/js/lang/zh.js')}}"></script>
     <script src="{{ojcache('/include/js/common.js')}}"></script>
 </head>
 
@@ -53,10 +51,10 @@
   </div>
   <!-- /#page-wrapper -->
 
-  <script src="{{ojcache('/include/js/_bower.min.js')}}"></script>
-
-  <script src="{{ojcache('/vendor/tinymce/tinymce.min.js')}}"></script>
-  <script src="{{ojcache('/include/js/tinymce.js')}}"></script>
+  <script src="{{ojcache('/include/js/admin.js')}}"></script>
+  <script src="{{ojcache('/include/js/_concated.min.js')}}"></script>
+  <script src="{{ojcache('/include/js/fileinput.min.js')}}"></script>
+  <script src="/include/js/datatables.min.js"></script>
 
   @yield ('scripts')
 </body>

@@ -19,7 +19,7 @@
 
 <div class="col-xs-12" style="height:10px"></div>
 
-<table id="problems_table" class="table table-striped">
+<table id="problems_table" class="table">
   <thead>
     <tr>
       <th style="width: 5%">{{trans('wzoj.id')}}</th>

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/include/css/_concated.min.css">
     <link rel="stylesheet" href="/include/css/common.css">
     <link rel="stylesheet" href="/include/css/navbar-fixed-left.min.css">
+    <link rel="stylesheet" href="/include/css/datatables.min.css">
 
     @show
   </head>
@@ -127,6 +128,8 @@
 
 <script src="/include/js/_concated.min.js"></script>
 <script src="/include/js/common.js"></script>
+<script src="/include/js/datatables.min.js"></script>
+<script src="/include/js/admin.js"></script>
 <script>
   var socket = io("{{env('SOCKET_IO_SERVER')}}");
   socket_init();
