@@ -68,7 +68,7 @@
 
   <div class="form-group row">
     <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
+      <button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
     </div>
   </div>
 </form>
