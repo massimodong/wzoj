@@ -39,8 +39,7 @@ module.exports = function(grunt) {
         src: [
           'node_modules/bootstrap/dist/css/bootstrap.min.css',
           'node_modules/bootstrap-select/dist/css/bootstrap-select.min.css',
-          '3rd/prettify.css',
-          '3rd/navbar-fixed-left.min.css'
+          '3rd/prettify.css'
         ],
         dest: 'build/_concated.css'
       }

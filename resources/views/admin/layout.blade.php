@@ -12,6 +12,7 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/include/css/_concated.min.css">
     <link rel="stylesheet" href="/include/css/common.css">
+    <link rel="stylesheet" href="/include/css/navbar-fixed-left.min.css">
 
     @show
   </head>
@@ -20,8 +21,8 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <a class="navbar-brand" href="#">
-      {{Auth::user()->name}} - {{trans('wzoj.admin')}}
+    <a class="navbar-brand" href="/">
+      {{ojoption('site_name')}}
     </a>
     <div class="collapse navbar-collapse" id="navbarToggler">
       <ul class="navbar-nav">
