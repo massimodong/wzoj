@@ -12,15 +12,20 @@
 @section ('content')
 
 <ul class="nav nav-tabs">
-  <li class="active"><a data-toggle="tab" href="#problemset">{{trans('wzoj.problemset')}}</a></li>
-  <li><a data-toggle="tab" href="#problems">{{trans('wzoj.problems')}}</a></li>
-  <li><a data-toggle="tab" href="#groups">{{trans('wzoj.groups')}}</a></li>
+  <li class="nav-item">
+    <a class="nav-link active" id="problemset-tab" data-toggle="tab" href="#problemset" role="tab" aria-controls="problemset" aria-selected="true">{{trans('wzoj.problemset')}}</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="problems-tab" data-toggle="tab" href="#problems" role="tab" aria-controls="problems" aria-selected="false">{{trans('wzoj.problems')}}</a>
+  </li>
+  <li>
+    <a class="nav-link" id="groups-tab" data-toggle="tab" href="#groups" role="tab" aria-controls="groups" aria-selected="false">{{trans('wzoj.groups')}}</a>
+  </li>
 </ul>
 
 <div class="tab-content">
-<div class="top-buffer-sm"></div>
 
-<div id="problemset" class="tab-pane in active">
+<div id="problemset" class="tab-pane fade show active" role="tabpanel" aria-labelledby="problemset-tab">
     <form class='form-horizontal' id='problemset_form' action='/s/{{$problemset->id}}' method='POST'>
     {{csrf_field()}}
     {{method_field('PUT')}}
@@ -110,8 +115,9 @@
 </div>
 <!-- problemset -->
 
-<div id="problems" class="tab-pane">
-    <form action='/s/{{$problemset->id}}/problems' method='POST' class="form-inline col-xs-6">
+<div id="problems" class="tab-pane fade" role="tabpanel" aria-labelledby="problems-tab">
+  <div class="row">
+    <form action='/s/{{$problemset->id}}/problems' method='POST' class="form-inline col-sm-6">
         {{csrf_field()}}
 	<div class="form-group">
 	  <label for="pids" class="sr-only"></label>
@@ -123,7 +129,7 @@
 	</div>
 	<button type="submit" class="btn btn-primary">{{trans('wzoj.new_problem')}}</button>
     </form>
-    <form action='/s/{{$problemset->id}}/problems' id="problems_form" method="POST" class="form-inline col-xs-6">
+    <form action='/s/{{$problemset->id}}/problems' id="problems_form" method="POST" class="form-inline col-sm-6">
       {{csrf_field()}}
       <div class="form-group">
 	<label for="newindex"> {{trans('wzoj.operations')}}: </label>
@@ -132,6 +138,7 @@
 	<button type="submit" class="btn btn-primary" onclick='$("#problems_form").append("<input hidden name=\"_method\" value=\"PUT\">")'>{{trans('wzoj.move_to')}}</button>
 	<button type="submit" class="btn btn-danger" onclick='$("#problems_form").append("<input hidden name=\"_method\" value=\"DELETE\">")'>{{trans('wzoj.delete')}}</button>
     </form>
+  </div>
 
     <table id="problems_table" class="table table-striped">
     <thead>
@@ -158,7 +165,7 @@
 </div>
 <!-- problems -->
 
-<div id="groups" class="tab-pane">
+<div id="groups" class="tab-pane fade" role="tabpanel" aria-labelledby="groups-tab">
   <form method="POST" action="/s/{{$problemset->id}}/groups" class="form-inline">
     {{csrf_field()}}
     <div class="form-group">
@@ -171,7 +178,7 @@
     </div>
     <button type="submit" class="btn btn-primary">{{trans('wzoj.add_group')}}</button>
   </form>
-  <div class="top-buffer-sm"></div>
+  <div class="buffer-sm"></div>
   <ul class="list-group">
   @foreach ($problemset->groups as $group)
     <li class="list-group-item"> {{$group->name}} <span class="pull-right"><a href="#" onclick="removeGroup({{$group->id}});return false;">{{trans('wzoj.delete')}} </a></span></li>
