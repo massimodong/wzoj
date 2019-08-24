@@ -1,4 +1,4 @@
-@extends ('layouts.master')
+@extends ('admin.layout')
 
 @section ('title')
 {{trans('wzoj.edit')}} {{$problemset->name}}
@@ -46,13 +46,13 @@
     <div class="form-group">
           <label class="control-label col-sm-2" for="contest_start_at">{{trans('wzoj.contest_start_at')}}:</label>
 	  <div class="col-sm-10">
-	        <input type="text" class="form-control" name='contest_start_at' id="contest_start_at" value='{{$problemset->contest_start_at}}' data-date-format="yyyy-mm-dd hh:ii">
+	        <input type="text" class="form-control datetimepicker-input" name='contest_start_at' id="contest_start_at" data-toggle="datetimepicker" data-target="#contest_start_at" data-date-format="YYYY-MM-DD HH:mm:ss">
 	  </div>
     </div>
     <div class="form-group">
           <label class="control-label col-sm-2" for="contest_end_at">{{trans('wzoj.contest_end_at')}}:</label>
 	  <div class="col-sm-10">
-	        <input type="text" class="form-control" name='contest_end_at' id="contest_end_at" value='{{$problemset->contest_end_at}}' data-date-format="yyyy-mm-dd hh:ii">
+	        <input type="text" class="form-control datetimepicker-input" name='contest_end_at' id="contest_end_at" data-toggle="datetimepicker" data-target="#contest_end_at" data-date-format="YYYY-MM-DD HH:mm:ss">
 	  </div>
     </div>
 
@@ -148,7 +148,7 @@
 	    <td>{{$problem->pivot->index}}</td>
 	    <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->id}}-{{$problem->name}}</a>
 	      <span class="pull-right">
-	        @include ('layouts.problem_tags', ['problem' => $problem])
+	        @include ('partials.problem_tags', ['problem' => $problem])
 	      </span>
 	    </td>
 	</tr>
@@ -187,16 +187,13 @@
 @section ('scripts')
 <script>
 jQuery(document).ready(function($) {
-	$('#contest_start_at').datetimepicker({
-		language: 'zh-CN'
-	});
-	$('#contest_end_at').datetimepicker({
-		language: 'zh-CN'
-	});
+	$('#contest_start_at').datetimepicker();
+	$('#contest_end_at').datetimepicker();
+	$('#contest_start_at').datetimepicker('date', '{{$problemset->contest_start_at}}');
+	$('#contest_end_at').datetimepicker('date', '{{$problemset->contest_end_at}}');
 	var ids = [];
 	createDatatableWithCheckboxs("problems_table", ids, "problems_form");
 });
-selectHashTab();
 function removeGroup(id){
 	$.post('/s/{{$problemset->id}}/groups/' + id,{
 		_token: '{{csrf_token()}}',
