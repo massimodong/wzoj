@@ -134,6 +134,8 @@
 <script src="/include/js/admin.js"></script>
 <script src="/include/js/moment.min.js"></script>
 <script src="/include/js/tempusdominus-bootstrap-4.min.js"></script>
+<script src="/include/js/tinymce/tinymce.min.js"></script>
+<script src="/include/js/tinymce.js"></script>
 <script>
   var socket = io("{{env('SOCKET_IO_SERVER')}}");
   socket_init();

@@ -44,19 +44,17 @@ module.exports = function(grunt) {
         dest: 'build/_concated.css'
       }
     },
-    /*,
     copy: {
       main: {
-        files: [{expand:true, cwd: 'bower/bootstrap/dist/fonts', src: '**', dest: 'public/include/fonts/'},
-               {expand:true, cwd: 'bower/bootstrap-fileinput/img', src: '**', dest: 'public/include/img/'}]
+        files: [{expand:true, cwd: 'node_modules/tinymce', src: '**', dest: 'public/include/js/tinymce/'}]
       }
-    }*/
+    }
 });
 
 grunt.loadNpmTasks('grunt-contrib-concat');
 grunt.loadNpmTasks('grunt-contrib-uglify');
 grunt.loadNpmTasks('grunt-contrib-cssmin');
-/*grunt.loadNpmTasks('grunt-contrib-copy');*/
+grunt.loadNpmTasks('grunt-contrib-copy');
 
-grunt.registerTask('default', ['concat', 'uglify', 'cssmin'/*, 'copy'*/]);
+grunt.registerTask('default', ['concat', 'uglify', 'cssmin', 'copy']);
 };
