@@ -113,50 +113,50 @@
 <div id="problems" class="tab-pane fade" role="tabpanel" aria-labelledby="problems-tab">
   <div class="row">
     <form action='/s/{{$problemset->id}}/problems' method='POST' class="form-inline col-sm-6">
-        {{csrf_field()}}
-	<div class="form-group">
-	  <label for="pids" class="sr-only"></label>
-	  <select name="pids[]" id="pids" class="selectpicker" data-live-search="true" title="{{trans('wzoj.search_problem')}}" multiple>
-	  @foreach (Auth::user()->manage_problems()->orderBy('id', 'desc')->get() as $problem)
-	    <option value="{{$problem->id}}">{{$problem->id}}-{{$problem->name}}</option>
-	  @endforeach
-	  </select>
-	</div>
-	<button type="submit" class="btn btn-primary">{{trans('wzoj.new_problem')}}</button>
+      {{csrf_field()}}
+      <div class="form-group">
+        <label for="pids" class="sr-only"></label>
+        <select name="pids[]" id="pids" class="selectpicker" data-live-search="true" title="{{trans('wzoj.search_problem')}}" multiple>
+        @foreach (Auth::user()->manage_problems()->orderBy('id', 'desc')->get() as $problem)
+          <option value="{{$problem->id}}">{{$problem->id}}-{{$problem->name}}</option>
+        @endforeach
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">{{trans('wzoj.new_problem')}}</button>
     </form>
     <form action='/s/{{$problemset->id}}/problems' id="problems_form" method="POST" class="form-inline col-sm-6">
       {{csrf_field()}}
       <div class="form-group">
-	<label for="newindex"> {{trans('wzoj.operations')}}: </label>
-	<input type="text" name="newindex" id="newindex" size="2" class="form-control" placeholder="{{trans('wzoj.new_index')}}">
-	</div>
-	<button type="submit" class="btn btn-primary" onclick='$("#problems_form").append("<input hidden name=\"_method\" value=\"PUT\">")'>{{trans('wzoj.move_to')}}</button>
-	<button type="submit" class="btn btn-danger" onclick='$("#problems_form").append("<input hidden name=\"_method\" value=\"DELETE\">")'>{{trans('wzoj.delete')}}</button>
+        <label for="newindex"> {{trans('wzoj.operations')}}: </label>
+        <input type="text" name="newindex" id="newindex" size="2" class="form-control" placeholder="{{trans('wzoj.new_index')}}">
+      </div>
+      <button type="submit" class="btn btn-primary" onclick='$("#problems_form").append("<input hidden name=\"_method\" value=\"PUT\">")'>{{trans('wzoj.move_to')}}</button>
+      <button type="submit" class="btn btn-danger" onclick='$("#problems_form").append("<input hidden name=\"_method\" value=\"DELETE\">")'>{{trans('wzoj.delete')}}</button>
     </form>
   </div>
 
-    <table id="problems_table" class="table table-striped">
+  <table id="problems_table" class="table table-striped">
     <thead>
-        <tr>
-	    <th style="width: 1%;"><input name="select_all" value="1" type="checkbox"></th>
-	    <th style="width: 5%;">{{trans('wzoj.index')}}</th>
-	    <th>{{trans('wzoj.problem')}}</th>
-	</tr>
+      <tr>
+        <th style="width: 1%;"><input name="select_all" value="1" type="checkbox"></th>
+        <th style="width: 5%;">{{trans('wzoj.index')}}</th>
+        <th>{{trans('wzoj.problem')}}</th>
+      </tr>
     </thead>
     <tbody>
     @foreach ($problems as $problem)
-	<tr>
-	    <td></td>
-	    <td>{{$problem->pivot->index}}</td>
-	    <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->id}}-{{$problem->name}}</a>
-	      <span class="pull-right">
-	        @include ('partials.problem_tags', ['problem' => $problem])
-	      </span>
-	    </td>
-	</tr>
+    <tr>
+      <td></td>
+      <td>{{$problem->pivot->index}}</td>
+      <td><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->id}}-{{$problem->name}}</a>
+        <span class="pull-right">
+          @include ('partials.problem_tags', ['problem' => $problem])
+        </span>
+      </td>
+    </tr>
     @endforeach
     <tbody>
-    </table>
+  </table>
 </div>
 <!-- problems -->
 
@@ -166,9 +166,9 @@
     <div class="form-group">
       <label for="gids">{{trans ('wzoj.choose_group')}}:</label>
       <select name="gid" id="gid" class="selectpicker">
-	@foreach ($groups as $group)
-	<option value="{{$group->id}}">{{$group->name}}</option>
-	@endforeach
+      @foreach ($groups as $group)
+        <option value="{{$group->id}}">{{$group->name}}</option>
+      @endforeach
       </select>
     </div>
     <button type="submit" class="btn btn-primary">{{trans('wzoj.add_group')}}</button>
@@ -189,21 +189,21 @@
 @section ('scripts')
 <script>
 jQuery(document).ready(function($) {
-	$('#contest_start_at').datetimepicker();
-	$('#contest_end_at').datetimepicker();
-	$('#contest_start_at').datetimepicker('date', '{{$problemset->contest_start_at}}');
-	$('#contest_end_at').datetimepicker('date', '{{$problemset->contest_end_at}}');
-	var ids = [];
-	createDatatableWithCheckboxs("problems_table", ids, "problems_form");
+  $('#contest_start_at').datetimepicker();
+  $('#contest_end_at').datetimepicker();
+  $('#contest_start_at').datetimepicker('date', '{{$problemset->contest_start_at}}');
+  $('#contest_end_at').datetimepicker('date', '{{$problemset->contest_end_at}}');
+  var ids = [];
+  createDatatableWithCheckboxs("problems_table", ids, "problems_form");
 });
 function removeGroup(id){
-	$.post('/s/{{$problemset->id}}/groups/' + id,{
-		_token: '{{csrf_token()}}',
-		_method: 'DELETE'
-		})
-	.done(function(){
-		location.reload();
-	});
+  $.post('/s/{{$problemset->id}}/groups/' + id,{
+    _token: '{{csrf_token()}}',
+    _method: 'DELETE'
+    })
+  .done(function(){
+    location.reload();
+  });
 }
 </script>
 @endsection

@@ -287,8 +287,6 @@ class ProblemsetController extends Controller
 			'type' => 'required|in:set,oi,acm,apio',
 			'public' => 'in:1',
 			'show_problem_tags' => 'in:1',
-			'contest_start_at' => 'required',
-			'contest_end_at' => 'required',
 		]);
 
 		$newval = $request->except(['manager']);
