@@ -4,11 +4,6 @@
 {{trans('wzoj.edit')}} {{$problemset->name}}
 @endsection
 
-@section ('sidebar')
-@parent
-<li><a href='#' onclick="sendForm($('#problemset_form')); return false;"> {{trans('wzoj.save')}} </a></li>
-@endsection
-
 @section ('content')
 
 <ul class="nav nav-tabs">
@@ -26,92 +21,92 @@
 <div class="tab-content">
 
 <div id="problemset" class="tab-pane fade show active" role="tabpanel" aria-labelledby="problemset-tab">
-    <form class='form-horizontal' id='problemset_form' action='/s/{{$problemset->id}}' method='POST'>
+  <form action='/s/{{$problemset->id}}' method='POST'>
     {{csrf_field()}}
     {{method_field('PUT')}}
 
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="name">{{trans('wzoj.name')}}:</label>
-	  <div class="col-sm-10">
-	        <input type="text" class="form-control" name='name' id="name" value='{{$problemset->name}}'>
-	  </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="name">{{trans('wzoj.name')}}:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name='name' id="name" value='{{$problemset->name}}'>
+      </div>
     </div>
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="type">{{trans('wzoj.type')}}:</label>
-	  <div class="col-sm-10">
-	  <!--      <input type="text" class="form-control" name='type' id="type" value='{{$problemset->type}}'> -->
-		<select class="form-control" name="type" id="type">
-		  <option value="set" {{$problemset->type=="set"?"selected":""}}>{{trans('wzoj.problem_type_set')}}</option>
-		  <option value="oi" {{$problemset->type=="oi"?"selected":""}}>{{trans('wzoj.problem_type_oi')}}</option>
-		  <option value="acm" {{$problemset->type=="acm"?"selected":""}}>{{trans('wzoj.problem_type_acm')}}</option>
-		  <option value="apio" {{$problemset->type=="apio"?"selected":""}}>{{trans('wzoj.problem_type_apio')}}</option>
-		</select>
-	  </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="type">{{trans('wzoj.type')}}:</label>
+      <div class="col-sm-10">
+        <select class="form-control" name="type" id="type">
+          <option value="set" {{$problemset->type=="set"?"selected":""}}>{{trans('wzoj.problem_type_set')}}</option>
+          <option value="oi" {{$problemset->type=="oi"?"selected":""}}>{{trans('wzoj.problem_type_oi')}}</option>
+          <option value="acm" {{$problemset->type=="acm"?"selected":""}}>{{trans('wzoj.problem_type_acm')}}</option>
+          <option value="apio" {{$problemset->type=="apio"?"selected":""}}>{{trans('wzoj.problem_type_apio')}}</option>
+        </select>
+      </div>
     </div>
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="contest_start_at">{{trans('wzoj.contest_start_at')}}:</label>
-	  <div class="col-sm-10">
-	        <input type="text" class="form-control datetimepicker-input" name='contest_start_at' id="contest_start_at" data-toggle="datetimepicker" data-target="#contest_start_at" data-date-format="YYYY-MM-DD HH:mm:ss">
-	  </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="contest_start_at">{{trans('wzoj.contest_start_at')}}:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control datetimepicker-input" name='contest_start_at' id="contest_start_at" data-toggle="datetimepicker" data-target="#contest_start_at" data-date-format="YYYY-MM-DD HH:mm:ss">
+      </div>
     </div>
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="contest_end_at">{{trans('wzoj.contest_end_at')}}:</label>
-	  <div class="col-sm-10">
-	        <input type="text" class="form-control datetimepicker-input" name='contest_end_at' id="contest_end_at" data-toggle="datetimepicker" data-target="#contest_end_at" data-date-format="YYYY-MM-DD HH:mm:ss">
-	  </div>
-    </div>
-
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="tag">{{trans('wzoj.tag')}}:</label>
-	  <div class="col-sm-10">
-	        <input type="text" class="form-control" name='tag' id="tag" value='{{$problemset->tag}}'>
-	  </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="contest_end_at">{{trans('wzoj.contest_end_at')}}:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control datetimepicker-input" name='contest_end_at' id="contest_end_at" data-toggle="datetimepicker" data-target="#contest_end_at" data-date-format="YYYY-MM-DD HH:mm:ss">
+      </div>
     </div>
 
-    <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-1">
-	      <div class="checkbox">
-                  <label><input type="checkbox" name='public' value='1' {{$problemset->public?"checked":""}}>{{trans('wzoj.public')}}</label>
-	      </div>
-	  </div>
-          <div class="col-sm-2">
-	      <div class="checkbox">
-                  <label><input type="checkbox" name='show_problem_tags' value='1' {{$problemset->show_problem_tags?"checked":""}}>{{trans('wzoj.show_problem_tags')}}</label>
-	      </div>
-	  </div>
-	  <div class="col-sm-7">
-	      <div class="checkbox">
-                  <label><input type="checkbox" name='contest_hide_solutions' value='1' {{$problemset->contest_hide_solutions?"checked":""}}>{{trans('wzoj.contest_hide_solutions')}}</label>
-	      </div>
-	  </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="tag">{{trans('wzoj.tag')}}:</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" name='tag' id="tag" value='{{$problemset->tag}}'>
+      </div>
     </div>
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="description">{{trans('wzoj.description')}}:</label>
-	  <div class="col-sm-10">
-	      <textarea class="form-control ojeditor" name="description" id="description">{{htmlspecialchars($problemset->description)}}</textarea>
-	  </div>
+
+    <div class="form-group row">
+      <div class="col-sm-offset-2 col-sm-1">
+        <div class="checkbox">
+          <label><input type="checkbox" name='public' value='1' {{$problemset->public?"checked":""}}>{{trans('wzoj.public')}}</label>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="checkbox">
+          <label><input type="checkbox" name='show_problem_tags' value='1' {{$problemset->show_problem_tags?"checked":""}}>{{trans('wzoj.show_problem_tags')}}</label>
+        </div>
+      </div>
+      <div class="col-sm-7">
+        <div class="checkbox">
+          <label><input type="checkbox" name='contest_hide_solutions' value='1' {{$problemset->contest_hide_solutions?"checked":""}}>{{trans('wzoj.contest_hide_solutions')}}</label>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="remark">{{trans('wzoj.remark')}}:</label>
-	  <div class="col-sm-10">
-	      <textarea class="form-control" name="remark" id="remark">{{$problemset->remark}}</textarea>
-	  </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="description">{{trans('wzoj.description')}}:</label>
+      <div class="col-sm-10">
+        <textarea class="form-control ojeditor" name="description" id="description">{{htmlspecialchars($problemset->description)}}</textarea>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="remark">{{trans('wzoj.remark')}}:</label>
+      <div class="col-sm-10">
+        <textarea class="form-control" name="remark" id="remark">{{$problemset->remark}}</textarea>
+      </div>
     </div>
 
     @if (Auth::user()->has_role('admin'))
-    <div class="form-group">
-          <label class="control-label col-sm-2" for="tag">{{trans('wzoj.manager')}}:</label>
-	  <div class="col-sm-1">
-	        <input type="text" class="form-control" name='manager' id="manager" value='{{$problemset->manager?$problemset->manager->id:''}}'>
-	  </div>
-	  <div class="col-xs-9">
-	    @if (isset($problemset->manager))
-	      <a href="/users/{{$problemset->manager->id}}">{{$problemset->manager->name}}</a>
-	    @endif
-	  </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="tag">{{trans('wzoj.manager')}}:</label>
+      <div class="col-sm-1">
+        <input type="text" class="form-control" name='manager' id="manager" value='{{$problemset->manager?$problemset->manager->id:''}}'>
+      </div>
+      <div class="col-xs-9">
+      @if (isset($problemset->manager))
+        <a href="/users/{{$problemset->manager->id}}">{{$problemset->manager->name}}</a>
+      @endif
+      </div>
     </div>
     @endif
-    </form>
+    <button type="submit" class="btn btn-primary"> {{trans('wzoj.submit')}} </button>
+  </form>
 </div>
 <!-- problemset -->
 
