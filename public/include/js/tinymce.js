@@ -97,18 +97,13 @@ tinymce.init({
 	    selector: '.ojeditor_inline',
 	    inline: true,
 	    theme: 'silver',
-	    plugins: 'image imagetools paste autolink autosave code codesample textcolor contextmenu link lists media preview searchreplace colorpicker table',
+	    plugins: 'image imagetools paste autolink autosave code codesample link lists media preview searchreplace table save',
 	    menubar:false,
-	    toolbar: "undo redo | styleselect formatselect fontselect fontsizeselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument ",
+	    toolbar: "undo redo | styleselect formatselect fontselect fontsizeselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument | save",
 	    contextmenu: "link image inserttable | cell row column deletetable | paste",
 	    paste_data_images: true,
 	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style]',
 	    imagetools_cors_hosts: [''],
-	    setup: function (editor) {
-		    editor.on('change', function () {
-			    tinymce.triggerSave();
-		    });
-	    },
 	    images_upload_handler: function (blobInfo, success, failure) {
 
 	    var xhr, formData;

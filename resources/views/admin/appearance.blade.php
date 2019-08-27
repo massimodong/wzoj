@@ -130,7 +130,7 @@
       {{csrf_field()}}
       <button type="submit" class="btn btn-default">+</button>
     </form>
-    <table class="table table-striped">
+    <table class="table">
       <thead>
         <tr>
           <th>{{trans('wzoj.id')}}</th>

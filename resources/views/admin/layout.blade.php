@@ -139,6 +139,7 @@
 <script>
   var socket = io("{{env('SOCKET_IO_SERVER')}}");
   socket_init();
+  var csrf_token = '{{csrf_token()}}';
 </script>
 @yield ('scripts')
   </body>
