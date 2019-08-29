@@ -48,20 +48,15 @@ return [
             'root'   => storage_path('app'),
         ],
 
-	'data' => [
-	    'driver' => 'local',
-	    'root'   => env('OJ_DATA'),
-	],
+        'data' => [
+            'driver' => 'local',
+            'root'   => env('OJ_DATA'),
+        ],
 
-	'files' => [
-	    'driver' => 'local',
-	    'root' => storage_path('app').'/files',
-	],
-
-	'backup' => [
-		'driver' => 'local',
-		'root' => storage_path('backup'),
-	],
+        'files' => [
+            'driver' => 'local',
+            'root' => storage_path('app').'/files',
+        ],
 
         'ftp' => [
             'driver'   => 'ftp',
