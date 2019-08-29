@@ -17,7 +17,7 @@
   </div>
   <div class="form-group">
     <label for="remaining" aria-describedby="helpBlockRemaining">{{trans('wzoj.remaining')}}</label>
-    <span id="helpBlockRemaining" class="help-block"> {{trans('wzoj.msg_explain_remaining')}} </span>
+    <span id="helpBlockRemaining" class="text-muted"> {{trans('wzoj.msg_explain_remaining')}} </span>
     <input type="text" class="form-control" id="remaining" name="remaining" value="1" required>
   </div>
   <div class="form-group">
@@ -31,17 +31,17 @@
     <label for="groups_id" class="sr-only">{{trans('wzoj.groups')}}</label>
     <select name="groups_id[]" id="groups_id" class="selectpicker" title="{{trans('wzoj.groups')}}" multiple aria-describedby="helpBlockGroups_id">
       @foreach (\App\Group::all() as $group)
-	<option value="{{$group->id}}">{{$group->name}}</option>
+        <option value="{{$group->id}}">{{$group->name}}</option>
       @endforeach
     <select>
-    <span id="helpBlockGroups_id" class="help-block"> {{trans('wzoj.msg_add_groups_when_register')}} </span>
+    <span id="helpBlockGroups_id" class="text-muted"> {{trans('wzoj.msg_add_groups_when_register')}} </span>
   </div>
   <div class="form-group">
     <label for="fullname" aria-describedby="helpBlockFullname">{{trans('wzoj.fullname')}}</label>
-    <span id="helpBlockFullname" class="help-block"> {{trans('wzoj.msg_one_fullname_per_line')}} </span>
+    <span id="helpBlockFullname" class="text-muted"> {{trans('wzoj.msg_one_fullname_per_line')}} </span>
     <textarea class="form-control" id="fullname" name="fullname" rows="5"></textarea>
   </div>
 
-  <button type="submit" class="btn btn-default"> {{trans('wzoj.generate')}} </button>
+  <button type="submit" class="btn btn-primary"> {{trans('wzoj.generate')}} </button>
 </form>
 @endsection

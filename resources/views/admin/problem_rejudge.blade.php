@@ -35,7 +35,7 @@
 
 <button type="submit" class="btn btn-primary" onclick="return post_rejudge();"> {{trans('wzoj.submit')}} </button>
 
-<p>{{trans('wzoj.msg_problem_rejudge_helper')}}</p>
+<p class="text-muted">{{trans('wzoj.msg_problem_rejudge_helper')}}</p>
 
 </form>
 @endsection
