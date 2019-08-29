@@ -28,7 +28,7 @@
     <div class="form-group">
       <input type="text" value="{{$judger->ip_addr}}" class="form-control" id="ip_addr" name="ip_addr" size="40">
     </div>
-    <button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
+    <button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
   </form>
   <!--
   <form class="form-inline col-xs-3" action="/admin/judgers/{{$judger->id}}" method="POST">
