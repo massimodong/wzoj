@@ -112,7 +112,8 @@ class AuthController extends Controller
 		    $roles[$role->name] = true;
 	    }
 	    $request->session()->put('roles', $roles);
-
+      $user->last_login_at = date('Y-m-d H:i:s');
+      $user->save();
 	    return redirect()->intended($this->redirectPath());
     }
 

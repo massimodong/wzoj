@@ -24,7 +24,7 @@
 					@else
             <span title="{{trans('wzoj.belong_groups')}}:@foreach ($groups as $key => $group){{$key?', ':''}}{{$group->name}}@endforeach">{{$groups[0]->name.' '.trans('wzoj.ect')}}</span>
 					@endif <br>
-        {{trans('wzoj.last_login_time')}}: NULL<br>
+        {{trans('wzoj.last_login_time')}}: {{date("Y-m-d",strtotime($user->last_login_at))}}<br>
         {{trans('wzoj.count_submit')}}/{{trans('wzoj.count_ac_problems')}}:
           <a href="/solutions?user_name={{$user->name}}">{{$cnt_submissions}}</a> / <a href="/solutions?user_name={{$user->name}}&score_min=100&score_max=100">{{$user->cnt_ac}}</a><br>
         {{trans('wzoj.register_time')}}: {{date("Y-m-d",strtotime($user->created_at))}}
