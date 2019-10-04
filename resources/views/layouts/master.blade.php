@@ -68,7 +68,7 @@
   </div>
 </nav>
 
-<main role="main" class="container">
+<main role="main" class="container-fluid">
   <div id="alerts" class="container">
     @if (isset($errors))
       @foreach ($errors->all() as $error)

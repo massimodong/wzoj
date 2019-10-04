@@ -170,7 +170,7 @@ return [
     'count_ac_problems' => '通过题目',
     'register_time' => '注册时间',
     'last_login_time' => '上次登录',
-    'belong_groups' => '所在的组',
+    'belong_groups' => '用户组',
 
     'search' => '搜索',
 
@@ -247,7 +247,7 @@ return [
     'user_rank_list' => '用户排名',
     'preview' => '预览',
 
-    'user_description' => '简介',
+    'user_description' => '个人简介',
 
     'msg_problem_rejudge_helper' => '*提交编号为 1,2,5-7,9 表示重判第1,2,5,6,7,9 题。以上选项满足"且"关系。',
 

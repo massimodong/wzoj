@@ -23,60 +23,11 @@ class UserController extends Controller
 		$groups = Cache::tags(['user_groups'])->rememberForever($user->id, function() use($user){
 			return $user->groups;
 		});
-		
-		$cur_month = intval(date("m")) + 1;
-		$cur_year = intval(date("Y"));
-
-		$month_cnt = 6;
-		$month_no = [];
-		$month_submit_cnt = [];
-		$month_ac_cnt = [];
-
-		for($i=$month_cnt-1;$i>=0;--$i){
-			--$cur_month;
-			if($cur_month <= 0){
-				$cur_month += 12;
-				--$cur_year;
-			}
-			$month_no[$i] = $cur_month;
-			$month_start = $cur_year."-".sprintf("%02d", $cur_month)."-00 00:00:00";
-
-			$next_month = $cur_month + 1;
-			$next_year = $cur_year;
-			if($next_month >= 13){
-				$next_month -= 12;
-				++$next_year;
-			}
-
-			$month_end = $next_year."-".sprintf("%02d", $next_month)."-00 00:00:00";
-	//		echo $month_no[$i].":".$month_start." - ".$month_end."<br>";
-
-			$month_submit_cnt[$i] = $user->solutions()
-				->where('created_at', '>=', $month_start)
-				->where('created_at', '<', $month_end)
-				->count();
-
-			$month_ac_cnt[$i] = $user->solutions()
-				->where('created_at', '>=', $month_start)
-				->where('created_at', '<', $month_end)
-				->where('score','>=' , 100)
-				->count();
-
-			//echo $month_no[$i].":".$month_submit_cnt[$i].":".$month_ac_cnt[$i]."<br>";
-		}
-
 		$cnt_submissions = $user->solutions()->count();
 
-		$last_solutions = $user->solutions()->nohidden()->public()->orderBy('created_at', 'desc')->take(5)->get();
-
 		return view('user.profile',['user' => $user,
-						'month_cnt' => $month_cnt,
-						'month_no' => $month_no,
-						'month_submit_cnt' => $month_submit_cnt,
-						'month_ac_cnt' => $month_ac_cnt,
-						'cnt_submissions' => $cnt_submissions,
-						'last_solutions' => $last_solutions,
-						'groups' => $groups,
+                                'cnt_submissions' => $cnt_submissions,
+                                'groups' => $groups,
 		]);
 	}
 
