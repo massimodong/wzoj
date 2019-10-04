@@ -208,10 +208,4 @@ class HomeController extends Controller
 			abort(404);
 		}
 	}
-
-	public function getTagsChart(){
-		return view('problem_tags_chart', [
-			'tags' => \App\ProblemTag::all(),
-		]);
-	}
 }

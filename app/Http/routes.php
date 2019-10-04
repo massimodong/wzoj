@@ -19,7 +19,6 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('ranklist', 'HomeController@ranklist');
 		Route::get('sorry', 'HomeController@getSorry');
 		Route::post('sorry', 'HomeController@postSorry');
-		Route::get('tags-chart', 'HomeController@getTagsChart');
 
 		// auth
 		Route::get('auth/login', 'Auth\AuthController@getLogin');
