@@ -16,7 +16,7 @@
     <div class="card">
       <div class="card-body">
         <h4 class="card-title">{{$user->fullname}}</h4>
-        <h5 class="card-subtitle mb-2 text-muted">{{$user->name}}, {{$user->class}}</h5>
+        <h5 class="card-subtitle mb-2 text-muted">{{$user->name}}, {{$user->class}} <small><a href="/users/{{$user->id}}/edit">{{trans('wzoj.edit')}}</a></small></h5>
         {{trans('wzoj.belong_groups')}}:
           @if (count($groups) == 0)
 						{{trans('wzoj.none')}}

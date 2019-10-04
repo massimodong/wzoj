@@ -31,6 +31,11 @@ class UserController extends Controller
 		]);
 	}
 
+  public function getEdit($id){
+		$user = User::findOrFail($id);
+		return view('user.edit_profile',['user' => $user]);
+  }
+
   public function postId($id,Request $request){
     $this->validate($request, [
       'fullname' => 'max:255',
@@ -70,7 +75,7 @@ class UserController extends Controller
       $user->save();
     }
 
-    return back();
+    return redirect('/users/'.$user->id);
   }
 
 	public function putUsers(Request $request){
