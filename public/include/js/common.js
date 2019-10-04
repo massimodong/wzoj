@@ -51,3 +51,7 @@ function socket_init(){
     alert(msg.title+':\n'+msg.content);
   });
 }
+
+function changeCaptcha(){
+	document.getElementById('captchaImage').src="/_captcha/default?"+Date.now();
+}
