@@ -5,10 +5,10 @@
 @endsection
 
 @section ('content')
-<div style="padding:10px;" class="col-xs-12">{{trans('wzoj.cur_path')}}:{{$userPath}} <a href="#" onclick="transit('..');return false;">{{trans('wzoj.back')}}</a></div>
+<div style="padding:10px;">{{trans('wzoj.cur_path')}}:{{$userPath}} <a href="#" onclick="transit('..');return false;">{{trans('wzoj.back')}}</a></div>
 
 @if ($can_modify)
-<div class="col-xs-6">
+<div>
   <form method="POST" enctype="multipart/form-data">
     {{csrf_field()}}
     <input hidden name="action" value="upload">
@@ -16,27 +16,24 @@
   </form>
 </div>
 @else
-<div class="col-xs-6"></div>
+<div></div>
 @endif
 
-<form id="fileManager_form" class="form-inline col-xs-1"></form>
-<div class="col-xs-5">
+<form id="fileManager_form" class="form-inline"></form>
+<div>
   <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     {{trans('wzoj.operations')}}
-    <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu">
-      <li><a href="#" onclick="fileManager_action('download', 'GET');return false;">{{trans('wzoj.download')}}</a></li>
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+      <a class="dropdown-item" href="#" onclick="fileManager_action('download', 'GET');return false;">{{trans('wzoj.download')}}</a>
       @if ($can_modify)
-      <li role="separator" class="divider"></li>
-      <li><a href="#" onclick="confirm('{{trans('wzoj.msg_confirm_delete_file')}}')&&fileManager_action('delete');return false;" style="color: red">{{trans('wzoj.delete')}}</a></li>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="#" onclick="confirm('{{trans('wzoj.msg_confirm_delete_file')}}')&&fileManager_action('delete');return false;" style="color: red">{{trans('wzoj.delete')}}</a></li>
       @endif
     </ul>
   </div>
 </div>
-
-<div class="col-xs-12"></div>
 
 <table id="fileManagerTable" class="table table-striped">
 <thead>

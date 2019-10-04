@@ -33,7 +33,7 @@
 		name="password_confirmation" placeholder="{{trans('wzoj.password_confirmation')}}">
 	</div>
 	
-	<button type="submit" class="btn btn-default">{{trans('wzoj.submit')}}</button>
+	<button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
 
 	</form>
 	</div>
