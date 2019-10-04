@@ -62,3 +62,11 @@ li.L5, li.L6, li.L7, li.L8 {
 .buffer-sm {
   height: 10px;
 }
+
+.ranklist-table :link {
+  color: black;
+}
+
+.ranklist-table :visited {
+  color: black;
+}

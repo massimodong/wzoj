@@ -4,10 +4,6 @@
 {{$problem->name}}
 @endsection
 
-@if ($problemset->type <> 'set')
-@include ('layouts.contest_header')
-@endif
-
 @section ('content')
 {!! Breadcrumbs::render('problem', $problemset, $problem) !!}
 <ul class="nav nav-tabs" id="problemTabs" role="tablist">

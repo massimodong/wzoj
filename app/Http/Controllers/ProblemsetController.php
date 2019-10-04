@@ -22,6 +22,7 @@ use Purifier;
 
 class RanklistUser{
 	public $user;
+  public $rank;
 	public $score;
 	public $penalty;
 	public $problem_scores;
@@ -157,6 +158,7 @@ class ProblemsetController extends Controller
 			if(isset($table[$id]->problem_scores[$solution->problem_id])){
 				$table[$id]->score -= $table[$id]->problem_scores[$solution->problem_id];
 				$table[$id]->problem_scores[$solution->problem_id] = $solution->score;
+				$table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
 				$table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
 
 				$table[$id]->problem_solutions[$solution->problem_id] = $solution;
@@ -176,6 +178,13 @@ class ProblemsetController extends Controller
 		}
 
 		usort($table, "ranklist_cmp_user");
+
+    $cnt = count($table);
+    if($cnt > 0) $table[0]->rank = 0;
+    for ($i = 1; $i < $cnt; $i++){
+      if ($table[$i]->score == $table[$i-1]->score) $table[$i]->rank = $table[$i-1]->rank;
+      else $table[$i]->rank = $i;
+    }
 
 		return $table;
 	}
