@@ -10,6 +10,7 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 
 use Auth;
+use Session;
 
 class AuthController extends Controller
 {
@@ -113,6 +114,7 @@ class AuthController extends Controller
 	    }
 	    $request->session()->put('roles', $roles);
       $user->last_login_at = date('Y-m-d H:i:s');
+      $user->last_token = Session::getId();
       $user->save();
 	    return redirect()->intended($this->redirectPath());
     }

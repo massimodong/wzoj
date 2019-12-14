@@ -36,5 +36,6 @@ class Kernel extends HttpKernel
 	'contest' => \App\Http\Middleware\OnlyContest::class,
 	'forum' => \App\Http\Middleware\Forum::class,
 	'role' => \App\Http\Middleware\Role::class,
+	'single_session' => \App\Http\Middleware\SingleSession::class,
     ];
 }
