@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html class="h-100" lang="en">
   <head>
     @section ('head')
     <meta charset="utf-8">
@@ -15,7 +15,7 @@
 
     @show
   </head>
-  <body>
+  <body class="d-flex flex-column h-100">
   <nav class="navbar navbar-expand-sm navbar-light sticky-top" id="top-navbar">
   <a class="navbar-brand" href=@section ('home_href')"/"@show>@section('site_title'){{ojoption('site_name')}}@show</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
     </form>
     -->
   </div>
-</nav>
+  </nav>
 
 <main role="main" class="container-fluid">
   <div id="alerts" class="container">
@@ -97,7 +97,14 @@
 {{csrf_field()}}
 </form>
 
-<!-- TODO: footer -->
+<footer class="footer mt-auto py-3">
+  <div class="container text-center">
+    <span class="text-muted">
+    Copyright 2016
+    <a class="text-muted" href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
+    </span>
+  </div>
+</footer>
 
 <script src="/include/js/_concated.min.js"></script>
 <script src="/include/js/common.js"></script>
