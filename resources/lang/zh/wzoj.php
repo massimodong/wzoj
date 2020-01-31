@@ -171,6 +171,7 @@ return [
     'register_time' => '注册时间',
     'last_login_time' => '上次登录',
     'belong_groups' => '用户组',
+    'history_solutions' => '历史提交',
 
     'search' => '搜索',
 

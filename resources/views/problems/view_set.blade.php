@@ -91,6 +91,9 @@
 
     <hr>
     <div id="pending-sol"></div>
+    @if (Auth::check())
+    <div><p><a href="/solutions?user_name={{Auth::user()->name}}&problemset_id={{$problemset->id}}&problem_id={{$problem->id}}">{{trans('wzoj.history_solutions')}}</a></p></div>
+    @endif
     <div id="sol-table-template" style="display: none" class="row pb-3">
       <div class="col-12">
         <div class="progress" style="height: 30px;" onclick="progress_click(this);">
