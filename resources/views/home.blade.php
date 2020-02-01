@@ -11,7 +11,7 @@
       {!! $home_diy->content !!}
     @endif
     @if (isset($group_homeworks))
-      <div class="card">
+      <div class="card my-3">
         <div class="card-header">{{trans('wzoj.homeworks')}}</div>
         <ul class="list-group list-group-flush">
         @foreach ($group_homeworks as $group_homework)
@@ -30,7 +30,7 @@
         </ul>
       </div>
     @endif
-    <div class="card">
+    <div class="card my-3">
       <div class="card-header">{{trans('wzoj.recent_contests')}}</div>
       <ul class="list-group list-group-flush">
       @foreach ($recent_contests as $problemset)
