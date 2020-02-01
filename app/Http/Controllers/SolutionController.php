@@ -29,7 +29,7 @@ class SolutionController extends Controller
      */
     public function __construct()
     {   
-	    $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('auth', ['except' => ['index', 'show']]);
     }  
 
     const PAGE_LIMIT = 20;
@@ -143,20 +143,20 @@ class SolutionController extends Controller
      * Check if the solution is posted by a bot
      */
     private function bot_check($user){
-	    $cnt_minute_solutions = $user->solutions()
-		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 minute')))
-		    ->count();
-	    if($cnt_minute_solutions >= 20) $user->isbot(100);
+        $cnt_minute_solutions = $user->solutions()
+            ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 minute')))
+            ->count();
+        if($cnt_minute_solutions >= 20) $user->isbot(100);
 
-	    $cnt_hour_solutions = $user->solutions()
-		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 hour')))
-		    ->count();
-	    if($cnt_hour_solutions >= 60) $user->isbot(50);
+        $cnt_hour_solutions = $user->solutions()
+            ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 hour')))
+            ->count();
+        if($cnt_hour_solutions >= 60) $user->isbot(50);
 
-	    $cnt_day_solutions = $user->solutions()
-		    ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 day')))
-		    ->count();
-	    if($cnt_day_solutions >= 240) $user->isbot(25);
+        $cnt_day_solutions = $user->solutions()
+            ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 day')))
+            ->count();
+        if($cnt_day_solutions >= 240) $user->isbot(25);
     }
 
     /**
@@ -167,76 +167,56 @@ class SolutionController extends Controller
      */
     public function store(Request $request)
     {
-	    $problemset = Problemset::findOrFail($request->problemset_id);
-	    $this->authorize('view',$problemset);
+        $problemset = Problemset::findOrFail($request->problemset_id);
+        $this->authorize('view',$problemset);
 
-	    if(!empty(\Request::get('contests'))){
-		    if(!in_array($problemset->id, \Request::get('contests'))){
-			    abort(403);
-		    }
-	    }
+        if(!empty(\Request::get('contests'))){
+            if(!in_array($problemset->id, \Request::get('contests'))){
+                abort(403);
+            }
+        }
 
-	    $this->validate($request,[
-		'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
-		'language' => 'required|in:0,1,2,4', //c,cpp,pas,java,python
-	    ]);
+        $this->validate($request,[
+        'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
+        'language' => 'required|in:0,1,2,4', //c,cpp,pas,java,python
+        ]);
 
-	    if(!ojCanViewProblems($problemset)){
-		    return response()->json(['msg' => 'not allowed'], 422);
-	    }
+        if(!ojCanViewProblems($problemset)){
+            return response()->json(['msg' => 'not allowed'], 422);
+        }
 
-	    $solution_meta = $request->except(['_token', 'srcfile']);
+        $solution_meta = $request->except(['_token', 'srcfile']);
 
-	    if($request->hasFile('srcfile') && $request->file('srcfile')->isValid()){
-		    $file = $request->file('srcfile');
-		    $solution_meta["code"] = file_get_contents($file->getRealPath());
-	    }
+        if($request->hasFile('srcfile') && $request->file('srcfile')->isValid()){
+            $file = $request->file('srcfile');
+            $solution_meta["code"] = file_get_contents($file->getRealPath());
+        }
 
-	    $solution_meta["code_length"] = strlen($solution_meta["code"]);
-	    if($solution_meta["code_length"] <= 10){
-		    return response()->json(['msg' => trans('wzoj.code_too_short')], 422);
-	    }else if($solution_meta["code_length"] > 102400){ //100kb
-		    return response()->json(['msg' => trans('wzoj.code_too_long')], 422);
-	    }
+        $solution_meta["code_length"] = strlen($solution_meta["code"]);
+        if($solution_meta["code_length"] <= 10){
+            return response()->json(['msg' => trans('wzoj.code_too_short')], 422);
+        }else if($solution_meta["code_length"] > 102400){ //100kb
+            return response()->json(['msg' => trans('wzoj.code_too_long')], 422);
+        }
 
-	    DB::insert('insert into `solutions` (`problemset_id`, `problem_id`, `language`, `code`, `code_length`, `user_id`, `updated_at`, `created_at`)
-			    select ?, ?, ?, ?, ?, ?, ?, ? from dual where not exists(
-				    select `id` from `solutions` where `user_id` = ? and `created_at` >= ? limit 1)',
-				    [
-					$solution_meta['problemset_id'],
-					$solution_meta['problem_id'],
-					$solution_meta['language'],
-					$solution_meta['code'],
-					$solution_meta['code_length'],
-					$request->user()->id,
-					date('Y-m-d H:i:s', strtotime('+0 second')),
-					date('Y-m-d H:i:s', strtotime('+0 second')),
-					$request->user()->id,
-					date('Y-m-d H:i:s', strtotime('-3 second')),
-				    ]);
-	    $solution = Solution::with(['user', 'problem', 'judger'])->where('id', DB::getPdo()->lastInsertId())->first();
-	    if($solution==NULL){
-		    return response()->json(['msg' => trans('wzoj.submit_too_frequent')], 422);
-	    }
+        //we use redit to implement a `submit lock` for each user, which automatically expires in 3 seconds
+        $res = Redis::set('wzoj.submit_lock.'.$request->user()->id, '1', 'ex', 3, 'nx');
+        if($res == 'OK') $solution = Solution::create($solution_meta);
+        else return response()->json(['msg' => trans('wzoj.submit_too_frequent')], 422);
 
-	    $hide_solutions = $problemset->isHideSolutions();
+        $request->user()->answerfiles()
+            ->where('problemset_id', $request->problemset_id)
+            ->where('problem_id', $request->problem_id)
+            ->update(['solution_id' => $solution->id,
+                'user_id' => 0,
+                'problemset_id' => 0,
+                'problem_id' => 0]);
 
-	    Redis::lpush('wzoj_recent_solution_ids', $solution->id);             // push the solution to redis list
-	    Redis::ltrim('wzoj_recent_solution_ids', 0, self::PAGE_LIMIT -1);    // save only `PAGE_LIMIT` solutions
+        $this->bot_check($request->user());
 
-	    $request->user()->answerfiles()
-		    ->where('problemset_id', $request->problemset_id)
-		    ->where('problem_id', $request->problem_id)
-		    ->update(['solution_id' => $solution->id,
-				'user_id' => 0,
-		    		'problemset_id' => 0,
-		    		'problem_id' => 0]);
+        wakeJudgers();
 
-	    $this->bot_check($request->user());
-
-	    wakeJudgers();
-
-	    return response()->json(['id' => $solution->id]);
+        return response()->json(['id' => $solution->id]);
     }
 
     /**
@@ -247,21 +227,21 @@ class SolutionController extends Controller
      */
     public function show($id)
     {
-	    $solution = \App\Solution::findOrFail($id);
+        $solution = \App\Solution::findOrFail($id);
 
-	    if(!empty(\Request::get('contests'))){
-		    if(!in_array($solution->problemset_id, \Request::get('contests'))){
-			    abort(403);
-		    }
-	    }
+        if(!empty(\Request::get('contests'))){
+            if(!in_array($solution->problemset_id, \Request::get('contests'))){
+                abort(403);
+            }
+        }
 
-	    if(Auth::check()) $this->authorize('view', $solution);
-	    else return redirect('/auth/login');
+        if(Auth::check()) $this->authorize('view', $solution);
+        else return redirect('/auth/login');
 
-	    $testcases = $solution->testcaseByName();
-	    return view('solutions.show',['solution' => $solution,
-			    		'testcases' => $testcases,
-	    				'problemset' => $solution->problemset]);
+        $testcases = $solution->testcaseByName();
+        return view('solutions.show',['solution' => $solution,
+                        'testcases' => $testcases,
+                        'problemset' => $solution->problemset]);
     }
 
     /**
@@ -299,50 +279,50 @@ class SolutionController extends Controller
     }
 
     public function postSubmitAnswerfile(Request $request){
-	    $problemset = \App\Problemset::findOrFail($request->problemset_id);
-	    $this->authorize('view',$problemset);
-	    $this->validate($request,[
-			    'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
-			    'answerfile' => 'required',
-	    ]);
+        $problemset = \App\Problemset::findOrFail($request->problemset_id);
+        $this->authorize('view',$problemset);
+        $this->validate($request,[
+                'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
+                'answerfile' => 'required',
+        ]);
 
-	    if(!ojCanViewProblems($problemset)){
-		    return back();
-	    }
+        if(!ojCanViewProblems($problemset)){
+            return back();
+        }
 
-	    //check if is problem type 3
-	    $problem = $problemset->problems()->findOrFail($request->problem_id);
-	    if($problem->type <> 3){
-		    return response()->json(['error' => trans('wzoj.problem_not_type3')]);
-	    }
+        //check if is problem type 3
+        $problem = $problemset->problems()->findOrFail($request->problem_id);
+        if($problem->type <> 3){
+            return response()->json(['error' => trans('wzoj.problem_not_type3')]);
+        }
 
-	    $pinfo = pathinfo($request->file('answerfile')->getClientOriginalName());
-	    $filename = $pinfo['filename'];
-	    //check filename
-	    if($pinfo['extension'] <> 'out'){
-		    return response()->json(['error' => trans('wzoj.not_out_file')]);
-	    }
-	    if(!Storage::disk('data')->has('/'.$problem->id.'/'.$filename.'.in')){
-		    return response()->json(['error' => trans('wzoj.invalid_file')]);
-	    }
+        $pinfo = pathinfo($request->file('answerfile')->getClientOriginalName());
+        $filename = $pinfo['filename'];
+        //check filename
+        if($pinfo['extension'] <> 'out'){
+            return response()->json(['error' => trans('wzoj.not_out_file')]);
+        }
+        if(!Storage::disk('data')->has('/'.$problem->id.'/'.$filename.'.in')){
+            return response()->json(['error' => trans('wzoj.invalid_file')]);
+        }
 
-	    $answerfile = $request->user()->answerfiles()
-		    ->where('problemset_id', $request->problemset_id)
-		    ->where('problem_id', $request->problem_id)
-		    ->where('filename', $filename)
-		    ->first();
-	    if($answerfile == NULL){
-		    $answerfile = $request->user()->answerfiles()->create([
-				    'problemset_id' => $request->problemset_id,
-				    'problem_id' => $request->problem_id,
-				    'filename' => $filename,
-		    ]);
-	    }
+        $answerfile = $request->user()->answerfiles()
+            ->where('problemset_id', $request->problemset_id)
+            ->where('problem_id', $request->problem_id)
+            ->where('filename', $filename)
+            ->first();
+        if($answerfile == NULL){
+            $answerfile = $request->user()->answerfiles()->create([
+                    'problemset_id' => $request->problemset_id,
+                    'problem_id' => $request->problem_id,
+                    'filename' => $filename,
+            ]);
+        }
 
-	    $answerfile->answer = file_get_contents($request->file('answerfile')->getRealPath());
-	    $answerfile->save();
+        $answerfile->answer = file_get_contents($request->file('answerfile')->getRealPath());
+        $answerfile->save();
 
-	    $ret=[];
-	    return response()->json($ret);
+        $ret=[];
+        return response()->json($ret);
     }
 }
