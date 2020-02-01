@@ -17,8 +17,8 @@
         @foreach ($group_homeworks as $group_homework)
           <li class="list-group-item">
             <div class="row">
-              <a class="col-6" href="/groups/{{$group_homework['group']->id}}/homework">{{$group_homework['group']->name}}</a>
-              <div class="col-6">
+              <a class="col-xl-6" href="/groups/{{$group_homework['group']->id}}/homework">{{$group_homework['group']->name}}</a>
+              <div class="col-xl-6">
                 <div class="progress" style="height: 24px;">
                   <div class="progress-bar bg-success" role="progressbar" style="width: {{100 * $group_homework['user_score'] / $group_homework['total_score']}}%"
                   aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">{{$group_homework['user_score']}} / {{$group_homework['total_score']}}</div>
@@ -30,6 +30,26 @@
         </ul>
       </div>
     @endif
+    <div class="card">
+      <div class="card-header">{{trans('wzoj.recent_contests')}}</div>
+      <ul class="list-group list-group-flush">
+      @foreach ($recent_contests as $problemset)
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-xl-6 col-sm-12">
+              <a href="/s/{{$problemset->id}}">{{$problemset->name}}</a>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+              <span style="color:green">{{$problemset->contest_start_at}}</span>
+            </div>
+            <div class="col-xl-3 col-sm-6">
+              <span style="color:red">{{$problemset->contest_end_at}}</span>
+            </div>
+          </div>
+        </li>
+      @endforeach
+      </ul>
+    </div>
   </div>
   <div class="col-xl-3 col-md-4">
     <form action="/search" method="GET">
