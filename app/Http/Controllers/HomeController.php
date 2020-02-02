@@ -39,10 +39,10 @@ class HomeController extends Controller
           $recent_contests->push($problemset);
         }
       }
-      $recent_contests = $recent_contests->sortByDesc('contest_start_at')->take(6);
+      $recent_contests = $recent_contests->sortByDesc('contest_start_at')->take(4);
     }else{
       $recent_contests = Cache::tags(['wzoj'])->remember('recent_contests', 1, function(){
-          return \App\Problemset::where('type','<>', 'set')->where('public', 1)->orderBy('contest_start_at', 'desc')->take(6)->get();
+          return \App\Problemset::where('type','<>', 'set')->where('public', 1)->orderBy('contest_start_at', 'desc')->take(4)->get();
       });
     }
 
@@ -90,6 +90,9 @@ class HomeController extends Controller
       }
     }
 
+    if(Auth::check()) $view_history = Cache::tags('wzoj')->get('view_history.'.$request->user()->id, collect());
+    else $view_history = collect();
+
     $sidePanels = Cache::tags(['wzoj'])->rememberForever('sidepanels', function(){
       return \App\SidePanel::where('index', '>', 0)->orderBy('index', 'asc')->get();
     });
@@ -99,6 +102,7 @@ class HomeController extends Controller
       'recent_contests' => $recent_contests,
       'group_homeworks' => $homework_flag?$group_homeworks:NULL,
       'groups' => $groups,
+      'view_history' => $view_history,
       'sidePanels' => $sidePanels,
     ]);
   }

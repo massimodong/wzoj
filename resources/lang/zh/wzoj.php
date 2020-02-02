@@ -415,4 +415,6 @@ return [
     'submit_helper' => '请选择文件，或在此处粘贴代码',
 
     'avrg_score' => '平均分',
+
+    'view_history' => '浏览历史',
 ];

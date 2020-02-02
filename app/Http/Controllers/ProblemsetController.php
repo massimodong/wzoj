@@ -364,6 +364,16 @@ class ProblemsetController extends Controller
 				->get();
 		});
 
+    if(Auth::check()){
+      $view_history = Cache::tags(['wzoj'])->get('view_history.'.$request->user()->id, collect());
+      if($view_history->filter(function($value) use($problemset, $problem, $request){
+          return $value["psid"] == $problemset->id && $value["pid"] == $problem->id && $value["uid"] == $request->user()->id;
+        })->count() == 0){
+        $view_history->prepend(["psid" => $problemset->id, "pid" => $problem->id, "uid" => $request->user()->id, "pn" => $problem->name, "psn" => $problemset->name]);
+        Cache::tags(['wzoj'])->put('view_history.'.$request->user()->id, $view_history->take(3), CACHE_ONE_MONTH);
+      };
+    }
+
     $cnt_submit = Solution::where("problemset_id", $psid)
                           ->where("problem_id", $pid)
                           ->count();

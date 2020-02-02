@@ -30,6 +30,18 @@
         </ul>
       </div>
     @endif
+    @if ($view_history->count())
+      <div class="card my-3">
+        <div class="card-header">{{trans('wzoj.view_history')}}</div>
+        <ul class="list-group list-group-flush">
+        @foreach ($view_history as $history)
+          <li class="list-group-item">
+            <a href="/s/{{$history['psid']}}/{{$history['pid']}}">{{$history["pn"]}}</a> -- <a href="/s/{{$history['psid']}}">{{$history["psn"]}}</a>
+          </li>
+        @endforeach
+        </ul>
+      </div>
+    @endif
     <div class="card my-3">
       <div class="card-header">{{trans('wzoj.recent_contests')}}</div>
       <ul class="list-group list-group-flush">
