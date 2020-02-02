@@ -370,7 +370,7 @@ class ProblemsetController extends Controller
     $tot_score = Solution::where("problemset_id", $psid)
                          ->where("problem_id", $pid)
                          ->sum("score");
-		
+
 		return view('problems.view_'.$problemset->type,['problemset' => $problemset,
 				'problem' => $problem,
 				'answerfiles' => $answerfiles,
