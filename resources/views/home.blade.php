@@ -36,10 +36,20 @@
         <ul class="list-group list-group-flush">
         @foreach ($view_history as $history)
           <li class="list-group-item">
-            @if (($sc = $view_history_max_scores[Auth::user()->id][$history["psid"]][$history["pid"]]) >= 0)
-              {{$sc}}
-            @endif
-            <a href="/s/{{$history['psid']}}/{{$history['pid']}}">{{$history["pn"]}}</a> <small>(<a href="/s/{{$history['psid']}}">{{$history["psn"]}}</a>)</small>
+            <div class="row">
+              <div class="col-1">
+                @if (($sc = $view_history_max_scores[Auth::user()->id][$history["psid"]][$history["pid"]]) >= 0)
+                  @if ($sc >= 100)
+                    <span class="fa fa-check" style="color:green"></span>
+                  @elseif ($sc >= 0)
+                    <span style="color:red">{{$sc}}</span>
+                  @endif
+                @endif
+              </div>
+              <div class="col-11">
+                <a href="/s/{{$history['psid']}}/{{$history['pid']}}">{{$history["pn"]}}</a> <small>(<a href="/s/{{$history['psid']}}">{{$history["psn"]}}</a>)</small>
+              </div>
+            </div>
           </li>
         @endforeach
         </ul>
