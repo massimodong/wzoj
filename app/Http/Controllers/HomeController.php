@@ -90,8 +90,19 @@ class HomeController extends Controller
       }
     }
 
-    if(Auth::check()) $view_history = Cache::tags('wzoj')->get('view_history.'.$request->user()->id, collect());
-    else $view_history = collect();
+    if(Auth::check()){
+      $view_history = Cache::tags('wzoj')->get('view_history.'.$request->user()->id, collect());
+      $problemset_ids = $view_history->map(function($item, $key){
+        return $item["psid"];
+      });
+      $problem_ids = $view_history->map(function($item, $key){
+        return $item["pid"];
+      });
+      $view_history_max_scores = max_scores([Auth::user()->id], $problemset_ids, $problem_ids);
+    }else{
+      $view_history = collect();
+      $view_history_max_scores = [];
+    }
 
     $sidePanels = Cache::tags(['wzoj'])->rememberForever('sidepanels', function(){
       return \App\SidePanel::where('index', '>', 0)->orderBy('index', 'asc')->get();
@@ -103,6 +114,7 @@ class HomeController extends Controller
       'group_homeworks' => $homework_flag?$group_homeworks:NULL,
       'groups' => $groups,
       'view_history' => $view_history,
+      'view_history_max_scores' => $view_history_max_scores,
       'sidePanels' => $sidePanels,
     ]);
   }

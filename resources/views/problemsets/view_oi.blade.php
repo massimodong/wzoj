@@ -29,7 +29,7 @@
       <tr>
         <td>
         @if (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 100)
-          <span class="glyphicon glyphicon-ok" style="color:green"></span>
+          <span class="fa fa-check" style="color:green"></span>
         @elseif (isset($max_scores[$problem->id]) && $max_scores[$problem->id] >= 0)
           <span style="color:red">
          {{$max_scores[$problem->id]}}</span>
