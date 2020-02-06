@@ -5,8 +5,8 @@
 @endsection
 
 @section ('content')
-<div class="row">
-  <div class="col-xl-9 col-md-8">
+<div class="row h-100">
+  <div class="col-xl-9 col-md-8 h-100">
     @if (isset($home_diy))
       {!! $home_diy->content !!}
     @endif
@@ -76,8 +76,8 @@
       </ul>
     </div>
   </div>
-  <div class="col-xl-3 col-md-4">
-    <form action="/search" method="GET">
+  <div class="col-xl-3 col-md-4 h-100">
+    <!--<form action="/search" method="GET">
       <div class="d-table-cell w-100">
         <input type="text" class="form-control" name="name" placeholder="{{trans('wzoj.search')}}">
       </div>
@@ -106,7 +106,7 @@
           <button class="btn btn-primary" type="submit">{{trans('wzoj.search')}}</button>
         </div></div>
       </div>
-    </form>
+    </form>-->
     <div class="overflow-auto" id="home_sidebar">
     @foreach ($sidePanels as $sidePanel)
       <div class="py-1"><div class="card">

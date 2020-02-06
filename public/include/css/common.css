@@ -1,13 +1,5 @@
 body {
 } 
-#top-navbar {
-  background: linear-gradient(to bottom, #e8e9ecff, #e8e9ece0, #e8e9ec30);
-}
-@media screen and (min-width: 576px){
-  #top-navbar {
-    height: 55px;
-  }
-}
 .form-signin {
   text-align: center!important;
   width: 100%;
@@ -39,7 +31,8 @@ body {
   border-top-right-radius: 0;
 }
 #home_sidebar {
-  height: 83vh;
+  height: 100%;
+  padding-top: 10px;
 }
 
 .overflow-auto::-webkit-scrollbar { width: 0 !important }
