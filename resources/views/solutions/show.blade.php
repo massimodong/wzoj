@@ -123,16 +123,8 @@
 @if ($solution->problem->type <> 3)
   @can ('view_code', $solution)
     <h3>{{trans('wzoj.code')}}</h3>
-    <pre class='prettyprint linenums'>{{$solution->code}}</pre>
+    <pre><code class="{{ojPrimusClass($solution->language)}}">{{$solution->code}}</code></pre>
   @endcan
 @endif
 
-@endsection
-
-@section ('scripts')
-<script>
-$(window).on('load', function() {
-    PR.prettyPrint();
-});
-</script>
 @endsection

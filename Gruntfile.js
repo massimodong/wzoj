@@ -30,7 +30,7 @@ module.exports = function(grunt) {
           'node_modules/popper.js/dist/umd/popper.min.js',
           'node_modules/bootstrap/dist/js/bootstrap.min.js',
           'node_modules/bootstrap-select/dist/js/bootstrap-select.min.js',
-          '3rd/prettify.js',
+          '3rd/prism.js',
           'node_modules/socket.io-client/dist/socket.io.js'
         ],
         dest: 'build/_concated.js'
@@ -39,7 +39,7 @@ module.exports = function(grunt) {
         src: [
           'node_modules/bootstrap/dist/css/bootstrap.min.css',
           'node_modules/bootstrap-select/dist/css/bootstrap-select.min.css',
-          '3rd/prettify.css'
+          '3rd/prism.css'
         ],
         dest: 'build/_concated.css'
       }

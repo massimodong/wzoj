@@ -149,3 +149,13 @@ function array_by_id($col){
   foreach($col as $item) $res[$item->id] = $item;
   return $res;
 }
+
+function ojPrimusClass($language){
+  switch($language){
+    case 0: return "language-c";
+    case 1: return "language-cpp";
+    case 2: return "language-pascal";
+    case 3: return "language-java";
+    case 4: return "language-python";
+  }
+}
