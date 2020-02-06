@@ -8,7 +8,7 @@
 {!! Breadcrumbs::render('contests') !!}
 
 <div class="table-responsive">
-  <table class="table table-striped">
+  <table class="table">
   <thead>
     <tr>
       <th>{{trans('wzoj.id')}}</th>

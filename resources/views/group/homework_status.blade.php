@@ -7,7 +7,7 @@
 @section ('content')
 
 <div class="col-xs-12">
-  <table id="homework-status-table" class="table table-striped">
+  <table id="homework-status-table" class="table">
     <thead>
       <tr>
         <th style="display: none"></th>
