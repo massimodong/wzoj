@@ -77,7 +77,8 @@
     </div>
   </div>
   <div class="col-xl-3 col-md-4 h-100">
-    <!--<form action="/search" method="GET">
+    <div class="overflow-auto" id="home_sidebar">
+    <form action="/search" method="GET">
       <div class="d-table-cell w-100">
         <input type="text" class="form-control" name="name" placeholder="{{trans('wzoj.search')}}">
       </div>
@@ -106,8 +107,7 @@
           <button class="btn btn-primary" type="submit">{{trans('wzoj.search')}}</button>
         </div></div>
       </div>
-    </form>-->
-    <div class="overflow-auto" id="home_sidebar">
+    </form>
     @foreach ($sidePanels as $sidePanel)
       <div class="py-1"><div class="card">
         <div class="card-body">
@@ -116,6 +116,9 @@
         </div>
       </div></div>
     @endforeach
+    <div class="text-center">
+      <span class="text-muted">-- {{trans('wzoj.end')}} --</span>
+    </div>
     </div>
   </div>
 </div>

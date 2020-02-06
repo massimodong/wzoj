@@ -16,6 +16,7 @@ return [
     'auto' => '自动',
     'add' => '添加',
     'back' => '返回',
+    'end' => 'end',
 
     'class' => '学校',
     'home' => '主页',

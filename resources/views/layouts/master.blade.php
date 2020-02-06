@@ -39,12 +39,7 @@
             <a class="dropdown-item" href="#" onclick="document.forms['logout_form'].submit();return false;"> {{trans('wzoj.logout')}} </a>
           </div>
         @else
-          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="dropdown01" aria-haspopup="true" role="button">{{trans('wzoj.account')}}</a>
-          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
-            <a class="dropdown-item" href="/auth/login"> {{trans('wzoj.login')}} </a>
-            <a class="dropdown-item" href="/auth/register"> {{trans('wzoj.register')}} </a>
-          </div>
-
+          <li class="nav-item"><a class="nav-link" href="/auth/login"> {{trans('wzoj.login')}} </a></li>
         @endif
       </li>
     </ul>
