@@ -37,6 +37,7 @@ module.exports = function(grunt) {
       },
       css: {
         src: [
+          '3rd/navbar-fixed-left.min.css',
           'node_modules/bootstrap/dist/css/bootstrap.min.css',
           'node_modules/bootstrap-select/dist/css/bootstrap-select.min.css',
           '3rd/prism.css'
