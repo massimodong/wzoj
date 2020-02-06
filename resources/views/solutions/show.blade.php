@@ -13,16 +13,16 @@
       <th>{{trans('wzoj.id')}}</th>
       <td>{{$solution->id}}</td>
 
-      <th>{{trans('wzoj.memory_used')}}</th>
-      <td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
+      <th>{{trans('wzoj.time_used')}}</th>
+      <td>{{$solution->time_used}}ms</td>
     </tr>
 
     <tr>
       <th>{{trans('wzoj.user')}}</th>
       <td><a href='/users/{{$solution->user->id}}'>{{$solution->user->name}}</a></td>
 
-      <th>{{trans('wzoj.language')}}</th>
-      <td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
+      <th>{{trans('wzoj.memory_used')}}</th>
+      <td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>
     </tr>
 
     <tr>
@@ -41,24 +41,32 @@
         @endif
       @endif
 
-      <th>{{trans('wzoj.code_length')}}</th>
-      <td>{{$solution->code_length}}B</td>
+      <th>{{trans('wzoj.score')}}</th>
+      <td>{{$solution->score}}</td>
     </tr>
 
     <tr>
-      <th>{{trans('wzoj.score')}}</th>
-      <td>{{$solution->score}}</td>
+      <th>{{trans('wzoj.language')}}</th>
+      <td>{{trans('wzoj.programing_language_'.$solution->language)}}</td>
+
+      <th>{{trans('wzoj.status')}}</th>
+      <td>{{trans('wzoj.solution_status_'.$solution->status)}}</td>
+    </tr>
+
+    <tr>
+      <th>{{trans('wzoj.code_length')}}</th>
+      <td>{{$solution->code_length}}B</td>
 
       <th>{{trans('wzoj.judger')}}</th>
       <td>{{$solution->judger?$solution->judger->name:""}}</td>
     </tr>
 
     <tr>
-      <th>{{trans('wzoj.time_used')}}</th>
-      <td>{{$solution->time_used}}ms</td>
-
       <th>{{trans('wzoj.submitted_at')}}</th>
       <td>{{$solution->created_at}}</td>
+
+      <th>{{trans('wzoj.judged_at')}}</th>
+      <td>{{$solution->judged_at}}</td>
     </tr>
   </tbody>
 </table>
