@@ -7,7 +7,6 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
-        "mews/purifier": "^2.0",
         "barryvdh/laravel-debugbar": "^2.3",
         "tinymce/tinymce": "^4.5",
         "mews/captcha": "^2.1",
@@ -15,7 +14,8 @@
         "soundasleep/html2text": "^0.3.4",
         "yajra/laravel-datatables-oracle": "~6.28.1",
         "davejamesmiller/laravel-breadcrumbs": "3.x",
-        "doctrine/dbal": "^2.9"
+        "doctrine/dbal": "^2.9",
+        "mews/purifier": "^3.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -56,11 +56,4 @@
     },
     "config": {
         "preferred-install": "dist"
-    },
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
-        }
-    }
-}
+    }}
