@@ -18,7 +18,7 @@
     @show
   </head>
   <body class="d-flex flex-column h-100">
-  <nav class="navbar navbar-expand-sm navbar-light fixed-left" id="left-navbar">
+  <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-left" id="left-navbar">
   <a class="navbar-brand" href=@section ('home_href')"/"@show>@section('site_title'){{ojoption('site_name')}}@show</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
