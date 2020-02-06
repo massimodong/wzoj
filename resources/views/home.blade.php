@@ -4,9 +4,13 @@
 {{ojoption('site_name')}}
 @endsection
 
+@section ('main_class')
+class="main-home"
+@endsection
+
 @section ('content')
 <div class="row h-100">
-  <div class="col-xl-9 col-md-8 h-100">
+  <div class="col-xl-9 col-md-8">
     @if (isset($home_diy))
       {!! $home_diy->content !!}
     @endif

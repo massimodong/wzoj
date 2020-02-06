@@ -59,7 +59,7 @@
   </div>
   </nav>
 
-<main role="main" class="container-fluid h-100">
+<main role="main" @yield ('main_class')>
   <div id="alerts" class="container">
     @if (isset($errors))
       @foreach ($errors->all() as $error)
@@ -88,14 +88,14 @@
 {{csrf_field()}}
 </form>
 
-<!--<footer class="footer mt-auto py-3">
+<footer class="mt-auto">
   <div class="container text-center">
     <span class="text-muted">
     Copyright 2016
     <a class="text-muted" href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
     </span>
   </div>
-</footer> -->
+</footer>
 
 <script src="/include/js/_concated.min.js"></script>
 <script src="/include/js/common.js"></script>

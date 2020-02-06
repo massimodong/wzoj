@@ -1,5 +1,13 @@
 body {
 } 
+
+@media (min-width:768px){
+  main.main-home {
+    height: 100%!important;
+    margin-bottom: -30px;
+  }
+}
+
 .form-signin {
   text-align: center!important;
   width: 100%;
