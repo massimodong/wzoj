@@ -6,6 +6,6 @@ preview {{$problem->name}}
 
 @section ('content')
 
-@include ('layouts.showproblem')
+@include ('partials.showproblem')
 
 @endsection
