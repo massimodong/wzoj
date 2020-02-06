@@ -27,11 +27,10 @@
   <div id="problem" class="tab-pane fade show active" role="tabpanel" aria-labelledby="problem-tab">
     <div class="row">
       <div class="col-sm-12">
-        @include ('partials.showproblem')
-        @if ($cnt_submit)
-          <hr>
-          <p>{{trans('wzoj.count_submit')}}: {{$cnt_submit}}, {{trans('wzoj.avrg_score')}}: {{round($tot_score / $cnt_submit, 2)}}</p>
+        @if (Auth::check() && Auth::user()->has_role('admin'))
+          <div class="text-right"><a href="/admin/problems/{{$problem->id}}">{{trans('wzoj.edit')}}</a></div>
         @endif
+        @include ('partials.showproblem')
       </div>
     </div>
   </div>

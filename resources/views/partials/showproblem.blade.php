@@ -1,8 +1,6 @@
 <h1 class="page-header text-center">{{$problem->name}}</h1>
-@if (Auth::check() && Auth::user()->has_role('admin'))
-  <div class="pull-right"><a href="/admin/problems/{{$problem->id}}">{{trans('wzoj.edit')}}</a></div>
-@endif
 
+<div class="w-100 text-center">
 <small>
 @if ($problem->type == 2)
 {{trans('wzoj.interactive')}}
@@ -14,7 +12,11 @@
 {{trans('wzoj.spj')}}
 @endif
 
+@if (isset($cnt_submit) && $cnt_submit > 0)
+  {{trans('wzoj.count_submit')}}: {{$cnt_submit}}, {{trans('wzoj.avrg_score')}}: {{round($tot_score / $cnt_submit, 2)}}
+@endif
 </small>
+</div>
 
 @if (strlen($problem->description))
 <h3>{{trans('wzoj.problem_description')}}:</h3>
@@ -54,10 +56,10 @@
 {!! $problem->hint !!}
 @endif
 
-{{trans('wzoj.time_limit')}}:{{$problem->timelimit}}ms<br>
-{{trans('wzoj.memory_limit')}}:{{$problem->memorylimit}}MB<br>
+{{trans('wzoj.time_limit')}}: {{$problem->timelimit}}ms<br>
+{{trans('wzoj.memory_limit')}}: {{$problem->memorylimit}}MB<br>
 
 <hr>
 @if (strlen($problem->source))
-<p>{{trans('wzoj.source')}}:{{$problem->source}}</p>
+<p>{{trans('wzoj.source')}}: {{$problem->source}}</p>
 @endif
