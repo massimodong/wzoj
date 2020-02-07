@@ -71,7 +71,7 @@ class ProblemsetController extends Controller
 
       $allcontests = $allcontests->get();
     }else{
-      $allcontests = $request->user()->problemsets()->sortBy('contest_start_at');
+      $allcontests = $request->user()->problemsets()->sortByDesc('contest_start_at');
     }
 
     $contests = collect();
