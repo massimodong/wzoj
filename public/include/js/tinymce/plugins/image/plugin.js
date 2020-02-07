@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.14 (2019-08-19)
+ * Version: 5.1.6 (2020-01-28)
  */
 (function (domGlobals) {
     'use strict';
@@ -29,8 +29,6 @@
     var never = constant(false);
     var always = constant(true);
 
-    var never$1 = never;
-    var always$1 = always;
     var none = function () {
       return NONE;
     };
@@ -44,37 +42,27 @@
       var id = function (n) {
         return n;
       };
-      var noop = function () {
-      };
-      var nul = function () {
-        return null;
-      };
-      var undef = function () {
-        return undefined;
-      };
       var me = {
         fold: function (n, s) {
           return n();
         },
-        is: never$1,
-        isSome: never$1,
-        isNone: always$1,
+        is: never,
+        isSome: never,
+        isNone: always,
         getOr: id,
         getOrThunk: call,
         getOrDie: function (msg) {
           throw new Error(msg || 'error: getOrDie called on none.');
         },
-        getOrNull: nul,
-        getOrUndefined: undef,
+        getOrNull: constant(null),
+        getOrUndefined: constant(undefined),
         or: id,
         orThunk: call,
         map: none,
-        ap: none,
         each: noop,
         bind: none,
-        flatten: none,
-        exists: never$1,
-        forall: always$1,
+        exists: never,
+        forall: always,
         filter: none,
         equals: eq,
         equals_: eq,
@@ -89,14 +77,9 @@
       return me;
     }();
     var some = function (a) {
-      var constant_a = function () {
-        return a;
-      };
+      var constant_a = constant(a);
       var self = function () {
         return me;
-      };
-      var map = function (f) {
-        return some(f(a));
       };
       var bind = function (f) {
         return f(a);
@@ -108,8 +91,8 @@
         is: function (v) {
           return a === v;
         },
-        isSome: always$1,
-        isNone: never$1,
+        isSome: always,
+        isNone: never,
         getOr: constant_a,
         getOrThunk: constant_a,
         getOrDie: constant_a,
@@ -117,35 +100,31 @@
         getOrUndefined: constant_a,
         or: self,
         orThunk: self,
-        map: map,
-        ap: function (optfab) {
-          return optfab.fold(none, function (fab) {
-            return some(fab(a));
-          });
+        map: function (f) {
+          return some(f(a));
         },
         each: function (f) {
           f(a);
         },
         bind: bind,
-        flatten: constant_a,
         exists: bind,
         forall: bind,
         filter: function (f) {
           return f(a) ? me : NONE;
-        },
-        equals: function (o) {
-          return o.is(a);
-        },
-        equals_: function (o, elementEq) {
-          return o.fold(never$1, function (b) {
-            return elementEq(a, b);
-          });
         },
         toArray: function () {
           return [a];
         },
         toString: function () {
           return 'some(' + a + ')';
+        },
+        equals: function (o) {
+          return o.is(a);
+        },
+        equals_: function (o, elementEq) {
+          return o.fold(never, function (b) {
+            return elementEq(a, b);
+          });
         }
       };
       return me;
@@ -183,21 +162,21 @@
     var isBoolean = isType('boolean');
     var isFunction = isType('function');
 
-    var slice = Array.prototype.slice;
+    var nativeSlice = Array.prototype.slice;
+    var nativePush = Array.prototype.push;
     var each = function (xs, f) {
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        f(x, i, xs);
+        f(x, i);
       }
     };
-    var push = Array.prototype.push;
     var flatten = function (xs) {
       var r = [];
       for (var i = 0, len = xs.length; i < len; ++i) {
         if (!isArray(xs[i])) {
           throw new Error('Arr.flatten item ' + i + ' was not an array, input: ' + xs);
         }
-        push.apply(r, xs[i]);
+        nativePush.apply(r, xs[i]);
       }
       return r;
     };
@@ -205,7 +184,7 @@
       return xs.length === 0 ? Option.none() : Option.some(xs[0]);
     };
     var from$1 = isFunction(Array.from) ? Array.from : function (x) {
-      return slice.call(x);
+      return nativeSlice.call(x);
     };
 
     var __assign = function () {
@@ -992,7 +971,7 @@
           });
         }));
       };
-      return __assign({}, delegate, {
+      return __assign(__assign({}, delegate), {
         toCached: toCached,
         bindFuture: bindFuture,
         bindResult: bindResult,
@@ -1069,80 +1048,6 @@
     var deepMerge = baseMerge(deep);
     var merge = baseMerge(shallow);
 
-    var makeItems = function (info) {
-      var imageUrl = {
-        name: 'src',
-        type: 'urlinput',
-        filetype: 'image',
-        label: 'Source'
-      };
-      var imageList = info.imageList.map(function (items) {
-        return {
-          name: 'images',
-          type: 'selectbox',
-          label: 'Image list',
-          items: items
-        };
-      });
-      var imageDescription = {
-        name: 'alt',
-        type: 'input',
-        label: 'Image description'
-      };
-      var imageTitle = {
-        name: 'title',
-        type: 'input',
-        label: 'Image title'
-      };
-      var imageDimensions = {
-        name: 'dimensions',
-        type: 'sizeinput'
-      };
-      var classList = info.classList.map(function (items) {
-        return {
-          name: 'classes',
-          type: 'selectbox',
-          label: 'Class',
-          items: items
-        };
-      });
-      var caption = {
-        type: 'label',
-        label: 'Caption',
-        items: [{
-            type: 'checkbox',
-            name: 'caption',
-            label: 'Show caption'
-          }]
-      };
-      return flatten([
-        [imageUrl],
-        imageList.toArray(),
-        info.hasDescription ? [imageDescription] : [],
-        info.hasImageTitle ? [imageTitle] : [],
-        info.hasDimensions ? [imageDimensions] : [],
-        [{
-            type: 'grid',
-            columns: 2,
-            items: flatten([
-              classList.toArray(),
-              info.hasImageCaption ? [caption] : []
-            ])
-          }]
-      ]);
-    };
-    var makeTab = function (info) {
-      return {
-        title: 'General',
-        name: 'general',
-        items: makeItems(info)
-      };
-    };
-    var MainTab = {
-      makeTab: makeTab,
-      makeItems: makeItems
-    };
-
     var global$2 = tinymce.util.Tools.resolve('tinymce.dom.DOMUtils');
 
     var global$3 = tinymce.util.Tools.resolve('tinymce.util.Promise');
@@ -1194,6 +1099,9 @@
     var getUploadCredentials = function (editor) {
       return editor.getParam('images_upload_credentials', false, 'boolean');
     };
+    var isAutomaticUploadsEnabled = function (editor) {
+      return editor.getParam('automatic_uploads', true, 'boolean');
+    };
     var Settings = {
       hasDimensions: hasDimensions,
       hasUploadTab: hasUploadTab,
@@ -1209,7 +1117,8 @@
       getUploadUrl: getUploadUrl,
       getUploadHandler: getUploadHandler,
       getUploadBasePath: getUploadBasePath,
-      getUploadCredentials: getUploadCredentials
+      getUploadCredentials: getUploadCredentials,
+      isAutomaticUploadsEnabled: isAutomaticUploadsEnabled
     };
 
     var parseIntAndGetMax = function (val1, val2) {
@@ -1778,7 +1687,7 @@
       return { upload: upload };
     }
 
-    var makeTab$1 = function (info) {
+    var makeTab = function (info) {
       return {
         title: 'Advanced',
         name: 'advanced',
@@ -1795,17 +1704,20 @@
               {
                 type: 'input',
                 label: 'Vertical space',
-                name: 'vspace'
+                name: 'vspace',
+                inputMode: 'numeric'
               },
               {
                 type: 'input',
                 label: 'Horizontal space',
-                name: 'hspace'
+                name: 'hspace',
+                inputMode: 'numeric'
               },
               {
                 type: 'input',
                 label: 'Border width',
-                name: 'border'
+                name: 'border',
+                inputMode: 'numeric'
               },
               {
                 type: 'selectbox',
@@ -1863,7 +1775,7 @@
         ]
       };
     };
-    var AdvTab = { makeTab: makeTab$1 };
+    var AdvTab = { makeTab: makeTab };
 
     var collect = function (editor) {
       var urlListSanitizer = ListUtils.sanitizer(function (item) {
@@ -1896,6 +1808,7 @@
       var basePath = Settings.getUploadBasePath(editor);
       var credentials = Settings.getUploadCredentials(editor);
       var handler = Settings.getUploadHandler(editor);
+      var automaticUploads = Settings.isAutomaticUploadsEnabled(editor);
       var prependURL = Option.some(Settings.getPrependUrl(editor)).filter(function (preUrl) {
         return isString(preUrl) && preUrl.length > 0;
       });
@@ -1916,9 +1829,84 @@
           basePath: basePath,
           credentials: credentials,
           handler: handler,
+          automaticUploads: automaticUploads,
           prependURL: prependURL
         };
       });
+    };
+
+    var makeItems = function (info) {
+      var imageUrl = {
+        name: 'src',
+        type: 'urlinput',
+        filetype: 'image',
+        label: 'Source'
+      };
+      var imageList = info.imageList.map(function (items) {
+        return {
+          name: 'images',
+          type: 'selectbox',
+          label: 'Image list',
+          items: items
+        };
+      });
+      var imageDescription = {
+        name: 'alt',
+        type: 'input',
+        label: 'Image description'
+      };
+      var imageTitle = {
+        name: 'title',
+        type: 'input',
+        label: 'Image title'
+      };
+      var imageDimensions = {
+        name: 'dimensions',
+        type: 'sizeinput'
+      };
+      var classList = info.classList.map(function (items) {
+        return {
+          name: 'classes',
+          type: 'selectbox',
+          label: 'Class',
+          items: items
+        };
+      });
+      var caption = {
+        type: 'label',
+        label: 'Caption',
+        items: [{
+            type: 'checkbox',
+            name: 'caption',
+            label: 'Show caption'
+          }]
+      };
+      return flatten([
+        [imageUrl],
+        imageList.toArray(),
+        info.hasDescription ? [imageDescription] : [],
+        info.hasImageTitle ? [imageTitle] : [],
+        info.hasDimensions ? [imageDimensions] : [],
+        [{
+            type: 'grid',
+            columns: 2,
+            items: flatten([
+              classList.toArray(),
+              info.hasImageCaption ? [caption] : []
+            ])
+          }]
+      ]);
+    };
+    var makeTab$1 = function (info) {
+      return {
+        title: 'General',
+        name: 'general',
+        items: makeItems(info)
+      };
+    };
+    var MainTab = {
+      makeTab: makeTab$1,
+      makeItems: makeItems
     };
 
     var makeTab$2 = function (info) {
@@ -2161,22 +2149,31 @@
           api.unblock();
           domGlobals.URL.revokeObjectURL(blobUri);
         };
+        var updateSrcAndSwitchTab = function (url) {
+          api.setData({
+            src: {
+              value: url,
+              meta: {}
+            }
+          });
+          api.showTab('general');
+          changeSrc(helpers, info, state, api);
+        };
         Utils.blobToDataUri(file).then(function (dataUrl) {
           var blobInfo = helpers.createBlobCache(file, blobUri, dataUrl);
-          uploader.upload(blobInfo).then(function (url) {
-            api.setData({
-              src: {
-                value: url,
-                meta: {}
-              }
+          if (info.automaticUploads) {
+            uploader.upload(blobInfo).then(function (url) {
+              updateSrcAndSwitchTab(url);
+              finalize();
+            }).catch(function (err) {
+              finalize();
+              helpers.alertErr(api, err);
             });
-            api.showTab('general');
-            changeSrc(helpers, info, state, api);
-            finalize();
-          }).catch(function (err) {
-            finalize();
-            helpers.alertErr(api, err);
-          });
+          } else {
+            helpers.addToBlobCache(blobInfo);
+            updateSrcAndSwitchTab(blobInfo.blobUri());
+            api.unblock();
+          }
         });
       });
     };
@@ -2285,6 +2282,11 @@
         });
       };
     };
+    var addToBlobCache = function (editor) {
+      return function (blobInfo) {
+        editor.editorUpload.blobCache.add(blobInfo);
+      };
+    };
     var alertErr = function (editor) {
       return function (api, message) {
         editor.windowManager.alert(message, api.close);
@@ -2309,6 +2311,7 @@
       var helpers = {
         onSubmit: submitHandler(editor),
         imageSize: imageSize(editor),
+        addToBlobCache: addToBlobCache(editor),
         createBlobCache: createBlobCache(editor),
         alertErr: alertErr(editor),
         normalizeCss: normalizeCss$1(editor),

@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.14 (2019-08-19)
+ * Version: 5.1.6 (2020-01-28)
  */
 (function (domGlobals) {
     'use strict';
@@ -90,9 +90,15 @@
         }
       return t;
     }
+    function __spreadArrays() {
+      for (var s = 0, i = 0, il = arguments.length; i < il; i++)
+        s += arguments[i].length;
+      for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+          r[k] = a[j];
+      return r;
+    }
 
-    var never$1 = never;
-    var always$1 = always;
     var none = function () {
       return NONE;
     };
@@ -106,37 +112,27 @@
       var id = function (n) {
         return n;
       };
-      var noop = function () {
-      };
-      var nul = function () {
-        return null;
-      };
-      var undef = function () {
-        return undefined;
-      };
       var me = {
         fold: function (n, s) {
           return n();
         },
-        is: never$1,
-        isSome: never$1,
-        isNone: always$1,
+        is: never,
+        isSome: never,
+        isNone: always,
         getOr: id,
         getOrThunk: call,
         getOrDie: function (msg) {
           throw new Error(msg || 'error: getOrDie called on none.');
         },
-        getOrNull: nul,
-        getOrUndefined: undef,
+        getOrNull: constant(null),
+        getOrUndefined: constant(undefined),
         or: id,
         orThunk: call,
         map: none,
-        ap: none,
         each: noop,
         bind: none,
-        flatten: none,
-        exists: never$1,
-        forall: always$1,
+        exists: never,
+        forall: always,
         filter: none,
         equals: eq,
         equals_: eq,
@@ -151,14 +147,9 @@
       return me;
     }();
     var some = function (a) {
-      var constant_a = function () {
-        return a;
-      };
+      var constant_a = constant(a);
       var self = function () {
         return me;
-      };
-      var map = function (f) {
-        return some(f(a));
       };
       var bind = function (f) {
         return f(a);
@@ -170,8 +161,8 @@
         is: function (v) {
           return a === v;
         },
-        isSome: always$1,
-        isNone: never$1,
+        isSome: always,
+        isNone: never,
         getOr: constant_a,
         getOrThunk: constant_a,
         getOrDie: constant_a,
@@ -179,35 +170,31 @@
         getOrUndefined: constant_a,
         or: self,
         orThunk: self,
-        map: map,
-        ap: function (optfab) {
-          return optfab.fold(none, function (fab) {
-            return some(fab(a));
-          });
+        map: function (f) {
+          return some(f(a));
         },
         each: function (f) {
           f(a);
         },
         bind: bind,
-        flatten: constant_a,
         exists: bind,
         forall: bind,
         filter: function (f) {
           return f(a) ? me : NONE;
-        },
-        equals: function (o) {
-          return o.is(a);
-        },
-        equals_: function (o, elementEq) {
-          return o.fold(never$1, function (b) {
-            return elementEq(a, b);
-          });
         },
         toArray: function () {
           return [a];
         },
         toString: function () {
           return 'some(' + a + ')';
+        },
+        equals: function (o) {
+          return o.is(a);
+        },
+        equals_: function (o, elementEq) {
+          return o.fold(never, function (b) {
+            return elementEq(a, b);
+          });
         }
       };
       return me;
@@ -365,17 +352,12 @@
       return false;
     };
 
-    var slice = Array.prototype.slice;
-    var rawIndexOf = function () {
-      var pIndexOf = Array.prototype.indexOf;
-      var fastIndex = function (xs, x) {
-        return pIndexOf.call(xs, x);
-      };
-      var slowIndex = function (xs, x) {
-        return slowIndexOf(xs, x);
-      };
-      return pIndexOf === undefined ? slowIndex : fastIndex;
-    }();
+    var nativeSlice = Array.prototype.slice;
+    var nativeIndexOf = Array.prototype.indexOf;
+    var nativePush = Array.prototype.push;
+    var rawIndexOf = function (ts, t) {
+      return nativeIndexOf.call(ts, t);
+    };
     var indexOf = function (xs, x) {
       var r = rawIndexOf(xs, x);
       return r === -1 ? Option.none() : Option.some(r);
@@ -384,7 +366,13 @@
       return rawIndexOf(xs, x) > -1;
     };
     var exists = function (xs, pred) {
-      return findIndex(xs, pred).isSome();
+      for (var i = 0, len = xs.length; i < len; i++) {
+        var x = xs[i];
+        if (pred(x, i)) {
+          return true;
+        }
+      }
+      return false;
     };
     var range = function (num, f) {
       var r = [];
@@ -396,7 +384,7 @@
     var chunk = function (array, size) {
       var r = [];
       for (var i = 0; i < array.length; i += size) {
-        var s = slice.call(array, i, i + size);
+        var s = nativeSlice.call(array, i, i + size);
         r.push(s);
       }
       return r;
@@ -406,20 +394,20 @@
       var r = new Array(len);
       for (var i = 0; i < len; i++) {
         var x = xs[i];
-        r[i] = f(x, i, xs);
+        r[i] = f(x, i);
       }
       return r;
     };
     var each = function (xs, f) {
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        f(x, i, xs);
+        f(x, i);
       }
     };
     var eachr = function (xs, f) {
       for (var i = xs.length - 1; i >= 0; i--) {
         var x = xs[i];
-        f(x, i, xs);
+        f(x, i);
       }
     };
     var partition = function (xs, pred) {
@@ -427,7 +415,7 @@
       var fail = [];
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        var arr = pred(x, i, xs) ? pass : fail;
+        var arr = pred(x, i) ? pass : fail;
         arr.push(x);
       }
       return {
@@ -439,7 +427,7 @@
       var r = [];
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        if (pred(x, i, xs)) {
+        if (pred(x, i)) {
           r.push(x);
         }
       }
@@ -460,7 +448,7 @@
     var find = function (xs, pred) {
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        if (pred(x, i, xs)) {
+        if (pred(x, i)) {
           return Option.some(x);
         }
       }
@@ -469,28 +457,19 @@
     var findIndex = function (xs, pred) {
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        if (pred(x, i, xs)) {
+        if (pred(x, i)) {
           return Option.some(i);
         }
       }
       return Option.none();
     };
-    var slowIndexOf = function (xs, x) {
-      for (var i = 0, len = xs.length; i < len; ++i) {
-        if (xs[i] === x) {
-          return i;
-        }
-      }
-      return -1;
-    };
-    var push = Array.prototype.push;
     var flatten = function (xs) {
       var r = [];
       for (var i = 0, len = xs.length; i < len; ++i) {
         if (!isArray(xs[i])) {
           throw new Error('Arr.flatten item ' + i + ' was not an array, input: ' + xs);
         }
-        push.apply(r, xs[i]);
+        nativePush.apply(r, xs[i]);
       }
       return r;
     };
@@ -501,14 +480,14 @@
     var forall = function (xs, pred) {
       for (var i = 0, len = xs.length; i < len; ++i) {
         var x = xs[i];
-        if (pred(x, i, xs) !== true) {
+        if (pred(x, i) !== true) {
           return false;
         }
       }
       return true;
     };
     var reverse = function (xs) {
-      var r = slice.call(xs, 0);
+      var r = nativeSlice.call(xs, 0);
       r.reverse();
       return r;
     };
@@ -521,7 +500,7 @@
       return [x];
     };
     var sort = function (xs, comparator) {
-      var copy = slice.call(xs, 0);
+      var copy = nativeSlice.call(xs, 0);
       copy.sort(comparator);
       return copy;
     };
@@ -532,7 +511,7 @@
       return xs.length === 0 ? Option.none() : Option.some(xs[xs.length - 1]);
     };
     var from$1 = isFunction(Array.from) ? Array.from : function (x) {
-      return slice.call(x);
+      return nativeSlice.call(x);
     };
 
     var keys = Object.keys;
@@ -542,21 +521,21 @@
       for (var k = 0, len = props.length; k < len; k++) {
         var i = props[k];
         var x = obj[i];
-        f(x, i, obj);
+        f(x, i);
       }
     };
     var map$1 = function (obj, f) {
-      return tupleMap(obj, function (x, i, obj) {
+      return tupleMap(obj, function (x, i) {
         return {
           k: i,
-          v: f(x, i, obj)
+          v: f(x, i)
         };
       });
     };
     var tupleMap = function (obj, f) {
       var r = {};
       each$1(obj, function (x, i) {
-        var tuple = f(x, i, obj);
+        var tuple = f(x, i);
         r[tuple.k] = tuple.v;
       });
       return r;
@@ -1470,6 +1449,9 @@
     var defaultedPostMsg = function (key, fallback) {
       return defaultedOf(key, fallback, postMessageable);
     };
+    var defaultedArrayOf = function (key, fallback, schema) {
+      return defaultedOf(key, fallback, arrOf(schema));
+    };
     var defaultedObjOf = function (key, fallback, objSchema) {
       return defaultedOf(key, fallback, objOf(objSchema));
     };
@@ -1640,6 +1622,7 @@
     var osx = 'OSX';
     var solaris = 'Solaris';
     var freebsd = 'FreeBSD';
+    var chromeos = 'ChromeOS';
     var isOS = function (name, current) {
       return function () {
         return current === name;
@@ -1663,7 +1646,8 @@
         isOSX: isOS(osx, current),
         isLinux: isOS(linux, current),
         isSolaris: isOS(solaris, current),
-        isFreeBSD: isOS(freebsd, current)
+        isFreeBSD: isOS(freebsd, current),
+        isChromeOS: isOS(chromeos, current)
       };
     };
     var OperatingSystem = {
@@ -1675,18 +1659,19 @@
       linux: constant(linux),
       osx: constant(osx),
       solaris: constant(solaris),
-      freebsd: constant(freebsd)
+      freebsd: constant(freebsd),
+      chromeos: constant(chromeos)
     };
 
-    var DeviceType = function (os, browser, userAgent) {
+    var DeviceType = function (os, browser, userAgent, mediaMatch) {
       var isiPad = os.isiOS() && /ipad/i.test(userAgent) === true;
       var isiPhone = os.isiOS() && !isiPad;
-      var isAndroid3 = os.isAndroid() && os.version.major === 3;
-      var isAndroid4 = os.isAndroid() && os.version.major === 4;
-      var isTablet = isiPad || isAndroid3 || isAndroid4 && /mobile/i.test(userAgent) === true;
-      var isTouch = os.isiOS() || os.isAndroid();
-      var isPhone = isTouch && !isTablet;
+      var isMobile = os.isiOS() || os.isAndroid();
+      var isTouch = isMobile || mediaMatch('(pointer:coarse)');
+      var isTablet = isiPad || !isiPhone && isMobile && mediaMatch('(min-device-width:768px)');
+      var isPhone = isiPhone || isMobile && !isTablet;
       var iOSwebview = browser.isSafari() && os.isiOS() && /safari/i.test(userAgent) === false;
+      var isDesktop = !isPhone && !isTablet && !iOSwebview;
       return {
         isiPad: constant(isiPad),
         isiPhone: constant(isiPhone),
@@ -1695,7 +1680,8 @@
         isTouch: constant(isTouch),
         isAndroid: os.isAndroid,
         isiOS: os.isiOS,
-        isWebView: constant(iOSwebview)
+        isWebView: constant(iOSwebview),
+        isDesktop: constant(isDesktop)
       };
     };
 
@@ -1830,8 +1816,8 @@
       },
       {
         name: 'OSX',
-        search: checkContains('os x'),
-        versionRegexes: [/.*?os\ x\ ?([0-9]+)_([0-9]+).*/]
+        search: checkContains('mac os x'),
+        versionRegexes: [/.*?mac\ os\ x\ ?([0-9]+)_([0-9]+).*/]
       },
       {
         name: 'Linux',
@@ -1847,6 +1833,11 @@
         name: 'FreeBSD',
         search: checkContains('freebsd'),
         versionRegexes: []
+      },
+      {
+        name: 'ChromeOS',
+        search: checkContains('cros'),
+        versionRegexes: [/.*?chrome\/([0-9]+)\.([0-9]+).*/]
       }
     ];
     var PlatformInfo = {
@@ -1854,12 +1845,12 @@
       oses: constant(oses)
     };
 
-    var detect$2 = function (userAgent) {
+    var detect$2 = function (userAgent, mediaMatch) {
       var browsers = PlatformInfo.browsers();
       var oses = PlatformInfo.oses();
       var browser = UaString.detectBrowser(browsers, userAgent).fold(Browser.unknown, Browser.nu);
       var os = UaString.detectOs(oses, userAgent).fold(OperatingSystem.unknown, OperatingSystem.nu);
-      var deviceType = DeviceType(os, browser, userAgent);
+      var deviceType = DeviceType(os, browser, userAgent, mediaMatch);
       return {
         browser: browser,
         os: os,
@@ -1868,11 +1859,13 @@
     };
     var PlatformDetection = { detect: detect$2 };
 
-    var detect$3 = cached(function () {
-      var userAgent = domGlobals.navigator.userAgent;
-      return PlatformDetection.detect(userAgent);
-    });
-    var PlatformDetection$1 = { detect: detect$3 };
+    var mediaMatch = function (query) {
+      return domGlobals.window.matchMedia(query).matches;
+    };
+    var platform = Cell(PlatformDetection.detect(domGlobals.navigator.userAgent, mediaMatch));
+    var detect$3 = function () {
+      return platform.get();
+    };
 
     var ATTRIBUTE = domGlobals.Node.ATTRIBUTE_NODE;
     var CDATA_SECTION = domGlobals.Node.CDATA_SECTION_NODE;
@@ -1931,136 +1924,11 @@
     var ieContains = function (e1, e2) {
       return Node.documentPositionContainedBy(e1.dom(), e2.dom());
     };
-    var browser = PlatformDetection$1.detect().browser;
+    var browser = detect$3().browser;
     var contains$2 = browser.isIE() ? ieContains : regularContains;
 
     var isSource = function (component, simulatedEvent) {
       return eq(component.element(), simulatedEvent.event().target());
-    };
-
-    var nu$4 = function (parts) {
-      if (!hasKey$1(parts, 'can') && !hasKey$1(parts, 'abort') && !hasKey$1(parts, 'run')) {
-        throw new Error('EventHandler defined by: ' + JSON.stringify(parts, null, 2) + ' does not have can, abort, or run!');
-      }
-      return asRawOrDie('Extracting event.handler', objOfOnly([
-        defaulted$1('can', constant(true)),
-        defaulted$1('abort', constant(false)),
-        defaulted$1('run', noop)
-      ]), parts);
-    };
-    var all$1 = function (handlers, f) {
-      return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i];
-        }
-        return foldl(handlers, function (acc, handler) {
-          return acc && f(handler).apply(undefined, args);
-        }, true);
-      };
-    };
-    var any = function (handlers, f) {
-      return function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i];
-        }
-        return foldl(handlers, function (acc, handler) {
-          return acc || f(handler).apply(undefined, args);
-        }, false);
-      };
-    };
-    var read = function (handler) {
-      return isFunction(handler) ? {
-        can: constant(true),
-        abort: constant(false),
-        run: handler
-      } : handler;
-    };
-    var fuse = function (handlers) {
-      var can = all$1(handlers, function (handler) {
-        return handler.can;
-      });
-      var abort = any(handlers, function (handler) {
-        return handler.abort;
-      });
-      var run = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-          args[_i] = arguments[_i];
-        }
-        each(handlers, function (handler) {
-          handler.run.apply(undefined, args);
-        });
-      };
-      return nu$4({
-        can: can,
-        abort: abort,
-        run: run
-      });
-    };
-
-    var touchstart = constant('touchstart');
-    var touchmove = constant('touchmove');
-    var touchend = constant('touchend');
-    var mousedown = constant('mousedown');
-    var mousemove = constant('mousemove');
-    var mouseout = constant('mouseout');
-    var mouseup = constant('mouseup');
-    var mouseover = constant('mouseover');
-    var focusin = constant('focusin');
-    var focusout = constant('focusout');
-    var keydown = constant('keydown');
-    var keyup = constant('keyup');
-    var input = constant('input');
-    var change = constant('change');
-    var click = constant('click');
-    var transitionend = constant('transitionend');
-    var selectstart = constant('selectstart');
-
-    var alloy = { tap: constant('alloy.tap') };
-    var focus = constant('alloy.focus');
-    var postBlur = constant('alloy.blur.post');
-    var postPaste = constant('alloy.paste.post');
-    var receive = constant('alloy.receive');
-    var execute = constant('alloy.execute');
-    var focusItem = constant('alloy.focus.item');
-    var tap = alloy.tap;
-    var tapOrClick = PlatformDetection$1.detect().deviceType.isTouch() ? alloy.tap : click;
-    var longpress = constant('alloy.longpress');
-    var sandboxClose = constant('alloy.sandbox.close');
-    var typeaheadCancel = constant('alloy.typeahead.cancel');
-    var systemInit = constant('alloy.system.init');
-    var windowScroll = constant('alloy.system.scroll');
-    var windowResize = constant('alloy.system.resize');
-    var attachedToDom = constant('alloy.system.attached');
-    var detachedFromDom = constant('alloy.system.detached');
-    var dismissRequested = constant('alloy.system.dismissRequested');
-    var focusShifted = constant('alloy.focusmanager.shifted');
-    var slotVisibility = constant('alloy.slotcontainer.visibility');
-    var changeTab = constant('alloy.change.tab');
-    var dismissTab = constant('alloy.dismiss.tab');
-    var highlight = constant('alloy.highlight');
-    var dehighlight = constant('alloy.dehighlight');
-
-    var emit = function (component, event) {
-      dispatchWith(component, component.element(), event, {});
-    };
-    var emitWith = function (component, event, properties) {
-      dispatchWith(component, component.element(), event, properties);
-    };
-    var emitExecute = function (component) {
-      emit(component, execute());
-    };
-    var dispatch = function (component, target, event) {
-      dispatchWith(component, target, event, {});
-    };
-    var dispatchWith = function (component, target, event, properties) {
-      var data = __assign({ target: target }, properties);
-      component.getSystem().triggerEvent(event, target, map$1(data, constant));
-    };
-    var dispatchEvent = function (component, target, event, simulatedEvent) {
-      component.getSystem().triggerEvent(event, target, simulatedEvent.event());
     };
 
     function ClosestOrAncestor (is, ancestor, scope, a, isRoot) {
@@ -2143,6 +2011,134 @@
       return delegate.bind(transform);
     };
 
+    var nu$4 = function (parts) {
+      if (!hasKey$1(parts, 'can') && !hasKey$1(parts, 'abort') && !hasKey$1(parts, 'run')) {
+        throw new Error('EventHandler defined by: ' + JSON.stringify(parts, null, 2) + ' does not have can, abort, or run!');
+      }
+      return asRawOrDie('Extracting event.handler', objOfOnly([
+        defaulted$1('can', constant(true)),
+        defaulted$1('abort', constant(false)),
+        defaulted$1('run', noop)
+      ]), parts);
+    };
+    var all$1 = function (handlers, f) {
+      return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+        return foldl(handlers, function (acc, handler) {
+          return acc && f(handler).apply(undefined, args);
+        }, true);
+      };
+    };
+    var any = function (handlers, f) {
+      return function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+        return foldl(handlers, function (acc, handler) {
+          return acc || f(handler).apply(undefined, args);
+        }, false);
+      };
+    };
+    var read = function (handler) {
+      return isFunction(handler) ? {
+        can: constant(true),
+        abort: constant(false),
+        run: handler
+      } : handler;
+    };
+    var fuse = function (handlers) {
+      var can = all$1(handlers, function (handler) {
+        return handler.can;
+      });
+      var abort = any(handlers, function (handler) {
+        return handler.abort;
+      });
+      var run = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+        each(handlers, function (handler) {
+          handler.run.apply(undefined, args);
+        });
+      };
+      return nu$4({
+        can: can,
+        abort: abort,
+        run: run
+      });
+    };
+
+    var touchstart = constant('touchstart');
+    var touchmove = constant('touchmove');
+    var touchend = constant('touchend');
+    var touchcancel = constant('touchcancel');
+    var mousedown = constant('mousedown');
+    var mousemove = constant('mousemove');
+    var mouseout = constant('mouseout');
+    var mouseup = constant('mouseup');
+    var mouseover = constant('mouseover');
+    var focusin = constant('focusin');
+    var focusout = constant('focusout');
+    var keydown = constant('keydown');
+    var keyup = constant('keyup');
+    var input = constant('input');
+    var change = constant('change');
+    var click = constant('click');
+    var transitionend = constant('transitionend');
+    var selectstart = constant('selectstart');
+
+    var alloy = { tap: constant('alloy.tap') };
+    var focus = constant('alloy.focus');
+    var postBlur = constant('alloy.blur.post');
+    var postPaste = constant('alloy.paste.post');
+    var receive = constant('alloy.receive');
+    var execute = constant('alloy.execute');
+    var focusItem = constant('alloy.focus.item');
+    var tap = alloy.tap;
+    var longpress = constant('alloy.longpress');
+    var sandboxClose = constant('alloy.sandbox.close');
+    var typeaheadCancel = constant('alloy.typeahead.cancel');
+    var systemInit = constant('alloy.system.init');
+    var documentTouchmove = constant('alloy.system.touchmove');
+    var documentTouchend = constant('alloy.system.touchend');
+    var windowScroll = constant('alloy.system.scroll');
+    var windowResize = constant('alloy.system.resize');
+    var attachedToDom = constant('alloy.system.attached');
+    var detachedFromDom = constant('alloy.system.detached');
+    var dismissRequested = constant('alloy.system.dismissRequested');
+    var repositionRequested = constant('alloy.system.repositionRequested');
+    var focusShifted = constant('alloy.focusmanager.shifted');
+    var slotVisibility = constant('alloy.slotcontainer.visibility');
+    var changeTab = constant('alloy.change.tab');
+    var dismissTab = constant('alloy.dismiss.tab');
+    var highlight = constant('alloy.highlight');
+    var dehighlight = constant('alloy.dehighlight');
+
+    var emit = function (component, event) {
+      dispatchWith(component, component.element(), event, {});
+    };
+    var emitWith = function (component, event, properties) {
+      dispatchWith(component, component.element(), event, properties);
+    };
+    var emitExecute = function (component) {
+      emit(component, execute());
+    };
+    var dispatch = function (component, target, event) {
+      dispatchWith(component, target, event, {});
+    };
+    var dispatchWith = function (component, target, event, properties) {
+      var data = __assign({ target: target }, properties);
+      component.getSystem().triggerEvent(event, target, map$1(data, constant));
+    };
+    var dispatchEvent = function (component, target, event, simulatedEvent) {
+      component.getSystem().triggerEvent(event, target, simulatedEvent.event());
+    };
+
     var derive = function (configs) {
       return wrapAll$1(configs);
     };
@@ -2178,8 +2174,11 @@
       return {
         key: name,
         value: nu$4({
-          run: function (component) {
-            action.apply(undefined, [component].concat(extra));
+          run: function (component, simulatedEvent) {
+            action.apply(undefined, [
+              component,
+              simulatedEvent
+            ].concat(extra));
           }
         })
       };
@@ -2331,6 +2330,9 @@
 
     var owner = function (element) {
       return Element.fromDom(element.dom().ownerDocument);
+    };
+    var documentElement = function (element) {
+      return Element.fromDom(element.dom().ownerDocument.documentElement);
     };
     var defaultView = function (element) {
       return Element.fromDom(element.dom().ownerDocument.defaultView);
@@ -2702,9 +2704,9 @@
       };
     };
     var merge$1 = function (defnA, mod) {
-      return __assign({}, defnA, {
-        attributes: __assign({}, defnA.attributes, mod.attributes),
-        styles: __assign({}, defnA.styles, mod.styles),
+      return __assign(__assign({}, defnA), {
+        attributes: __assign(__assign({}, defnA.attributes), mod.attributes),
+        styles: __assign(__assign({}, defnA.styles), mod.styles),
         classes: defnA.classes.concat(mod.classes)
       });
     };
@@ -2723,7 +2725,7 @@
       var byAspect = byInnerKey(modsByBehaviour, nameAndMod);
       var combineObjects = function (objects) {
         return foldr(objects, function (b, a) {
-          return __assign({}, a.modification, b);
+          return __assign(__assign({}, a.modification), b);
         }, {});
       };
       var combinedClasses = foldr(byAspect.classes, function (b, a) {
@@ -2799,7 +2801,7 @@
       return r;
     };
     var groupByEvents = function (info, behaviours, base) {
-      var behaviourEvents = __assign({}, base, nameToHandlers(behaviours, info));
+      var behaviourEvents = __assign(__assign({}, base), nameToHandlers(behaviours, info));
       return byInnerKey(behaviourEvents, behaviourTuple);
     };
     var combine$1 = function (info, eventOrder, behaviours, base) {
@@ -2847,8 +2849,8 @@
         var combined = tuples.length === 1 ? Result.value(tuples[0].handler()) : fuse$1(tuples, eventOrder, eventName);
         return combined.map(function (handler) {
           var assembled = assemble(handler);
-          var purpose = tuples.length > 1 ? filter(eventOrder, function (o) {
-            return contains(tuples, function (t) {
+          var purpose = tuples.length > 1 ? filter(eventOrder[eventName], function (o) {
+            return exists(tuples, function (t) {
               return t.name() === o;
             });
           }).join(' > ') : tuples[0].name();
@@ -2907,6 +2909,11 @@
             'alloy.base.behaviour',
             'item-type-events'
           ],
+          'touchstart': [
+            'focusing',
+            'alloy.base.behaviour',
+            'item-type-events'
+          ],
           'mouseover': [
             'item-type-events',
             'tooltipping'
@@ -2916,7 +2923,7 @@
       ]), spec);
     };
     var toDefinition = function (detail) {
-      return __assign({}, detail.dom, {
+      return __assign(__assign({}, detail.dom), {
         uid: detail.uid,
         domChildren: map(detail.components, function (comp) {
           return comp.element();
@@ -3206,8 +3213,8 @@
     var buildFromSpec = function (userSpec) {
       var _a = make(userSpec), specEvents = _a.events, spec = __rest(_a, ['events']);
       var components = buildSubcomponents(spec);
-      var completeSpec = __assign({}, spec, {
-        events: __assign({}, DefaultEvents, specEvents),
+      var completeSpec = __assign(__assign({}, spec), {
+        events: __assign(__assign({}, DefaultEvents), specEvents),
         components: components
       });
       return Result.value(build(completeSpec));
@@ -3262,6 +3269,248 @@
     };
     var premade$1 = premade;
 
+    function Dimension (name, getOffset) {
+      var set = function (element, h) {
+        if (!isNumber(h) && !h.match(/^[0-9]+$/)) {
+          throw new Error(name + '.set accepts only positive integer values. Value was ' + h);
+        }
+        var dom = element.dom();
+        if (isSupported(dom)) {
+          dom.style[name] = h + 'px';
+        }
+      };
+      var get = function (element) {
+        var r = getOffset(element);
+        if (r <= 0 || r === null) {
+          var css = get$4(element, name);
+          return parseFloat(css) || 0;
+        }
+        return r;
+      };
+      var getOuter = get;
+      var aggregate = function (element, properties) {
+        return foldl(properties, function (acc, property) {
+          var val = get$4(element, property);
+          var value = val === undefined ? 0 : parseInt(val, 10);
+          return isNaN(value) ? acc : acc + value;
+        }, 0);
+      };
+      var max = function (element, value, properties) {
+        var cumulativeInclusions = aggregate(element, properties);
+        var absoluteMax = value > cumulativeInclusions ? value - cumulativeInclusions : 0;
+        return absoluteMax;
+      };
+      return {
+        set: set,
+        get: get,
+        getOuter: getOuter,
+        aggregate: aggregate,
+        max: max
+      };
+    }
+
+    var api = Dimension('height', function (element) {
+      var dom = element.dom();
+      return inBody(element) ? dom.getBoundingClientRect().height : dom.offsetHeight;
+    });
+    var get$6 = function (element) {
+      return api.get(element);
+    };
+    var getOuter$1 = function (element) {
+      return api.getOuter(element);
+    };
+    var setMax = function (element, value) {
+      var inclusions = [
+        'margin-top',
+        'border-top-width',
+        'padding-top',
+        'padding-bottom',
+        'border-bottom-width',
+        'margin-bottom'
+      ];
+      var absMax = api.max(element, value, inclusions);
+      set$2(element, 'max-height', absMax + 'px');
+    };
+
+    var r = function (left, top) {
+      var translate = function (x, y) {
+        return r(left + x, top + y);
+      };
+      return {
+        left: constant(left),
+        top: constant(top),
+        translate: translate
+      };
+    };
+    var Position = r;
+
+    var boxPosition = function (dom) {
+      var box = dom.getBoundingClientRect();
+      return Position(box.left, box.top);
+    };
+    var firstDefinedOrZero = function (a, b) {
+      return a !== undefined ? a : b !== undefined ? b : 0;
+    };
+    var absolute = function (element) {
+      var doc = element.dom().ownerDocument;
+      var body = doc.body;
+      var win = doc.defaultView;
+      var html = doc.documentElement;
+      if (body === element.dom()) {
+        return Position(body.offsetLeft, body.offsetTop);
+      }
+      var scrollTop = firstDefinedOrZero(win.pageYOffset, html.scrollTop);
+      var scrollLeft = firstDefinedOrZero(win.pageXOffset, html.scrollLeft);
+      var clientTop = firstDefinedOrZero(html.clientTop, body.clientTop);
+      var clientLeft = firstDefinedOrZero(html.clientLeft, body.clientLeft);
+      return viewport(element).translate(scrollLeft - clientLeft, scrollTop - clientTop);
+    };
+    var viewport = function (element) {
+      var dom = element.dom();
+      var doc = dom.ownerDocument;
+      var body = doc.body;
+      if (body === dom) {
+        return Position(body.offsetLeft, body.offsetTop);
+      }
+      if (!inBody(element)) {
+        return Position(0, 0);
+      }
+      return boxPosition(dom);
+    };
+
+    var api$1 = Dimension('width', function (element) {
+      return element.dom().offsetWidth;
+    });
+    var set$4 = function (element, h) {
+      api$1.set(element, h);
+    };
+    var get$7 = function (element) {
+      return api$1.get(element);
+    };
+    var getOuter$2 = function (element) {
+      return api$1.getOuter(element);
+    };
+    var setMax$1 = function (element, value) {
+      var inclusions = [
+        'margin-left',
+        'border-left-width',
+        'padding-left',
+        'padding-right',
+        'border-right-width',
+        'margin-right'
+      ];
+      var absMax = api$1.max(element, value, inclusions);
+      set$2(element, 'max-width', absMax + 'px');
+    };
+
+    var isSafari = detect$3().browser.isSafari();
+    var get$8 = function (_DOC) {
+      var doc = _DOC !== undefined ? _DOC.dom() : domGlobals.document;
+      var x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
+      var y = doc.body.scrollTop || doc.documentElement.scrollTop;
+      return Position(x, y);
+    };
+
+    var bounds = function (x, y, width, height) {
+      return {
+        x: constant(x),
+        y: constant(y),
+        width: constant(width),
+        height: constant(height),
+        right: constant(x + width),
+        bottom: constant(y + height)
+      };
+    };
+    var getBounds = function (_win) {
+      var win = _win === undefined ? domGlobals.window : _win;
+      var doc = win.document;
+      var scroll = get$8(Element.fromDom(doc));
+      var visualViewport = win['visualViewport'];
+      if (visualViewport !== undefined) {
+        return bounds(Math.max(visualViewport.pageLeft, scroll.left()), Math.max(visualViewport.pageTop, scroll.top()), visualViewport.width, visualViewport.height);
+      } else {
+        var html = doc.documentElement;
+        var width = html.clientWidth;
+        var height = html.clientHeight;
+        return bounds(scroll.left(), scroll.top(), width, height);
+      }
+    };
+
+    var walkUp = function (navigation, doc) {
+      var frame = navigation.view(doc);
+      return frame.fold(constant([]), function (f) {
+        var parent = navigation.owner(f);
+        var rest = walkUp(navigation, parent);
+        return [f].concat(rest);
+      });
+    };
+    var pathTo = function (element, navigation) {
+      var d = navigation.owner(element);
+      var paths = walkUp(navigation, d);
+      return Option.some(paths);
+    };
+
+    var view = function (doc) {
+      var element = doc.dom() === domGlobals.document ? Option.none() : Option.from(doc.dom().defaultView.frameElement);
+      return element.map(Element.fromDom);
+    };
+    var owner$1 = function (element) {
+      return owner(element);
+    };
+
+    var Navigation = /*#__PURE__*/Object.freeze({
+        view: view,
+        owner: owner$1
+    });
+
+    var find$3 = function (element) {
+      var doc = Element.fromDom(domGlobals.document);
+      var scroll = get$8(doc);
+      var path = pathTo(element, Navigation);
+      return path.fold(curry(absolute, element), function (frames) {
+        var offset = viewport(element);
+        var r = foldr(frames, function (b, a) {
+          var loc = viewport(a);
+          return {
+            left: b.left + loc.left(),
+            top: b.top + loc.top()
+          };
+        }, {
+          left: 0,
+          top: 0
+        });
+        return Position(r.left + offset.left() + scroll.left(), r.top + offset.top() + scroll.top());
+      });
+    };
+
+    var pointed = Immutable('point', 'width', 'height');
+    var rect = Immutable('x', 'y', 'width', 'height');
+    var bounds$1 = function (x, y, width, height) {
+      return {
+        x: constant(x),
+        y: constant(y),
+        width: constant(width),
+        height: constant(height),
+        right: constant(x + width),
+        bottom: constant(y + height)
+      };
+    };
+    var box = function (element) {
+      var xy = absolute(element);
+      var w = getOuter$2(element);
+      var h = getOuter$1(element);
+      return bounds$1(xy.left(), xy.top(), w, h);
+    };
+    var absolute$1 = function (element) {
+      var position = find$3(element);
+      var width = getOuter$2(element);
+      var height = getOuter$1(element);
+      return bounds$1(position.left(), position.top(), width, height);
+    };
+    var win = function () {
+      return getBounds(domGlobals.window);
+    };
+
     var closest$2 = function (scope, predicate, isRoot) {
       return closest(scope, predicate, isRoot).isSome();
     };
@@ -3278,7 +3527,7 @@
       return ClosestOrAncestor(is, ancestor$1, scope, selector, isRoot);
     };
 
-    var find$3 = function (queryElem) {
+    var find$4 = function (queryElem) {
       var dependent = closest(queryElem, function (elem) {
         if (!isElement(elem)) {
           return false;
@@ -3308,7 +3557,7 @@
     };
 
     var isAriaPartOf = function (component, queryElem) {
-      return find$3(queryElem).exists(function (owner) {
+      return find$4(queryElem).exists(function (owner) {
         return isPartOf(component, owner);
       });
     };
@@ -3328,16 +3577,7 @@
       }
       return r;
     };
-    var findMap = function (arr, f) {
-      for (var i = 0; i < arr.length; i++) {
-        var r = f(arr[i], i);
-        if (r.isSome()) {
-          return r;
-        }
-      }
-      return Option.none();
-    };
-    var liftN = function (arr, f) {
+    var sequence = function (arr) {
       var r = [];
       for (var i = 0; i < arr.length; i++) {
         var x = arr[i];
@@ -3347,7 +3587,22 @@
           return Option.none();
         }
       }
-      return Option.some(f.apply(null, r));
+      return Option.some(r);
+    };
+    var findMap = function (arr, f) {
+      for (var i = 0; i < arr.length; i++) {
+        var r = f(arr[i], i);
+        if (r.isSome()) {
+          return r;
+        }
+      }
+      return Option.none();
+    };
+    var lift2 = function (oa, ob, f) {
+      return oa.isSome() && ob.isSome() ? Option.some(f(oa.getOrDie(), ob.getOrDie())) : Option.none();
+    };
+    var lift3 = function (oa, ob, oc, f) {
+      return oa.isSome() && ob.isSome() && oc.isSome() ? Option.some(f(oa.getOrDie(), ob.getOrDie(), oc.getOrDie())) : Option.none();
     };
 
     var unknown$3 = 'unknown';
@@ -3531,6 +3786,129 @@
     };
     var initSize = constant(_initSize);
 
+    var nu$7 = Immutable('x', 'y', 'bubble', 'direction', 'label');
+
+    var adt$2 = Adt.generate([
+      { southeast: [] },
+      { southwest: [] },
+      { northeast: [] },
+      { northwest: [] },
+      { south: [] },
+      { north: [] },
+      { east: [] },
+      { west: [] }
+    ]);
+    var cata = function (subject, southeast, southwest, northeast, northwest, south, north, east, west) {
+      return subject.fold(southeast, southwest, northeast, northwest, south, north, east, west);
+    };
+    var cataVertical = function (subject, south, middle, north) {
+      return subject.fold(south, south, north, north, south, north, middle, middle);
+    };
+    var cataHorizontal = function (subject, east, middle, west) {
+      return subject.fold(east, west, east, west, middle, middle, east, west);
+    };
+    var southeast = adt$2.southeast;
+    var southwest = adt$2.southwest;
+    var northeast = adt$2.northeast;
+    var northwest = adt$2.northwest;
+    var south = adt$2.south;
+    var north = adt$2.north;
+    var east = adt$2.east;
+    var west = adt$2.west;
+
+    var eastX = function (anchor) {
+      return anchor.x();
+    };
+    var middleX = function (anchor, element) {
+      return anchor.x() + anchor.width() / 2 - element.width() / 2;
+    };
+    var westX = function (anchor, element) {
+      return anchor.x() + anchor.width() - element.width();
+    };
+    var northY = function (anchor, element) {
+      return anchor.y() - element.height();
+    };
+    var southY = function (anchor) {
+      return anchor.y() + anchor.height();
+    };
+    var centreY = function (anchor, element) {
+      return anchor.y() + anchor.height() / 2 - element.height() / 2;
+    };
+    var eastEdgeX = function (anchor) {
+      return anchor.x() + anchor.width();
+    };
+    var westEdgeX = function (anchor, element) {
+      return anchor.x() - element.width();
+    };
+    var southeast$1 = function (anchor, element, bubbles) {
+      return nu$7(eastX(anchor), southY(anchor), bubbles.southeast(), southeast(), 'layout-se');
+    };
+    var southwest$1 = function (anchor, element, bubbles) {
+      return nu$7(westX(anchor, element), southY(anchor), bubbles.southwest(), southwest(), 'layout-sw');
+    };
+    var northeast$1 = function (anchor, element, bubbles) {
+      return nu$7(eastX(anchor), northY(anchor, element), bubbles.northeast(), northeast(), 'layout-ne');
+    };
+    var northwest$1 = function (anchor, element, bubbles) {
+      return nu$7(westX(anchor, element), northY(anchor, element), bubbles.northwest(), northwest(), 'layout-nw');
+    };
+    var north$1 = function (anchor, element, bubbles) {
+      return nu$7(middleX(anchor, element), northY(anchor, element), bubbles.north(), north(), 'layout-n');
+    };
+    var south$1 = function (anchor, element, bubbles) {
+      return nu$7(middleX(anchor, element), southY(anchor), bubbles.south(), south(), 'layout-s');
+    };
+    var east$1 = function (anchor, element, bubbles) {
+      return nu$7(eastEdgeX(anchor), centreY(anchor, element), bubbles.east(), east(), 'layout-e');
+    };
+    var west$1 = function (anchor, element, bubbles) {
+      return nu$7(westEdgeX(anchor, element), centreY(anchor, element), bubbles.west(), west(), 'layout-w');
+    };
+    var all$2 = function () {
+      return [
+        southeast$1,
+        southwest$1,
+        northeast$1,
+        northwest$1,
+        south$1,
+        north$1,
+        east$1,
+        west$1
+      ];
+    };
+    var allRtl = function () {
+      return [
+        southwest$1,
+        southeast$1,
+        northwest$1,
+        northeast$1,
+        south$1,
+        north$1,
+        east$1,
+        west$1
+      ];
+    };
+    var belowOrAbove = function () {
+      return [
+        southeast$1,
+        southwest$1,
+        northeast$1,
+        northwest$1,
+        south$1,
+        north$1
+      ];
+    };
+    var belowOrAboveRtl = function () {
+      return [
+        southwest$1,
+        southeast$1,
+        northwest$1,
+        northeast$1,
+        south$1,
+        north$1
+      ];
+    };
+
     var executeEvent = function (bConfig, bState, executor) {
       return runOnExecute(function (component) {
         executor(component, bConfig, bState);
@@ -3587,7 +3965,7 @@
       var wrappedExtra = map$1(extra, function (extraF, extraName) {
         return markAsExtraApi(extraF, extraName);
       });
-      var me = __assign({}, wrappedExtra, wrappedApis, {
+      var me = __assign(__assign(__assign({}, wrappedExtra), wrappedApis), {
         revoke: curry(revokeBehaviour, name),
         config: function (spec) {
           var prepared = asRawOrDie(name + '-config', configSchema, spec);
@@ -3696,7 +4074,7 @@
     var exhibit = function (base, posConfig) {
       return nu$6({
         classes: [],
-        styles: posConfig.useFixed ? {} : { position: 'relative' }
+        styles: posConfig.useFixed() ? {} : { position: 'relative' }
       });
     };
 
@@ -3704,204 +4082,43 @@
         exhibit: exhibit
     });
 
-    var r = function (left, top) {
-      var translate = function (x, y) {
-        return r(left + x, top + y);
-      };
-      return {
-        left: constant(left),
-        top: constant(top),
-        translate: translate
-      };
+    var focus$1 = function (element) {
+      element.dom().focus();
     };
-    var Position = r;
-
-    var boxPosition = function (dom) {
-      var box = dom.getBoundingClientRect();
-      return Position(box.left, box.top);
+    var blur = function (element) {
+      element.dom().blur();
     };
-    var firstDefinedOrZero = function (a, b) {
-      return a !== undefined ? a : b !== undefined ? b : 0;
+    var hasFocus = function (element) {
+      var doc = owner(element).dom();
+      return element.dom() === doc.activeElement;
     };
-    var absolute = function (element) {
-      var doc = element.dom().ownerDocument;
-      var body = doc.body;
-      var win = doc.defaultView;
-      var html = doc.documentElement;
-      var scrollTop = firstDefinedOrZero(win.pageYOffset, html.scrollTop);
-      var scrollLeft = firstDefinedOrZero(win.pageXOffset, html.scrollLeft);
-      var clientTop = firstDefinedOrZero(html.clientTop, body.clientTop);
-      var clientLeft = firstDefinedOrZero(html.clientLeft, body.clientLeft);
-      return viewport(element).translate(scrollLeft - clientLeft, scrollTop - clientTop);
+    var active = function (_doc) {
+      var doc = _doc !== undefined ? _doc.dom() : domGlobals.document;
+      return Option.from(doc.activeElement).map(Element.fromDom);
     };
-    var viewport = function (element) {
-      var dom = element.dom();
-      var doc = dom.ownerDocument;
-      var body = doc.body;
-      if (body === dom) {
-        return Position(body.offsetLeft, body.offsetTop);
-      }
-      if (!inBody(element)) {
-        return Position(0, 0);
-      }
-      return boxPosition(dom);
-    };
-
-    function Dimension (name, getOffset) {
-      var set = function (element, h) {
-        if (!isNumber(h) && !h.match(/^[0-9]+$/)) {
-          throw new Error(name + '.set accepts only positive integer values. Value was ' + h);
-        }
-        var dom = element.dom();
-        if (isSupported(dom)) {
-          dom.style[name] = h + 'px';
-        }
-      };
-      var get = function (element) {
-        var r = getOffset(element);
-        if (r <= 0 || r === null) {
-          var css = get$4(element, name);
-          return parseFloat(css) || 0;
-        }
-        return r;
-      };
-      var getOuter = get;
-      var aggregate = function (element, properties) {
-        return foldl(properties, function (acc, property) {
-          var val = get$4(element, property);
-          var value = val === undefined ? 0 : parseInt(val, 10);
-          return isNaN(value) ? acc : acc + value;
-        }, 0);
-      };
-      var max = function (element, value, properties) {
-        var cumulativeInclusions = aggregate(element, properties);
-        var absoluteMax = value > cumulativeInclusions ? value - cumulativeInclusions : 0;
-        return absoluteMax;
-      };
-      return {
-        set: set,
-        get: get,
-        getOuter: getOuter,
-        aggregate: aggregate,
-        max: max
-      };
-    }
-
-    var api = Dimension('height', function (element) {
-      var dom = element.dom();
-      return inBody(element) ? dom.getBoundingClientRect().height : dom.offsetHeight;
-    });
-    var get$6 = function (element) {
-      return api.get(element);
-    };
-    var getOuter$1 = function (element) {
-      return api.getOuter(element);
-    };
-    var setMax = function (element, value) {
-      var inclusions = [
-        'margin-top',
-        'border-top-width',
-        'padding-top',
-        'padding-bottom',
-        'border-bottom-width',
-        'margin-bottom'
-      ];
-      var absMax = api.max(element, value, inclusions);
-      set$2(element, 'max-height', absMax + 'px');
-    };
-
-    var api$1 = Dimension('width', function (element) {
-      return element.dom().offsetWidth;
-    });
-    var set$4 = function (element, h) {
-      api$1.set(element, h);
-    };
-    var get$7 = function (element) {
-      return api$1.get(element);
-    };
-    var getOuter$2 = function (element) {
-      return api$1.getOuter(element);
-    };
-
-    var isSafari = PlatformDetection$1.detect().browser.isSafari();
-    var get$8 = function (_DOC) {
-      var doc = _DOC !== undefined ? _DOC.dom() : domGlobals.document;
-      var x = doc.body.scrollLeft || doc.documentElement.scrollLeft;
-      var y = doc.body.scrollTop || doc.documentElement.scrollTop;
-      return Position(x, y);
-    };
-
-    var walkUp = function (navigation, doc) {
-      var frame = navigation.view(doc);
-      return frame.fold(constant([]), function (f) {
-        var parent = navigation.owner(f);
-        var rest = walkUp(navigation, parent);
-        return [f].concat(rest);
-      });
-    };
-    var pathTo = function (element, navigation) {
-      var d = navigation.owner(element);
-      var paths = walkUp(navigation, d);
-      return Option.some(paths);
-    };
-
-    var view = function (doc) {
-      var element = doc.dom() === domGlobals.document ? Option.none() : Option.from(doc.dom().defaultView.frameElement);
-      return element.map(Element.fromDom);
-    };
-    var owner$1 = function (element) {
-      return owner(element);
-    };
-
-    var Navigation = /*#__PURE__*/Object.freeze({
-        view: view,
-        owner: owner$1
-    });
-
-    var find$4 = function (element) {
-      var doc = Element.fromDom(domGlobals.document);
-      var scroll = get$8(doc);
-      var path = pathTo(element, Navigation);
-      return path.fold(curry(absolute, element), function (frames) {
-        var offset = viewport(element);
-        var r = foldr(frames, function (b, a) {
-          var loc = viewport(a);
-          return {
-            left: b.left + loc.left(),
-            top: b.top + loc.top()
-          };
-        }, {
-          left: 0,
-          top: 0
-        });
-        return Position(r.left + offset.left() + scroll.left(), r.top + offset.top() + scroll.top());
+    var search = function (element) {
+      return active(owner(element)).filter(function (e) {
+        return element.dom().contains(e.dom());
       });
     };
 
-    var pointed = Immutable('point', 'width', 'height');
-    var rect = Immutable('x', 'y', 'width', 'height');
-    var bounds = function (x, y, width, height) {
-      return {
-        x: constant(x),
-        y: constant(y),
-        width: constant(width),
-        height: constant(height),
-        right: constant(x + width),
-        bottom: constant(y + height)
-      };
-    };
-    var box = function (element) {
-      var xy = absolute(element);
-      var w = getOuter$2(element);
-      var h = getOuter$1(element);
-      return bounds(xy.left(), xy.top(), w, h);
-    };
-    var win = function () {
-      var width = domGlobals.window.innerWidth;
-      var height = domGlobals.window.innerHeight;
-      var doc = Element.fromDom(domGlobals.document);
-      var scroll = get$8(doc);
-      return bounds(scroll.left(), scroll.top(), width, height);
+    var preserve = function (f, container) {
+      var ownerDoc = owner(container);
+      var refocus = active(ownerDoc).bind(function (focused) {
+        var hasFocus = function (elem) {
+          return eq(focused, elem);
+        };
+        return hasFocus(container) ? Option.some(container) : descendant(container, hasFocus);
+      });
+      var result = f(container);
+      refocus.each(function (oldFocus) {
+        active(ownerDoc).filter(function (newFocus) {
+          return eq(newFocus, oldFocus);
+        }).fold(function () {
+          focus$1(oldFocus);
+        }, noop);
+      });
+      return result;
     };
 
     var allAlignments = [
@@ -3914,7 +4131,7 @@
       'left',
       'right'
     ];
-    var nu$7 = function (width, yoffset, classes) {
+    var nu$8 = function (width, yoffset, classes) {
       var getClasses = function (prop) {
         return readOptFrom$1(classes, prop).getOr([]);
       };
@@ -4032,107 +4249,7 @@
       };
     };
     var fallback = function () {
-      return nu$7(0, 0, {});
-    };
-
-    var nu$8 = Immutable('x', 'y', 'bubble', 'direction', 'label');
-
-    var adt$2 = Adt.generate([
-      { southeast: [] },
-      { southwest: [] },
-      { northeast: [] },
-      { northwest: [] },
-      { south: [] },
-      { north: [] },
-      { east: [] },
-      { west: [] }
-    ]);
-    var cata = function (subject, southeast, southwest, northeast, northwest, south, north, east, west) {
-      return subject.fold(southeast, southwest, northeast, northwest, south, north, east, west);
-    };
-    var cataVertical = function (subject, south, middle, north) {
-      return subject.fold(south, south, north, north, south, north, middle, middle);
-    };
-    var southeast = adt$2.southeast;
-    var southwest = adt$2.southwest;
-    var northeast = adt$2.northeast;
-    var northwest = adt$2.northwest;
-    var south = adt$2.south;
-    var north = adt$2.north;
-    var east = adt$2.east;
-    var west = adt$2.west;
-
-    var eastX = function (anchor) {
-      return anchor.x();
-    };
-    var middleX = function (anchor, element) {
-      return anchor.x() + anchor.width() / 2 - element.width() / 2;
-    };
-    var westX = function (anchor, element) {
-      return anchor.x() + anchor.width() - element.width();
-    };
-    var northY = function (anchor, element) {
-      return anchor.y() - element.height();
-    };
-    var southY = function (anchor) {
-      return anchor.y() + anchor.height();
-    };
-    var centreY = function (anchor, element) {
-      return anchor.y() + anchor.height() / 2 - element.height() / 2;
-    };
-    var eastEdgeX = function (anchor) {
-      return anchor.x() + anchor.width();
-    };
-    var westEdgeX = function (anchor, element) {
-      return anchor.x() - element.width();
-    };
-    var southeast$1 = function (anchor, element, bubbles) {
-      return nu$8(eastX(anchor), southY(anchor), bubbles.southeast(), southeast(), 'layout-se');
-    };
-    var southwest$1 = function (anchor, element, bubbles) {
-      return nu$8(westX(anchor, element), southY(anchor), bubbles.southwest(), southwest(), 'layout-sw');
-    };
-    var northeast$1 = function (anchor, element, bubbles) {
-      return nu$8(eastX(anchor), northY(anchor, element), bubbles.northeast(), northeast(), 'layout-ne');
-    };
-    var northwest$1 = function (anchor, element, bubbles) {
-      return nu$8(westX(anchor, element), northY(anchor, element), bubbles.northwest(), northwest(), 'layout-nw');
-    };
-    var north$1 = function (anchor, element, bubbles) {
-      return nu$8(middleX(anchor, element), northY(anchor, element), bubbles.north(), north(), 'layout-n');
-    };
-    var south$1 = function (anchor, element, bubbles) {
-      return nu$8(middleX(anchor, element), southY(anchor), bubbles.south(), south(), 'layout-s');
-    };
-    var east$1 = function (anchor, element, bubbles) {
-      return nu$8(eastEdgeX(anchor), centreY(anchor, element), bubbles.east(), east(), 'layout-e');
-    };
-    var west$1 = function (anchor, element, bubbles) {
-      return nu$8(westEdgeX(anchor, element), centreY(anchor, element), bubbles.west(), west(), 'layout-w');
-    };
-    var all$2 = function () {
-      return [
-        southeast$1,
-        southwest$1,
-        northeast$1,
-        northwest$1,
-        south$1,
-        north$1,
-        east$1,
-        west$1
-      ];
-    };
-    var allRtl = function () {
-      return [
-        southwest$1,
-        southeast$1,
-        northwest$1,
-        northeast$1,
-        south$1,
-        north$1,
-        east$1,
-        west$1
-      ];
+      return nu$8(0, 0, {});
     };
 
     var decision = MixedBag([
@@ -4141,6 +4258,7 @@
       'width',
       'height',
       'maxHeight',
+      'maxWidth',
       'direction',
       'classes',
       'label',
@@ -4207,21 +4325,33 @@
       });
     };
     var toBox = function (origin, element) {
-      var rel = curry(find$4, element);
+      var rel = curry(find$3, element);
       var position = origin.fold(rel, rel, function () {
         var scroll = get$8();
-        return find$4(element).translate(-scroll.left(), -scroll.top());
+        return find$3(element).translate(-scroll.left(), -scroll.top());
       });
       var width = getOuter$2(element);
       var height = getOuter$1(element);
-      return bounds(position.left(), position.top(), width, height);
+      return bounds$1(position.left(), position.top(), width, height);
     };
     var viewport$1 = function (origin, getBounds) {
       return getBounds.fold(function () {
-        return origin.fold(win, win, bounds);
+        return origin.fold(win, win, bounds$1);
       }, function (b) {
-        return origin.fold(b, b, bounds);
+        return origin.fold(b, b, function () {
+          var bounds = b();
+          var pos = translate(origin, bounds.x(), bounds.y());
+          return bounds$1(pos.left(), pos.top(), bounds.width(), bounds.height());
+        });
       });
+    };
+    var translate = function (origin, x, y) {
+      var pos = Position(x, y);
+      var removeScroll = function () {
+        var outerScroll = get$8();
+        return pos.translate(-outerScroll.left(), -outerScroll.top());
+      };
+      return origin.fold(constant(pos), constant(pos), removeScroll);
     };
     var cata$1 = function (subject, onNone, onRelative, onFixed) {
       return subject.fold(onNone, onRelative, onFixed);
@@ -4262,7 +4392,7 @@
     var placement = function (component, anchorInfo, origin) {
       var hotspot = anchorInfo.hotspot;
       var anchorBox = toBox(origin, hotspot.element());
-      var layouts = get$9(component.element(), anchorInfo, all$2(), allRtl());
+      var layouts = get$9(component.element(), anchorInfo, belowOrAbove(), belowOrAboveRtl());
       return Option.some(nu$9({
         anchorBox: anchorBox,
         bubble: anchorInfo.bubble.getOr(fallback()),
@@ -4280,7 +4410,8 @@
     ];
 
     var placement$1 = function (component, anchorInfo, origin) {
-      var anchorBox = bounds(anchorInfo.x, anchorInfo.y, anchorInfo.width, anchorInfo.height);
+      var pos = translate(origin, anchorInfo.x, anchorInfo.y);
+      var anchorBox = bounds$1(pos.left(), pos.top(), anchorInfo.width, anchorInfo.height);
       var layouts = get$9(component.element(), anchorInfo, all$2(), allRtl());
       return Option.some(nu$9({
         anchorBox: anchorBox,
@@ -4693,7 +4824,7 @@
       var collapseDirection = getCollapseDirection(rect, x);
       return Option.some(createCollapsedNode(doc, node, collapseDirection));
     };
-    var search = function (doc, node, x) {
+    var search$1 = function (doc, node, x) {
       var f = children(node).length === 0 ? locateInEmpty : locateInElement;
       return f(doc, node, x);
     };
@@ -4723,7 +4854,7 @@
     var searchFromPoint = function (doc, x, y) {
       return Element.fromPoint(doc, x, y).bind(function (elem) {
         var fallback = function () {
-          return search(doc, elem, x);
+          return search$1(doc, elem, x);
         };
         return children(elem).length === 0 ? fallback() : searchTextNodes(doc, elem, x, y).orThunk(fallback);
       });
@@ -4823,7 +4954,7 @@
       return sum(points);
     };
     var screen = adt$7.screen;
-    var absolute$1 = adt$7.absolute;
+    var absolute$2 = adt$7.absolute;
 
     var getOffset = function (component, origin, anchorInfo) {
       var win = defaultView(anchorInfo.root).dom();
@@ -4838,7 +4969,7 @@
       var doc = owner(component.element());
       var outerScroll = get$8(doc);
       var offset = getOffset(component, origin, anchorInfo).getOr(outerScroll);
-      return absolute$1(offset, outerScroll.left(), outerScroll.top());
+      return absolute$2(offset, outerScroll.left(), outerScroll.top());
     };
 
     var capRect = function (left, top, width, height) {
@@ -4997,16 +5128,16 @@
       return anchor.y();
     };
     var southeast$2 = function (anchor, element, bubbles) {
-      return nu$8(eastX$1(anchor), southY$1(anchor), bubbles.southeast(), southeast(), 'link-layout-se');
+      return nu$7(eastX$1(anchor), southY$1(anchor), bubbles.southeast(), southeast(), 'link-layout-se');
     };
     var southwest$2 = function (anchor, element, bubbles) {
-      return nu$8(westX$1(anchor, element), southY$1(anchor), bubbles.southwest(), southwest(), 'link-layout-sw');
+      return nu$7(westX$1(anchor, element), southY$1(anchor), bubbles.southwest(), southwest(), 'link-layout-sw');
     };
     var northeast$2 = function (anchor, element, bubbles) {
-      return nu$8(eastX$1(anchor), northY$1(anchor, element), bubbles.northeast(), northeast(), 'link-layout-ne');
+      return nu$7(eastX$1(anchor), northY$1(anchor, element), bubbles.northeast(), northeast(), 'link-layout-ne');
     };
     var northwest$2 = function (anchor, element, bubbles) {
-      return nu$8(westX$1(anchor, element), northY$1(anchor, element), bubbles.northwest(), northwest(), 'link-layout-nw');
+      return nu$7(westX$1(anchor, element), northY$1(anchor, element), bubbles.northwest(), northwest(), 'link-layout-nw');
     };
     var all$3 = function () {
       return [
@@ -5056,6 +5187,22 @@
       return anchor(anchorBox, origin);
     };
 
+    var cycleBy = function (value, delta, min, max) {
+      var r = value + delta;
+      if (r > max) {
+        return min;
+      } else {
+        return r < min ? max : r;
+      }
+    };
+    var cap = function (value, min, max) {
+      if (value <= min) {
+        return min;
+      } else {
+        return value >= max ? max : value;
+      }
+    };
+
     var adt$8 = Adt.generate([
       { fit: ['reposition'] },
       {
@@ -5066,38 +5213,55 @@
         ]
       }
     ]);
-    var attempt = function (candidate, width, height, bounds) {
-      var candidateX = candidate.x();
-      var candidateY = candidate.y();
-      var bubbleLeft = candidate.bubble().offset().left();
-      var bubbleTop = candidate.bubble().offset().top();
+    var calcReposition = function (newX, newY, width, height, bounds) {
       var boundsX = bounds.x();
       var boundsY = bounds.y();
       var boundsWidth = bounds.width();
       var boundsHeight = bounds.height();
-      var newX = candidateX + bubbleLeft;
-      var newY = candidateY + bubbleTop;
       var xInBounds = newX >= boundsX;
       var yInBounds = newY >= boundsY;
       var originInBounds = xInBounds && yInBounds;
       var xFit = newX + width <= boundsX + boundsWidth;
       var yFit = newY + height <= boundsY + boundsHeight;
       var sizeInBounds = xFit && yFit;
-      var deltaW = xInBounds ? Math.min(width, boundsX + boundsWidth - newX) : Math.abs(boundsX - (newX + width));
-      var deltaH = yInBounds ? Math.min(height, boundsY + boundsHeight - newY) : Math.abs(boundsY - (newY + height));
-      var maxX = bounds.x() + bounds.width();
-      var minX = Math.max(bounds.x(), newX);
-      var limitX = Math.min(minX, maxX);
-      var limitY = yInBounds ? newY : newY + (height - deltaH);
+      var deltaW = Math.abs(Math.min(width, xInBounds ? boundsX + boundsWidth - newX : boundsX - (newX + width)));
+      var deltaH = Math.abs(Math.min(height, yInBounds ? boundsY + boundsHeight - newY : boundsY - (newY + height)));
+      var limitX = cap(newX, bounds.x(), bounds.right());
+      var limitY = cap(newY, bounds.y(), bounds.bottom());
+      return {
+        originInBounds: originInBounds,
+        sizeInBounds: sizeInBounds,
+        limitX: limitX,
+        limitY: limitY,
+        deltaW: deltaW,
+        deltaH: deltaH
+      };
+    };
+    var attempt = function (candidate, width, height, bounds) {
+      var candidateX = candidate.x();
+      var candidateY = candidate.y();
+      var bubbleLeft = candidate.bubble().offset().left();
+      var bubbleTop = candidate.bubble().offset().top();
+      var boundsY = bounds.y();
+      var boundsBottom = bounds.bottom();
+      var boundsX = bounds.x();
+      var boundsRight = bounds.right();
+      var newX = candidateX + bubbleLeft;
+      var newY = candidateY + bubbleTop;
+      var _a = calcReposition(newX, newY, width, height, bounds), originInBounds = _a.originInBounds, sizeInBounds = _a.sizeInBounds, limitX = _a.limitX, limitY = _a.limitY, deltaW = _a.deltaW, deltaH = _a.deltaH;
       var upAvailable = constant(limitY + deltaH - boundsY);
-      var downAvailable = constant(boundsY + boundsHeight - limitY);
+      var downAvailable = constant(boundsBottom - limitY);
       var maxHeight = cataVertical(candidate.direction(), downAvailable, downAvailable, upAvailable);
+      var westAvailable = constant(limitX + deltaW - boundsX);
+      var eastAvailable = constant(boundsRight - limitX);
+      var maxWidth = cataHorizontal(candidate.direction(), eastAvailable, eastAvailable, westAvailable);
       var reposition = decision({
         x: limitX,
         y: limitY,
         width: deltaW,
         height: deltaH,
         maxHeight: maxHeight,
+        maxWidth: maxWidth,
         direction: candidate.direction(),
         classes: {
           on: candidate.bubble().classesOn(),
@@ -5128,8 +5292,12 @@
         width: elementBox.width(),
         height: elementBox.height(),
         maxHeight: elementBox.height(),
+        maxWidth: elementBox.width(),
         direction: southeast(),
-        classes: [],
+        classes: {
+          on: [],
+          off: []
+        },
         label: 'none',
         candidateYforTest: anchorBox.y()
       }), -1, -1));
@@ -5144,6 +5312,7 @@
     };
     var layout = function (anchorBox, element, bubbles, options) {
       remove$6(element, 'max-height');
+      remove$6(element, 'max-width');
       var elementBox = elementSize(element);
       return attempts(options.preference(), anchorBox, elementBox, bubbles, options.bounds());
     };
@@ -5155,6 +5324,10 @@
     var setHeight = function (element, decision, options) {
       var maxHeightFunction = options.maxHeightFunction();
       maxHeightFunction(element, decision.maxHeight());
+    };
+    var setWidth = function (element, decision, options) {
+      var maxWidthFunction = options.maxWidthFunction();
+      maxWidthFunction(element, decision.maxWidth());
     };
     var position = function (element, decision, options) {
       var addPx = function (num) {
@@ -5188,20 +5361,23 @@
       'bounds',
       'origin',
       'preference',
-      'maxHeightFunction'
+      'maxHeightFunction',
+      'maxWidthFunction'
     ], []);
     var defaultOr = function (options, key, dephault) {
       return options[key] === undefined ? dephault : options[key];
     };
     var simple = function (anchor, element, bubble, layouts, getBounds, overrideOptions) {
       var maxHeightFunction = defaultOr(overrideOptions, 'maxHeightFunction', anchored());
+      var maxWidthFunction = defaultOr(overrideOptions, 'maxWidthFunction', noop);
       var anchorBox = anchor.anchorBox();
       var origin = anchor.origin();
       var options = reparteeOptions({
         bounds: viewport$1(origin, getBounds),
         origin: origin,
         preference: layouts,
-        maxHeightFunction: maxHeightFunction
+        maxHeightFunction: maxHeightFunction,
+        maxWidthFunction: maxWidthFunction
       });
       go(anchorBox, element, bubble, options);
     };
@@ -5210,10 +5386,12 @@
       position(element, decision, options);
       setClasses(element, decision);
       setHeight(element, decision, options);
+      setWidth(element, decision, options);
     };
 
     var getFixedOrigin = function () {
-      return fixed(0, 0, domGlobals.window.innerWidth, domGlobals.window.innerHeight);
+      var html = domGlobals.document.documentElement;
+      return fixed(0, 0, html.clientWidth, html.clientHeight);
     };
     var getRelativeOrigin = function (component) {
       var position = absolute(component.element());
@@ -5225,8 +5403,7 @@
       simple(anchor, placee.element(), anchoring.bubble, anchoring.layouts, getBounds, anchoring.overrides);
     };
     var position$1 = function (component, posConfig, posState, anchor, placee) {
-      var boxElement = Option.none();
-      positionWithin(component, posConfig, posState, anchor, placee, boxElement);
+      positionWithin(component, posConfig, posState, anchor, placee, Option.none());
     };
     var positionWithin = function (component, posConfig, posState, anchor, placee, boxElement) {
       var boundsBox = boxElement.map(box);
@@ -5234,27 +5411,29 @@
     };
     var positionWithinBounds = function (component, posConfig, posState, anchor, placee, bounds) {
       var anchorage = asRawOrDie('positioning anchor.info', AnchorSchema, anchor);
-      set$2(placee.element(), 'position', 'fixed');
-      var oldVisibility = getRaw(placee.element(), 'visibility');
-      set$2(placee.element(), 'visibility', 'hidden');
-      var origin = posConfig.useFixed ? getFixedOrigin() : getRelativeOrigin(component);
-      var placer = anchorage.placement;
-      var getBounds = bounds.map(constant).or(posConfig.getBounds);
-      placer(component, anchorage, origin).each(function (anchoring) {
-        var doPlace = anchoring.placer.getOr(place);
-        doPlace(component, origin, anchoring, getBounds, placee);
-      });
-      oldVisibility.fold(function () {
-        remove$6(placee.element(), 'visibility');
-      }, function (vis) {
-        set$2(placee.element(), 'visibility', vis);
-      });
-      if (getRaw(placee.element(), 'left').isNone() && getRaw(placee.element(), 'top').isNone() && getRaw(placee.element(), 'right').isNone() && getRaw(placee.element(), 'bottom').isNone() && getRaw(placee.element(), 'position').is('fixed')) {
-        remove$6(placee.element(), 'position');
-      }
+      preserve(function () {
+        set$2(placee.element(), 'position', 'fixed');
+        var oldVisibility = getRaw(placee.element(), 'visibility');
+        set$2(placee.element(), 'visibility', 'hidden');
+        var origin = posConfig.useFixed() ? getFixedOrigin() : getRelativeOrigin(component);
+        var placer = anchorage.placement;
+        var getBounds = bounds.map(constant).or(posConfig.getBounds);
+        placer(component, anchorage, origin).each(function (anchoring) {
+          var doPlace = anchoring.placer.getOr(place);
+          doPlace(component, origin, anchoring, getBounds, placee);
+        });
+        oldVisibility.fold(function () {
+          remove$6(placee.element(), 'visibility');
+        }, function (vis) {
+          set$2(placee.element(), 'visibility', vis);
+        });
+        if (getRaw(placee.element(), 'left').isNone() && getRaw(placee.element(), 'top').isNone() && getRaw(placee.element(), 'right').isNone() && getRaw(placee.element(), 'bottom').isNone() && getRaw(placee.element(), 'position').is('fixed')) {
+          remove$6(placee.element(), 'position');
+        }
+      }, placee.element());
     };
     var getMode = function (component, pConfig, pState) {
-      return pConfig.useFixed ? 'fixed' : 'absolute';
+      return pConfig.useFixed() ? 'fixed' : 'absolute';
     };
 
     var PositionApis = /*#__PURE__*/Object.freeze({
@@ -5265,7 +5444,7 @@
     });
 
     var PositionSchema = [
-      defaulted$1('useFixed', false),
+      defaulted$1('useFixed', never),
       option('getBounds')
     ];
 
@@ -5287,6 +5466,38 @@
       emit(component, attachedToDom());
     };
     var attach = function (parent, child) {
+      append(parent.element(), child.element());
+    };
+    var detachChildren = function (component) {
+      each(component.components(), function (childComp) {
+        return remove(childComp.element());
+      });
+      empty(component.element());
+      component.syncComponents();
+    };
+    var replaceChildren = function (component, newChildren) {
+      var subs = component.components();
+      detachChildren(component);
+      var deleted = difference(subs, newChildren);
+      each(deleted, function (comp) {
+        fireDetaching(comp);
+        component.getSystem().removeFromWorld(comp);
+      });
+      each(newChildren, function (childComp) {
+        if (!childComp.getSystem().isConnected()) {
+          component.getSystem().addToWorld(childComp);
+          attach(component, childComp);
+          if (inBody(component.element())) {
+            fireAttaching(childComp);
+          }
+        } else {
+          attach(component, childComp);
+        }
+        component.syncComponents();
+      });
+    };
+
+    var attach$1 = function (parent, child) {
       attachWith(parent, child, append);
     };
     var attachWith = function (parent, child, insertion) {
@@ -5304,26 +5515,26 @@
     };
     var detach = function (component) {
       var parent$1 = parent(component.element()).bind(function (p) {
-        return component.getSystem().getByDom(p).fold(Option.none, Option.some);
+        return component.getSystem().getByDom(p).toOption();
       });
       doDetach(component);
       parent$1.each(function (p) {
         p.syncComponents();
       });
     };
-    var detachChildren = function (component) {
+    var detachChildren$1 = function (component) {
       var subs = component.components();
       each(subs, doDetach);
       empty(component.element());
       component.syncComponents();
     };
     var attachSystem = function (element, guiSystem) {
-      attachSystemInternal(element, guiSystem, append);
+      attachSystemWith(element, guiSystem, append);
     };
     var attachSystemAfter = function (element, guiSystem) {
-      attachSystemInternal(element, guiSystem, after);
+      attachSystemWith(element, guiSystem, after);
     };
-    var attachSystemInternal = function (element, guiSystem, inserter) {
+    var attachSystemWith = function (element, guiSystem, inserter) {
       inserter(element, guiSystem.element());
       var children$1 = children(guiSystem.element());
       each(children$1, function (child) {
@@ -5340,12 +5551,12 @@
 
     var rebuild = function (sandbox, sConfig, sState, data) {
       sState.get().each(function (data) {
-        detachChildren(sandbox);
+        detachChildren$1(sandbox);
       });
       var point = sConfig.getAttachPoint(sandbox);
-      attach(point, sandbox);
+      attach$1(point, sandbox);
       var built = sandbox.getSystem().build(data);
-      attach(sandbox, built);
+      attach$1(sandbox, built);
       sState.set(built);
       return built;
     };
@@ -5353,6 +5564,11 @@
       var newState = rebuild(sandbox, sConfig, sState, data);
       sConfig.onOpen(sandbox, newState);
       return newState;
+    };
+    var setContent = function (sandbox, sConfig, sState, data) {
+      return sState.get().map(function () {
+        return rebuild(sandbox, sConfig, sState, data);
+      });
     };
     var openWhileCloaked = function (sandbox, sConfig, sState, data, transaction) {
       cloak(sandbox, sConfig);
@@ -5362,7 +5578,7 @@
     };
     var close = function (sandbox, sConfig, sState) {
       sState.get().each(function (data) {
-        detachChildren(sandbox);
+        detachChildren$1(sandbox);
         detach(sandbox);
         sConfig.onClose(sandbox, data);
         sState.clear();
@@ -5425,7 +5641,8 @@
         close: close,
         isOpen: isOpen,
         isPartOf: isPartOf$1,
-        getState: getState
+        getState: getState,
+        setContent: setContent
     });
 
     var events$2 = function (sandboxConfig, sandboxState) {
@@ -5483,36 +5700,288 @@
     });
 
     var dismissPopups = constant('dismiss.popups');
+    var repositionPopups = constant('reposition.popups');
     var mouseReleased = constant('mouse.released');
 
     var schema$2 = objOfOnly([
       defaulted$1('isExtraPart', constant(false)),
       optionObjOf('fireEventInstead', [defaulted$1('event', dismissRequested())])
     ]);
-    var receivingConfig = function (rawSpec) {
-      var c = receiving(rawSpec);
-      return Receiving.config(c);
-    };
-    var receiving = function (rawSpec) {
-      var spec = asRawOrDie('Dismissal', schema$2, rawSpec);
-      return {
-        channels: wrap$1(dismissPopups(), {
-          schema: objOfOnly([strict$1('target')]),
-          onReceive: function (sandbox, data) {
-            if (Sandboxing.isOpen(sandbox)) {
-              var isPart = Sandboxing.isPartOf(sandbox, data.target) || spec.isExtraPart(sandbox, data.target);
-              if (!isPart) {
-                spec.fireEventInstead.fold(function () {
-                  return Sandboxing.close(sandbox);
-                }, function (fe) {
-                  return emit(sandbox, fe.event);
-                });
-              }
+    var receivingChannel = function (rawSpec) {
+      var _a;
+      var detail = asRawOrDie('Dismissal', schema$2, rawSpec);
+      return _a = {}, _a[dismissPopups()] = {
+        schema: objOfOnly([strict$1('target')]),
+        onReceive: function (sandbox, data) {
+          if (Sandboxing.isOpen(sandbox)) {
+            var isPart = Sandboxing.isPartOf(sandbox, data.target) || detail.isExtraPart(sandbox, data.target);
+            if (!isPart) {
+              detail.fireEventInstead.fold(function () {
+                return Sandboxing.close(sandbox);
+              }, function (fe) {
+                return emit(sandbox, fe.event);
+              });
             }
           }
-        })
-      };
+        }
+      }, _a;
     };
+
+    var schema$3 = objOfOnly([
+      defaulted$1('isExtraPart', constant(false)),
+      optionObjOf('fireEventInstead', [defaulted$1('event', repositionRequested())]),
+      strictFunction('doReposition')
+    ]);
+    var receivingChannel$1 = function (rawSpec) {
+      var _a;
+      var detail = asRawOrDie('Reposition', schema$3, rawSpec);
+      return _a = {}, _a[repositionPopups()] = {
+        onReceive: function (sandbox) {
+          if (Sandboxing.isOpen(sandbox)) {
+            detail.fireEventInstead.fold(function () {
+              return detail.doReposition(sandbox);
+            }, function (fe) {
+              return emit(sandbox, fe.event);
+            });
+          }
+        }
+      }, _a;
+    };
+
+    var onLoad = function (component, repConfig, repState) {
+      repConfig.store.manager.onLoad(component, repConfig, repState);
+    };
+    var onUnload = function (component, repConfig, repState) {
+      repConfig.store.manager.onUnload(component, repConfig, repState);
+    };
+    var setValue = function (component, repConfig, repState, data) {
+      repConfig.store.manager.setValue(component, repConfig, repState, data);
+    };
+    var getValue = function (component, repConfig, repState) {
+      return repConfig.store.manager.getValue(component, repConfig, repState);
+    };
+    var getState$1 = function (component, repConfig, repState) {
+      return repState;
+    };
+
+    var RepresentApis = /*#__PURE__*/Object.freeze({
+        onLoad: onLoad,
+        onUnload: onUnload,
+        setValue: setValue,
+        getValue: getValue,
+        getState: getState$1
+    });
+
+    var events$3 = function (repConfig, repState) {
+      var es = repConfig.resetOnDom ? [
+        runOnAttached(function (comp, se) {
+          onLoad(comp, repConfig, repState);
+        }),
+        runOnDetached(function (comp, se) {
+          onUnload(comp, repConfig, repState);
+        })
+      ] : [loadEvent(repConfig, repState, onLoad)];
+      return derive(es);
+    };
+
+    var ActiveRepresenting = /*#__PURE__*/Object.freeze({
+        events: events$3
+    });
+
+    var memory = function () {
+      var data = Cell(null);
+      var readState = function () {
+        return {
+          mode: 'memory',
+          value: data.get()
+        };
+      };
+      var isNotSet = function () {
+        return data.get() === null;
+      };
+      var clear = function () {
+        data.set(null);
+      };
+      return nu$5({
+        set: data.set,
+        get: data.get,
+        isNotSet: isNotSet,
+        clear: clear,
+        readState: readState
+      });
+    };
+    var manual = function () {
+      var readState = function () {
+      };
+      return nu$5({ readState: readState });
+    };
+    var dataset = function () {
+      var dataByValue = Cell({});
+      var dataByText = Cell({});
+      var readState = function () {
+        return {
+          mode: 'dataset',
+          dataByValue: dataByValue.get(),
+          dataByText: dataByText.get()
+        };
+      };
+      var clear = function () {
+        dataByValue.set({});
+        dataByText.set({});
+      };
+      var lookup = function (itemString) {
+        return readOptFrom$1(dataByValue.get(), itemString).orThunk(function () {
+          return readOptFrom$1(dataByText.get(), itemString);
+        });
+      };
+      var update = function (items) {
+        var currentDataByValue = dataByValue.get();
+        var currentDataByText = dataByText.get();
+        var newDataByValue = {};
+        var newDataByText = {};
+        each(items, function (item) {
+          newDataByValue[item.value] = item;
+          readOptFrom$1(item, 'meta').each(function (meta) {
+            readOptFrom$1(meta, 'text').each(function (text) {
+              newDataByText[text] = item;
+            });
+          });
+        });
+        dataByValue.set(__assign(__assign({}, currentDataByValue), newDataByValue));
+        dataByText.set(__assign(__assign({}, currentDataByText), newDataByText));
+      };
+      return nu$5({
+        readState: readState,
+        lookup: lookup,
+        update: update,
+        clear: clear
+      });
+    };
+    var init$1 = function (spec) {
+      return spec.store.manager.state(spec);
+    };
+
+    var RepresentState = /*#__PURE__*/Object.freeze({
+        memory: memory,
+        dataset: dataset,
+        manual: manual,
+        init: init$1
+    });
+
+    var setValue$1 = function (component, repConfig, repState, data) {
+      var store = repConfig.store;
+      repState.update([data]);
+      store.setValue(component, data);
+      repConfig.onSetValue(component, data);
+    };
+    var getValue$1 = function (component, repConfig, repState) {
+      var store = repConfig.store;
+      var key = store.getDataKey(component);
+      return repState.lookup(key).fold(function () {
+        return store.getFallbackEntry(key);
+      }, function (data) {
+        return data;
+      });
+    };
+    var onLoad$1 = function (component, repConfig, repState) {
+      var store = repConfig.store;
+      store.initialValue.each(function (data) {
+        setValue$1(component, repConfig, repState, data);
+      });
+    };
+    var onUnload$1 = function (component, repConfig, repState) {
+      repState.clear();
+    };
+    var DatasetStore = [
+      option('initialValue'),
+      strict$1('getFallbackEntry'),
+      strict$1('getDataKey'),
+      strict$1('setValue'),
+      output('manager', {
+        setValue: setValue$1,
+        getValue: getValue$1,
+        onLoad: onLoad$1,
+        onUnload: onUnload$1,
+        state: dataset
+      })
+    ];
+
+    var getValue$2 = function (component, repConfig, repState) {
+      return repConfig.store.getValue(component);
+    };
+    var setValue$2 = function (component, repConfig, repState, data) {
+      repConfig.store.setValue(component, data);
+      repConfig.onSetValue(component, data);
+    };
+    var onLoad$2 = function (component, repConfig, repState) {
+      repConfig.store.initialValue.each(function (data) {
+        repConfig.store.setValue(component, data);
+      });
+    };
+    var ManualStore = [
+      strict$1('getValue'),
+      defaulted$1('setValue', noop),
+      option('initialValue'),
+      output('manager', {
+        setValue: setValue$2,
+        getValue: getValue$2,
+        onLoad: onLoad$2,
+        onUnload: noop,
+        state: NoState.init
+      })
+    ];
+
+    var setValue$3 = function (component, repConfig, repState, data) {
+      repState.set(data);
+      repConfig.onSetValue(component, data);
+    };
+    var getValue$3 = function (component, repConfig, repState) {
+      return repState.get();
+    };
+    var onLoad$3 = function (component, repConfig, repState) {
+      repConfig.store.initialValue.each(function (initVal) {
+        if (repState.isNotSet()) {
+          repState.set(initVal);
+        }
+      });
+    };
+    var onUnload$2 = function (component, repConfig, repState) {
+      repState.clear();
+    };
+    var MemoryStore = [
+      option('initialValue'),
+      output('manager', {
+        setValue: setValue$3,
+        getValue: getValue$3,
+        onLoad: onLoad$3,
+        onUnload: onUnload$2,
+        state: memory
+      })
+    ];
+
+    var RepresentSchema = [
+      defaultedOf('store', { mode: 'memory' }, choose$1('mode', {
+        memory: MemoryStore,
+        manual: ManualStore,
+        dataset: DatasetStore
+      })),
+      onHandler('onSetValue'),
+      defaulted$1('resetOnDom', false)
+    ];
+
+    var Representing = create$1({
+      fields: RepresentSchema,
+      name: 'representing',
+      active: ActiveRepresenting,
+      apis: RepresentApis,
+      extra: {
+        setValueFrom: function (component, source) {
+          var value = Representing.getValue(source);
+          Representing.setValue(component, value);
+        }
+      },
+      state: RepresentState
+    });
 
     var field$1 = function (name, forbidden) {
       return defaultedObjOf(name, {}, map(forbidden, function (f) {
@@ -5523,7 +5992,7 @@
       return data.dump;
     };
     var augment = function (data, original) {
-      return __assign({}, data.dump, derive$1(original));
+      return __assign(__assign({}, data.dump), derive$1(original));
     };
     var SketchBehaviours = {
       field: field$1,
@@ -5573,7 +6042,7 @@
         var substituted = bind(childSpecs, function (c) {
           return substitute(owner, detail, c, placeholders);
         });
-        return [__assign({}, value, { components: substituted })];
+        return [__assign(__assign({}, value), { components: substituted })];
       }, function (req, valuesThunk) {
         var values = valuesThunk(detail, compSpec.config, compSpec.validated);
         var preprocessor = compSpec.validated.preprocess.getOr(identity);
@@ -5751,7 +6220,7 @@
           var g = doGenerateOne(owner, np.pname);
           r[np.name] = function (config) {
             var validated = asRawOrDie('Part: ' + np.name + ' in ' + owner, objOf(np.schema), config);
-            return __assign({}, g, {
+            return __assign(__assign({}, g), {
               config: config,
               validated: validated
             });
@@ -5804,9 +6273,9 @@
       var uids = detail.partUids;
       var system = component.getSystem();
       each(partKeys, function (pk) {
-        r[pk] = system.getByUid(uids[pk]);
+        r[pk] = constant(system.getByUid(uids[pk]));
       });
-      return map$1(r, constant);
+      return r;
     };
     var getAllParts = function (component, detail) {
       var system = component.getSystem();
@@ -5822,9 +6291,9 @@
       var uids = detail.partUids;
       var system = component.getSystem();
       each(partKeys, function (pk) {
-        r[pk] = system.getByUid(uids[pk]).getOrDie();
+        r[pk] = constant(system.getByUid(uids[pk]).getOrDie());
       });
-      return map$1(r, constant);
+      return r;
     };
     var defaultUids = function (baseUid, partTypes) {
       var partNames = names(partTypes);
@@ -5888,7 +6357,7 @@
       return factory(detail, components$1, specWithUid, subs.externals());
     };
     var supplyUid = function (spec) {
-      return spec.hasOwnProperty('uid') ? spec : __assign({}, spec, { uid: generate$2('uid') });
+      return spec.hasOwnProperty('uid') ? spec : __assign(__assign({}, spec), { uid: generate$2('uid') });
     };
 
     function isSketchSpec(spec) {
@@ -5918,12 +6387,12 @@
       var extraApis = map$1(config.extraApis, function (f, k) {
         return markAsExtraApi(f, k);
       });
-      return __assign({
+      return __assign(__assign({
         name: constant(config.name),
         partFields: constant([]),
         configFields: constant(config.configFields),
         sketch: sketch
-      }, apis, extraApis);
+      }, apis), extraApis);
     };
     var composite$1 = function (rawConfig) {
       var config = asRawOrDie('Sketcher for ' + rawConfig.name, compositeSchema, rawConfig);
@@ -5935,13 +6404,13 @@
       var extraApis = map$1(config.extraApis, function (f, k) {
         return markAsExtraApi(f, k);
       });
-      return __assign({
+      return __assign(__assign({
         name: constant(config.name),
         partFields: constant(config.partFields),
         configFields: constant(config.configFields),
         sketch: sketch,
         parts: constant(parts)
-      }, apis, extraApis);
+      }, apis), extraApis);
     };
 
     var inside = function (target) {
@@ -5963,22 +6432,6 @@
       name: 'composing',
       apis: ComposeApis
     });
-
-    var cycleBy = function (value, delta, min, max) {
-      var r = value + delta;
-      if (r > max) {
-        return min;
-      } else {
-        return r < min ? max : r;
-      }
-    };
-    var cap = function (value, min, max) {
-      if (value <= min) {
-        return min;
-      } else {
-        return value >= max ? max : value;
-      }
-    };
 
     var dehighlightAllExcept = function (component, hConfig, hState, skip) {
       var highlighted = descendants(component.element(), '.' + hConfig.highlightClass);
@@ -6200,26 +6653,6 @@
       });
     };
 
-    var focus$1 = function (element) {
-      element.dom().focus();
-    };
-    var blur = function (element) {
-      element.dom().blur();
-    };
-    var hasFocus = function (element) {
-      var doc = owner(element).dom();
-      return element.dom() === doc.activeElement;
-    };
-    var active = function (_doc) {
-      var doc = _doc !== undefined ? _doc.dom() : domGlobals.document;
-      return Option.from(doc.activeElement).map(Element.fromDom);
-    };
-    var search$1 = function (element) {
-      return active(owner(element)).filter(function (e) {
-        return element.dom().contains(e.dom());
-      });
-    };
-
     var reportFocusShifting = function (component, prevFocus, newFocus) {
       var noChange = prevFocus.exists(function (p) {
         return newFocus.exists(function (n) {
@@ -6235,7 +6668,7 @@
     };
     var dom = function () {
       var get = function (component) {
-        return search$1(component.element());
+        return search(component.element());
       };
       var set = function (component, focusee) {
         var prevFocus = get(component);
@@ -6441,7 +6874,7 @@
       return Option.some(true);
     };
 
-    var schema$3 = [
+    var schema$4 = [
       defaulted$1('execute', defaultExecute),
       defaulted$1('useSpace', false),
       defaulted$1('useEnter', true),
@@ -6464,7 +6897,7 @@
     var getKeyupRules = function (component, simulatedEvent, executeConfig, executeState) {
       return executeConfig.useSpace && !inside(component.element()) ? [rule(inSet(SPACE()), stopEventForFirefox)] : [];
     };
-    var ExecutionType = typical(schema$3, NoState.init, getKeydownRules, getKeyupRules, function () {
+    var ExecutionType = typical(schema$4, NoState.init, getKeydownRules, getKeyupRules, function () {
       return Option.none();
     });
 
@@ -6503,13 +6936,13 @@
         getNumColumns: getNumColumns
       });
     };
-    var init$1 = function (spec) {
+    var init$2 = function (spec) {
       return spec.state(spec);
     };
 
     var KeyingState = /*#__PURE__*/Object.freeze({
         flatgrid: flatgrid,
-        init: init$1
+        init: init$2
     });
 
     var useH = function (movement) {
@@ -6621,7 +7054,7 @@
       return cycleVertical(values, index, numRows, numCols, +1);
     };
 
-    var schema$4 = [
+    var schema$5 = [
       strict$1('selector'),
       defaulted$1('execute', defaultExecute),
       onKeyboardHandler('onEscape'),
@@ -6677,7 +7110,7 @@
       rule(inSet(SPACE().concat(ENTER())), execute$2)
     ]);
     var getKeyupRules$1 = constant([rule(inSet(SPACE()), stopEventForFirefox)]);
-    var FlatgridType = typical(schema$4, flatgrid, getKeydownRules$1, getKeyupRules$1, function () {
+    var FlatgridType = typical(schema$5, flatgrid, getKeydownRules$1, getKeyupRules$1, function () {
       return Option.some(focusIn);
     });
 
@@ -6700,7 +7133,7 @@
       });
     };
 
-    var schema$5 = [
+    var schema$6 = [
       strict$1('selector'),
       defaulted$1('getInitial', Option.none),
       defaulted$1('execute', defaultExecute),
@@ -6753,7 +7186,7 @@
       ];
     };
     var getKeyupRules$2 = constant([rule(inSet(SPACE()), stopEventForFirefox)]);
-    var FlowType = typical(schema$5, NoState.init, getKeydownRules$2, getKeyupRules$2, function () {
+    var FlowType = typical(schema$6, NoState.init, getKeydownRules$2, getKeyupRules$2, function () {
       return Option.some(focusIn$1);
     });
 
@@ -6822,7 +7255,7 @@
       return moveVertical(matrix, startCol, startRow, +1);
     };
 
-    var schema$6 = [
+    var schema$7 = [
       strictObjOf('selectors', [
         strict$1('row'),
         strict$1('cell')
@@ -6841,7 +7274,7 @@
       });
     };
     var execute$4 = function (component, simulatedEvent, matrixConfig) {
-      return search$1(component.element()).bind(function (focused) {
+      return search(component.element()).bind(function (focused) {
         return matrixConfig.execute(component, simulatedEvent, focused);
       });
     };
@@ -6879,11 +7312,11 @@
       rule(inSet(SPACE().concat(ENTER())), execute$4)
     ]);
     var getKeyupRules$3 = constant([rule(inSet(SPACE()), stopEventForFirefox)]);
-    var MatrixType = typical(schema$6, NoState.init, getKeydownRules$3, getKeyupRules$3, function () {
+    var MatrixType = typical(schema$7, NoState.init, getKeydownRules$3, getKeyupRules$3, function () {
       return Option.some(focusIn$2);
     });
 
-    var schema$7 = [
+    var schema$8 = [
       strict$1('selector'),
       defaulted$1('execute', defaultExecute),
       defaulted$1('moveOnTab', false)
@@ -6925,11 +7358,11 @@
       rule(inSet(SPACE()), execute$5)
     ]);
     var getKeyupRules$4 = constant([rule(inSet(SPACE()), stopEventForFirefox)]);
-    var MenuType = typical(schema$7, NoState.init, getKeydownRules$4, getKeyupRules$4, function () {
+    var MenuType = typical(schema$8, NoState.init, getKeydownRules$4, getKeyupRules$4, function () {
       return Option.some(focusIn$3);
     });
 
-    var schema$8 = [
+    var schema$9 = [
       onKeyboardHandler('onSpace'),
       onKeyboardHandler('onEnter'),
       onKeyboardHandler('onShiftEnter'),
@@ -6973,7 +7406,7 @@
     var getKeyupRules$5 = function (component, simulatedEvent, specialInfo) {
       return specialInfo.stopSpaceKeyup ? [rule(inSet(SPACE()), stopEventForFirefox)] : [];
     };
-    var SpecialType = typical(schema$8, NoState.init, getKeydownRules$5, getKeyupRules$5, function (specialInfo) {
+    var SpecialType = typical(schema$9, NoState.init, getKeydownRules$5, getKeyupRules$5, function (specialInfo) {
       return specialInfo.focusIn;
     });
 
@@ -7026,32 +7459,10 @@
       state: KeyingState
     });
 
-    var preserve = function (f, container) {
-      var ownerDoc = owner(container);
-      var refocus = active(ownerDoc).bind(function (focused) {
-        var hasFocus = function (elem) {
-          return eq(focused, elem);
-        };
-        return hasFocus(container) ? Option.some(container) : descendant(container, hasFocus);
-      });
-      var result = f(container);
-      refocus.each(function (oldFocus) {
-        active(ownerDoc).filter(function (newFocus) {
-          return eq(newFocus, oldFocus);
-        }).fold(function () {
-          focus$1(oldFocus);
-        }, noop);
-      });
-      return result;
-    };
-
     var set$5 = function (component, replaceConfig, replaceState, data) {
-      detachChildren(component);
       preserve(function () {
-        var children = map(data, component.getSystem().build);
-        each(children, function (l) {
-          attach(component, l);
-        });
+        var newChildren = map(data, component.getSystem().build);
+        replaceChildren(component, newChildren);
       }, component.element());
     };
     var insert = function (component, replaceConfig, insertion, childSpec) {
@@ -7107,241 +7518,6 @@
       fields: [],
       name: 'replacing',
       apis: ReplaceApis
-    });
-
-    var onLoad = function (component, repConfig, repState) {
-      repConfig.store.manager.onLoad(component, repConfig, repState);
-    };
-    var onUnload = function (component, repConfig, repState) {
-      repConfig.store.manager.onUnload(component, repConfig, repState);
-    };
-    var setValue = function (component, repConfig, repState, data) {
-      repConfig.store.manager.setValue(component, repConfig, repState, data);
-    };
-    var getValue = function (component, repConfig, repState) {
-      return repConfig.store.manager.getValue(component, repConfig, repState);
-    };
-    var getState$1 = function (component, repConfig, repState) {
-      return repState;
-    };
-
-    var RepresentApis = /*#__PURE__*/Object.freeze({
-        onLoad: onLoad,
-        onUnload: onUnload,
-        setValue: setValue,
-        getValue: getValue,
-        getState: getState$1
-    });
-
-    var events$3 = function (repConfig, repState) {
-      var es = repConfig.resetOnDom ? [
-        runOnAttached(function (comp, se) {
-          onLoad(comp, repConfig, repState);
-        }),
-        runOnDetached(function (comp, se) {
-          onUnload(comp, repConfig, repState);
-        })
-      ] : [loadEvent(repConfig, repState, onLoad)];
-      return derive(es);
-    };
-
-    var ActiveRepresenting = /*#__PURE__*/Object.freeze({
-        events: events$3
-    });
-
-    var memory = function () {
-      var data = Cell(null);
-      var readState = function () {
-        return {
-          mode: 'memory',
-          value: data.get()
-        };
-      };
-      var isNotSet = function () {
-        return data.get() === null;
-      };
-      var clear = function () {
-        data.set(null);
-      };
-      return nu$5({
-        set: data.set,
-        get: data.get,
-        isNotSet: isNotSet,
-        clear: clear,
-        readState: readState
-      });
-    };
-    var manual = function () {
-      var readState = function () {
-      };
-      return nu$5({ readState: readState });
-    };
-    var dataset = function () {
-      var dataByValue = Cell({});
-      var dataByText = Cell({});
-      var readState = function () {
-        return {
-          mode: 'dataset',
-          dataByValue: dataByValue.get(),
-          dataByText: dataByText.get()
-        };
-      };
-      var clear = function () {
-        dataByValue.set({});
-        dataByText.set({});
-      };
-      var lookup = function (itemString) {
-        return readOptFrom$1(dataByValue.get(), itemString).orThunk(function () {
-          return readOptFrom$1(dataByText.get(), itemString);
-        });
-      };
-      var update = function (items) {
-        var currentDataByValue = dataByValue.get();
-        var currentDataByText = dataByText.get();
-        var newDataByValue = {};
-        var newDataByText = {};
-        each(items, function (item) {
-          newDataByValue[item.value] = item;
-          readOptFrom$1(item, 'meta').each(function (meta) {
-            readOptFrom$1(meta, 'text').each(function (text) {
-              newDataByText[text] = item;
-            });
-          });
-        });
-        dataByValue.set(__assign({}, currentDataByValue, newDataByValue));
-        dataByText.set(__assign({}, currentDataByText, newDataByText));
-      };
-      return nu$5({
-        readState: readState,
-        lookup: lookup,
-        update: update,
-        clear: clear
-      });
-    };
-    var init$2 = function (spec) {
-      return spec.store.manager.state(spec);
-    };
-
-    var RepresentState = /*#__PURE__*/Object.freeze({
-        memory: memory,
-        dataset: dataset,
-        manual: manual,
-        init: init$2
-    });
-
-    var setValue$1 = function (component, repConfig, repState, data) {
-      var store = repConfig.store;
-      repState.update([data]);
-      store.setValue(component, data);
-      repConfig.onSetValue(component, data);
-    };
-    var getValue$1 = function (component, repConfig, repState) {
-      var store = repConfig.store;
-      var key = store.getDataKey(component);
-      return repState.lookup(key).fold(function () {
-        return store.getFallbackEntry(key);
-      }, function (data) {
-        return data;
-      });
-    };
-    var onLoad$1 = function (component, repConfig, repState) {
-      var store = repConfig.store;
-      store.initialValue.each(function (data) {
-        setValue$1(component, repConfig, repState, data);
-      });
-    };
-    var onUnload$1 = function (component, repConfig, repState) {
-      repState.clear();
-    };
-    var DatasetStore = [
-      option('initialValue'),
-      strict$1('getFallbackEntry'),
-      strict$1('getDataKey'),
-      strict$1('setValue'),
-      output('manager', {
-        setValue: setValue$1,
-        getValue: getValue$1,
-        onLoad: onLoad$1,
-        onUnload: onUnload$1,
-        state: dataset
-      })
-    ];
-
-    var getValue$2 = function (component, repConfig, repState) {
-      return repConfig.store.getValue(component);
-    };
-    var setValue$2 = function (component, repConfig, repState, data) {
-      repConfig.store.setValue(component, data);
-      repConfig.onSetValue(component, data);
-    };
-    var onLoad$2 = function (component, repConfig, repState) {
-      repConfig.store.initialValue.each(function (data) {
-        repConfig.store.setValue(component, data);
-      });
-    };
-    var ManualStore = [
-      strict$1('getValue'),
-      defaulted$1('setValue', noop),
-      option('initialValue'),
-      output('manager', {
-        setValue: setValue$2,
-        getValue: getValue$2,
-        onLoad: onLoad$2,
-        onUnload: noop,
-        state: NoState.init
-      })
-    ];
-
-    var setValue$3 = function (component, repConfig, repState, data) {
-      repState.set(data);
-      repConfig.onSetValue(component, data);
-    };
-    var getValue$3 = function (component, repConfig, repState) {
-      return repState.get();
-    };
-    var onLoad$3 = function (component, repConfig, repState) {
-      repConfig.store.initialValue.each(function (initVal) {
-        if (repState.isNotSet()) {
-          repState.set(initVal);
-        }
-      });
-    };
-    var onUnload$2 = function (component, repConfig, repState) {
-      repState.clear();
-    };
-    var MemoryStore = [
-      option('initialValue'),
-      output('manager', {
-        setValue: setValue$3,
-        getValue: getValue$3,
-        onLoad: onLoad$3,
-        onUnload: onUnload$2,
-        state: memory
-      })
-    ];
-
-    var RepresentSchema = [
-      defaultedOf('store', { mode: 'memory' }, choose$1('mode', {
-        memory: MemoryStore,
-        manual: ManualStore,
-        dataset: DatasetStore
-      })),
-      onHandler('onSetValue'),
-      defaulted$1('resetOnDom', false)
-    ];
-
-    var Representing = create$1({
-      fields: RepresentSchema,
-      name: 'representing',
-      active: ActiveRepresenting,
-      apis: RepresentApis,
-      extra: {
-        setValueFrom: function (component, source) {
-          var value = Representing.getValue(source);
-          Representing.setValue(component, value);
-        }
-      },
-      state: RepresentState
     });
 
     var events$4 = function (name, eventHandlers) {
@@ -7546,10 +7722,35 @@
       state: SetupBehaviourCellState(false)
     });
 
+    var pointerEvents = function () {
+      var onClick = function (component, simulatedEvent) {
+        simulatedEvent.stop();
+        emitExecute(component);
+      };
+      return [
+        run(click(), onClick),
+        run(tap(), onClick),
+        cutter(touchstart()),
+        cutter(mousedown())
+      ];
+    };
+    var events$7 = function (optAction) {
+      var executeHandler = function (action) {
+        return runOnExecute(function (component, simulatedEvent) {
+          action(component);
+          simulatedEvent.stop();
+        });
+      };
+      return derive(flatten([
+        optAction.map(executeHandler).toArray(),
+        pointerEvents()
+      ]));
+    };
+
     var hoverEvent = 'alloy.item-hover';
     var focusEvent = 'alloy.item-focus';
     var onHover = function (item) {
-      if (search$1(item.element()).isNone() || Focusing.isFocused(item)) {
+      if (search(item.element()).isNone() || Focusing.isFocused(item)) {
         if (!Focusing.isFocused(item)) {
           Focusing.focus(item);
         }
@@ -7565,7 +7766,7 @@
     var builder = function (detail) {
       return {
         dom: detail.dom,
-        domModification: __assign({}, detail.domModification, { attributes: __assign({ 'role': detail.toggling.isSome() ? 'menuitemcheckbox' : 'menuitem' }, detail.domModification.attributes, { 'aria-haspopup': detail.hasSubmenu }, detail.hasSubmenu ? { 'aria-expanded': false } : {}) }),
+        domModification: __assign(__assign({}, detail.domModification), { attributes: __assign(__assign(__assign({ 'role': detail.toggling.isSome() ? 'menuitemcheckbox' : 'menuitem' }, detail.domModification.attributes), { 'aria-haspopup': detail.hasSubmenu }), detail.hasSubmenu ? { 'aria-expanded': false } : {}) }),
         behaviours: SketchBehaviours.augment(detail.itemBehaviours, [
           detail.toggling.fold(Toggling.revoke, function (tConfig) {
             return Toggling.config(__assign({ aria: { mode: 'checked' } }, tConfig));
@@ -7584,18 +7785,16 @@
               initialValue: detail.data
             }
           }),
-          config('item-type-events', [
-            run(tapOrClick(), emitExecute),
-            cutter(mousedown()),
+          config('item-type-events', __spreadArrays(pointerEvents(), [
             run(mouseover(), onHover),
             run(focusItem(), Focusing.focus)
-          ])
+          ]))
         ]),
         components: detail.components,
         eventOrder: detail.eventOrder
       };
     };
-    var schema$9 = [
+    var schema$a = [
       strict$1('data'),
       strict$1('components'),
       strict$1('dom'),
@@ -7620,7 +7819,7 @@
         events: derive([stopper(focusItem())])
       };
     };
-    var schema$a = [
+    var schema$b = [
       strict$1('dom'),
       strict$1('components'),
       output('builder', builder$1)
@@ -7720,7 +7919,7 @@
         ])
       };
     };
-    var schema$b = [
+    var schema$c = [
       strict$1('uid'),
       strict$1('data'),
       strict$1('components'),
@@ -7738,9 +7937,9 @@
     ];
 
     var itemSchema$1 = choose$1('type', {
-      widget: schema$b,
-      item: schema$9,
-      separator: schema$a
+      widget: schema$c,
+      item: schema$a,
+      separator: schema$b
     });
     var configureGrid = function (detail, movementInfo) {
       return {
@@ -7781,7 +7980,7 @@
         name: 'items',
         unit: 'item',
         defaults: function (detail, u) {
-          return u.hasOwnProperty('uid') ? u : __assign({}, u, { uid: generate$2('item') });
+          return u.hasOwnProperty('uid') ? u : __assign(__assign({}, u), { uid: generate$2('item') });
         },
         overrides: function (detail, u) {
           return {
@@ -7791,7 +7990,7 @@
           };
         }
       })]);
-    var schema$c = constant([
+    var schema$d = constant([
       strict$1('value'),
       strict$1('items'),
       strict$1('dom'),
@@ -7873,7 +8072,7 @@
 
     var Menu = composite$1({
       name: 'Menu',
-      configFields: schema$c(),
+      configFields: schema$d(),
       partFields: parts$1(),
       factory: make$1
     });
@@ -7928,7 +8127,7 @@
       };
       var setMenuBuilt = function (menuName, built) {
         var _a;
-        menus.set(__assign({}, menus.get(), (_a = {}, _a[menuName] = {
+        menus.set(__assign(__assign({}, menus.get()), (_a = {}, _a[menuName] = {
           type: 'prepared',
           menu: built
         }, _a)));
@@ -7940,6 +8139,40 @@
         directory.set(dir);
         var sPaths = generate$5(dir, sExpansions);
         paths.set(sPaths);
+      };
+      var getTriggeringItem = function (menuValue) {
+        return find$1(expansions.get(), function (v, k) {
+          return v === menuValue;
+        });
+      };
+      var getTriggerData = function (menuValue, getItemByValue, path) {
+        return getPreparedMenu(menuValue).bind(function (menu) {
+          return getTriggeringItem(menuValue).bind(function (triggeringItemValue) {
+            return getItemByValue(triggeringItemValue).map(function (triggeredItem) {
+              return {
+                triggeredMenu: menu,
+                triggeringItem: triggeredItem,
+                triggeringPath: path
+              };
+            });
+          });
+        });
+      };
+      var getTriggeringPath = function (itemValue, getItemByValue) {
+        var extraPath = filter(lookupItem(itemValue).toArray(), function (menuValue) {
+          return getPreparedMenu(menuValue).isSome();
+        });
+        return readOptFrom$1(paths.get(), itemValue).bind(function (path) {
+          var revPath = reverse(extraPath.concat(path));
+          var triggers = bind(revPath, function (menuValue, menuIndex) {
+            return getTriggerData(menuValue, getItemByValue, revPath.slice(0, menuIndex + 1)).fold(function () {
+              return primary.get().is(menuValue) ? [] : [Option.none()];
+            }, function (data) {
+              return [Option.some(data)];
+            });
+          });
+          return sequence(triggers);
+        });
       };
       var expand = function (itemValue) {
         return readOptFrom$1(expansions.get(), itemValue).map(function (menu) {
@@ -7955,19 +8188,21 @@
       var refresh = function (itemValue) {
         return readOptFrom$1(paths.get(), itemValue);
       };
+      var getPreparedMenu = function (menuValue) {
+        return lookupMenu(menuValue).bind(extractPreparedMenu);
+      };
       var lookupMenu = function (menuValue) {
         return readOptFrom$1(menus.get(), menuValue);
+      };
+      var lookupItem = function (itemValue) {
+        return readOptFrom$1(expansions.get(), itemValue);
       };
       var otherMenus = function (path) {
         var menuValues = directory.get();
         return difference(keys(menuValues), path);
       };
       var getPrimary = function () {
-        return primary.get().bind(function (primaryName) {
-          return lookupMenu(primaryName).bind(function (prep) {
-            return prep.type === 'prepared' ? Option.some(prep.menu) : Option.none();
-          });
-        });
+        return primary.get().bind(getPreparedMenu);
       };
       var getMenus = function () {
         return menus.get();
@@ -7979,21 +8214,29 @@
         refresh: refresh,
         collapse: collapse,
         lookupMenu: lookupMenu,
+        lookupItem: lookupItem,
         otherMenus: otherMenus,
         getPrimary: getPrimary,
         getMenus: getMenus,
         clear: clear,
-        isClear: isClear
+        isClear: isClear,
+        getTriggeringPath: getTriggeringPath
       };
     };
-    var LayeredState = { init: init$3 };
+    var extractPreparedMenu = function (prep) {
+      return prep.type === 'prepared' ? Option.some(prep.menu) : Option.none();
+    };
+    var LayeredState = {
+      init: init$3,
+      extractPreparedMenu: extractPreparedMenu
+    };
 
     var make$2 = function (detail, rawUiSpec) {
       var submenuParentItems = Cell(Option.none());
       var buildMenus = function (container, primaryName, menus) {
         return map$1(menus, function (spec, name) {
           var makeSketch = function () {
-            return Menu.sketch(__assign({ dom: spec.dom }, spec, {
+            return Menu.sketch(__assign(__assign({ dom: spec.dom }, spec), {
               value: name,
               items: spec.items,
               markers: detail.markers,
@@ -8020,6 +8263,17 @@
       };
       var getItemValue = function (item) {
         return Representing.getValue(item).value;
+      };
+      var getItemByValue = function (container, menus, itemValue) {
+        return findMap(menus, function (menu) {
+          if (!menu.getSystem().isConnected()) {
+            return Option.none();
+          }
+          var candidates = Highlighting.getCandidates(menu);
+          return find(candidates, function (c) {
+            return getItemValue(c) === itemValue;
+          });
+        });
       };
       var toDirectory = function (container) {
         return map$1(detail.data.menus, function (data, menuName) {
@@ -8125,7 +8379,7 @@
               if (!inBody(activeMenu.element())) {
                 Replacing.append(container, premade$1(activeMenu));
               }
-              detail.onOpenSubmenu(container, item, activeMenu);
+              detail.onOpenSubmenu(container, item, activeMenu, reverse(path));
               if (decision === ExpandHighlightDecision.HighlightSubmenu) {
                 Highlighting.highlightFirst(activeMenu);
                 return updateMenuPath(container, layeredState, path);
@@ -8180,11 +8434,14 @@
       };
       var events = derive([
         run(focus$4(), function (sandbox, simulatedEvent) {
-          var menu = simulatedEvent.event().menu();
-          Highlighting.highlight(sandbox, menu);
-          var value = getItemValue(simulatedEvent.event().item());
-          layeredState.refresh(value).each(function (path) {
-            return closeOthers(sandbox, layeredState, path);
+          var item = simulatedEvent.event().item();
+          layeredState.lookupItem(getItemValue(item)).each(function () {
+            var menu = simulatedEvent.event().menu();
+            Highlighting.highlight(sandbox, menu);
+            var value = getItemValue(simulatedEvent.event().item());
+            layeredState.refresh(value).each(function (path) {
+              return closeOthers(sandbox, layeredState, path);
+            });
           });
         }),
         runOnExecute(function (component, simulatedEvent) {
@@ -8215,11 +8472,12 @@
           expandRight(sandbox, item, ExpandHighlightDecision.HighlightParent);
           detail.onHover(sandbox, item);
         })] : []));
+      var getActiveItem = function (container) {
+        return Highlighting.getHighlighted(container).bind(Highlighting.getHighlighted);
+      };
       var collapseMenuApi = function (container) {
-        Highlighting.getHighlighted(container).each(function (currentMenu) {
-          Highlighting.getHighlighted(currentMenu).each(function (currentItem) {
-            collapseLeft(container, currentItem);
-          });
+        getActiveItem(container).each(function (currentItem) {
+          collapseLeft(container, currentItem);
         });
       };
       var highlightPrimary = function (container) {
@@ -8227,9 +8485,40 @@
           setActiveMenu(container, primary);
         });
       };
+      var extractMenuFromContainer = function (container) {
+        return Option.from(container.components()[0]).filter(function (comp) {
+          return get$2(comp.element(), 'role') === 'menu';
+        });
+      };
+      var repositionMenus = function (container) {
+        var maybeActivePrimary = layeredState.getPrimary().bind(function (primary) {
+          return getActiveItem(container).bind(function (currentItem) {
+            var itemValue = getItemValue(currentItem);
+            var allMenus = values(layeredState.getMenus());
+            var preparedMenus = cat(map(allMenus, LayeredState.extractPreparedMenu));
+            return layeredState.getTriggeringPath(itemValue, function (v) {
+              return getItemByValue(container, preparedMenus, v);
+            });
+          }).map(function (triggeringPath) {
+            return {
+              primary: primary,
+              triggeringPath: triggeringPath
+            };
+          });
+        });
+        maybeActivePrimary.fold(function () {
+          extractMenuFromContainer(container).each(function (primaryMenu) {
+            detail.onRepositionMenu(container, primaryMenu, []);
+          });
+        }, function (_a) {
+          var primary = _a.primary, triggeringPath = _a.triggeringPath;
+          detail.onRepositionMenu(container, primary, triggeringPath);
+        });
+      };
       var apis = {
         collapseMenu: collapseMenuApi,
-        highlightPrimary: highlightPrimary
+        highlightPrimary: highlightPrimary,
+        repositionMenus: repositionMenus
       };
       return {
         uid: detail.uid,
@@ -8292,6 +8581,7 @@
         onStrictKeyboardHandler('onEscape'),
         onStrictHandler('onOpenMenu'),
         onStrictHandler('onOpenSubmenu'),
+        onStrictHandler('onRepositionMenu'),
         onHandler('onCollapseMenu'),
         defaulted$1('highlightImmediately', true),
         strictObjOf('data', [
@@ -8320,6 +8610,9 @@
         },
         highlightPrimary: function (apis, tmenu) {
           apis.highlightPrimary(tmenu);
+        },
+        repositionMenus: function (apis, tmenu) {
+          apis.repositionMenus(tmenu);
         }
       },
       factory: make$2,
@@ -8330,9 +8623,25 @@
       }
     });
 
-    var makeMenu = function (detail, menuSandbox, anchor, menuSpec) {
+    var makeMenu = function (detail, menuSandbox, anchor, menuSpec, getBounds) {
       var lazySink = function () {
         return detail.lazySink(menuSandbox);
+      };
+      var layouts = menuSpec.type === 'horizontal' ? {
+        layouts: {
+          onLtr: function () {
+            return belowOrAbove();
+          },
+          onRtl: function () {
+            return belowOrAboveRtl();
+          }
+        }
+      } : {};
+      var isFirstTierSubmenu = function (triggeringPaths) {
+        return triggeringPaths.length === 2;
+      };
+      var getSubmenuLayouts = function (triggeringPaths) {
+        return isFirstTierSubmenu(triggeringPaths) ? layouts : {};
       };
       return tieredMenu.sketch({
         dom: { tag: 'div' },
@@ -8349,14 +8658,25 @@
           return Option.some(true);
         },
         onOpenMenu: function (tmenu, menu) {
-          Positioning.position(lazySink().getOrDie(), anchor, menu);
+          Positioning.positionWithinBounds(lazySink().getOrDie(), anchor, menu, getBounds());
         },
-        onOpenSubmenu: function (tmenu, item, submenu) {
+        onOpenSubmenu: function (tmenu, item, submenu, triggeringPaths) {
           var sink = lazySink().getOrDie();
-          Positioning.position(sink, {
+          Positioning.position(sink, __assign({
             anchor: 'submenu',
             item: item
-          }, submenu);
+          }, getSubmenuLayouts(triggeringPaths)), submenu);
+        },
+        onRepositionMenu: function (tmenu, primaryMenu, submenuTriggers) {
+          var sink = lazySink().getOrDie();
+          Positioning.positionWithinBounds(sink, anchor, primaryMenu, getBounds());
+          each(submenuTriggers, function (st) {
+            var submenuLayouts = getSubmenuLayouts(st.triggeringPath);
+            Positioning.position(sink, __assign({
+              anchor: 'submenu',
+              item: st.triggeringItem
+            }, submenuLayouts), st.triggeredMenu);
+          });
         }
       });
     };
@@ -8368,37 +8688,65 @@
         });
       };
       var setContent = function (sandbox, thing) {
-        Sandboxing.open(sandbox, thing);
+        Sandboxing.setContent(sandbox, thing);
       };
       var showAt = function (sandbox, anchor, thing) {
-        var getBounds = Option.none();
-        showWithin(sandbox, anchor, thing, getBounds);
+        showWithin(sandbox, anchor, thing, Option.none());
       };
       var showWithin = function (sandbox, anchor, thing, boxElement) {
-        var sink = detail.lazySink(sandbox).getOrDie();
-        Sandboxing.openWhileCloaked(sandbox, thing, function () {
-          return Positioning.positionWithin(sink, anchor, sandbox, boxElement);
+        showWithinBounds(sandbox, anchor, thing, function () {
+          return boxElement.map(function (elem) {
+            return box(elem);
+          });
         });
-        detail.onShow(sandbox);
       };
-      var showWithinBounds = function (sandbox, anchor, thing, bounds) {
+      var showWithinBounds = function (sandbox, anchor, thing, getBounds) {
         var sink = detail.lazySink(sandbox).getOrDie();
         Sandboxing.openWhileCloaked(sandbox, thing, function () {
-          return Positioning.positionWithinBounds(sink, anchor, sandbox, bounds);
+          return Positioning.positionWithinBounds(sink, anchor, sandbox, getBounds());
         });
-        detail.onShow(sandbox);
+        Representing.setValue(sandbox, Option.some({
+          mode: 'position',
+          anchor: anchor,
+          getBounds: getBounds
+        }));
       };
       var showMenuAt = function (sandbox, anchor, menuSpec) {
-        var menu = makeMenu(detail, sandbox, anchor, menuSpec);
+        showMenuWithinBounds(sandbox, anchor, menuSpec, function () {
+          return Option.none();
+        });
+      };
+      var showMenuWithinBounds = function (sandbox, anchor, menuSpec, getBounds) {
+        var menu = makeMenu(detail, sandbox, anchor, menuSpec, getBounds);
         Sandboxing.open(sandbox, menu);
-        detail.onShow(sandbox);
+        Representing.setValue(sandbox, Option.some({
+          mode: 'menu',
+          menu: menu
+        }));
       };
       var hide = function (sandbox) {
+        Representing.setValue(sandbox, Option.none());
         Sandboxing.close(sandbox);
-        detail.onHide(sandbox);
       };
       var getContent = function (sandbox) {
         return Sandboxing.getState(sandbox);
+      };
+      var reposition = function (sandbox) {
+        if (Sandboxing.isOpen(sandbox)) {
+          Representing.getValue(sandbox).each(function (state) {
+            switch (state.mode) {
+            case 'menu':
+              Sandboxing.getState(sandbox).each(function (tmenu) {
+                tieredMenu.repositionMenus(tmenu);
+              });
+              break;
+            case 'position':
+              var sink = detail.lazySink(sandbox).getOrDie();
+              Positioning.positionWithinBounds(sink, state.anchor, sandbox, state.getBounds());
+              break;
+            }
+          });
+        }
       };
       var apis = {
         setContent: setContent,
@@ -8406,8 +8754,10 @@
         showWithin: showWithin,
         showWithinBounds: showWithinBounds,
         showMenuAt: showMenuAt,
+        showMenuWithinBounds: showMenuWithinBounds,
         hide: hide,
         getContent: getContent,
+        reposition: reposition,
         isOpen: Sandboxing.isOpen
       };
       return {
@@ -8420,11 +8770,27 @@
             },
             getAttachPoint: function (sandbox) {
               return detail.lazySink(sandbox).getOrDie();
+            },
+            onOpen: function (sandbox) {
+              detail.onShow(sandbox);
+            },
+            onClose: function (sandbox) {
+              detail.onHide(sandbox);
             }
           }),
-          receivingConfig(__assign({ isExtraPart: constant(false) }, detail.fireDismissalEventInstead.map(function (fe) {
-            return { fireEventInstead: { event: fe.event } };
-          }).getOr({})))
+          Representing.config({
+            store: {
+              mode: 'memory',
+              initialValue: Option.none()
+            }
+          }),
+          Receiving.config({
+            channels: __assign(__assign({}, receivingChannel(__assign({ isExtraPart: constant(false) }, detail.fireDismissalEventInstead.map(function (fe) {
+              return { fireEventInstead: { event: fe.event } };
+            }).getOr({})))), receivingChannel$1(__assign(__assign({ isExtraPart: constant(false) }, detail.fireRepositionEventInstead.map(function (fe) {
+              return { fireEventInstead: { event: fe.event } };
+            }).getOr({})), { doReposition: reposition })))
+          })
         ]),
         eventOrder: detail.eventOrder,
         apis: apis
@@ -8439,9 +8805,11 @@
         optionFunction('onEscape'),
         field$1('inlineBehaviours', [
           Sandboxing,
+          Representing,
           Receiving
         ]),
         optionObjOf('fireDismissalEventInstead', [defaulted$1('event', dismissRequested())]),
+        optionObjOf('fireRepositionEventInstead', [defaulted$1('event', repositionRequested())]),
         defaulted$1('getRelated', Option.none),
         defaulted$1('eventOrder', Option.none)
       ],
@@ -8459,6 +8827,9 @@
         showMenuAt: function (apis, component, anchor, menuSpec) {
           apis.showMenuAt(component, anchor, menuSpec);
         },
+        showMenuWithinBounds: function (apis, component, anchor, menuSpec, bounds) {
+          apis.showMenuWithinBounds(component, anchor, menuSpec, bounds);
+        },
         hide: function (apis, component) {
           apis.hide(component);
         },
@@ -8470,32 +8841,45 @@
         },
         setContent: function (apis, component, thing) {
           apis.setContent(component, thing);
+        },
+        reposition: function (apis, component) {
+          apis.reposition(component);
         }
       }
     });
 
-    var events$7 = function (optAction) {
-      var executeHandler = function (action) {
-        return run(execute(), function (component, simulatedEvent) {
-          action(component);
-          simulatedEvent.stop();
-        });
-      };
-      var onClick = function (component, simulatedEvent) {
-        simulatedEvent.stop();
-        emitExecute(component);
-      };
-      var onMousedown = function (component, simulatedEvent) {
-        simulatedEvent.cut();
-      };
-      var pointerEvents = PlatformDetection$1.detect().deviceType.isTouch() ? [run(tap(), onClick)] : [
-        run(click(), onClick),
-        run(mousedown(), onMousedown)
-      ];
-      return derive(flatten([
-        optAction.map(executeHandler).toArray(),
-        pointerEvents
-      ]));
+    var westEdgeX$1 = function (anchor) {
+      return anchor.x();
+    };
+    var middleX$1 = function (anchor, element) {
+      return anchor.x() + anchor.width() / 2 - element.width() / 2;
+    };
+    var eastEdgeX$1 = function (anchor, element) {
+      return anchor.x() + anchor.width() - element.width();
+    };
+    var northY$2 = function (anchor) {
+      return anchor.y();
+    };
+    var southY$2 = function (anchor, element) {
+      return anchor.y() + anchor.height() - element.height();
+    };
+    var southeast$3 = function (anchor, element, bubbles) {
+      return nu$7(westEdgeX$1(anchor), southY$2(anchor, element), bubbles.innerSoutheast(), southeast(), 'layout-se');
+    };
+    var southwest$3 = function (anchor, element, bubbles) {
+      return nu$7(eastEdgeX$1(anchor, element), southY$2(anchor, element), bubbles.innerSouthwest(), southwest(), 'layout-sw');
+    };
+    var northeast$3 = function (anchor, element, bubbles) {
+      return nu$7(westEdgeX$1(anchor), northY$2(anchor), bubbles.innerNortheast(), northeast(), 'layout-ne');
+    };
+    var northwest$3 = function (anchor, element, bubbles) {
+      return nu$7(eastEdgeX$1(anchor, element), northY$2(anchor), bubbles.innerNorthwest(), northwest(), 'layout-nw');
+    };
+    var north$3 = function (anchor, element, bubbles) {
+      return nu$7(middleX$1(anchor, element), northY$2(anchor), bubbles.innerNorth(), north(), 'layout-n');
+    };
+    var south$3 = function (anchor, element, bubbles) {
+      return nu$7(middleX$1(anchor, element), southY$2(anchor, element), bubbles.innerSouth(), south(), 'layout-s');
     };
 
     var factory$1 = function (detail) {
@@ -8558,10 +8942,10 @@
         return anyInSystem.getSystem().getByUid(uid).getOrDie();
       };
       var getOpt = function (anyInSystem) {
-        return anyInSystem.getSystem().getByUid(uid).fold(Option.none, Option.some);
+        return anyInSystem.getSystem().getByUid(uid).toOption();
       };
       var asSpec = function () {
-        return __assign({}, spec, { uid: uid });
+        return __assign(__assign({}, spec), { uid: uid });
       };
       return {
         get: get,
@@ -8761,19 +9145,29 @@
 
     function NotificationManagerImpl (editor, extras, uiMothership) {
       var backstage = extras.backstage;
-      var getEditorContainer = function (editor) {
-        return editor.inline ? editor.getElement() : editor.getContentAreaContainer();
+      var getLayoutDirection = function (rel) {
+        switch (rel) {
+        case 'bc-bc':
+          return south$3;
+        case 'tc-tc':
+          return north$3;
+        case 'tc-bc':
+          return north$1;
+        case 'bc-tc':
+        default:
+          return south$1;
+        }
       };
       var prePositionNotifications = function (notifications) {
         each(notifications, function (notification) {
-          notification.moveTo(0, 0);
+          return notification.moveTo(0, 0);
         });
       };
       var positionNotifications = function (notifications) {
         if (notifications.length > 0) {
-          var firstItem = notifications.slice(0, 1)[0];
-          var container = getEditorContainer(editor);
-          firstItem.moveRel(container, 'tc-tc');
+          head(notifications).each(function (firstItem) {
+            return firstItem.moveRel(null, 'banner');
+          });
           each(notifications, function (notification, index) {
             if (index > 0) {
               notification.moveRel(notifications[index - 1].getEl(), 'bc-tc');
@@ -8796,6 +9190,7 @@
             'success',
             'error',
             'warning',
+            'warn',
             'info'
           ], settings.type) ? settings.type : undefined,
           progress: settings.progressBar === true,
@@ -8828,13 +9223,32 @@
             }, premade$1(notification));
           },
           moveRel: function (element, rel) {
-            InlineView.showAt(notificationWrapper, extras.backstage.shared.anchors.banner(), premade$1(notification));
+            if (rel !== 'banner') {
+              var layoutDirection_1 = getLayoutDirection(rel);
+              var nodeAnchor = {
+                anchor: 'node',
+                root: body(),
+                node: Option.some(Element.fromDom(element)),
+                layouts: {
+                  onRtl: function () {
+                    return [layoutDirection_1];
+                  },
+                  onLtr: function () {
+                    return [layoutDirection_1];
+                  }
+                }
+              };
+              InlineView.showAt(notificationWrapper, nodeAnchor, premade$1(notification));
+            } else {
+              InlineView.showAt(notificationWrapper, extras.backstage.shared.anchors.banner(), premade$1(notification));
+            }
           },
           text: function (nuText) {
             Notification.updateText(notification, nuText);
           },
           settings: settings,
           getEl: function () {
+            return notification.element().dom();
           },
           progressBar: {
             value: function (percent) {
@@ -8857,6 +9271,31 @@
       };
     }
 
+    var first$1 = function (fn, rate) {
+      var timer = null;
+      var cancel = function () {
+        if (timer !== null) {
+          domGlobals.clearTimeout(timer);
+          timer = null;
+        }
+      };
+      var throttle = function () {
+        var args = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+        if (timer === null) {
+          timer = domGlobals.setTimeout(function () {
+            fn.apply(null, args);
+            timer = null;
+          }, rate);
+        }
+      };
+      return {
+        cancel: cancel,
+        throttle: throttle
+      };
+    };
     var last$2 = function (fn, rate) {
       var timer = null;
       var cancel = function () {
@@ -8889,6 +9328,14 @@
     var isText$1 = function (node) {
       return node.nodeType === domGlobals.Node.TEXT_NODE;
     };
+    var isBoundary = function (dom, node) {
+      return dom.isBlock(node) || contains([
+        'BR',
+        'IMG',
+        'HR',
+        'INPUT'
+      ], node.nodeName) || dom.getContentEditable(node) === 'false';
+    };
     var outcome$1 = Adt.generate([
       { aborted: [] },
       { edge: ['element'] },
@@ -8911,7 +9358,7 @@
           return terminate();
         }
       };
-      if (dom.isBlock(node)) {
+      if (isBoundary(dom, node)) {
         return terminate();
       } else if (!isText$1(node)) {
         return recurse();
@@ -9055,7 +9502,7 @@
         }
       });
       editor.on('NodeChange', function (e) {
-        if (api.isActive() && detect$4(Element.fromDom(e.element)).isNone()) {
+        if (api.isActive() && !api.isProcessingAction() && detect$4(Element.fromDom(e.element)).isNone()) {
           api.cancelIfNecessary();
         }
       });
@@ -9449,7 +9896,7 @@
             behaviours: derive$1([Replacing.config({})])
           });
           state.setTooltip(popup);
-          attach(sink, popup);
+          attach$1(sink, popup);
           tooltipConfig.onShow(comp, popup);
           Positioning.position(sink, tooltipConfig.anchor(comp), popup);
         }
@@ -9519,7 +9966,7 @@
         if (attr.name === 'class') {
           return b;
         } else {
-          return __assign({}, b, (_a = {}, _a[attr.name] = attr.value, _a));
+          return __assign(__assign({}, b), (_a = {}, _a[attr.name] = attr.value, _a));
         }
       }, {});
     };
@@ -9654,6 +10101,15 @@
           tag: 'div',
           classes: [caretClass],
           innerHtml: get$c('chevron-right', icons)
+        }
+      };
+    };
+    var renderDownwardsCaret = function (icons) {
+      return {
+        dom: {
+          tag: 'div',
+          classes: [caretClass],
+          innerHtml: get$c('chevron-down', icons)
         }
       };
     };
@@ -10104,6 +10560,10 @@
           col: col
         });
       };
+      var onClick = function (c, se) {
+        se.stop();
+        emitExecute(c);
+      };
       return build$1({
         dom: {
           tag: 'div',
@@ -10113,7 +10573,8 @@
           config('insert-table-picker-cell', [
             run(mouseover(), Focusing.focus),
             run(execute(), emitExecute),
-            run(tapOrClick(), emitExecute)
+            run(click(), onClick),
+            run(tap(), onClick)
           ]),
           Toggling.config({
             toggleClass: 'tox-insert-table-picker__selected',
@@ -10570,15 +11031,19 @@
     var fireBeforeRenderUI = function (editor) {
       return editor.fire('BeforeRenderUI');
     };
-    var fireResizeContent = function (editor) {
-      return editor.fire('ResizeContent');
+    var fireResizeContent = function (editor, e) {
+      return editor.fire('ResizeContent', e);
+    };
+    var fireScrollContent = function (editor, e) {
+      return editor.fire('ScrollContent', e);
     };
     var fireTextColorChange = function (editor, data) {
-      editor.fire('TextColorChange', data);
+      return editor.fire('TextColorChange', data);
     };
     var Events = {
       fireSkinLoaded: fireSkinLoaded,
       fireResizeEditor: fireResizeEditor,
+      fireScrollContent: fireScrollContent,
       fireBeforeRenderUI: fireBeforeRenderUI,
       fireResizeContent: fireResizeContent,
       fireTextColorChange: fireTextColorChange
@@ -10895,7 +11360,7 @@
         };
       });
     };
-    var forCollection = function (columns, initItems, hasIcons) {
+    var forCollection = function (columns, initItems, _hasIcons) {
       return {
         dom: {
           tag: 'div',
@@ -10912,10 +11377,28 @@
                   classes: ['tox-collection__group']
                 }, columns)(items);
               } else {
-                return preprocessCollection(items, function (item, i) {
+                return preprocessCollection(items, function (_item, i) {
                   return initItems[i].type === 'separator';
                 });
               }
+            }
+          })]
+      };
+    };
+    var forHorizontalCollection = function (initItems, _hasIcons) {
+      return {
+        dom: {
+          tag: 'div',
+          classes: [
+            'tox-collection',
+            'tox-collection--horizontal'
+          ]
+        },
+        components: [Menu.parts().items({
+            preprocess: function (items) {
+              return preprocessCollection(items, function (_item, i) {
+                return initItems[i].type === 'separator';
+              });
             }
           })]
       };
@@ -10985,6 +11468,15 @@
       domGlobals.console.error(formatError(error));
       domGlobals.console.log(error);
       return Option.none();
+    };
+    var createHorizontalPartialMenuWithAlloyItems = function (value, _hasIcons, items, _columns, _presets) {
+      var structure = forHorizontalCollection(items);
+      return {
+        value: value,
+        dom: structure.dom,
+        components: structure.components,
+        items: items
+      };
     };
     var createPartialMenuWithAlloyItems = function (value, hasIcons, items, columns, presets) {
       if (presets === 'color') {
@@ -11118,7 +11610,7 @@
       }, columns, presets, ItemResponse$1.CLOSE_ON_EXECUTE, function () {
         return false;
       }, backstage.shared.providers);
-      var widgetSpec = deepMerge(__assign({}, menuSpec, {
+      var widgetSpec = deepMerge(__assign(__assign({}, menuSpec), {
         markers: markers$1(presets),
         movement: deriveMenuMovement(columns, presets)
       }));
@@ -11182,11 +11674,14 @@
       }, structure, itemResponse);
     };
 
-    var renderNestedItem = function (spec, itemResponse, providersBackstage, renderIcons) {
+    var renderNestedItem = function (spec, itemResponse, providersBackstage, renderIcons, downwardsCaret) {
       if (renderIcons === void 0) {
         renderIcons = true;
       }
-      var caret = renderSubmenuCaret(providersBackstage.icons);
+      if (downwardsCaret === void 0) {
+        downwardsCaret = false;
+      }
+      var caret = downwardsCaret ? renderDownwardsCaret(providersBackstage.icons) : renderSubmenuCaret(providersBackstage.icons);
       var getApi = function (component) {
         return {
           isDisabled: function () {
@@ -11300,23 +11795,26 @@
     var menuHasIcons$1 = function (xs) {
       return exists(xs, hasIcon$1);
     };
-    var createMenuItemFromBridge = function (item, itemResponse, backstage, menuHasIcons) {
-      if (menuHasIcons === void 0) {
-        menuHasIcons = true;
-      }
+    var createMenuItemFromBridge = function (item, itemResponse, backstage, menuHasIcons, isHorizontalMenu) {
       var providersBackstage = backstage.shared.providers;
+      var parseForHorizontalMenu = function (menuitem) {
+        return !isHorizontalMenu ? menuitem : __assign(__assign({}, menuitem), {
+          shortcut: Option.none(),
+          icon: menuitem.text.isSome() ? Option.none() : menuitem.icon
+        });
+      };
       switch (item.type) {
       case 'menuitem':
         return createMenuItem(item).fold(handleError, function (d) {
-          return Option.some(normal(d, itemResponse, providersBackstage, menuHasIcons));
+          return Option.some(normal(parseForHorizontalMenu(d), itemResponse, providersBackstage, menuHasIcons));
         });
       case 'nestedmenuitem':
         return createNestedMenuItem(item).fold(handleError, function (d) {
-          return Option.some(nested(d, itemResponse, providersBackstage, menuHasIcons));
+          return Option.some(nested(parseForHorizontalMenu(d), itemResponse, providersBackstage, menuHasIcons, isHorizontalMenu));
         });
       case 'togglemenuitem':
         return createToggleMenuItem(item).fold(handleError, function (d) {
-          return Option.some(toggle$1(d, itemResponse, providersBackstage));
+          return Option.some(toggle$1(parseForHorizontalMenu(d), itemResponse, providersBackstage));
         });
       case 'separator':
         return createSeparatorMenuItem(item).fold(handleError, function (d) {
@@ -11324,7 +11822,7 @@
         });
       case 'fancymenuitem':
         return createFancyMenuItem(item).fold(handleError, function (d) {
-          return fancy(d, backstage);
+          return fancy(parseForHorizontalMenu(d), backstage);
         });
       default: {
           domGlobals.console.error('Unknown item in general menu', item);
@@ -11347,11 +11845,14 @@
         }
       }));
     };
-    var createPartialMenu = function (value, items, itemResponse, backstage) {
+    var createPartialMenu = function (value, items, itemResponse, backstage, isHorizontalMenu) {
       var hasIcons = menuHasIcons$1(items);
       var alloyItems = cat(map(items, function (item) {
+        var itemHasIcon = function (i) {
+          return isHorizontalMenu ? !i.hasOwnProperty('text') : hasIcons;
+        };
         var createItem = function (i) {
-          return createMenuItemFromBridge(i, itemResponse, backstage, hasIcons);
+          return createMenuItemFromBridge(i, itemResponse, backstage, itemHasIcon(i), isHorizontalMenu);
         };
         if (item.type === 'nestedmenuitem' && item.getSubmenuItems().length <= 0) {
           return createItem(merge(item, { disabled: true }));
@@ -11359,7 +11860,8 @@
           return createItem(item);
         }
       }));
-      return createPartialMenuWithAlloyItems(value, hasIcons, alloyItems, 1, 'normal');
+      var createPartial = isHorizontalMenu ? createHorizontalPartialMenuWithAlloyItems : createPartialMenuWithAlloyItems;
+      return createPartial(value, hasIcons, alloyItems, 1, 'normal');
     };
     var createTieredDataFrom = function (partialMenu) {
       return tieredMenu.singleData(partialMenu.value, partialMenu);
@@ -11391,6 +11893,7 @@
 
     var register$2 = function (editor, sharedBackstage) {
       var activeAutocompleter = Cell(Option.none());
+      var processingAction = Cell(false);
       var autocompleter = build$1(InlineView.sketch({
         dom: {
           tag: 'div',
@@ -11422,6 +11925,7 @@
           detect$4(lastElement.getOr(Element.fromDom(editor.selection.getNode()))).each(unwrap);
           hideIfNecessary();
           activeAutocompleter.set(Option.none());
+          processingAction.set(false);
         }
       };
       var getAutocompleters = cached(function () {
@@ -11440,13 +11944,17 @@
             }, function (_a) {
               var range = _a.range;
               var autocompleterApi = {
-                hide: cancelIfNecessary,
+                hide: function () {
+                  cancelIfNecessary();
+                },
                 reload: function (fetchOptions) {
                   hideIfNecessary();
                   load(fetchOptions);
                 }
               };
+              processingAction.set(true);
               match.onAction(autocompleterApi, range, itemValue, itemMeta);
+              processingAction.set(false);
             });
           }, columns, ItemResponse$1.BUBBLE_TO_SANDBOX, sharedBackstage);
         });
@@ -11459,6 +11967,7 @@
             element: wrapper,
             matchLength: context.text.length
           }));
+          processingAction.set(false);
         }
       };
       var display = function (ac, context, lookupData, items) {
@@ -11513,6 +12022,7 @@
         cancelIfNecessary: cancelIfNecessary,
         isMenuOpen: isMenuOpen,
         isActive: isActive,
+        isProcessingAction: processingAction.get,
         getView: function () {
           return InlineView.getContent(autocompleter);
         }
@@ -11532,21 +12042,23 @@
         raw: constant(raw)
       };
     };
+    var fromRawEvent = function (rawEvent) {
+      var target = Element.fromDom(rawEvent.target);
+      var stop = function () {
+        rawEvent.stopPropagation();
+      };
+      var prevent = function () {
+        rawEvent.preventDefault();
+      };
+      var kill = compose(prevent, stop);
+      return mkEvent(target, rawEvent.clientX, rawEvent.clientY, stop, prevent, kill, rawEvent);
+    };
     var handle = function (filter, handler) {
       return function (rawEvent) {
         if (!filter(rawEvent)) {
           return;
         }
-        var target = Element.fromDom(rawEvent.target);
-        var stop = function () {
-          rawEvent.stopPropagation();
-        };
-        var prevent = function () {
-          rawEvent.preventDefault();
-        };
-        var kill = compose(prevent, stop);
-        var evt = mkEvent(target, rawEvent.clientX, rawEvent.clientY, stop, prevent, kill, rawEvent);
-        handler(evt);
+        handler(fromRawEvent(rawEvent));
       };
     };
     var binder = function (element, event, filter, handler, useCapture) {
@@ -11571,6 +12083,7 @@
     var capture$1 = function (element, event, handler) {
       return capture(element, event, filter$1, handler);
     };
+    var fromRawEvent$1 = fromRawEvent;
 
     var closest$4 = function (scope, selector, isRoot) {
       return closest$3(scope, selector, isRoot).isSome();
@@ -11616,9 +12129,10 @@
     };
     var monitor = function (settings) {
       var startData = Cell(Option.none());
+      var longpressFired = Cell(false);
       var longpress$1 = DelayedFunction(function (event) {
-        startData.set(Option.none());
         settings.triggerEvent(longpress(), event);
+        longpressFired.set(true);
       }, LONGPRESS_DELAY);
       var handleTouchstart = function (event) {
         getTouch(event).each(function (touch) {
@@ -11629,6 +12143,7 @@
             target: event.target
           };
           longpress$1.schedule(event);
+          longpressFired.set(false);
           startData.set(Option.some(data));
         });
         return Option.none();
@@ -11650,7 +12165,12 @@
           return eq(data.target(), event.target());
         };
         return startData.get().filter(isSame).map(function (data) {
-          return settings.triggerEvent(tap(), event);
+          if (longpressFired.get()) {
+            event.prevent();
+            return false;
+          } else {
+            return settings.triggerEvent(tap(), event);
+          }
         });
       };
       var handlers = wrapAll$1([
@@ -11682,7 +12202,7 @@
         'textarea'
       ], name(event.target())) && !closest$4(event.target(), '[contenteditable="true"]');
     };
-    var isFirefox = PlatformDetection$1.detect().browser.isFirefox();
+    var isFirefox = detect$3().browser.isFirefox();
     var settingsSchema = objOfOnly([
       strictFunction('triggerEvent'),
       defaulted$1('stopBackspace', true)
@@ -11703,12 +12223,12 @@
     };
     var setup$1 = function (container, rawSettings) {
       var settings = asRawOrDie('Getting GUI events settings', settingsSchema, rawSettings);
-      var pointerEvents = PlatformDetection$1.detect().deviceType.isTouch() ? [
+      var pointerEvents = [
         'touchstart',
         'touchmove',
         'touchend',
-        'gesturestart'
-      ] : [
+        'touchcancel',
+        'gesturestart',
         'mousedown',
         'mouseup',
         'mouseover',
@@ -12125,7 +12645,7 @@
         component.disconnect();
       };
       var add = function (component) {
-        attach(root, component);
+        attach$1(root, component);
       };
       var remove$1 = function (component) {
         detach(component);
@@ -12210,6 +12730,9 @@
     var getHeightSetting = function (editor) {
       return editor.getParam('height', Math.max(editor.getElement().offsetHeight, 200));
     };
+    var getWidthSetting = function (editor) {
+      return editor.getParam('width', global$7.DOM.getStyle(editor.getElement(), 'width'));
+    };
     var getMinWidthSetting = function (editor) {
       return Option.from(editor.settings.min_width).filter(isNumber);
     };
@@ -12267,6 +12790,7 @@
       ToolbarDrawer['default'] = '';
       ToolbarDrawer['floating'] = 'floating';
       ToolbarDrawer['sliding'] = 'sliding';
+      ToolbarDrawer['scrolling'] = 'scrolling';
     }(ToolbarDrawer || (ToolbarDrawer = {})));
     var getToolbarDrawer = function (editor) {
       return editor.getParam('toolbar_drawer', '', 'string');
@@ -12276,19 +12800,91 @@
     };
     var fixedContainerElement = function (editor) {
       var selector = fixedContainerSelector(editor);
-      var isInline = editor.getParam('inline', false, 'boolean');
-      return selector.length > 0 && isInline ? descendant$1(body(), selector) : Option.none();
+      return selector.length > 0 && editor.inline ? descendant$1(body(), selector) : Option.none();
     };
     var useFixedContainer = function (editor) {
-      return editor.getParam('inline', false, 'boolean') && fixedContainerElement(editor).isSome();
+      return editor.inline && fixedContainerElement(editor).isSome();
     };
     var getUiContainer = function (editor) {
       var fixedContainer = fixedContainerElement(editor);
       return fixedContainer.getOr(body());
     };
+    var isDistractionFree = function (editor) {
+      return editor.inline && !isMenubarEnabled(editor) && !isToolbarEnabled(editor) && !isMultipleToolbars(editor);
+    };
+    var isStickyToolbar = function (editor) {
+      var isStickyToolbar = editor.getParam('toolbar_sticky', false, 'boolean');
+      return (isStickyToolbar || editor.inline) && !useFixedContainer(editor) && !isDistractionFree(editor);
+    };
     var isDraggableModal = function (editor) {
       return editor.getParam('draggable_modal', false, 'boolean');
     };
+
+    var SIGNIFICANT_MOVE$1 = 5;
+    var LONGPRESS_DELAY$1 = 400;
+    var getTouch$1 = function (event) {
+      if (event.touches === undefined || event.touches.length !== 1) {
+        return Option.none();
+      }
+      return Option.some(event.touches[0]);
+    };
+    var isFarEnough$1 = function (touch, data) {
+      var distX = Math.abs(touch.clientX - data.x());
+      var distY = Math.abs(touch.clientY - data.y());
+      return distX > SIGNIFICANT_MOVE$1 || distY > SIGNIFICANT_MOVE$1;
+    };
+    var setup$2 = function (editor) {
+      var startData = Cell(Option.none());
+      var longpressFired = Cell(false);
+      var debounceLongpress = last$2(function (e) {
+        editor.fire('longpress', __assign(__assign({}, e), { type: 'longpress' }));
+        longpressFired.set(true);
+      }, LONGPRESS_DELAY$1);
+      editor.on('touchstart', function (e) {
+        getTouch$1(e).each(function (touch) {
+          debounceLongpress.cancel();
+          var data = {
+            x: constant(touch.clientX),
+            y: constant(touch.clientY),
+            target: constant(e.target)
+          };
+          debounceLongpress.throttle(e);
+          longpressFired.set(false);
+          startData.set(Option.some(data));
+        });
+      }, true);
+      editor.on('touchmove', function (e) {
+        debounceLongpress.cancel();
+        getTouch$1(e).each(function (touch) {
+          startData.get().each(function (data) {
+            if (isFarEnough$1(touch, data)) {
+              startData.set(Option.none());
+              longpressFired.set(false);
+              editor.fire('longpresscancel');
+            }
+          });
+        });
+      }, true);
+      editor.on('touchend touchcancel', function (e) {
+        debounceLongpress.cancel();
+        if (e.type === 'touchcancel') {
+          return;
+        }
+        startData.get().filter(function (data) {
+          return data.target().isEqualNode(e.target);
+        }).each(function () {
+          if (longpressFired.get()) {
+            e.preventDefault();
+          } else {
+            var result = editor.fire('tap', { touches: e.touches });
+            if (result.isDefaultPrevented()) {
+              e.preventDefault();
+            }
+          }
+        });
+      }, true);
+    };
+    var TouchEvents = { setup: setup$2 };
 
     var formChangeEvent = generate$1('form-component-change');
     var formCloseEvent = generate$1('form-close');
@@ -12347,7 +12943,20 @@
       });
     };
 
-    var schema$d = constant([
+    var renderBar = function (spec, backstage) {
+      return {
+        dom: {
+          tag: 'div',
+          classes: [
+            'tox-bar',
+            'tox-form__controls-h-stack'
+          ]
+        },
+        components: map(spec.items, backstage.interpreter)
+      };
+    };
+
+    var schema$e = constant([
       defaulted$1('prefix', 'form-field'),
       field$1('fieldBehaviours', [
         Composing,
@@ -12447,7 +13056,7 @@
     };
     var FormField = composite$1({
       name: 'FormField',
-      configFields: schema$d(),
+      configFields: schema$e(),
       partFields: parts$3(),
       factory: factory$4,
       apis: {
@@ -12460,130 +13069,70 @@
       }
     });
 
-    var getCoupled = function (component, coupleConfig, coupleState, name) {
-      return coupleState.getOrCreate(component, coupleConfig, name);
+    var schema$f = constant([
+      option('data'),
+      defaulted$1('inputAttributes', {}),
+      defaulted$1('inputStyles', {}),
+      defaulted$1('tag', 'input'),
+      defaulted$1('inputClasses', []),
+      onHandler('onSetValue'),
+      defaulted$1('styles', {}),
+      defaulted$1('eventOrder', {}),
+      field$1('inputBehaviours', [
+        Representing,
+        Focusing
+      ]),
+      defaulted$1('selectOnFocus', true)
+    ]);
+    var focusBehaviours = function (detail) {
+      return derive$1([Focusing.config({
+          onFocus: detail.selectOnFocus === false ? noop : function (component) {
+            var input = component.element();
+            var value = get$5(input);
+            input.dom().setSelectionRange(0, value.length);
+          }
+        })]);
     };
-
-    var CouplingApis = /*#__PURE__*/Object.freeze({
-        getCoupled: getCoupled
-    });
-
-    var CouplingSchema = [strictOf('others', setOf$1(Result.value, anyValue$1()))];
-
-    var init$5 = function (spec) {
-      var coupled = {};
-      var getOrCreate = function (component, coupleConfig, name) {
-        var available = keys(coupleConfig.others);
-        if (!available) {
-          throw new Error('Cannot find coupled component: ' + name + '. Known coupled components: ' + JSON.stringify(available, null, 2));
-        } else {
-          return readOptFrom$1(coupled, name).getOrThunk(function () {
-            var builder = readOptFrom$1(coupleConfig.others, name).getOrDie('No information found for coupled component: ' + name);
-            var spec = builder(component);
-            var built = component.getSystem().build(spec);
-            coupled[name] = built;
-            return built;
-          });
-        }
-      };
-      var readState = constant({});
-      return nu$5({
-        readState: readState,
-        getOrCreate: getOrCreate
-      });
+    var behaviours = function (detail) {
+      return __assign(__assign({}, focusBehaviours(detail)), augment(detail.inputBehaviours, [Representing.config({
+          store: {
+            mode: 'manual',
+            initialValue: detail.data.getOr(undefined),
+            getValue: function (input) {
+              return get$5(input.element());
+            },
+            setValue: function (input, data) {
+              var current = get$5(input.element());
+              if (current !== data) {
+                set$3(input.element(), data);
+              }
+            }
+          },
+          onSetValue: detail.onSetValue
+        })]));
     };
-
-    var CouplingState = /*#__PURE__*/Object.freeze({
-        init: init$5
-    });
-
-    var Coupling = create$1({
-      fields: CouplingSchema,
-      name: 'coupling',
-      apis: CouplingApis,
-      state: CouplingState
-    });
-
-    var events$a = function (streamConfig, streamState) {
-      var streams = streamConfig.stream.streams;
-      var processor = streams.setup(streamConfig, streamState);
-      return derive([
-        run(streamConfig.event, processor),
-        runOnDetached(function () {
-          return streamState.cancel();
-        })
-      ].concat(streamConfig.cancelEvent.map(function (e) {
-        return [run(e, function () {
-            return streamState.cancel();
-          })];
-      }).getOr([])));
-    };
-
-    var ActiveStreaming = /*#__PURE__*/Object.freeze({
-        events: events$a
-    });
-
-    var throttle = function (_config) {
-      var state = Cell(null);
-      var readState = function () {
-        return { timer: state.get() !== null ? 'set' : 'unset' };
-      };
-      var setTimer = function (t) {
-        state.set(t);
-      };
-      var cancel = function () {
-        var t = state.get();
-        if (t !== null) {
-          t.cancel();
-        }
-      };
-      return nu$5({
-        readState: readState,
-        setTimer: setTimer,
-        cancel: cancel
-      });
-    };
-    var init$6 = function (spec) {
-      return spec.stream.streams.state(spec);
-    };
-
-    var StreamingState = /*#__PURE__*/Object.freeze({
-        throttle: throttle,
-        init: init$6
-    });
-
-    var setup$2 = function (streamInfo, streamState) {
-      var sInfo = streamInfo.stream;
-      var throttler = last$2(streamInfo.onStream, sInfo.delay);
-      streamState.setTimer(throttler);
-      return function (component, simulatedEvent) {
-        throttler.throttle(component, simulatedEvent);
-        if (sInfo.stopEvent) {
-          simulatedEvent.stop();
-        }
+    var dom$2 = function (detail) {
+      return {
+        tag: detail.tag,
+        attributes: __assign({ type: 'text' }, detail.inputAttributes),
+        styles: detail.inputStyles,
+        classes: detail.inputClasses
       };
     };
-    var StreamingSchema = [
-      strictOf('stream', choose$1('mode', {
-        throttle: [
-          strict$1('delay'),
-          defaulted$1('stopEvent', true),
-          output('streams', {
-            setup: setup$2,
-            state: throttle
-          })
-        ]
-      })),
-      defaulted$1('event', 'input'),
-      option('cancelEvent'),
-      onStrictHandler('onStream')
-    ];
 
-    var Streaming = create$1({
-      fields: StreamingSchema,
-      name: 'streaming',
-      active: ActiveStreaming,
-      state: StreamingState
+    var factory$5 = function (detail, spec) {
+      return {
+        uid: detail.uid,
+        dom: dom$2(detail),
+        components: [],
+        behaviours: behaviours(detail),
+        eventOrder: detail.eventOrder
+      };
+    };
+    var Input = single$2({
+      name: 'Input',
+      configFields: schema$f(),
+      factory: factory$5
     });
 
     var exports$1 = {}, module = { exports: exports$1 };
@@ -13201,741 +13750,6 @@
       pure: pure$2
     };
 
-    var suffix = constant('sink');
-    var partType = constant(optional({
-      name: suffix(),
-      overrides: constant({
-        dom: { tag: 'div' },
-        behaviours: derive$1([Positioning.config({ useFixed: true })]),
-        events: derive([
-          cutter(keydown()),
-          cutter(mousedown()),
-          cutter(click())
-        ])
-      })
-    }));
-
-    var HighlightOnOpen;
-    (function (HighlightOnOpen) {
-      HighlightOnOpen[HighlightOnOpen['HighlightFirst'] = 0] = 'HighlightFirst';
-      HighlightOnOpen[HighlightOnOpen['HighlightNone'] = 1] = 'HighlightNone';
-    }(HighlightOnOpen || (HighlightOnOpen = {})));
-    var getAnchor = function (detail, component) {
-      var hotspot = detail.getHotspot(component).getOr(component);
-      var anchor = 'hotspot';
-      var overrides = detail.getAnchorOverrides();
-      return detail.layouts.fold(function () {
-        return {
-          anchor: anchor,
-          hotspot: hotspot,
-          overrides: overrides
-        };
-      }, function (layouts) {
-        return {
-          anchor: anchor,
-          hotspot: hotspot,
-          overrides: overrides,
-          layouts: layouts
-        };
-      });
-    };
-    var fetch = function (detail, mapFetch, component) {
-      var fetcher = detail.fetch;
-      return fetcher(component).map(mapFetch);
-    };
-    var openF = function (detail, mapFetch, anchor, component, sandbox, externals, highlightOnOpen) {
-      var futureData = fetch(detail, mapFetch, component);
-      var getLazySink = getSink(component, detail);
-      return futureData.map(function (tdata) {
-        return tdata.bind(function (data) {
-          return Option.from(tieredMenu.sketch(__assign({}, externals.menu(), {
-            uid: generate$2(''),
-            data: data,
-            highlightImmediately: highlightOnOpen === HighlightOnOpen.HighlightFirst,
-            onOpenMenu: function (tmenu, menu) {
-              var sink = getLazySink().getOrDie();
-              Positioning.position(sink, anchor, menu);
-              Sandboxing.decloak(sandbox);
-            },
-            onOpenSubmenu: function (tmenu, item, submenu) {
-              var sink = getLazySink().getOrDie();
-              Positioning.position(sink, {
-                anchor: 'submenu',
-                item: item
-              }, submenu);
-              Sandboxing.decloak(sandbox);
-            },
-            onEscape: function () {
-              Focusing.focus(component);
-              Sandboxing.close(sandbox);
-              return Option.some(true);
-            }
-          })));
-        });
-      });
-    };
-    var open$1 = function (detail, mapFetch, hotspot, sandbox, externals, onOpenSync, highlightOnOpen) {
-      var anchor = getAnchor(detail, hotspot);
-      var processed = openF(detail, mapFetch, anchor, hotspot, sandbox, externals, highlightOnOpen);
-      return processed.map(function (tdata) {
-        tdata.fold(function () {
-          if (Sandboxing.isOpen(sandbox)) {
-            Sandboxing.close(sandbox);
-          }
-        }, function (data) {
-          Sandboxing.cloak(sandbox);
-          Sandboxing.open(sandbox, data);
-          onOpenSync(sandbox);
-        });
-        return sandbox;
-      });
-    };
-    var close$1 = function (detail, mapFetch, component, sandbox, _externals, _onOpenSync, _highlightOnOpen) {
-      Sandboxing.close(sandbox);
-      return Future.pure(sandbox);
-    };
-    var togglePopup = function (detail, mapFetch, hotspot, externals, onOpenSync, highlightOnOpen) {
-      var sandbox = Coupling.getCoupled(hotspot, 'sandbox');
-      var showing = Sandboxing.isOpen(sandbox);
-      var action = showing ? close$1 : open$1;
-      return action(detail, mapFetch, hotspot, sandbox, externals, onOpenSync, highlightOnOpen);
-    };
-    var matchWidth = function (hotspot, container, useMinWidth) {
-      var menu = Composing.getCurrent(container).getOr(container);
-      var buttonWidth = get$7(hotspot.element());
-      if (useMinWidth) {
-        set$2(menu.element(), 'min-width', buttonWidth + 'px');
-      } else {
-        set$4(menu.element(), buttonWidth);
-      }
-    };
-    var getSink = function (anyInSystem, sinkDetail) {
-      return anyInSystem.getSystem().getByUid(sinkDetail.uid + '-' + suffix()).map(function (internalSink) {
-        return function () {
-          return Result.value(internalSink);
-        };
-      }).getOrThunk(function () {
-        return sinkDetail.lazySink.fold(function () {
-          return function () {
-            return Result.error(new Error('No internal sink is specified, nor could an external sink be found'));
-          };
-        }, function (lazySinkFn) {
-          return function () {
-            return lazySinkFn(anyInSystem);
-          };
-        });
-      });
-    };
-    var makeSandbox = function (detail, hotspot, extras) {
-      var ariaOwner = manager();
-      var onOpen = function (component, menu) {
-        var anchor = getAnchor(detail, hotspot);
-        ariaOwner.link(hotspot.element());
-        if (detail.matchWidth) {
-          matchWidth(anchor.hotspot, menu, detail.useMinWidth);
-        }
-        detail.onOpen(anchor, component, menu);
-        if (extras !== undefined && extras.onOpen !== undefined) {
-          extras.onOpen(component, menu);
-        }
-      };
-      var onClose = function (component, menu) {
-        ariaOwner.unlink(hotspot.element());
-        if (extras !== undefined && extras.onClose !== undefined) {
-          extras.onClose(component, menu);
-        }
-      };
-      var lazySink = getSink(hotspot, detail);
-      return {
-        dom: {
-          tag: 'div',
-          classes: detail.sandboxClasses,
-          attributes: {
-            id: ariaOwner.id(),
-            role: 'listbox'
-          }
-        },
-        behaviours: SketchBehaviours.augment(detail.sandboxBehaviours, [
-          Representing.config({
-            store: {
-              mode: 'memory',
-              initialValue: hotspot
-            }
-          }),
-          Sandboxing.config({
-            onOpen: onOpen,
-            onClose: onClose,
-            isPartOf: function (container, data, queryElem) {
-              return isPartOf(data, queryElem) || isPartOf(hotspot, queryElem);
-            },
-            getAttachPoint: function () {
-              return lazySink().getOrDie();
-            }
-          }),
-          Composing.config({
-            find: function (sandbox) {
-              return Sandboxing.getState(sandbox).bind(function (menu) {
-                return Composing.getCurrent(menu);
-              });
-            }
-          }),
-          receivingConfig({ isExtraPart: constant(false) })
-        ])
-      };
-    };
-
-    var setValueFromItem = function (model, input, item) {
-      var itemData = Representing.getValue(item);
-      Representing.setValue(input, itemData);
-      setCursorAtEnd(input);
-    };
-    var setSelectionOn = function (input, f) {
-      var el = input.element();
-      var value = get$5(el);
-      var node = el.dom();
-      if (get$2(el, 'type') !== 'number') {
-        f(node, value);
-      }
-    };
-    var setCursorAtEnd = function (input) {
-      setSelectionOn(input, function (node, value) {
-        return node.setSelectionRange(value.length, value.length);
-      });
-    };
-    var setSelectionToEnd = function (input, startOffset) {
-      setSelectionOn(input, function (node, value) {
-        return node.setSelectionRange(startOffset, value.length);
-      });
-    };
-    var attemptSelectOver = function (model, input, item) {
-      if (!model.selectsOver) {
-        return Option.none();
-      } else {
-        var currentValue = Representing.getValue(input);
-        var inputDisplay_1 = model.getDisplayText(currentValue);
-        var itemValue = Representing.getValue(item);
-        var itemDisplay = model.getDisplayText(itemValue);
-        return itemDisplay.indexOf(inputDisplay_1) === 0 ? Option.some(function () {
-          setValueFromItem(model, input, item);
-          setSelectionToEnd(input, inputDisplay_1.length);
-        }) : Option.none();
-      }
-    };
-
-    var schema$e = constant([
-      option('data'),
-      defaulted$1('inputAttributes', {}),
-      defaulted$1('inputStyles', {}),
-      defaulted$1('tag', 'input'),
-      defaulted$1('inputClasses', []),
-      onHandler('onSetValue'),
-      defaulted$1('styles', {}),
-      defaulted$1('eventOrder', {}),
-      field$1('inputBehaviours', [
-        Representing,
-        Focusing
-      ]),
-      defaulted$1('selectOnFocus', true)
-    ]);
-    var focusBehaviours = function (detail) {
-      return derive$1([Focusing.config({
-          onFocus: detail.selectOnFocus === false ? noop : function (component) {
-            var input = component.element();
-            var value = get$5(input);
-            input.dom().setSelectionRange(0, value.length);
-          }
-        })]);
-    };
-    var behaviours = function (detail) {
-      return __assign({}, focusBehaviours(detail), augment(detail.inputBehaviours, [Representing.config({
-          store: {
-            mode: 'manual',
-            initialValue: detail.data.getOr(undefined),
-            getValue: function (input) {
-              return get$5(input.element());
-            },
-            setValue: function (input, data) {
-              var current = get$5(input.element());
-              if (current !== data) {
-                set$3(input.element(), data);
-              }
-            }
-          },
-          onSetValue: detail.onSetValue
-        })]));
-    };
-    var dom$2 = function (detail) {
-      return {
-        tag: detail.tag,
-        attributes: __assign({ type: 'text' }, detail.inputAttributes),
-        styles: detail.inputStyles,
-        classes: detail.inputClasses
-      };
-    };
-
-    var itemExecute = constant('alloy.typeahead.itemexecute');
-
-    var make$4 = function (detail, components, spec, externals) {
-      var navigateList = function (comp, simulatedEvent, highlighter) {
-        detail.previewing.set(false);
-        var sandbox = Coupling.getCoupled(comp, 'sandbox');
-        if (Sandboxing.isOpen(sandbox)) {
-          Composing.getCurrent(sandbox).each(function (menu) {
-            Highlighting.getHighlighted(menu).fold(function () {
-              highlighter(menu);
-            }, function () {
-              dispatchEvent(sandbox, menu.element(), 'keydown', simulatedEvent);
-            });
-          });
-        } else {
-          var onOpenSync = function (sandbox) {
-            Composing.getCurrent(sandbox).each(highlighter);
-          };
-          open$1(detail, mapFetch(comp), comp, sandbox, externals, onOpenSync, HighlightOnOpen.HighlightFirst).get(noop);
-        }
-      };
-      var focusBehaviours$1 = focusBehaviours(detail);
-      var mapFetch = function (comp) {
-        return function (tdata) {
-          return tdata.map(function (data) {
-            var menus = values(data.menus);
-            var items = bind(menus, function (menu) {
-              return filter(menu.items, function (item) {
-                return item.type === 'item';
-              });
-            });
-            var repState = Representing.getState(comp);
-            repState.update(map(items, function (item) {
-              return item.data;
-            }));
-            return data;
-          });
-        };
-      };
-      var behaviours = [
-        Focusing.config({}),
-        Representing.config({
-          onSetValue: detail.onSetValue,
-          store: __assign({
-            mode: 'dataset',
-            getDataKey: function (comp) {
-              return get$5(comp.element());
-            },
-            getFallbackEntry: function (itemString) {
-              return {
-                value: itemString,
-                meta: {}
-              };
-            },
-            setValue: function (comp, data) {
-              set$3(comp.element(), detail.model.getDisplayText(data));
-            }
-          }, detail.initialData.map(function (d) {
-            return wrap$1('initialValue', d);
-          }).getOr({}))
-        }),
-        Streaming.config({
-          stream: {
-            mode: 'throttle',
-            delay: detail.responseTime,
-            stopEvent: false
-          },
-          onStream: function (component, simulatedEvent) {
-            var sandbox = Coupling.getCoupled(component, 'sandbox');
-            var focusInInput = Focusing.isFocused(component);
-            if (focusInInput) {
-              if (get$5(component.element()).length >= detail.minChars) {
-                var previousValue_1 = Composing.getCurrent(sandbox).bind(function (menu) {
-                  return Highlighting.getHighlighted(menu).map(Representing.getValue);
-                });
-                detail.previewing.set(true);
-                var onOpenSync = function (_sandbox) {
-                  Composing.getCurrent(sandbox).each(function (menu) {
-                    previousValue_1.fold(function () {
-                      if (detail.model.selectsOver) {
-                        Highlighting.highlightFirst(menu);
-                      }
-                    }, function (pv) {
-                      Highlighting.highlightBy(menu, function (item) {
-                        var itemData = Representing.getValue(item);
-                        return itemData.value === pv.value;
-                      });
-                      Highlighting.getHighlighted(menu).orThunk(function () {
-                        Highlighting.highlightFirst(menu);
-                        return Option.none();
-                      });
-                    });
-                  });
-                };
-                open$1(detail, mapFetch(component), component, sandbox, externals, onOpenSync, HighlightOnOpen.HighlightFirst).get(noop);
-              }
-            }
-          },
-          cancelEvent: typeaheadCancel()
-        }),
-        Keying.config({
-          mode: 'special',
-          onDown: function (comp, simulatedEvent) {
-            navigateList(comp, simulatedEvent, Highlighting.highlightFirst);
-            return Option.some(true);
-          },
-          onEscape: function (comp) {
-            var sandbox = Coupling.getCoupled(comp, 'sandbox');
-            if (Sandboxing.isOpen(sandbox)) {
-              Sandboxing.close(sandbox);
-              return Option.some(true);
-            }
-            return Option.none();
-          },
-          onUp: function (comp, simulatedEvent) {
-            navigateList(comp, simulatedEvent, Highlighting.highlightLast);
-            return Option.some(true);
-          },
-          onEnter: function (comp) {
-            var sandbox = Coupling.getCoupled(comp, 'sandbox');
-            var sandboxIsOpen = Sandboxing.isOpen(sandbox);
-            if (sandboxIsOpen && !detail.previewing.get()) {
-              return Composing.getCurrent(sandbox).bind(function (menu) {
-                return Highlighting.getHighlighted(menu);
-              }).map(function (item) {
-                emitWith(comp, itemExecute(), { item: item });
-                return true;
-              });
-            } else {
-              var currentValue = Representing.getValue(comp);
-              emit(comp, typeaheadCancel());
-              detail.onExecute(sandbox, comp, currentValue);
-              if (sandboxIsOpen) {
-                Sandboxing.close(sandbox);
-              }
-              return Option.some(true);
-            }
-          }
-        }),
-        Toggling.config({
-          toggleClass: detail.markers.openClass,
-          aria: { mode: 'expanded' }
-        }),
-        Coupling.config({
-          others: {
-            sandbox: function (hotspot) {
-              return makeSandbox(detail, hotspot, {
-                onOpen: function () {
-                  return Toggling.on(hotspot);
-                },
-                onClose: function () {
-                  return Toggling.off(hotspot);
-                }
-              });
-            }
-          }
-        }),
-        config('typeaheadevents', [
-          runOnExecute(function (comp) {
-            var onOpenSync = noop;
-            togglePopup(detail, mapFetch(comp), comp, externals, onOpenSync, HighlightOnOpen.HighlightFirst).get(noop);
-          }),
-          run(itemExecute(), function (comp, se) {
-            var sandbox = Coupling.getCoupled(comp, 'sandbox');
-            setValueFromItem(detail.model, comp, se.event().item());
-            emit(comp, typeaheadCancel());
-            detail.onItemExecute(comp, sandbox, se.event().item(), Representing.getValue(comp));
-            Sandboxing.close(sandbox);
-            setCursorAtEnd(comp);
-          })
-        ].concat(detail.dismissOnBlur ? [run(postBlur(), function (typeahead) {
-            var sandbox = Coupling.getCoupled(typeahead, 'sandbox');
-            if (search$1(sandbox.element()).isNone()) {
-              Sandboxing.close(sandbox);
-            }
-          })] : []))
-      ];
-      return {
-        uid: detail.uid,
-        dom: dom$2(deepMerge(detail, {
-          inputAttributes: {
-            'role': 'combobox',
-            'aria-autocomplete': 'list',
-            'aria-haspopup': 'true'
-          }
-        })),
-        behaviours: __assign({}, focusBehaviours$1, augment(detail.typeaheadBehaviours, behaviours)),
-        eventOrder: detail.eventOrder
-      };
-    };
-
-    var sandboxFields = function () {
-      return [
-        defaulted$1('sandboxClasses', []),
-        SketchBehaviours.field('sandboxBehaviours', [
-          Composing,
-          Receiving,
-          Sandboxing,
-          Representing
-        ])
-      ];
-    };
-
-    var schema$f = constant([
-      option('lazySink'),
-      strict$1('fetch'),
-      defaulted$1('minChars', 5),
-      defaulted$1('responseTime', 1000),
-      onHandler('onOpen'),
-      defaulted$1('getHotspot', Option.some),
-      defaulted$1('getAnchorOverrides', constant({})),
-      defaulted$1('layouts', Option.none()),
-      defaulted$1('eventOrder', {}),
-      defaultedObjOf('model', {}, [
-        defaulted$1('getDisplayText', function (itemData) {
-          return itemData.meta !== undefined && itemData.meta.text !== undefined ? itemData.meta.text : itemData.value;
-        }),
-        defaulted$1('selectsOver', true),
-        defaulted$1('populateFromBrowse', true)
-      ]),
-      onHandler('onSetValue'),
-      onKeyboardHandler('onExecute'),
-      onHandler('onItemExecute'),
-      defaulted$1('inputClasses', []),
-      defaulted$1('inputAttributes', {}),
-      defaulted$1('inputStyles', {}),
-      defaulted$1('matchWidth', true),
-      defaulted$1('useMinWidth', false),
-      defaulted$1('dismissOnBlur', true),
-      markers(['openClass']),
-      option('initialData'),
-      field$1('typeaheadBehaviours', [
-        Focusing,
-        Representing,
-        Streaming,
-        Keying,
-        Toggling,
-        Coupling
-      ]),
-      state$1('previewing', function () {
-        return Cell(true);
-      })
-    ].concat(schema$e()).concat(sandboxFields()));
-    var parts$4 = constant([external$1({
-        schema: [tieredMenuMarkers()],
-        name: 'menu',
-        overrides: function (detail) {
-          return {
-            fakeFocus: true,
-            onHighlight: function (menu, item) {
-              if (!detail.previewing.get()) {
-                menu.getSystem().getByUid(detail.uid).each(function (input) {
-                  if (detail.model.populateFromBrowse) {
-                    setValueFromItem(detail.model, input, item);
-                  }
-                });
-              } else {
-                menu.getSystem().getByUid(detail.uid).each(function (input) {
-                  attemptSelectOver(detail.model, input, item).fold(function () {
-                    return Highlighting.dehighlight(menu, item);
-                  }, function (fn) {
-                    return fn();
-                  });
-                });
-              }
-              detail.previewing.set(false);
-            },
-            onExecute: function (menu, item) {
-              return menu.getSystem().getByUid(detail.uid).toOption().map(function (typeahead) {
-                emitWith(typeahead, itemExecute(), { item: item });
-                return true;
-              });
-            },
-            onHover: function (menu, item) {
-              detail.previewing.set(false);
-              menu.getSystem().getByUid(detail.uid).each(function (input) {
-                if (detail.model.populateFromBrowse) {
-                  setValueFromItem(detail.model, input, item);
-                }
-              });
-            }
-          };
-        }
-      })]);
-
-    var Typeahead = composite$1({
-      name: 'Typeahead',
-      configFields: schema$f(),
-      partFields: parts$4(),
-      factory: make$4
-    });
-
-    var renderFormFieldWith = function (pLabel, pField, extraClasses, extraBehaviours) {
-      var spec = renderFormFieldSpecWith(pLabel, pField, extraClasses, extraBehaviours);
-      return FormField.sketch(spec);
-    };
-    var renderFormField = function (pLabel, pField) {
-      return renderFormFieldWith(pLabel, pField, [], []);
-    };
-    var renderFormFieldSpecWith = function (pLabel, pField, extraClasses, extraBehaviours) {
-      return {
-        dom: renderFormFieldDomWith(extraClasses),
-        components: pLabel.toArray().concat([pField]),
-        fieldBehaviours: derive$1(extraBehaviours)
-      };
-    };
-    var renderFormFieldDom = function () {
-      return renderFormFieldDomWith([]);
-    };
-    var renderFormFieldDomWith = function (extraClasses) {
-      return {
-        tag: 'div',
-        classes: ['tox-form__group'].concat(extraClasses)
-      };
-    };
-    var renderLabel = function (label, providersBackstage) {
-      return FormField.parts().label({
-        dom: {
-          tag: 'label',
-          classes: ['tox-label'],
-          innerHtml: providersBackstage.translate(label)
-        }
-      });
-    };
-
-    var isMenuItemReference = function (item) {
-      return isString(item);
-    };
-    var isSeparator = function (item) {
-      return item.type === 'separator';
-    };
-    var isExpandingMenuItem = function (item) {
-      return has(item, 'getSubmenuItems');
-    };
-    var separator$1 = { type: 'separator' };
-    var unwrapReferences = function (items, menuItems) {
-      var realItems = foldl(items, function (acc, item) {
-        if (isMenuItemReference(item)) {
-          if (item === '') {
-            return acc;
-          } else if (item === '|') {
-            return acc.length > 0 && !isSeparator(acc[acc.length - 1]) ? acc.concat([separator$1]) : acc;
-          } else if (has(menuItems, item.toLowerCase())) {
-            return acc.concat([menuItems[item.toLowerCase()]]);
-          } else {
-            return acc;
-          }
-        } else {
-          return acc.concat([item]);
-        }
-      }, []);
-      if (realItems.length > 0 && isSeparator(realItems[realItems.length - 1])) {
-        realItems.pop();
-      }
-      return realItems;
-    };
-    var getFromExpandingItem = function (item, menuItems) {
-      var submenuItems = item.getSubmenuItems();
-      var rest = expand(submenuItems, menuItems);
-      var newMenus = deepMerge(rest.menus, wrap$1(item.value, rest.items));
-      var newExpansions = deepMerge(rest.expansions, wrap$1(item.value, item.value));
-      return {
-        item: item,
-        menus: newMenus,
-        expansions: newExpansions
-      };
-    };
-    var getFromItem = function (item, menuItems) {
-      return isExpandingMenuItem(item) ? getFromExpandingItem(item, menuItems) : {
-        item: item,
-        menus: {},
-        expansions: {}
-      };
-    };
-    var generateValueIfRequired = function (item) {
-      if (isSeparator(item)) {
-        return item;
-      } else {
-        var itemValue = readOptFrom$1(item, 'value').getOrThunk(function () {
-          return generate$1('generated-menu-item');
-        });
-        return deepMerge({ value: itemValue }, item);
-      }
-    };
-    var expand = function (items, menuItems) {
-      var realItems = unwrapReferences(isString(items) ? items.split(' ') : items, menuItems);
-      return foldr(realItems, function (acc, item) {
-        var itemWithValue = generateValueIfRequired(item);
-        var newData = getFromItem(itemWithValue, menuItems);
-        return {
-          menus: deepMerge(acc.menus, newData.menus),
-          items: [newData.item].concat(acc.items),
-          expansions: deepMerge(acc.expansions, newData.expansions)
-        };
-      }, {
-        menus: {},
-        expansions: {},
-        items: []
-      });
-    };
-
-    var build$2 = function (items, itemResponse, backstage) {
-      var primary = generate$1('primary-menu');
-      var data = expand(items, backstage.shared.providers.menuItems());
-      if (data.items.length === 0) {
-        return Option.none();
-      }
-      var mainMenu = createPartialMenu(primary, data.items, itemResponse, backstage);
-      var submenus = map$1(data.menus, function (menuItems, menuName) {
-        return createPartialMenu(menuName, menuItems, itemResponse, backstage);
-      });
-      var menus = deepMerge(submenus, wrap$1(primary, mainMenu));
-      return Option.from(tieredMenu.tieredData(primary, menus, data.expansions));
-    };
-
-    var renderAutocomplete = function (spec, backstage) {
-      var pLabel = renderLabel(spec.label.getOr('?'), backstage.shared.providers);
-      var pField = FormField.parts().field({
-        factory: Typeahead,
-        dismissOnBlur: false,
-        inputClasses: ['tox-textfield'],
-        minChars: 1,
-        fetch: function (input) {
-          var value = Representing.getValue(input);
-          var items = spec.getItems(value);
-          var tdata = build$2(items, ItemResponse$1.BUBBLE_TO_SANDBOX, backstage);
-          return Future.pure(tdata);
-        },
-        markers: { openClass: 'dog' },
-        lazySink: backstage.shared.getSink,
-        parts: { menu: part(false, 1, 'normal') }
-      });
-      return renderFormField(Option.some(pLabel), pField);
-    };
-
-    var renderBar = function (spec, backstage) {
-      return {
-        dom: {
-          tag: 'div',
-          classes: [
-            'tox-bar',
-            'tox-form__controls-h-stack'
-          ]
-        },
-        components: map(spec.items, backstage.interpreter)
-      };
-    };
-
-    var factory$5 = function (detail, spec) {
-      return {
-        uid: detail.uid,
-        dom: dom$2(detail),
-        components: [],
-        behaviours: behaviours(detail),
-        eventOrder: detail.eventOrder
-      };
-    };
-    var Input = single$2({
-      name: 'Input',
-      configFields: schema$e(),
-      factory: factory$5
-    });
-
     var ariaElements = [
       'input',
       'textarea'
@@ -14008,7 +13822,7 @@
         isInvalid: isInvalid
     });
 
-    var events$b = function (invalidConfig, invalidState) {
+    var events$a = function (invalidConfig, invalidState) {
       return invalidConfig.validator.map(function (validatorInfo) {
         return derive([run(validatorInfo.onEvent, function (component) {
             run$1(component, invalidConfig, invalidState).get(identity);
@@ -14019,7 +13833,7 @@
     };
 
     var ActiveInvalidate = /*#__PURE__*/Object.freeze({
-        events: events$b
+        events: events$a
     });
 
     var InvalidateSchema = [
@@ -14076,6 +13890,302 @@
       active: ActiveTabstopping
     });
 
+    var renderFormFieldWith = function (pLabel, pField, extraClasses, extraBehaviours) {
+      var spec = renderFormFieldSpecWith(pLabel, pField, extraClasses, extraBehaviours);
+      return FormField.sketch(spec);
+    };
+    var renderFormField = function (pLabel, pField) {
+      return renderFormFieldWith(pLabel, pField, [], []);
+    };
+    var renderFormFieldSpecWith = function (pLabel, pField, extraClasses, extraBehaviours) {
+      return {
+        dom: renderFormFieldDomWith(extraClasses),
+        components: pLabel.toArray().concat([pField]),
+        fieldBehaviours: derive$1(extraBehaviours)
+      };
+    };
+    var renderFormFieldDom = function () {
+      return renderFormFieldDomWith([]);
+    };
+    var renderFormFieldDomWith = function (extraClasses) {
+      return {
+        tag: 'div',
+        classes: ['tox-form__group'].concat(extraClasses)
+      };
+    };
+    var renderLabel = function (label, providersBackstage) {
+      return FormField.parts().label({
+        dom: {
+          tag: 'label',
+          classes: ['tox-label'],
+          innerHtml: providersBackstage.translate(label)
+        }
+      });
+    };
+
+    var getCoupled = function (component, coupleConfig, coupleState, name) {
+      return coupleState.getOrCreate(component, coupleConfig, name);
+    };
+
+    var CouplingApis = /*#__PURE__*/Object.freeze({
+        getCoupled: getCoupled
+    });
+
+    var CouplingSchema = [strictOf('others', setOf$1(Result.value, anyValue$1()))];
+
+    var init$5 = function (spec) {
+      var coupled = {};
+      var getOrCreate = function (component, coupleConfig, name) {
+        var available = keys(coupleConfig.others);
+        if (!available) {
+          throw new Error('Cannot find coupled component: ' + name + '. Known coupled components: ' + JSON.stringify(available, null, 2));
+        } else {
+          return readOptFrom$1(coupled, name).getOrThunk(function () {
+            var builder = readOptFrom$1(coupleConfig.others, name).getOrDie('No information found for coupled component: ' + name);
+            var spec = builder(component);
+            var built = component.getSystem().build(spec);
+            coupled[name] = built;
+            return built;
+          });
+        }
+      };
+      var readState = constant({});
+      return nu$5({
+        readState: readState,
+        getOrCreate: getOrCreate
+      });
+    };
+
+    var CouplingState = /*#__PURE__*/Object.freeze({
+        init: init$5
+    });
+
+    var Coupling = create$1({
+      fields: CouplingSchema,
+      name: 'coupling',
+      apis: CouplingApis,
+      state: CouplingState
+    });
+
+    var suffix = constant('sink');
+    var partType = constant(optional({
+      name: suffix(),
+      overrides: constant({
+        dom: { tag: 'div' },
+        behaviours: derive$1([Positioning.config({ useFixed: always })]),
+        events: derive([
+          cutter(keydown()),
+          cutter(mousedown()),
+          cutter(click())
+        ])
+      })
+    }));
+
+    var HighlightOnOpen;
+    (function (HighlightOnOpen) {
+      HighlightOnOpen[HighlightOnOpen['HighlightFirst'] = 0] = 'HighlightFirst';
+      HighlightOnOpen[HighlightOnOpen['HighlightNone'] = 1] = 'HighlightNone';
+    }(HighlightOnOpen || (HighlightOnOpen = {})));
+    var getAnchor = function (detail, component) {
+      var hotspot = detail.getHotspot(component).getOr(component);
+      var anchor = 'hotspot';
+      var overrides = detail.getAnchorOverrides();
+      return detail.layouts.fold(function () {
+        return {
+          anchor: anchor,
+          hotspot: hotspot,
+          overrides: overrides
+        };
+      }, function (layouts) {
+        return {
+          anchor: anchor,
+          hotspot: hotspot,
+          overrides: overrides,
+          layouts: layouts
+        };
+      });
+    };
+    var fetch = function (detail, mapFetch, component) {
+      var fetcher = detail.fetch;
+      return fetcher(component).map(mapFetch);
+    };
+    var openF = function (detail, mapFetch, anchor, component, sandbox, externals, highlightOnOpen) {
+      var futureData = fetch(detail, mapFetch, component);
+      var getLazySink = getSink(component, detail);
+      return futureData.map(function (tdata) {
+        return tdata.bind(function (data) {
+          return Option.from(tieredMenu.sketch(__assign(__assign({}, externals.menu()), {
+            uid: generate$2(''),
+            data: data,
+            highlightImmediately: highlightOnOpen === HighlightOnOpen.HighlightFirst,
+            onOpenMenu: function (tmenu, menu) {
+              var sink = getLazySink().getOrDie();
+              Positioning.position(sink, anchor, menu);
+              Sandboxing.decloak(sandbox);
+            },
+            onOpenSubmenu: function (tmenu, item, submenu) {
+              var sink = getLazySink().getOrDie();
+              Positioning.position(sink, {
+                anchor: 'submenu',
+                item: item
+              }, submenu);
+              Sandboxing.decloak(sandbox);
+            },
+            onRepositionMenu: function (tmenu, primaryMenu, submenuTriggers) {
+              var sink = getLazySink().getOrDie();
+              Positioning.position(sink, anchor, primaryMenu);
+              each(submenuTriggers, function (st) {
+                Positioning.position(sink, {
+                  anchor: 'submenu',
+                  item: st.triggeringItem
+                }, st.triggeredMenu);
+              });
+            },
+            onEscape: function () {
+              Focusing.focus(component);
+              Sandboxing.close(sandbox);
+              return Option.some(true);
+            }
+          })));
+        });
+      });
+    };
+    var open$1 = function (detail, mapFetch, hotspot, sandbox, externals, onOpenSync, highlightOnOpen) {
+      var anchor = getAnchor(detail, hotspot);
+      var processed = openF(detail, mapFetch, anchor, hotspot, sandbox, externals, highlightOnOpen);
+      return processed.map(function (tdata) {
+        tdata.fold(function () {
+          if (Sandboxing.isOpen(sandbox)) {
+            Sandboxing.close(sandbox);
+          }
+        }, function (data) {
+          Sandboxing.cloak(sandbox);
+          Sandboxing.open(sandbox, data);
+          onOpenSync(sandbox);
+        });
+        return sandbox;
+      });
+    };
+    var close$1 = function (detail, mapFetch, component, sandbox, _externals, _onOpenSync, _highlightOnOpen) {
+      Sandboxing.close(sandbox);
+      return Future.pure(sandbox);
+    };
+    var togglePopup = function (detail, mapFetch, hotspot, externals, onOpenSync, highlightOnOpen) {
+      var sandbox = Coupling.getCoupled(hotspot, 'sandbox');
+      var showing = Sandboxing.isOpen(sandbox);
+      var action = showing ? close$1 : open$1;
+      return action(detail, mapFetch, hotspot, sandbox, externals, onOpenSync, highlightOnOpen);
+    };
+    var matchWidth = function (hotspot, container, useMinWidth) {
+      var menu = Composing.getCurrent(container).getOr(container);
+      var buttonWidth = get$7(hotspot.element());
+      if (useMinWidth) {
+        set$2(menu.element(), 'min-width', buttonWidth + 'px');
+      } else {
+        set$4(menu.element(), buttonWidth);
+      }
+    };
+    var getSink = function (anyInSystem, sinkDetail) {
+      return anyInSystem.getSystem().getByUid(sinkDetail.uid + '-' + suffix()).map(function (internalSink) {
+        return function () {
+          return Result.value(internalSink);
+        };
+      }).getOrThunk(function () {
+        return sinkDetail.lazySink.fold(function () {
+          return function () {
+            return Result.error(new Error('No internal sink is specified, nor could an external sink be found'));
+          };
+        }, function (lazySinkFn) {
+          return function () {
+            return lazySinkFn(anyInSystem);
+          };
+        });
+      });
+    };
+    var doRepositionMenus = function (sandbox) {
+      Sandboxing.getState(sandbox).each(function (tmenu) {
+        tieredMenu.repositionMenus(tmenu);
+      });
+    };
+    var makeSandbox = function (detail, hotspot, extras) {
+      var ariaOwner = manager();
+      var onOpen = function (component, menu) {
+        var anchor = getAnchor(detail, hotspot);
+        ariaOwner.link(hotspot.element());
+        if (detail.matchWidth) {
+          matchWidth(anchor.hotspot, menu, detail.useMinWidth);
+        }
+        detail.onOpen(anchor, component, menu);
+        if (extras !== undefined && extras.onOpen !== undefined) {
+          extras.onOpen(component, menu);
+        }
+      };
+      var onClose = function (component, menu) {
+        ariaOwner.unlink(hotspot.element());
+        if (extras !== undefined && extras.onClose !== undefined) {
+          extras.onClose(component, menu);
+        }
+      };
+      var lazySink = getSink(hotspot, detail);
+      return {
+        dom: {
+          tag: 'div',
+          classes: detail.sandboxClasses,
+          attributes: {
+            id: ariaOwner.id(),
+            role: 'listbox'
+          }
+        },
+        behaviours: SketchBehaviours.augment(detail.sandboxBehaviours, [
+          Representing.config({
+            store: {
+              mode: 'memory',
+              initialValue: hotspot
+            }
+          }),
+          Sandboxing.config({
+            onOpen: onOpen,
+            onClose: onClose,
+            isPartOf: function (container, data, queryElem) {
+              return isPartOf(data, queryElem) || isPartOf(hotspot, queryElem);
+            },
+            getAttachPoint: function () {
+              return lazySink().getOrDie();
+            }
+          }),
+          Composing.config({
+            find: function (sandbox) {
+              return Sandboxing.getState(sandbox).bind(function (menu) {
+                return Composing.getCurrent(menu);
+              });
+            }
+          }),
+          Receiving.config({
+            channels: __assign(__assign({}, receivingChannel({ isExtraPart: constant(false) })), receivingChannel$1({
+              isExtraPart: constant(false),
+              doReposition: doRepositionMenus
+            }))
+          })
+        ])
+      };
+    };
+    var repositionMenus = function (comp) {
+      var sandbox = Coupling.getCoupled(comp, 'sandbox');
+      doRepositionMenus(sandbox);
+    };
+
+    var sandboxFields = function () {
+      return [
+        defaulted$1('sandboxClasses', []),
+        SketchBehaviours.field('sandboxBehaviours', [
+          Composing,
+          Receiving,
+          Sandboxing,
+          Representing
+        ])
+      ];
+    };
+
     var schema$g = constant([
       strict$1('dom'),
       strict$1('fetch'),
@@ -14097,7 +14207,7 @@
       defaulted$1('useMinWidth', false),
       option('role')
     ].concat(sandboxFields()));
-    var parts$5 = constant([
+    var parts$4 = constant([
       external$1({
         schema: [tieredMenuMarkers()],
         name: 'menu',
@@ -14147,6 +14257,11 @@
             togglePopup(detail, function (x) {
               return x;
             }, comp, externals, noop, HighlightOnOpen.HighlightFirst).get(noop);
+          }
+        },
+        repositionMenus: function (comp) {
+          if (Toggling.isOn(comp)) {
+            repositionMenus(comp);
           }
         }
       };
@@ -14202,25 +14317,25 @@
           Focusing.config({})
         ]),
         events: events$7(Option.some(action)),
-        eventOrder: __assign({}, detail.eventOrder, (_a = {}, _a[execute()] = [
+        eventOrder: __assign(__assign({}, detail.eventOrder), (_a = {}, _a[execute()] = [
           'disabling',
           'toggling',
           'alloy.base.behaviour'
         ], _a)),
         apis: apis,
         domModification: {
-          attributes: __assign({ 'aria-haspopup': 'true' }, detail.role.fold(function () {
+          attributes: __assign(__assign({ 'aria-haspopup': 'true' }, detail.role.fold(function () {
             return {};
           }, function (role) {
             return { role: role };
-          }), detail.dom.tag === 'button' ? { type: lookupAttr('type').getOr('button') } : {})
+          })), detail.dom.tag === 'button' ? { type: lookupAttr('type').getOr('button') } : {})
         }
       };
     };
     var Dropdown = composite$1({
       name: 'Dropdown',
       configFields: schema$g(),
-      partFields: parts$5(),
+      partFields: parts$4(),
       factory: factory$6,
       apis: {
         open: function (apis, comp) {
@@ -14234,6 +14349,9 @@
         },
         isOpen: function (apis, comp) {
           return apis.isOpen(comp);
+        },
+        repositionMenus: function (apis, comp) {
+          return apis.repositionMenus(comp);
         }
       }
     });
@@ -14249,12 +14367,12 @@
         attributes: { unselectable: 'on' }
       });
     };
-    var events$c = function (unselectConfig) {
+    var events$b = function (unselectConfig) {
       return derive([abort(selectstart(), constant(true))]);
     };
 
     var ActiveUnselecting = /*#__PURE__*/Object.freeze({
-        events: events$c,
+        events: events$b,
         exhibit: exhibit$5
     });
 
@@ -14400,6 +14518,7 @@
               memColorButton.getOpt(comp).each(function (colorButton) {
                 set$2(colorButton.element(), 'background-color', se.event().color());
               });
+              emitWith(comp, formChangeEvent, { name: spec.name });
             }),
             run(colorSwatchChangeEvent, function (comp, se) {
               FormField.getField(comp).each(function (field) {
@@ -14455,8 +14574,6 @@
     var sliderUpdate = constant(generate$1('slider-update'));
     var paletteUpdate = constant(generate$1('palette-update'));
 
-    var platform = PlatformDetection$1.detect();
-    var isTouch = platform.deviceType.isTouch();
     var labelPart = optional({
       schema: [strict$1('dom')],
       name: 'label'
@@ -14469,16 +14586,17 @@
           return action.fold(function () {
             return {};
           }, function (a) {
-            var touchEvents = derive([runActionExtra(touchstart(), a, [detail])]);
-            var mouseEvents = derive([
-              runActionExtra(mousedown(), a, [detail]),
-              runActionExtra(mousemove(), function (l, det) {
-                if (det.mouseIsDown.get()) {
-                  a(l, det);
-                }
-              }, [detail])
-            ]);
-            return { events: isTouch ? touchEvents : mouseEvents };
+            return {
+              events: derive([
+                runActionExtra(touchstart(), a, [detail]),
+                runActionExtra(mousedown(), a, [detail]),
+                runActionExtra(mousemove(), function (l, se, det) {
+                  if (det.mouseIsDown.get()) {
+                    a(l, det);
+                  }
+                }, [detail])
+              ])
+            };
           });
         }
       });
@@ -14520,20 +14638,8 @@
             return model.setValueFrom(component, detail, value);
           });
         };
-        var touchEvents = derive([
-          run(touchstart(), setValueFrom),
-          run(touchmove(), setValueFrom)
-        ]);
-        var mouseEvents = derive([
-          run(mousedown(), setValueFrom),
-          run(mousemove(), function (spectrum, se) {
-            if (detail.mouseIsDown.get()) {
-              setValueFrom(spectrum, se);
-            }
-          })
-        ]);
         return {
-          behaviours: derive$1(isTouch ? [] : [
+          behaviours: derive$1([
             Keying.config({
               mode: 'special',
               onLeft: function (spectrum) {
@@ -14551,7 +14657,16 @@
             }),
             Focusing.config({})
           ]),
-          events: isTouch ? touchEvents : mouseEvents
+          events: derive([
+            run(touchstart(), setValueFrom),
+            run(touchmove(), setValueFrom),
+            run(mousedown(), setValueFrom),
+            run(mousemove(), function (spectrum, se) {
+              if (detail.mouseIsDown.get()) {
+                setValueFrom(spectrum, se);
+              }
+            })
+          ])
         };
       }
     });
@@ -14569,12 +14684,14 @@
       spectrumPart
     ];
 
-    var isTouch$1 = PlatformDetection$1.detect().deviceType.isTouch();
     var _sliderChangeEvent = 'slider.change.value';
     var sliderChangeEvent = constant(_sliderChangeEvent);
+    var isTouchEvent = function (evt) {
+      return evt.type.indexOf('touch') !== -1;
+    };
     var getEventSource = function (simulatedEvent) {
       var evt = simulatedEvent.event().raw();
-      if (isTouch$1) {
+      if (isTouchEvent(evt)) {
         var touchEvent = evt;
         return touchEvent.touches !== undefined && touchEvent.touches.length === 1 ? Option.some(touchEvent.touches[0]).map(function (t) {
           return Position(t.clientX, t.clientY);
@@ -14785,50 +14902,50 @@
     };
 
     var top = 'top', right = 'right', bottom = 'bottom', left = 'left', width = 'width', height = 'height';
-    var getBounds = function (component) {
+    var getBounds$1 = function (component) {
       return component.element().dom().getBoundingClientRect();
     };
     var getBoundsProperty = function (bounds, property) {
       return bounds[property];
     };
     var getMinXBounds = function (component) {
-      var bounds = getBounds(component);
+      var bounds = getBounds$1(component);
       return getBoundsProperty(bounds, left);
     };
     var getMaxXBounds = function (component) {
-      var bounds = getBounds(component);
+      var bounds = getBounds$1(component);
       return getBoundsProperty(bounds, right);
     };
     var getMinYBounds = function (component) {
-      var bounds = getBounds(component);
+      var bounds = getBounds$1(component);
       return getBoundsProperty(bounds, top);
     };
     var getMaxYBounds = function (component) {
-      var bounds = getBounds(component);
+      var bounds = getBounds$1(component);
       return getBoundsProperty(bounds, bottom);
     };
     var getXScreenRange = function (component) {
-      var bounds = getBounds(component);
+      var bounds = getBounds$1(component);
       return getBoundsProperty(bounds, width);
     };
     var getYScreenRange = function (component) {
-      var bounds = getBounds(component);
+      var bounds = getBounds$1(component);
       return getBoundsProperty(bounds, height);
     };
     var getCenterOffsetOf = function (componentMinEdge, componentMaxEdge, spectrumMinEdge) {
       return (componentMinEdge + componentMaxEdge) / 2 - spectrumMinEdge;
     };
     var getXCenterOffSetOf = function (component, spectrum) {
-      var componentBounds = getBounds(component);
-      var spectrumBounds = getBounds(spectrum);
+      var componentBounds = getBounds$1(component);
+      var spectrumBounds = getBounds$1(spectrum);
       var componentMinEdge = getBoundsProperty(componentBounds, left);
       var componentMaxEdge = getBoundsProperty(componentBounds, right);
       var spectrumMinEdge = getBoundsProperty(spectrumBounds, left);
       return getCenterOffsetOf(componentMinEdge, componentMaxEdge, spectrumMinEdge);
     };
     var getYCenterOffSetOf = function (component, spectrum) {
-      var componentBounds = getBounds(component);
-      var spectrumBounds = getBounds(spectrum);
+      var componentBounds = getBounds$1(component);
+      var spectrumBounds = getBounds$1(spectrum);
       var componentMinEdge = getBoundsProperty(componentBounds, top);
       var componentMaxEdge = getBoundsProperty(componentBounds, bottom);
       var spectrumMinEdge = getBoundsProperty(spectrumBounds, top);
@@ -15159,7 +15276,6 @@
         edgeActions: edgeActions$2
     });
 
-    var isTouch$2 = PlatformDetection$1.detect().deviceType.isTouch();
     var SliderSchema = [
       defaulted$1('stepSize', 1),
       defaulted$1('onChange', noop),
@@ -15207,13 +15323,14 @@
       field$1('sliderBehaviours', [
         Keying,
         Representing
-      ])
-    ].concat(!isTouch$2 ? [state$1('mouseIsDown', function () {
+      ]),
+      state$1('mouseIsDown', function () {
         return Cell(false);
-      })] : []);
+      })
+    ];
 
-    var isTouch$3 = PlatformDetection$1.detect().deviceType.isTouch();
     var sketch = function (detail, components, _spec, _externals) {
+      var _a;
       var getThumb = function (component) {
         return getPartOrDie(component, detail, 'thumb');
       };
@@ -15256,63 +15373,50 @@
       var resetToMax = function (slider) {
         model.setToMax(slider, detail);
       };
-      var touchEvents = [
-        run(touchstart(), function (slider, _simulatedEvent) {
-          detail.onDragStart(slider, getThumb(slider));
-        }),
-        run(touchend(), function (slider, _simulatedEvent) {
-          detail.onDragEnd(slider, getThumb(slider));
-        })
-      ];
-      var mouseEvents = [
-        run(mousedown(), function (slider, simulatedEvent) {
-          simulatedEvent.stop();
-          detail.onDragStart(slider, getThumb(slider));
-          detail.mouseIsDown.set(true);
-        }),
-        run(mouseup(), function (slider, _simulatedEvent) {
-          detail.onDragEnd(slider, getThumb(slider));
-        })
-      ];
-      var uiEventsArr = isTouch$3 ? touchEvents : mouseEvents;
+      var choose = function (slider) {
+        var fireOnChoose = function () {
+          getPart(slider, detail, 'thumb').each(function (thumb) {
+            var value = modelDetail.value.get();
+            detail.onChoose(slider, thumb, value);
+          });
+        };
+        var wasDown = detail.mouseIsDown.get();
+        detail.mouseIsDown.set(false);
+        if (wasDown) {
+          fireOnChoose();
+        }
+      };
+      var onDragStart = function (slider, simulatedEvent) {
+        simulatedEvent.stop();
+        detail.mouseIsDown.set(true);
+        detail.onDragStart(slider, getThumb(slider));
+      };
+      var onDragEnd = function (slider, simulatedEvent) {
+        simulatedEvent.stop();
+        detail.onDragEnd(slider, getThumb(slider));
+        choose(slider);
+      };
       return {
         uid: detail.uid,
         dom: detail.dom,
         components: components,
-        behaviours: augment(detail.sliderBehaviours, flatten([
-          !isTouch$3 ? [Keying.config({
-              mode: 'special',
-              focusIn: function (slider) {
-                return getPart(slider, detail, 'spectrum').map(Keying.focusIn).map(constant(true));
+        behaviours: augment(detail.sliderBehaviours, [
+          Keying.config({
+            mode: 'special',
+            focusIn: function (slider) {
+              return getPart(slider, detail, 'spectrum').map(Keying.focusIn).map(constant(true));
+            }
+          }),
+          Representing.config({
+            store: {
+              mode: 'manual',
+              getValue: function (_) {
+                return modelDetail.value.get();
               }
-            })] : [],
-          [
-            Representing.config({
-              store: {
-                mode: 'manual',
-                getValue: function (_) {
-                  return modelDetail.value.get();
-                }
-              }
-            }),
-            Receiving.config({
-              channels: {
-                'mouse.released': {
-                  onReceive: function (slider, se) {
-                    var wasDown = detail.mouseIsDown.get();
-                    detail.mouseIsDown.set(false);
-                    if (wasDown) {
-                      getPart(slider, detail, 'thumb').each(function (thumb) {
-                        var value = modelDetail.value.get();
-                        detail.onChoose(slider, thumb, value);
-                      });
-                    }
-                  }
-                }
-              }
-            })
-          ]
-        ])),
+            }
+          }),
+          Receiving.config({ channels: (_a = {}, _a[mouseReleased()] = { onReceive: choose }, _a) })
+        ]),
         events: derive([
           run(sliderChangeEvent(), function (slider, simulatedEvent) {
             changeValue(slider, simulatedEvent.event().value());
@@ -15324,8 +15428,12 @@
             refresh(slider, thumb);
             var spectrum = getSpectrum(slider);
             detail.onInit(slider, thumb, spectrum, modelDetail.value.get());
-          })
-        ].concat(uiEventsArr)),
+          }),
+          run(touchstart(), onDragStart),
+          run(touchend(), onDragEnd),
+          run(mousedown(), onDragStart),
+          run(mouseup(), onDragEnd)
+        ]),
         apis: {
           resetToMin: resetToMin,
           resetToMax: resetToMax,
@@ -15419,14 +15527,14 @@
           pname: getPartName(n)
         });
       });
-      return composite(owner$3, schema$h, fieldParts, make$5, spec);
+      return composite(owner$3, schema$h, fieldParts, make$4, spec);
     };
     var toResult$1 = function (o, e) {
       return o.fold(function () {
         return Result.error(e);
       }, Result.value);
     };
-    var make$5 = function (detail, components, spec) {
+    var make$4 = function (detail, components, spec) {
       return {
         uid: detail.uid,
         dom: detail.dom,
@@ -15921,14 +16029,14 @@
     var getEnglishText = function (key) {
       return english[key];
     };
-    var translate = function (key) {
+    var translate$1 = function (key) {
       return getEnglishText(key);
     };
     var renderColorPicker = function (spec) {
       var getClass = function (key) {
         return 'tox-' + key;
       };
-      var colourPickerFactory = ColourPicker.makeFactory(translate, getClass);
+      var colourPickerFactory = ColourPicker.makeFactory(translate$1, getClass);
       var onValidHex = function (form) {
         emitWith(form, formActionEvent, {
           name: 'hex-valid',
@@ -16146,7 +16254,10 @@
           },
           styles: { display: 'none' }
         },
-        behaviours: derive$1([config('input-file-events', [cutter(tapOrClick())])])
+        behaviours: derive$1([config('input-file-events', [
+            cutter(click()),
+            cutter(tap())
+          ])])
       });
       var renderField = function (s) {
         return {
@@ -16296,7 +16407,7 @@
       craft: craft
     };
 
-    var platformNeedsSandboxing = !(PlatformDetection$1.detect().browser.isIE() || PlatformDetection$1.detect().browser.isEdge());
+    var platformNeedsSandboxing = !(detect$3().browser.isIE() || detect$3().browser.isEdge());
     var getDynamicSource = function (isSandbox) {
       var cachedValue = Cell('');
       return {
@@ -16319,9 +16430,9 @@
     };
     var renderIFrame = function (spec, providersBackstage) {
       var isSandbox = platformNeedsSandboxing && spec.sandboxed;
-      var attributes = __assign({}, spec.label.map(function (title) {
+      var attributes = __assign(__assign({}, spec.label.map(function (title) {
         return { title: title };
-      }).getOr({}), isSandbox ? { sandbox: 'allow-scripts allow-same-origin' } : {});
+      }).getOr({})), isSandbox ? { sandbox: 'allow-scripts allow-same-origin' } : {});
       var sourcing = getDynamicSource(isSandbox);
       var pLabel = spec.label.map(function (label) {
         return renderLabel(label, providersBackstage);
@@ -17331,7 +17442,7 @@
           'aria-label': translatedTooltip
         };
       });
-      var memDropdown = record(Dropdown.sketch(__assign({}, role, {
+      var memDropdown = record(Dropdown.sketch(__assign(__assign({}, role), {
         dom: {
           tag: 'button',
           classes: [
@@ -17359,7 +17470,7 @@
         ]),
         matchWidth: true,
         useMinWidth: true,
-        dropdownBehaviours: derive$1(spec.dropdownBehaviours.concat([
+        dropdownBehaviours: derive$1(__spreadArrays(spec.dropdownBehaviours, [
           DisablingConfigs.button(spec.disabled),
           Unselecting.config({}),
           Replacing.config({}),
@@ -17407,6 +17518,96 @@
       return memDropdown.asSpec();
     };
 
+    var isMenuItemReference = function (item) {
+      return isString(item);
+    };
+    var isSeparator = function (item) {
+      return item.type === 'separator';
+    };
+    var isExpandingMenuItem = function (item) {
+      return has(item, 'getSubmenuItems');
+    };
+    var separator$1 = { type: 'separator' };
+    var unwrapReferences = function (items, menuItems) {
+      var realItems = foldl(items, function (acc, item) {
+        if (isMenuItemReference(item)) {
+          if (item === '') {
+            return acc;
+          } else if (item === '|') {
+            return acc.length > 0 && !isSeparator(acc[acc.length - 1]) ? acc.concat([separator$1]) : acc;
+          } else if (has(menuItems, item.toLowerCase())) {
+            return acc.concat([menuItems[item.toLowerCase()]]);
+          } else {
+            return acc;
+          }
+        } else {
+          return acc.concat([item]);
+        }
+      }, []);
+      if (realItems.length > 0 && isSeparator(realItems[realItems.length - 1])) {
+        realItems.pop();
+      }
+      return realItems;
+    };
+    var getFromExpandingItem = function (item, menuItems) {
+      var submenuItems = item.getSubmenuItems();
+      var rest = expand(submenuItems, menuItems);
+      var newMenus = deepMerge(rest.menus, wrap$1(item.value, rest.items));
+      var newExpansions = deepMerge(rest.expansions, wrap$1(item.value, item.value));
+      return {
+        item: item,
+        menus: newMenus,
+        expansions: newExpansions
+      };
+    };
+    var getFromItem = function (item, menuItems) {
+      return isExpandingMenuItem(item) ? getFromExpandingItem(item, menuItems) : {
+        item: item,
+        menus: {},
+        expansions: {}
+      };
+    };
+    var generateValueIfRequired = function (item) {
+      if (isSeparator(item)) {
+        return item;
+      } else {
+        var itemValue = readOptFrom$1(item, 'value').getOrThunk(function () {
+          return generate$1('generated-menu-item');
+        });
+        return deepMerge({ value: itemValue }, item);
+      }
+    };
+    var expand = function (items, menuItems) {
+      var realItems = unwrapReferences(isString(items) ? items.split(' ') : items, menuItems);
+      return foldr(realItems, function (acc, item) {
+        var itemWithValue = generateValueIfRequired(item);
+        var newData = getFromItem(itemWithValue, menuItems);
+        return {
+          menus: deepMerge(acc.menus, newData.menus),
+          items: [newData.item].concat(acc.items),
+          expansions: deepMerge(acc.expansions, newData.expansions)
+        };
+      }, {
+        menus: {},
+        expansions: {},
+        items: []
+      });
+    };
+
+    var build$2 = function (items, itemResponse, backstage, isHorizontalMenu) {
+      var primary = generate$1('primary-menu');
+      var data = expand(items, backstage.shared.providers.menuItems());
+      if (data.items.length === 0) {
+        return Option.none();
+      }
+      var mainMenu = createPartialMenu(primary, data.items, itemResponse, backstage, isHorizontalMenu);
+      var submenus = map$1(data.menus, function (menuItems, menuName) {
+        return createPartialMenu(menuName, menuItems, itemResponse, backstage, false);
+      });
+      var menus = deepMerge(submenus, wrap$1(primary, mainMenu));
+      return Option.from(tieredMenu.tieredData(primary, menus, data.expansions));
+    };
+
     var getMenuButtonApi = function (component) {
       return {
         isDisabled: function () {
@@ -17438,7 +17639,7 @@
         role: role,
         fetch: function (callback) {
           spec.fetch(function (items) {
-            callback(build$2(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage));
+            callback(build$2(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage, false));
           });
         },
         onSetup: spec.onSetup,
@@ -17448,6 +17649,42 @@
         classes: [],
         dropdownBehaviours: [Tabstopping.config({})]
       }, prefix, backstage.shared);
+    };
+    var getFetch$1 = function (items, getButton, backstage) {
+      var getMenuItemAction = function (item) {
+        return function (api) {
+          var newValue = !api.isActive();
+          api.setActive(newValue);
+          item.storage.set(newValue);
+          backstage.shared.getSink().each(function (sink) {
+            getButton().getOpt(sink).each(function (orig) {
+              focus$1(orig.element());
+              emitWith(orig, formActionEvent, {
+                name: item.name,
+                value: item.storage.get()
+              });
+            });
+          });
+        };
+      };
+      var getMenuItemSetup = function (item) {
+        return function (api) {
+          api.setActive(item.storage.get());
+        };
+      };
+      return function (success) {
+        success(map(items, function (item) {
+          var text = item.text.fold(function () {
+            return {};
+          }, function (text) {
+            return { text: text };
+          });
+          return __assign(__assign({ type: item.type }, text), {
+            onAction: getMenuItemAction(item),
+            onSetup: getMenuItemSetup(item)
+          });
+        }));
+      };
     };
 
     var renderCommonSpec = function (spec, actionOpt, extraBehaviours, dom, components) {
@@ -17523,14 +17760,14 @@
       }) : Option.none();
       var components = icon.isSome() ? componentRenderPipeline([icon]) : [];
       var innerHtml = icon.isSome() ? {} : { innerHtml: translatedText };
-      var classes = (!spec.primary && !spec.borderless ? [
+      var classes = __spreadArrays(!spec.primary && !spec.borderless ? [
         'tox-button',
         'tox-button--secondary'
-      ] : ['tox-button']).concat(icon.isSome() ? ['tox-button--icon'] : [], spec.borderless ? ['tox-button--naked'] : [], extraClasses);
-      var dom = __assign({
+      ] : ['tox-button'], icon.isSome() ? ['tox-button--icon'] : [], spec.borderless ? ['tox-button--naked'] : [], extraClasses);
+      var dom = __assign(__assign({
         tag: 'button',
         classes: classes
-      }, innerHtml, { attributes: { title: translatedText } });
+      }, innerHtml), { attributes: { title: translatedText } });
       return renderCommonSpec(spec, action, extraBehaviours, dom, components);
     };
     var renderButton = function (spec, action, providersBackstage, extraBehaviours, extraClasses) {
@@ -17567,10 +17804,16 @@
     };
     var renderFooterButton = function (spec, buttonType, backstage) {
       if (isMenuFooterButtonSpec(spec, buttonType)) {
-        return renderMenuButton(spec, 'tox-tbtn', backstage, Option.none());
+        var getButton = function () {
+          return memButton_1;
+        };
+        var menuButtonSpec = spec;
+        var fixedSpec = __assign(__assign({}, spec), { fetch: getFetch$1(menuButtonSpec.items, getButton, backstage) });
+        var memButton_1 = record(renderMenuButton(fixedSpec, 'tox-tbtn', backstage, Option.none()));
+        return memButton_1.asSpec();
       } else if (isNormalFooterButtonSpec(spec, buttonType)) {
         var action = getAction(spec.name, buttonType);
-        var buttonSpec = __assign({}, spec, { borderless: false });
+        var buttonSpec = __assign(__assign({}, spec), { borderless: false });
         return renderButton(buttonSpec, action, backstage.shared.providers, []);
       } else {
         domGlobals.console.error('Unknown footer button type: ', buttonType);
@@ -17617,7 +17860,7 @@
         }
       });
     };
-    var parts$6 = constant([
+    var parts$5 = constant([
       coupledPart('field1', 'field2'),
       coupledPart('field2', 'field1'),
       required({
@@ -17685,7 +17928,7 @@
     var FormCoupledInputs = composite$1({
       name: 'FormCoupledInputs',
       configFields: schema$i(),
-      partFields: parts$6(),
+      partFields: parts$5(),
       factory: factory$7,
       apis: {
         getField1: function (apis, component) {
@@ -17779,10 +18022,7 @@
     var makeRatioConverter = function (currentFieldText, otherFieldText) {
       var cValue = parseSize(currentFieldText).toOption();
       var oValue = parseSize(otherFieldText).toOption();
-      return liftN([
-        cValue,
-        oValue
-      ], function (cSize, oSize) {
+      return lift2(cValue, oValue, function (cSize, oSize) {
         return convertUnit(cSize, oSize.unit).map(function (val) {
           return oSize.value / val;
         }).map(function (r) {
@@ -18007,7 +18247,6 @@
           'tox-image-tools-edit-panel'
         ]
       };
-      var none = Option.none();
       var noop$1 = noop;
       var emit$1 = function (comp, event, data) {
         emitWith(comp, event, data);
@@ -18093,7 +18332,7 @@
       });
       var memSize = record(renderSizeInput({
         name: 'size',
-        label: none,
+        label: Option.none(),
         constrain: true,
         disabled: false
       }, providersBackstage));
@@ -18334,14 +18573,14 @@
       var sharpenTransform = Option.some(sharpen$1);
       var invertTransform = Option.some(invert$1);
       var buttonPanelComponents = [
-        createIconButton('crop', 'Crop', getTransformPanelEvent(CropPanel, none, cropPanelUpdate), false),
-        createIconButton('resize', 'Resize', getTransformPanelEvent(ResizePanel, none, resizePanelUpdate), false),
-        createIconButton('orientation', 'Orientation', getTransformPanelEvent(FlipRotatePanel, none, noop$1), false),
-        createIconButton('brightness', 'Brightness', getTransformPanelEvent(BrightnessPanel, none, noop$1), false),
+        createIconButton('crop', 'Crop', getTransformPanelEvent(CropPanel, Option.none(), cropPanelUpdate), false),
+        createIconButton('resize', 'Resize', getTransformPanelEvent(ResizePanel, Option.none(), resizePanelUpdate), false),
+        createIconButton('orientation', 'Orientation', getTransformPanelEvent(FlipRotatePanel, Option.none(), noop$1), false),
+        createIconButton('brightness', 'Brightness', getTransformPanelEvent(BrightnessPanel, Option.none(), noop$1), false),
         createIconButton('sharpen', 'Sharpen', getTransformPanelEvent(FilterPanel, sharpenTransform, noop$1), false),
-        createIconButton('contrast', 'Contrast', getTransformPanelEvent(ContrastPanel, none, noop$1), false),
-        createIconButton('color-levels', 'Color levels', getTransformPanelEvent(ColorizePanel, none, noop$1), false),
-        createIconButton('gamma', 'Gamma', getTransformPanelEvent(GammaPanel, none, noop$1), false),
+        createIconButton('contrast', 'Contrast', getTransformPanelEvent(ContrastPanel, Option.none(), noop$1), false),
+        createIconButton('color-levels', 'Color levels', getTransformPanelEvent(ColorizePanel, Option.none(), noop$1), false),
+        createIconButton('gamma', 'Gamma', getTransformPanelEvent(GammaPanel, Option.none(), noop$1), false),
         createIconButton('invert', 'Invert', getTransformPanelEvent(FilterPanel, invertTransform, noop$1), false)
       ];
       var ButtonPanel = Container.sketch({
@@ -18463,14 +18702,13 @@
     }
 
     var count = 0;
-    function CropRect (currentRect, viewPortRect, clampRect, containerElm, action) {
+    var create$7 = function (currentRect, viewPortRect, clampRect, containerElm, action) {
       var instance;
-      var handles;
       var dragHelpers;
       var blockers;
       var prefix = 'tox-';
       var id = prefix + 'crid-' + count++;
-      handles = [
+      var handles = [
         {
           name: 'move',
           xMul: 0,
@@ -18528,25 +18766,25 @@
         'bottom',
         'left'
       ];
-      function getAbsoluteRect(outerRect, relativeRect) {
+      var getAbsoluteRect = function (outerRect, relativeRect) {
         return {
           x: relativeRect.x + outerRect.x,
           y: relativeRect.y + outerRect.y,
           w: relativeRect.w,
           h: relativeRect.h
         };
-      }
-      function getRelativeRect(outerRect, innerRect) {
+      };
+      var getRelativeRect = function (outerRect, innerRect) {
         return {
           x: innerRect.x - outerRect.x,
           y: innerRect.y - outerRect.y,
           w: innerRect.w,
           h: innerRect.h
         };
-      }
-      function getInnerRect() {
+      };
+      var getInnerRect = function () {
         return getRelativeRect(clampRect, currentRect);
-      }
+      };
       function moveRect(handle, startRect, deltaX, deltaY) {
         var x, y, w, h, rect;
         x = startRect.x;
@@ -18725,7 +18963,8 @@
         destroy: destroy
       }, global$d);
       return instance;
-    }
+    };
+    var CropRect = { create: create$7 };
 
     var loadImage = function (image) {
       return new global$4(function (resolve) {
@@ -18884,7 +19123,7 @@
             behaviours: derive$1([config('image-panel-crop-events', [runOnAttached(function (comp) {
                   memContainer.getOpt(comp).each(function (container) {
                     var el = container.element().dom();
-                    var cRect = CropRect({
+                    var cRect = CropRect.create({
                       x: 10,
                       y: 10,
                       w: 100,
@@ -19464,12 +19703,16 @@
           }
         });
       }).toArray();
+      var placeholder = spec.placeholder.fold(constant({}), function (p) {
+        return { placeholder: providersBackstage.translate(p) };
+      });
+      var inputMode = spec.inputMode.fold(constant({}), function (mode) {
+        return { inputmode: mode };
+      });
+      var inputAttributes = __assign(__assign({}, placeholder), inputMode);
       var pField = FormField.parts().field({
         tag: spec.multiline === true ? 'textarea' : 'input',
-        inputAttributes: spec.placeholder.fold(function () {
-        }, function (placeholder) {
-          return { placeholder: providersBackstage.translate(placeholder) };
-        }),
+        inputAttributes: inputAttributes,
         inputClasses: [spec.classname],
         inputBehaviours: derive$1(flatten([
           baseInputBehaviours,
@@ -19496,6 +19739,7 @@
         name: spec.name,
         multiline: false,
         label: spec.label,
+        inputMode: spec.inputMode,
         placeholder: spec.placeholder,
         flex: false,
         disabled: spec.disabled,
@@ -19509,6 +19753,7 @@
         name: spec.name,
         multiline: true,
         label: spec.label,
+        inputMode: Option.none(),
         placeholder: spec.placeholder,
         flex: true,
         disabled: spec.disabled,
@@ -19517,6 +19762,406 @@
         maximized: spec.maximized
       }, providersBackstage);
     };
+
+    var events$c = function (streamConfig, streamState) {
+      var streams = streamConfig.stream.streams;
+      var processor = streams.setup(streamConfig, streamState);
+      return derive([
+        run(streamConfig.event, processor),
+        runOnDetached(function () {
+          return streamState.cancel();
+        })
+      ].concat(streamConfig.cancelEvent.map(function (e) {
+        return [run(e, function () {
+            return streamState.cancel();
+          })];
+      }).getOr([])));
+    };
+
+    var ActiveStreaming = /*#__PURE__*/Object.freeze({
+        events: events$c
+    });
+
+    var throttle = function (_config) {
+      var state = Cell(null);
+      var readState = function () {
+        return { timer: state.get() !== null ? 'set' : 'unset' };
+      };
+      var setTimer = function (t) {
+        state.set(t);
+      };
+      var cancel = function () {
+        var t = state.get();
+        if (t !== null) {
+          t.cancel();
+        }
+      };
+      return nu$5({
+        readState: readState,
+        setTimer: setTimer,
+        cancel: cancel
+      });
+    };
+    var init$6 = function (spec) {
+      return spec.stream.streams.state(spec);
+    };
+
+    var StreamingState = /*#__PURE__*/Object.freeze({
+        throttle: throttle,
+        init: init$6
+    });
+
+    var setup$3 = function (streamInfo, streamState) {
+      var sInfo = streamInfo.stream;
+      var throttler = last$2(streamInfo.onStream, sInfo.delay);
+      streamState.setTimer(throttler);
+      return function (component, simulatedEvent) {
+        throttler.throttle(component, simulatedEvent);
+        if (sInfo.stopEvent) {
+          simulatedEvent.stop();
+        }
+      };
+    };
+    var StreamingSchema = [
+      strictOf('stream', choose$1('mode', {
+        throttle: [
+          strict$1('delay'),
+          defaulted$1('stopEvent', true),
+          output('streams', {
+            setup: setup$3,
+            state: throttle
+          })
+        ]
+      })),
+      defaulted$1('event', 'input'),
+      option('cancelEvent'),
+      onStrictHandler('onStream')
+    ];
+
+    var Streaming = create$1({
+      fields: StreamingSchema,
+      name: 'streaming',
+      active: ActiveStreaming,
+      state: StreamingState
+    });
+
+    var setValueFromItem = function (model, input, item) {
+      var itemData = Representing.getValue(item);
+      Representing.setValue(input, itemData);
+      setCursorAtEnd(input);
+    };
+    var setSelectionOn = function (input, f) {
+      var el = input.element();
+      var value = get$5(el);
+      var node = el.dom();
+      if (get$2(el, 'type') !== 'number') {
+        f(node, value);
+      }
+    };
+    var setCursorAtEnd = function (input) {
+      setSelectionOn(input, function (node, value) {
+        return node.setSelectionRange(value.length, value.length);
+      });
+    };
+    var setSelectionToEnd = function (input, startOffset) {
+      setSelectionOn(input, function (node, value) {
+        return node.setSelectionRange(startOffset, value.length);
+      });
+    };
+    var attemptSelectOver = function (model, input, item) {
+      if (!model.selectsOver) {
+        return Option.none();
+      } else {
+        var currentValue = Representing.getValue(input);
+        var inputDisplay_1 = model.getDisplayText(currentValue);
+        var itemValue = Representing.getValue(item);
+        var itemDisplay = model.getDisplayText(itemValue);
+        return itemDisplay.indexOf(inputDisplay_1) === 0 ? Option.some(function () {
+          setValueFromItem(model, input, item);
+          setSelectionToEnd(input, inputDisplay_1.length);
+        }) : Option.none();
+      }
+    };
+
+    var itemExecute = constant('alloy.typeahead.itemexecute');
+
+    var make$5 = function (detail, components, spec, externals) {
+      var navigateList = function (comp, simulatedEvent, highlighter) {
+        detail.previewing.set(false);
+        var sandbox = Coupling.getCoupled(comp, 'sandbox');
+        if (Sandboxing.isOpen(sandbox)) {
+          Composing.getCurrent(sandbox).each(function (menu) {
+            Highlighting.getHighlighted(menu).fold(function () {
+              highlighter(menu);
+            }, function () {
+              dispatchEvent(sandbox, menu.element(), 'keydown', simulatedEvent);
+            });
+          });
+        } else {
+          var onOpenSync = function (sandbox) {
+            Composing.getCurrent(sandbox).each(highlighter);
+          };
+          open$1(detail, mapFetch(comp), comp, sandbox, externals, onOpenSync, HighlightOnOpen.HighlightFirst).get(noop);
+        }
+      };
+      var focusBehaviours$1 = focusBehaviours(detail);
+      var mapFetch = function (comp) {
+        return function (tdata) {
+          return tdata.map(function (data) {
+            var menus = values(data.menus);
+            var items = bind(menus, function (menu) {
+              return filter(menu.items, function (item) {
+                return item.type === 'item';
+              });
+            });
+            var repState = Representing.getState(comp);
+            repState.update(map(items, function (item) {
+              return item.data;
+            }));
+            return data;
+          });
+        };
+      };
+      var behaviours = [
+        Focusing.config({}),
+        Representing.config({
+          onSetValue: detail.onSetValue,
+          store: __assign({
+            mode: 'dataset',
+            getDataKey: function (comp) {
+              return get$5(comp.element());
+            },
+            getFallbackEntry: function (itemString) {
+              return {
+                value: itemString,
+                meta: {}
+              };
+            },
+            setValue: function (comp, data) {
+              set$3(comp.element(), detail.model.getDisplayText(data));
+            }
+          }, detail.initialData.map(function (d) {
+            return wrap$1('initialValue', d);
+          }).getOr({}))
+        }),
+        Streaming.config({
+          stream: {
+            mode: 'throttle',
+            delay: detail.responseTime,
+            stopEvent: false
+          },
+          onStream: function (component, simulatedEvent) {
+            var sandbox = Coupling.getCoupled(component, 'sandbox');
+            var focusInInput = Focusing.isFocused(component);
+            if (focusInInput) {
+              if (get$5(component.element()).length >= detail.minChars) {
+                var previousValue_1 = Composing.getCurrent(sandbox).bind(function (menu) {
+                  return Highlighting.getHighlighted(menu).map(Representing.getValue);
+                });
+                detail.previewing.set(true);
+                var onOpenSync = function (_sandbox) {
+                  Composing.getCurrent(sandbox).each(function (menu) {
+                    previousValue_1.fold(function () {
+                      if (detail.model.selectsOver) {
+                        Highlighting.highlightFirst(menu);
+                      }
+                    }, function (pv) {
+                      Highlighting.highlightBy(menu, function (item) {
+                        var itemData = Representing.getValue(item);
+                        return itemData.value === pv.value;
+                      });
+                      Highlighting.getHighlighted(menu).orThunk(function () {
+                        Highlighting.highlightFirst(menu);
+                        return Option.none();
+                      });
+                    });
+                  });
+                };
+                open$1(detail, mapFetch(component), component, sandbox, externals, onOpenSync, HighlightOnOpen.HighlightFirst).get(noop);
+              }
+            }
+          },
+          cancelEvent: typeaheadCancel()
+        }),
+        Keying.config({
+          mode: 'special',
+          onDown: function (comp, simulatedEvent) {
+            navigateList(comp, simulatedEvent, Highlighting.highlightFirst);
+            return Option.some(true);
+          },
+          onEscape: function (comp) {
+            var sandbox = Coupling.getCoupled(comp, 'sandbox');
+            if (Sandboxing.isOpen(sandbox)) {
+              Sandboxing.close(sandbox);
+              return Option.some(true);
+            }
+            return Option.none();
+          },
+          onUp: function (comp, simulatedEvent) {
+            navigateList(comp, simulatedEvent, Highlighting.highlightLast);
+            return Option.some(true);
+          },
+          onEnter: function (comp) {
+            var sandbox = Coupling.getCoupled(comp, 'sandbox');
+            var sandboxIsOpen = Sandboxing.isOpen(sandbox);
+            if (sandboxIsOpen && !detail.previewing.get()) {
+              return Composing.getCurrent(sandbox).bind(function (menu) {
+                return Highlighting.getHighlighted(menu);
+              }).map(function (item) {
+                emitWith(comp, itemExecute(), { item: item });
+                return true;
+              });
+            } else {
+              var currentValue = Representing.getValue(comp);
+              emit(comp, typeaheadCancel());
+              detail.onExecute(sandbox, comp, currentValue);
+              if (sandboxIsOpen) {
+                Sandboxing.close(sandbox);
+              }
+              return Option.some(true);
+            }
+          }
+        }),
+        Toggling.config({
+          toggleClass: detail.markers.openClass,
+          aria: { mode: 'expanded' }
+        }),
+        Coupling.config({
+          others: {
+            sandbox: function (hotspot) {
+              return makeSandbox(detail, hotspot, {
+                onOpen: function () {
+                  return Toggling.on(hotspot);
+                },
+                onClose: function () {
+                  return Toggling.off(hotspot);
+                }
+              });
+            }
+          }
+        }),
+        config('typeaheadevents', [
+          runOnExecute(function (comp) {
+            var onOpenSync = noop;
+            togglePopup(detail, mapFetch(comp), comp, externals, onOpenSync, HighlightOnOpen.HighlightFirst).get(noop);
+          }),
+          run(itemExecute(), function (comp, se) {
+            var sandbox = Coupling.getCoupled(comp, 'sandbox');
+            setValueFromItem(detail.model, comp, se.event().item());
+            emit(comp, typeaheadCancel());
+            detail.onItemExecute(comp, sandbox, se.event().item(), Representing.getValue(comp));
+            Sandboxing.close(sandbox);
+            setCursorAtEnd(comp);
+          })
+        ].concat(detail.dismissOnBlur ? [run(postBlur(), function (typeahead) {
+            var sandbox = Coupling.getCoupled(typeahead, 'sandbox');
+            if (search(sandbox.element()).isNone()) {
+              Sandboxing.close(sandbox);
+            }
+          })] : []))
+      ];
+      return {
+        uid: detail.uid,
+        dom: dom$2(deepMerge(detail, {
+          inputAttributes: {
+            'role': 'combobox',
+            'aria-autocomplete': 'list',
+            'aria-haspopup': 'true'
+          }
+        })),
+        behaviours: __assign(__assign({}, focusBehaviours$1), augment(detail.typeaheadBehaviours, behaviours)),
+        eventOrder: detail.eventOrder
+      };
+    };
+
+    var schema$j = constant([
+      option('lazySink'),
+      strict$1('fetch'),
+      defaulted$1('minChars', 5),
+      defaulted$1('responseTime', 1000),
+      onHandler('onOpen'),
+      defaulted$1('getHotspot', Option.some),
+      defaulted$1('getAnchorOverrides', constant({})),
+      defaulted$1('layouts', Option.none()),
+      defaulted$1('eventOrder', {}),
+      defaultedObjOf('model', {}, [
+        defaulted$1('getDisplayText', function (itemData) {
+          return itemData.meta !== undefined && itemData.meta.text !== undefined ? itemData.meta.text : itemData.value;
+        }),
+        defaulted$1('selectsOver', true),
+        defaulted$1('populateFromBrowse', true)
+      ]),
+      onHandler('onSetValue'),
+      onKeyboardHandler('onExecute'),
+      onHandler('onItemExecute'),
+      defaulted$1('inputClasses', []),
+      defaulted$1('inputAttributes', {}),
+      defaulted$1('inputStyles', {}),
+      defaulted$1('matchWidth', true),
+      defaulted$1('useMinWidth', false),
+      defaulted$1('dismissOnBlur', true),
+      markers(['openClass']),
+      option('initialData'),
+      field$1('typeaheadBehaviours', [
+        Focusing,
+        Representing,
+        Streaming,
+        Keying,
+        Toggling,
+        Coupling
+      ]),
+      state$1('previewing', function () {
+        return Cell(true);
+      })
+    ].concat(schema$f()).concat(sandboxFields()));
+    var parts$6 = constant([external$1({
+        schema: [tieredMenuMarkers()],
+        name: 'menu',
+        overrides: function (detail) {
+          return {
+            fakeFocus: true,
+            onHighlight: function (menu, item) {
+              if (!detail.previewing.get()) {
+                menu.getSystem().getByUid(detail.uid).each(function (input) {
+                  if (detail.model.populateFromBrowse) {
+                    setValueFromItem(detail.model, input, item);
+                  }
+                });
+              } else {
+                menu.getSystem().getByUid(detail.uid).each(function (input) {
+                  attemptSelectOver(detail.model, input, item).fold(function () {
+                    return Highlighting.dehighlight(menu, item);
+                  }, function (fn) {
+                    return fn();
+                  });
+                });
+              }
+              detail.previewing.set(false);
+            },
+            onExecute: function (menu, item) {
+              return menu.getSystem().getByUid(detail.uid).toOption().map(function (typeahead) {
+                emitWith(typeahead, itemExecute(), { item: item });
+                return true;
+              });
+            },
+            onHover: function (menu, item) {
+              detail.previewing.set(false);
+              menu.getSystem().getByUid(detail.uid).each(function (input) {
+                if (detail.model.populateFromBrowse) {
+                  setValueFromItem(detail.model, input, item);
+                }
+              });
+            }
+          };
+        }
+      })]);
+
+    var Typeahead = composite$1({
+      name: 'Typeahead',
+      configFields: schema$j(),
+      partFields: parts$6(),
+      factory: make$5
+    });
 
     var wrap$2 = function (delegate) {
       var toCached = function () {
@@ -19566,7 +20211,7 @@
           });
         }));
       };
-      return __assign({}, delegate, {
+      return __assign(__assign({}, delegate), {
         toCached: toCached,
         bindFuture: bindFuture,
         bindResult: bindResult,
@@ -19710,12 +20355,15 @@
         dismissOnBlur: true,
         inputClasses: ['tox-textfield'],
         sandboxClasses: ['tox-dialog__popups'],
-        inputAttributes: { 'aria-errormessage': errorId },
+        inputAttributes: {
+          'aria-errormessage': errorId,
+          'type': 'url'
+        },
         minChars: 0,
         responseTime: 0,
         fetch: function (input) {
           var items = getItems(spec.filetype, input, urlBackstage);
-          var tdata = build$2(items, ItemResponse$1.BUBBLE_TO_SANDBOX, backstage);
+          var tdata = build$2(items, ItemResponse$1.BUBBLE_TO_SANDBOX, backstage, false);
           return Future.pure(tdata);
         },
         getHotspot: function (comp) {
@@ -19748,7 +20396,13 @@
                       type: spec.filetype,
                       url: urlEntry.value
                     }, function (validation) {
-                      completer((validation.status === 'invalid' ? Result.error : Result.value)(validation.message));
+                      if (validation.status === 'invalid') {
+                        var err = Result.error(validation.message);
+                        completer(err);
+                      } else {
+                        var val = Result.value(validation.message);
+                        completer(val);
+                      }
                     });
                   });
                 },
@@ -19788,7 +20442,7 @@
           selectsOver: false,
           populateFromBrowse: false
         },
-        markers: { openClass: 'dog' },
+        markers: { openClass: 'tox-textfield--popup-open' },
         lazySink: backstage.shared.getSink,
         parts: { menu: part(false, 1, 'normal') },
         onExecute: function (_menu, component, _entry) {
@@ -20025,18 +20679,6 @@
       }
     };
 
-    var renderListbox = function (spec, providersBackstage) {
-      var pLabel = renderLabel(spec.label, providersBackstage);
-      var pField = FormField.parts().field({
-        factory: HtmlSelect,
-        dom: { classes: ['mce-select-field'] },
-        selectBehaviours: derive$1([Tabstopping.config({})]),
-        options: spec.values,
-        data: spec.initialValue.getOr(undefined)
-      });
-      return renderFormField(Option.some(pLabel), pField);
-    };
-
     var renderLabel$2 = function (spec, backstageShared) {
       var label = {
         dom: {
@@ -20068,7 +20710,7 @@
       var runOnItem = function (f) {
         return function (comp, se) {
           closest$3(se.event().target(), '[data-collection-item-value]').each(function (target) {
-            f(comp, target, get$2(target, 'data-collection-item-value'));
+            f(comp, se, target, get$2(target, 'data-collection-item-value'));
           });
         };
       };
@@ -20099,28 +20741,31 @@
         });
         set(comp.element(), html.join(''));
       };
+      var onClick = runOnItem(function (comp, se, tgt, itemValue) {
+        se.stop();
+        emitWith(comp, formActionEvent, {
+          name: spec.name,
+          value: itemValue
+        });
+      });
       var collectionEvents = [
-        run(mouseover(), runOnItem(function (comp, tgt) {
+        run(mouseover(), runOnItem(function (comp, se, tgt) {
           focus$1(tgt);
         })),
-        run(tapOrClick(), runOnItem(function (comp, tgt, itemValue) {
-          emitWith(comp, formActionEvent, {
-            name: spec.name,
-            value: itemValue
-          });
-        })),
-        run(focusin(), runOnItem(function (comp, tgt, itemValue) {
+        run(click(), onClick),
+        run(tap(), onClick),
+        run(focusin(), runOnItem(function (comp, se, tgt) {
           descendant$1(comp.element(), '.' + activeClass).each(function (currentActive) {
             remove$4(currentActive, activeClass);
           });
           add$2(tgt, activeClass);
         })),
-        run(focusout(), runOnItem(function (comp, tgt, itemValue) {
+        run(focusout(), runOnItem(function (comp) {
           descendant$1(comp.element(), '.' + activeClass).each(function (currentActive) {
             remove$4(currentActive, activeClass);
           });
         })),
-        runOnExecute(runOnItem(function (comp, tgt, itemValue) {
+        runOnExecute(runOnItem(function (comp, se, tgt, itemValue) {
           emitWith(comp, formActionEvent, {
             name: spec.name,
             value: itemValue
@@ -20247,7 +20892,6 @@
       collection: make$6(function (spec, backstage) {
         return renderCollection(spec, backstage.shared.providers);
       }),
-      alloy: make$6(identity),
       alertbanner: make$6(function (spec, backstage) {
         return renderAlertBanner(spec, backstage.shared.providers);
       }),
@@ -20257,17 +20901,11 @@
       textarea: make$6(function (spec, backstage) {
         return renderTextarea(spec, backstage.shared.providers);
       }),
-      listbox: make$6(function (spec, backstage) {
-        return renderListbox(spec, backstage.shared.providers);
-      }),
       label: make$6(function (spec, backstage) {
         return renderLabel$2(spec, backstage.shared);
       }),
       iframe: makeIframe(function (spec, backstage) {
         return renderIFrame(spec, backstage.shared.providers);
-      }),
-      autocomplete: make$6(function (spec, backstage) {
-        return renderAutocomplete(spec, backstage);
       }),
       button: make$6(function (spec, backstage) {
         return renderDialogButton(spec, backstage.shared.providers);
@@ -20334,39 +20972,9 @@
       return interpretParts(parts, spec, backstage);
     };
 
-    var westEdgeX$1 = function (anchor) {
-      return anchor.x();
-    };
-    var middleX$1 = function (anchor, element) {
-      return anchor.x() + anchor.width() / 2 - element.width() / 2;
-    };
-    var eastEdgeX$1 = function (anchor, element) {
-      return anchor.x() + anchor.width() - element.width();
-    };
-    var northY$2 = function (anchor) {
-      return anchor.y();
-    };
-    var southY$2 = function (anchor, element) {
-      return anchor.y() + anchor.height() - element.height();
-    };
-    var southeast$3 = function (anchor, element, bubbles) {
-      return nu$8(westEdgeX$1(anchor), southY$2(anchor, element), bubbles.innerSoutheast(), southeast(), 'layout-se');
-    };
-    var southwest$3 = function (anchor, element, bubbles) {
-      return nu$8(eastEdgeX$1(anchor, element), southY$2(anchor, element), bubbles.innerSouthwest(), southwest(), 'layout-sw');
-    };
-    var northeast$3 = function (anchor, element, bubbles) {
-      return nu$8(westEdgeX$1(anchor), northY$2(anchor), bubbles.innerNortheast(), northeast(), 'layout-ne');
-    };
-    var northwest$3 = function (anchor, element, bubbles) {
-      return nu$8(eastEdgeX$1(anchor, element), northY$2(anchor), bubbles.innerNorthwest(), northwest(), 'layout-nw');
-    };
-    var north$3 = function (anchor, element, bubbles) {
-      return nu$8(middleX$1(anchor, element), northY$2(anchor), bubbles.innerNorth(), north(), 'layout-n');
-    };
-    var south$3 = function (anchor, element, bubbles) {
-      return nu$8(middleX$1(anchor, element), southY$2(anchor, element), bubbles.innerSouth(), south(), 'layout-s');
-    };
+    var expandable$1 = constant(function (element, available) {
+      setMax$1(element, Math.floor(available));
+    });
 
     var bubbleAlignments = {
       valignCentre: [],
@@ -20384,7 +20992,7 @@
           anchor: 'node',
           root: bodyElement(),
           node: Option.from(bodyElement()),
-          bubble: nu$7(-12, -12, bubbleAlignments),
+          bubble: nu$8(-12, -12, bubbleAlignments),
           layouts: {
             onRtl: function () {
               return [northeast$3];
@@ -20392,14 +21000,15 @@
             onLtr: function () {
               return [northwest$3];
             }
-          }
+          },
+          overrides: { maxHeightFunction: expandable() }
         };
       };
       var standardAnchor = function () {
         return {
           anchor: 'hotspot',
           hotspot: lazyAnchorbar(),
-          bubble: nu$7(-12, 12, bubbleAlignments),
+          bubble: nu$8(-12, 12, bubbleAlignments),
           layouts: {
             onRtl: function () {
               return [southeast$1];
@@ -20407,7 +21016,8 @@
             onLtr: function () {
               return [southwest$1];
             }
-          }
+          },
+          overrides: { maxHeightFunction: expandable() }
         };
       };
       return useFixedToolbarContainer ? fixedToolbarAnchor : standardAnchor;
@@ -20449,12 +21059,19 @@
         return {
           anchor: 'hotspot',
           hotspot: lazyMoreButton(),
+          overrides: { maxWidthFunction: expandable$1() },
           layouts: {
             onRtl: function () {
-              return [southeast$1];
+              return [
+                southeast$1,
+                southwest$1
+              ];
             },
             onLtr: function () {
-              return [southwest$1];
+              return [
+                southwest$1,
+                southeast$1
+              ];
             }
           }
         };
@@ -20489,7 +21106,7 @@
       return {
         toolbar: getToolbarAnchor(bodyElement, lazyAnchorbar, useFixedToolbarContainer),
         toolbarOverflow: getToolbarOverflowAnchor(lazyMoreButton),
-        banner: getBannerAnchor(bodyElement, lazyAnchorbar, lazyMoreButton),
+        banner: getBannerAnchor(bodyElement, lazyAnchorbar, useFixedToolbarContainer),
         cursor: getCursorAnchor(editor, bodyElement),
         node: getNodeAnchor(bodyElement)
       };
@@ -20524,6 +21141,15 @@
         getColors: getColors$1(editor),
         getColorCols: getColorCols$2(editor)
       };
+    };
+
+    var isDraggableModal$1 = function (editor) {
+      return function () {
+        return isDraggableModal(editor);
+      };
+    };
+    var DialogBackstage = function (editor) {
+      return { isDraggableModal: isDraggableModal$1(editor) };
     };
 
     var defaultStyleFormats = [
@@ -20680,7 +21306,7 @@
               }])
           };
         } else {
-          return __assign({}, acc, { formats: acc.formats.concat(fmt) });
+          return __assign(__assign({}, acc), { formats: acc.formats.concat(fmt) });
         }
       }, {
         customFormats: [],
@@ -20836,7 +21462,7 @@
     };
     var isContentEditableTrue = hasContentEditableState('true');
     var isContentEditableFalse = hasContentEditableState('false');
-    var create$7 = function (type, title, url, level, attach) {
+    var create$8 = function (type, title, url, level, attach) {
       return {
         type: type,
         title: title,
@@ -20888,12 +21514,12 @@
       var attach = function () {
         elm.id = headerId;
       };
-      return create$7('header', getElementText(elm), '#' + headerId, getLevel(elm), attach);
+      return create$8('header', getElementText(elm), '#' + headerId, getLevel(elm), attach);
     };
     var anchorTarget = function (elm) {
       var anchorId = elm.id || elm.name;
       var anchorText = getElementText(elm);
-      return create$7('anchor', anchorText ? anchorText : '#' + anchorId, '#' + anchorId, 0, noop);
+      return create$8('anchor', anchorText ? anchorText : '#' + anchorId, '#' + anchorId, 0, noop);
     };
     var getHeaderTargets = function (elms) {
       return map(filter(elms, isValidHeader), headerTarget);
@@ -21044,8 +21670,10 @@
       });
     };
     var getValidationHandler = function (editor) {
-      var validatorHandler = editor.settings.filepicker_validator_handler;
-      return isFunction(validatorHandler) ? Option.some(validatorHandler) : Option.none();
+      var optValidator = Option.from(editor.settings.file_picker_validator_handler).filter(isFunction);
+      return optValidator.orThunk(function () {
+        return Option.from(editor.settings.filepicker_validator_handler).filter(isFunction);
+      });
     };
     var UrlInputBackstage = function (editor) {
       return {
@@ -21063,16 +21691,8 @@
       };
     };
 
-    var isDraggableModal$1 = function (editor) {
-      return function () {
-        return isDraggableModal(editor);
-      };
-    };
-    var DialogBackstage = function (editor) {
-      return { isDraggableModal: isDraggableModal$1(editor) };
-    };
-
     var init$8 = function (sink, editor, lazyAnchorbar, lazyMoreButton) {
+      var contextMenuState = Cell(false);
       var backstage = {
         shared: {
           providers: {
@@ -21095,14 +21715,21 @@
         urlinput: UrlInputBackstage(editor),
         styleselect: init$7(editor),
         colorinput: ColorInputBackstage(editor),
-        dialog: DialogBackstage(editor)
+        dialog: DialogBackstage(editor),
+        isContextMenuOpen: function () {
+          return contextMenuState.get();
+        },
+        setContextMenuState: function (state) {
+          return contextMenuState.set(state);
+        }
       };
       return backstage;
     };
 
     var showContextToolbarEvent = 'contexttoolbar-show';
+    var hideContextToolbarEvent = 'contexttoolbar-hide';
 
-    var schema$j = constant([
+    var schema$k = constant([
       strict$1('dom'),
       defaulted$1('shell', true),
       field$1('toolbarBehaviours', [Replacing])
@@ -21145,7 +21772,7 @@
     };
     var Toolbar = composite$1({
       name: 'Toolbar',
-      configFields: schema$j(),
+      configFields: schema$k(),
       partFields: parts$7(),
       factory: factory$9,
       apis: {
@@ -21240,7 +21867,7 @@
     };
     var findFocusedComp = function (overflow, overflowButton) {
       return overflow.bind(function (overf) {
-        return search$1(overf.element()).bind(function (focusedElm) {
+        return search(overf.element()).bind(function (focusedElm) {
           return overf.getSystem().getByDom(focusedElm).toOption();
         });
       }).orThunk(function () {
@@ -21283,7 +21910,7 @@
       });
     };
 
-    var schema$k = constant([
+    var schema$l = constant([
       strict$1('items'),
       markers(['itemSelector']),
       field$1('tgroupBehaviours', [Keying])
@@ -21307,13 +21934,13 @@
     };
     var ToolbarGroup = composite$1({
       name: 'ToolbarGroup',
-      configFields: schema$k(),
+      configFields: schema$l(),
       partFields: parts$8(),
       factory: factory$a
     });
 
-    var schema$l = constant([
-      field$1('splitToolbarBehaviours', []),
+    var schema$m = constant([
+      field$1('splitToolbarBehaviours', [Coupling]),
       state$1('builtGroups', function () {
         return Cell([]);
       })
@@ -21326,13 +21953,10 @@
       };
       var setGroups = function (toolbar, groups) {
         doSetGroups(toolbar, groups);
-        extras.refresh(toolbar, detail);
+        extras.apis.refresh(toolbar);
       };
       var getMoreButton = function (toolbar) {
         return getPart(toolbar, detail, 'overflow-button');
-      };
-      var getOverflow = function (toolbar) {
-        return extras.getOverflow(toolbar);
       };
       return {
         uid: detail.uid,
@@ -21340,10 +21964,10 @@
         components: components,
         behaviours: augment(detail.splitToolbarBehaviours, [
           Coupling.config({
-            others: __assign({}, extras.coupling, {
+            others: __assign(__assign({}, extras.coupling), {
               overflowGroup: function (toolbar) {
-                return ToolbarGroup.sketch(__assign({}, externals['overflow-group'](), {
-                  items: [Button.sketch(__assign({}, externals['overflow-button'](), {
+                return ToolbarGroup.sketch(__assign(__assign({}, externals['overflow-group']()), {
+                  items: [Button.sketch(__assign(__assign({}, externals['overflow-button']()), {
                       action: function (_button) {
                         emit(toolbar, toolbarToggleEvent);
                       }
@@ -21353,42 +21977,34 @@
             })
           }),
           config('toolbar-toggle-events', [run(toolbarToggleEvent, function (toolbar) {
-              extras.toggleToolbar(toolbar, detail, externals);
+              extras.apis.toggle(toolbar);
             })])
         ]),
-        apis: {
+        apis: __assign({
           setGroups: setGroups,
-          refresh: function (toolbar) {
-            extras.refresh(toolbar, detail);
-          },
           getMoreButton: function (toolbar) {
             return getMoreButton(toolbar);
-          },
-          getOverflow: function (toolbar) {
-            return getOverflow(toolbar);
-          },
-          toggle: function (toolbar) {
-            extras.toggleToolbar(toolbar, detail, externals);
           }
-        },
+        }, extras.apis),
         domModification: { attributes: { role: 'group' } }
       };
     };
 
-    var schema$m = constant([
+    var schema$n = constant([
       markers(['overflowToggledClass']),
       strict$1('getAnchor'),
+      optionFunction('getOverflowBounds'),
       strict$1('lazySink')
-    ].concat(schema$l()));
+    ].concat(schema$m()));
     var parts$9 = constant([
       required({
         factory: Toolbar,
-        schema: schema$j(),
+        schema: schema$k(),
         name: 'primary'
       }),
       external$1({
         factory: Toolbar,
-        schema: schema$j(),
+        schema: schema$k(),
         name: 'overflow',
         overrides: function (detail) {
           return {
@@ -21429,13 +22045,25 @@
     var isOpen$1 = function (over) {
       return over.getSystem().isConnected();
     };
+    var position$2 = function (toolbar, detail, overf) {
+      var sink = detail.lazySink(toolbar).getOrDie();
+      var anchor = detail.getAnchor(toolbar);
+      var bounds = detail.getOverflowBounds.map(function (bounder) {
+        return bounder();
+      });
+      Positioning.positionWithinBounds(sink, anchor, overf, bounds);
+    };
     var refresh$1 = function (toolbar, detail) {
       var overflow = Sandboxing.getState(Coupling.getCoupled(toolbar, 'sandbox'));
       refresh(toolbar, detail, overflow, isOpen$1);
       overflow.each(function (overf) {
-        var sink = detail.lazySink(toolbar).getOrDie();
-        var anchor = detail.getAnchor(toolbar);
-        Positioning.position(sink, anchor, overf);
+        return position$2(toolbar, detail, overf);
+      });
+    };
+    var reposition$1 = function (toolbar, detail) {
+      var overflow = Sandboxing.getState(Coupling.getCoupled(toolbar, 'sandbox'));
+      overflow.each(function (overf) {
+        return position$2(toolbar, detail, overf);
       });
     };
     var makeSandbox$1 = function (toolbar, detail) {
@@ -21477,27 +22105,44 @@
             getAttachPoint: function () {
               return detail.lazySink(toolbar).getOrDie();
             }
+          }),
+          Receiving.config({
+            channels: __assign({}, receivingChannel$1({
+              isExtraPart: constant(false),
+              doReposition: function () {
+                return reposition$1(toolbar, detail);
+              }
+            }))
           })
         ])
       };
     };
     var factory$b = function (detail, components, spec$1, externals) {
       return spec(detail, components, spec$1, externals, {
-        refresh: refresh$1,
-        toggleToolbar: toggleToolbar,
-        getOverflow: function (toolbar) {
-          return Sandboxing.getState(Coupling.getCoupled(toolbar, 'sandbox'));
-        },
         coupling: {
           sandbox: function (toolbar) {
             return makeSandbox$1(toolbar, detail);
+          }
+        },
+        apis: {
+          refresh: function (toolbar) {
+            return refresh$1(toolbar, detail);
+          },
+          toggle: function (toolbar) {
+            return toggleToolbar(toolbar, detail, externals);
+          },
+          getOverflow: function (toolbar) {
+            return Sandboxing.getState(Coupling.getCoupled(toolbar, 'sandbox'));
+          },
+          reposition: function (toolbar) {
+            return reposition$1(toolbar, detail);
           }
         }
       });
     };
     var SplitFloatingToolbar = composite$1({
       name: 'SplitFloatingToolbar',
-      configFields: schema$m(),
+      configFields: schema$n(),
       partFields: parts$9(),
       factory: factory$b,
       apis: {
@@ -21506,6 +22151,9 @@
         },
         refresh: function (apis, toolbar) {
           apis.refresh(toolbar);
+        },
+        reposition: function (apis, toolbar) {
+          apis.reposition(toolbar);
         },
         getMoreButton: function (apis, toolbar) {
           return apis.getMoreButton(toolbar);
@@ -21744,22 +22392,26 @@
       state: SlidingState
     });
 
-    var schema$n = constant([markers([
+    var schema$o = constant([
+      markers([
         'closedClass',
         'openClass',
         'shrinkingClass',
         'growingClass',
         'overflowToggledClass'
-      ])].concat(schema$l()));
+      ]),
+      onHandler('onOpened'),
+      onHandler('onClosed')
+    ].concat(schema$m()));
     var parts$a = constant([
       required({
         factory: Toolbar,
-        schema: schema$j(),
+        schema: schema$k(),
         name: 'primary'
       }),
       required({
         factory: Toolbar,
-        schema: schema$j(),
+        schema: schema$k(),
         name: 'overflow',
         overrides: function (detail) {
           return {
@@ -21775,9 +22427,11 @@
                     Toggling.off(button);
                     Focusing.focus(button);
                   });
+                  detail.onClosed(comp);
                 },
                 onGrown: function (comp) {
                   Keying.focusIn(comp);
+                  detail.onOpened(comp);
                 },
                 onStartGrow: function (comp) {
                   getPart(comp, detail, 'overflow-button').each(Toggling.on);
@@ -21825,17 +22479,23 @@
     };
     var factory$c = function (detail, components, spec$1, externals) {
       return spec(detail, components, spec$1, externals, {
-        refresh: refresh$3,
-        toggleToolbar: toggleToolbar$1,
-        getOverflow: function (toolbar) {
-          return getPart(toolbar, detail, 'overflow');
-        },
-        coupling: {}
+        coupling: {},
+        apis: {
+          refresh: function (toolbar) {
+            return refresh$3(toolbar, detail);
+          },
+          toggle: function (toolbar) {
+            return toggleToolbar$1(toolbar, detail);
+          },
+          getOverflow: function (toolbar) {
+            return getPart(toolbar, detail, 'overflow');
+          }
+        }
       });
     };
     var SplitSlidingToolbar = composite$1({
       name: 'SplitSlidingToolbar',
-      configFields: schema$n(),
+      configFields: schema$o(),
       partFields: parts$a(),
       factory: factory$c,
       apis: {
@@ -21856,6 +22516,8 @@
         }
       }
     });
+
+    var toolbarHeightChange = constant(generate$1('toolbar-height-change'));
 
     var ReadOnlyChannel = 'silver.readonly';
     var ReadOnlyDataSchema = objOf([strictBoolean('readonly')]);
@@ -21981,18 +22643,26 @@
     };
     var renderFloatingMoreToolbar = function (toolbarSpec) {
       var baseSpec = renderMoreToolbarCommon(toolbarSpec, SplitFloatingToolbar.getOverflow);
+      var overflowXOffset = 4;
       var primary = SplitFloatingToolbar.parts().primary({
         dom: {
           tag: 'div',
           classes: ['tox-toolbar__primary']
         }
       });
-      return SplitFloatingToolbar.sketch(__assign({}, baseSpec, {
+      return SplitFloatingToolbar.sketch(__assign(__assign({}, baseSpec), {
         lazySink: toolbarSpec.getSink,
         getAnchor: function () {
           return toolbarSpec.backstage.shared.anchors.toolbarOverflow();
         },
-        parts: __assign({}, baseSpec.parts, {
+        getOverflowBounds: function () {
+          var headerElem = toolbarSpec.moreDrawerData.lazyHeader().element();
+          var headerBounds = absolute$1(headerElem);
+          var docElem = documentElement(headerElem);
+          var docBounds = absolute$1(docElem);
+          return bounds$1(headerBounds.x() + overflowXOffset, docBounds.y(), headerBounds.width() - overflowXOffset * 2, docBounds.height());
+        },
+        parts: __assign(__assign({}, baseSpec.parts), {
           overflow: {
             dom: {
               tag: 'div',
@@ -22018,7 +22688,7 @@
         }
       });
       var baseSpec = renderMoreToolbarCommon(toolbarSpec, SplitSlidingToolbar.getOverflow);
-      return SplitSlidingToolbar.sketch(__assign({}, baseSpec, {
+      return SplitSlidingToolbar.sketch(__assign(__assign({}, baseSpec), {
         components: [
           primary,
           overflow
@@ -22029,6 +22699,12 @@
           growingClass: 'tox-toolbar__overflow--growing',
           shrinkingClass: 'tox-toolbar__overflow--shrinking',
           overflowToggledClass: 'tox-tbtn--enabled'
+        },
+        onOpened: function (comp) {
+          comp.getSystem().broadcastOn([toolbarHeightChange()], { type: 'opened' });
+        },
+        onClosed: function (comp) {
+          comp.getSystem().broadcastOn([toolbarHeightChange()], { type: 'closed' });
         }
       }));
     };
@@ -22038,7 +22714,7 @@
         uid: toolbarSpec.uid,
         dom: {
           tag: 'div',
-          classes: ['tox-toolbar']
+          classes: ['tox-toolbar'].concat(toolbarSpec.type === ToolbarDrawer.scrolling ? ['tox-toolbar--scrolling'] : [])
         },
         components: [Toolbar.parts().groups({})],
         toolbarBehaviours: getToolbarbehaviours(toolbarSpec, modeName, constant(Option.none()))
@@ -22072,7 +22748,7 @@
       })
     ];
 
-    var MenuButtonSchema = objOf([strictString('type')].concat(baseMenuButtonFields));
+    var MenuButtonSchema = objOf(__spreadArrays([strictString('type')], baseMenuButtonFields));
     var createMenuButton = function (spec) {
       return asRaw('menubutton', MenuButtonSchema, spec);
     };
@@ -22180,10 +22856,8 @@
         });
         reflectingConfig.renderComponents.each(function (renderComponents) {
           var newComponents = renderComponents(data, reflectingState.get());
-          detachChildren(component);
-          each(newComponents, function (c) {
-            attach(component, component.getSystem().build(c));
-          });
+          var newChildren = map(newComponents, component.getSystem().build);
+          replaceChildren(component, newChildren);
         });
       };
       return derive([
@@ -22217,7 +22891,11 @@
         return cell.get();
       };
       var readState = function () {
-        return cell.get().getOr('none');
+        return cell.get().fold(function () {
+          return 'none';
+        }, function (x) {
+          return x;
+        });
       };
       return {
         readState: readState,
@@ -22246,7 +22924,7 @@
       state: ReflectingState
     });
 
-    var schema$o = constant([
+    var schema$p = constant([
       strict$1('toggleClass'),
       strict$1('fetch'),
       onStrictHandler('onExecute'),
@@ -22377,11 +23055,19 @@
             set$1(component.element(), 'aria-describedby', descriptorId);
           });
         })]), events$7(Option.some(action)));
+      var apis = {
+        repositionMenus: function (comp) {
+          if (Toggling.isOn(comp)) {
+            repositionMenus(comp);
+          }
+        }
+      };
       return {
         uid: detail.uid,
         dom: detail.dom,
         components: components,
-        eventOrder: __assign({}, detail.eventOrder, {
+        apis: apis,
+        eventOrder: __assign(__assign({}, detail.eventOrder), {
           'alloy.execute': [
             'disabling',
             'toggling',
@@ -22430,9 +23116,14 @@
     };
     var SplitDropdown = composite$1({
       name: 'SplitDropdown',
-      configFields: schema$o(),
+      configFields: schema$p(),
       partFields: parts$b(),
-      factory: factory$d
+      factory: factory$d,
+      apis: {
+        repositionMenus: function (apis, comp) {
+          return apis.repositionMenus(comp);
+        }
+      }
     });
 
     var getButtonApi = function (component) {
@@ -22658,7 +23349,8 @@
             run(focusButtonEvent, Focusing.focus),
             onControlAttached(specialisation, editorOffCell),
             onControlDetached(specialisation, editorOffCell)
-          ])
+          ]),
+          Unselecting.config({})
         ]),
         eventOrder: (_a = {}, _a[attachedToDom()] = [
           'alloy.base.behaviour',
@@ -22707,7 +23399,7 @@
     };
     var renderContextButton = function (memInput, button, extras) {
       var _a = button.original, primary = _a.primary, rest = __rest(_a, ['primary']);
-      var bridged = getOrDie(createToolbarButton(__assign({}, rest, {
+      var bridged = getOrDie(createToolbarButton(__assign(__assign({}, rest), {
         type: 'button',
         onAction: function () {
         }
@@ -22716,7 +23408,7 @@
     };
     var renderContextToggleButton = function (memInput, button, extras) {
       var _a = button.original, primary = _a.primary, rest = __rest(_a, ['primary']);
-      var bridged = getOrDie(createToggleButton(__assign({}, rest, {
+      var bridged = getOrDie(createToggleButton(__assign(__assign({}, rest), {
         type: 'togglebutton',
         onAction: function () {
         }
@@ -22757,7 +23449,7 @@
       };
     };
 
-    var renderContextForm = function (ctx, backstage) {
+    var renderContextForm = function (toolbarType, ctx, backstage) {
       var inputAttributes = ctx.label.fold(function () {
         return {};
       }, function (label) {
@@ -22791,6 +23483,7 @@
       }));
       var commands = generate$7(memInput, ctx.commands, backstage.shared.providers);
       return renderToolbar({
+        type: toolbarType,
         uid: generate$1('context-toolbar'),
         initGroups: [
           {
@@ -22812,131 +23505,60 @@
     };
     var ContextForm = { renderContextForm: renderContextForm };
 
-    var forwardSlideEvent = generate$1('forward-slide');
-    var backSlideEvent = generate$1('backward-slide');
-    var changeSlideEvent = generate$1('change-slide-event');
-    var resizingClass = 'tox-pop--resizing';
-    var renderContextToolbar = function (spec) {
-      var stack = Cell([]);
-      return InlineView.sketch({
-        dom: {
-          tag: 'div',
-          classes: ['tox-pop']
-        },
-        fireDismissalEventInstead: { event: 'doNotDismissYet' },
-        onShow: function (comp) {
-          stack.set([]);
-          InlineView.getContent(comp).each(function (c) {
-            remove$6(c.element(), 'visibility');
-          });
-          remove$4(comp.element(), resizingClass);
-          remove$6(comp.element(), 'width');
-        },
-        inlineBehaviours: derive$1([
-          config('context-toolbar-events', [
-            runOnSource(transitionend(), function (comp, se) {
-              InlineView.getContent(comp).each(function (c) {
-              });
-              remove$4(comp.element(), resizingClass);
-              remove$6(comp.element(), 'width');
-            }),
-            run(changeSlideEvent, function (comp, se) {
-              remove$6(comp.element(), 'width');
-              var currentWidth = get$7(comp.element());
-              InlineView.setContent(comp, se.event().contents());
-              add$2(comp.element(), resizingClass);
-              var newWidth = get$7(comp.element());
-              set$2(comp.element(), 'width', currentWidth + 'px');
-              InlineView.getContent(comp).each(function (newContents) {
-                se.event().focus().bind(function (f) {
-                  focus$1(f);
-                  return search$1(comp.element());
-                }).orThunk(function () {
-                  Keying.focusIn(newContents);
-                  return active();
-                });
-              });
-              global$2.setTimeout(function () {
-                set$2(comp.element(), 'width', newWidth + 'px');
-              }, 0);
-            }),
-            run(forwardSlideEvent, function (comp, se) {
-              InlineView.getContent(comp).each(function (oldContents) {
-                stack.set(stack.get().concat([{
-                    bar: oldContents,
-                    focus: active()
-                  }]));
-              });
-              emitWith(comp, changeSlideEvent, {
-                contents: se.event().forwardContents(),
-                focus: Option.none()
-              });
-            }),
-            run(backSlideEvent, function (comp, se) {
-              last(stack.get()).each(function (last) {
-                stack.set(stack.get().slice(0, stack.get().length - 1));
-                emitWith(comp, changeSlideEvent, {
-                  contents: premade$1(last.bar),
-                  focus: last.focus
-                });
-              });
-            })
-          ]),
-          Keying.config({
-            mode: 'special',
-            onEscape: function (comp) {
-              return last(stack.get()).fold(function () {
-                return spec.onEscape();
-              }, function (_) {
-                emit(comp, backSlideEvent);
-                return Option.some(true);
-              });
-            }
-          })
-        ]),
-        lazySink: function () {
-          return Result.value(spec.sink);
-        }
-      });
-    };
-
-    var getHorizontalBounds = function (editor, scroll, contentAreaBox) {
-      var x = Math.max(scroll.left(), contentAreaBox.x());
+    var getHorizontalBounds = function (contentAreaBox, viewportBounds) {
+      var x = Math.max(viewportBounds.x(), contentAreaBox.x());
       var contentBoxWidth = contentAreaBox.right() - x;
-      var maxViewportWidth = domGlobals.window.innerWidth - (x - scroll.left());
+      var maxViewportWidth = viewportBounds.width() - (x - viewportBounds.x());
       var width = Math.min(contentBoxWidth, maxViewportWidth);
       return {
         x: x,
         width: width
       };
     };
-    var getIframeBounds = function (editor, scroll, contentAreaBox) {
-      var _a = getHorizontalBounds(editor, scroll, contentAreaBox), x = _a.x, width = _a.width;
-      var containerBox = box(Element.fromDom(editor.getContainer()));
-      var y = Math.max(scroll.top(), contentAreaBox.y());
+    var getIframeBounds = function (editor, contentAreaBox, viewportBounds) {
+      var _a = getHorizontalBounds(contentAreaBox, viewportBounds), x = _a.x, width = _a.width;
+      var container = Element.fromDom(editor.getContainer());
+      var header = descendant$1(container, '.tox-editor-header').getOr(container);
+      var containerBox = box(container);
+      var headerBox = box(header);
+      var y = Math.max(viewportBounds.y(), contentAreaBox.y(), headerBox.bottom());
       var contentBoxHeight = containerBox.bottom() - y;
-      var maxViewportHeight = domGlobals.window.innerHeight - (y - scroll.top());
+      var maxViewportHeight = viewportBounds.height() - (y - viewportBounds.y());
       var height = Math.min(contentBoxHeight, maxViewportHeight);
-      return bounds(x, y, width, height);
+      return bounds$1(x, y, width, height);
     };
-    var getInlineBounds = function (editor, scroll, contentAreaBox) {
-      var _a = getHorizontalBounds(editor, scroll, contentAreaBox), x = _a.x, width = _a.width;
-      var containerBox = box(Element.fromDom(editor.getContainer()));
-      var windowHeight = domGlobals.window.innerHeight;
-      var scrollTop = scroll.top();
-      if (containerBox.y() >= contentAreaBox.bottom()) {
-        var bottom = Math.min(windowHeight + scrollTop, containerBox.y());
-        var height = bottom - scrollTop;
-        return bounds(x, scrollTop, width, height);
+    var getInlineBounds = function (editor, contentAreaBox, viewportBounds) {
+      var _a = getHorizontalBounds(contentAreaBox, viewportBounds), x = _a.x, width = _a.width;
+      var container = Element.fromDom(editor.getContainer());
+      var header = descendant$1(container, '.tox-editor-header').getOr(container);
+      var headerBox = box(header);
+      var vpHeight = viewportBounds.height();
+      var vpTop = viewportBounds.y();
+      if (headerBox.y() >= contentAreaBox.bottom()) {
+        var bottom = Math.min(vpHeight + vpTop, headerBox.y());
+        var height = bottom - vpTop;
+        return bounds$1(x, vpTop, width, height);
       } else {
-        var y = Math.max(scrollTop, containerBox.bottom());
-        var height = windowHeight - (y - scrollTop);
-        return bounds(x, y, width, height);
+        var y = Math.max(vpTop, headerBox.bottom());
+        var height = vpHeight - (y - vpTop);
+        return bounds$1(x, y, width, height);
       }
     };
-    var getDistractionFreeBounds = function (editor, scroll, contentAreaBox) {
-      var _a = getHorizontalBounds(editor, scroll, contentAreaBox), x = _a.x, width = _a.width;
-      return bounds(x, scroll.top(), width, domGlobals.window.innerHeight);
+    var getDistractionFreeBounds = function (_editor, contentAreaBox, viewportBounds) {
+      var _a = getHorizontalBounds(contentAreaBox, viewportBounds), x = _a.x, width = _a.width;
+      return bounds$1(x, viewportBounds.y(), width, viewportBounds.height());
+    };
+    var getContextToolbarBounds = function (editor) {
+      var toolbarOrMenubarEnabled = isMenubarEnabled(editor) || isToolbarEnabled(editor) || isMultipleToolbars(editor);
+      var viewportBounds = getBounds(domGlobals.window);
+      var contentAreaBox = box(Element.fromDom(editor.getContentAreaContainer()));
+      if (editor.inline && !toolbarOrMenubarEnabled) {
+        return getDistractionFreeBounds(editor, contentAreaBox, viewportBounds);
+      } else if (editor.inline) {
+        return getInlineBounds(editor, contentAreaBox, viewportBounds);
+      } else {
+        return getIframeBounds(editor, contentAreaBox, viewportBounds);
+      }
     };
 
     var ancestor$2 = function (scope, transform, isRoot) {
@@ -22988,7 +23610,7 @@
         var contextForm = getOrDie(createContextForm(toolbarApi));
         forms[key] = contextForm;
         contextForm.launch.map(function (launch) {
-          formNavigators['form:' + key + ''] = __assign({}, toolbarApi.launch, {
+          formNavigators['form:' + key + ''] = __assign(__assign({}, toolbarApi.launch), {
             type: launch.type === 'contextformtogglebutton' ? 'togglebutton' : 'button',
             onAction: function () {
               navigate(contextForm);
@@ -23031,6 +23653,94 @@
     };
     var ToolbarScopes = { categorise: categorise };
 
+    var forwardSlideEvent = generate$1('forward-slide');
+    var backSlideEvent = generate$1('backward-slide');
+    var changeSlideEvent = generate$1('change-slide-event');
+    var resizingClass = 'tox-pop--resizing';
+    var renderContextToolbar = function (spec) {
+      var stack = Cell([]);
+      return InlineView.sketch({
+        dom: {
+          tag: 'div',
+          classes: ['tox-pop']
+        },
+        fireDismissalEventInstead: { event: 'doNotDismissYet' },
+        onShow: function (comp) {
+          stack.set([]);
+          InlineView.getContent(comp).each(function (c) {
+            remove$6(c.element(), 'visibility');
+          });
+          remove$4(comp.element(), resizingClass);
+          remove$6(comp.element(), 'width');
+        },
+        inlineBehaviours: derive$1([
+          config('context-toolbar-events', [
+            runOnSource(transitionend(), function (comp, se) {
+              InlineView.getContent(comp).each(function (c) {
+              });
+              remove$4(comp.element(), resizingClass);
+              remove$6(comp.element(), 'width');
+            }),
+            run(changeSlideEvent, function (comp, se) {
+              remove$6(comp.element(), 'width');
+              var currentWidth = get$7(comp.element());
+              InlineView.setContent(comp, se.event().contents());
+              add$2(comp.element(), resizingClass);
+              var newWidth = get$7(comp.element());
+              set$2(comp.element(), 'width', currentWidth + 'px');
+              InlineView.getContent(comp).each(function (newContents) {
+                se.event().focus().bind(function (f) {
+                  focus$1(f);
+                  return search(comp.element());
+                }).orThunk(function () {
+                  Keying.focusIn(newContents);
+                  return active();
+                });
+              });
+              global$2.setTimeout(function () {
+                set$2(comp.element(), 'width', newWidth + 'px');
+              }, 0);
+            }),
+            run(forwardSlideEvent, function (comp, se) {
+              InlineView.getContent(comp).each(function (oldContents) {
+                stack.set(stack.get().concat([{
+                    bar: oldContents,
+                    focus: active()
+                  }]));
+              });
+              emitWith(comp, changeSlideEvent, {
+                contents: se.event().forwardContents(),
+                focus: Option.none()
+              });
+            }),
+            run(backSlideEvent, function (comp, se) {
+              last(stack.get()).each(function (last) {
+                stack.set(stack.get().slice(0, stack.get().length - 1));
+                emitWith(comp, changeSlideEvent, {
+                  contents: premade$1(last.bar),
+                  focus: last.focus
+                });
+              });
+            })
+          ]),
+          Keying.config({
+            mode: 'special',
+            onEscape: function (comp) {
+              return last(stack.get()).fold(function () {
+                return spec.onEscape();
+              }, function (_) {
+                emit(comp, backSlideEvent);
+                return Option.some(true);
+              });
+            }
+          })
+        ]),
+        lazySink: function () {
+          return Result.value(spec.sink);
+        }
+      });
+    };
+
     var onSetupFormatToggle = function (editor, name) {
       return function (api) {
         var unbindCell = Cell(Option.none());
@@ -23058,7 +23768,7 @@
       };
     };
 
-    var generateSelectItems = function (editor, backstage, spec) {
+    var generateSelectItems = function (_editor, backstage, spec) {
       var generateItem = function (rawItem, response, disabled, value) {
         var translatedText = backstage.shared.providers.translate(rawItem.title);
         if (rawItem.type === 'separator') {
@@ -23117,7 +23827,7 @@
         return function (callback) {
           var preItems = getStyleItems();
           var items = validateItems(preItems);
-          var menu = build$2(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage);
+          var menu = build$2(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage, false);
           callback(menu);
         };
       };
@@ -23126,7 +23836,8 @@
         getFetch: getFetch
       };
     };
-    var createMenuItems = function (editor, backstage, dataset, spec) {
+    var createMenuItems = function (editor, backstage, spec) {
+      var dataset = spec.dataset;
       var getStyleItems = dataset.type === 'basic' ? function () {
         return map(dataset.data, function (d) {
           return processBasic(d, spec.isSelectedFor, spec.getPreviewFor);
@@ -23137,8 +23848,8 @@
         getStyleItems: getStyleItems
       };
     };
-    var createSelectButton = function (editor, backstage, dataset, spec) {
-      var _a = createMenuItems(editor, backstage, dataset, spec), items = _a.items, getStyleItems = _a.getStyleItems;
+    var createSelectButton = function (editor, backstage, spec) {
+      var _a = createMenuItems(editor, backstage, spec), items = _a.items, getStyleItems = _a.getStyleItems;
       var getApi = function (comp) {
         return {
           getComponent: function () {
@@ -23247,7 +23958,7 @@
           return editor.formatter.match(format);
         };
       };
-      var getPreviewFor = function (format) {
+      var getPreviewFor = function (_format) {
         return function () {
           return Option.none();
         };
@@ -23287,12 +23998,10 @@
       };
     };
     var createAlignSelect = function (editor, backstage) {
-      var spec = getSpec(editor);
-      return createSelectButton(editor, backstage, spec.dataset, spec);
+      return createSelectButton(editor, backstage, getSpec(editor));
     };
     var alignSelectMenu = function (editor, backstage) {
-      var spec = getSpec(editor);
-      var menuItems = createMenuItems(editor, backstage, spec.dataset, spec);
+      var menuItems = createMenuItems(editor, backstage, getSpec(editor));
       editor.ui.registry.addNestedMenuItem('align', {
         text: backstage.shared.providers.translate('Align'),
         getSubmenuItems: function () {
@@ -23412,12 +24121,10 @@
       };
     };
     var createFontSelect = function (editor, backstage) {
-      var spec = getSpec$1(editor);
-      return createSelectButton(editor, backstage, spec.dataset, spec);
+      return createSelectButton(editor, backstage, getSpec$1(editor));
     };
     var fontSelectMenu = function (editor, backstage) {
-      var spec = getSpec$1(editor);
-      var menuItems = createMenuItems(editor, backstage, spec.dataset, spec);
+      var menuItems = createMenuItems(editor, backstage, getSpec$1(editor));
       editor.ui.registry.addNestedMenuItem('fontformats', {
         text: backstage.shared.providers.translate('Fonts'),
         getSubmenuItems: function () {
@@ -23453,13 +24160,13 @@
       var getMatchingValue = function () {
         var matchOpt = Option.none();
         var items = dataset.data;
-        var px = editor.queryCommandValue('FontSize');
-        if (px) {
+        var fontSize = editor.queryCommandValue('FontSize');
+        if (fontSize) {
           var _loop_1 = function (precision) {
-            var pt = toPt(px, precision);
+            var pt = toPt(fontSize, precision);
             var legacy = toLegacy(pt);
             matchOpt = find(items, function (item) {
-              return item.format === px || item.format === pt || item.format === legacy;
+              return item.format === fontSize || item.format === pt || item.format === legacy;
             });
           };
           for (var precision = 3; matchOpt.isNone() && precision >= 0; precision--) {
@@ -23468,7 +24175,7 @@
         }
         return {
           matchOpt: matchOpt,
-          px: px
+          size: fontSize
         };
       };
       var isSelectedFor = function (item) {
@@ -23482,9 +24189,7 @@
         var matchOpt = getMatchingValue().matchOpt;
         return matchOpt;
       };
-      var getPreviewFor = function () {
-        return constant(Option.none());
-      };
+      var getPreviewFor = constant(constant(Option.none()));
       var onAction = function (rawItem) {
         return function () {
           editor.undoManager.transact(function () {
@@ -23494,9 +24199,9 @@
         };
       };
       var updateSelectMenuText = function (comp) {
-        var _a = getMatchingValue(), matchOpt = _a.matchOpt, px = _a.px;
+        var _a = getMatchingValue(), matchOpt = _a.matchOpt, size = _a.size;
         var text = matchOpt.fold(function () {
-          return px;
+          return size;
         }, function (match) {
           return match.title;
         });
@@ -23528,12 +24233,10 @@
       };
     };
     var createFontsizeSelect = function (editor, backstage) {
-      var spec = getSpec$2(editor);
-      return createSelectButton(editor, backstage, spec.dataset, spec);
+      return createSelectButton(editor, backstage, getSpec$2(editor));
     };
     var fontsizeSelectMenu = function (editor, backstage) {
-      var spec = getSpec$2(editor);
-      var menuItems = createMenuItems(editor, backstage, spec.dataset, spec);
+      var menuItems = createMenuItems(editor, backstage, getSpec$2(editor));
       editor.ui.registry.addNestedMenuItem('fontsizes', {
         text: 'Font sizes',
         getSubmenuItems: function () {
@@ -23622,12 +24325,10 @@
       };
     };
     var createFormatSelect = function (editor, backstage) {
-      var spec = getSpec$3(editor);
-      return createSelectButton(editor, backstage, spec.dataset, spec);
+      return createSelectButton(editor, backstage, getSpec$3(editor));
     };
     var formatSelectMenu = function (editor, backstage) {
-      var spec = getSpec$3(editor);
-      var menuItems = createMenuItems(editor, backstage, spec.dataset, spec);
+      var menuItems = createMenuItems(editor, backstage, getSpec$3(editor));
       editor.ui.registry.addNestedMenuItem('blockformats', {
         text: 'Blocks',
         getSubmenuItems: function () {
@@ -23636,7 +24337,7 @@
       });
     };
 
-    var getSpec$4 = function (editor) {
+    var getSpec$4 = function (editor, dataset) {
       var isSelectedFor = function (format) {
         return function () {
           return editor.formatter.match(format);
@@ -23691,16 +24392,17 @@
         shouldHide: editor.getParam('style_formats_autohide', false, 'boolean'),
         isInvalid: function (item) {
           return !editor.formatter.canApply(item.format);
-        }
+        },
+        dataset: dataset
       };
     };
     var createStyleSelect = function (editor, backstage) {
-      var data = backstage.styleselect;
-      return createSelectButton(editor, backstage, data, getSpec$4(editor));
+      var dataset = __assign({ type: 'advanced' }, backstage.styleselect);
+      return createSelectButton(editor, backstage, getSpec$4(editor, dataset));
     };
     var styleSelectMenu = function (editor, backstage) {
-      var data = backstage.styleselect;
-      var menuItems = createMenuItems(editor, backstage, data, getSpec$4(editor));
+      var dataset = __assign({ type: 'advanced' }, backstage.styleselect);
+      var menuItems = createMenuItems(editor, backstage, getSpec$4(editor, dataset));
       editor.ui.registry.addNestedMenuItem('formats', {
         text: 'Formats',
         getSubmenuItems: function () {
@@ -23879,7 +24581,113 @@
       });
     };
 
+    var bubbleSize = 12;
+    var bubbleAlignments$1 = {
+      valignCentre: [],
+      alignCentre: [],
+      alignLeft: ['tox-pop--align-left'],
+      alignRight: ['tox-pop--align-right'],
+      right: ['tox-pop--right'],
+      left: ['tox-pop--left'],
+      bottom: ['tox-pop--bottom'],
+      top: ['tox-pop--top']
+    };
+    var anchorOverrides = {
+      maxHeightFunction: expandable(),
+      maxWidthFunction: expandable$1()
+    };
+    var desktopAnchorSpecLayouts = {
+      onLtr: function () {
+        return [
+          north$1,
+          south$1,
+          northeast$1,
+          southeast$1,
+          northwest$1,
+          southwest$1,
+          north$3,
+          south$3,
+          northeast$3,
+          southeast$3,
+          northwest$3,
+          southwest$3
+        ];
+      },
+      onRtl: function () {
+        return [
+          north$1,
+          south$1,
+          northwest$1,
+          southwest$1,
+          northeast$1,
+          southeast$1,
+          north$3,
+          south$3,
+          northwest$3,
+          southwest$3,
+          northeast$3,
+          southeast$3
+        ];
+      }
+    };
+    var mobileAnchorSpecLayouts = {
+      onLtr: function () {
+        return [
+          south$1,
+          southeast$1,
+          southwest$1,
+          northeast$1,
+          northwest$1,
+          north$1,
+          north$3,
+          south$3,
+          northeast$3,
+          southeast$3,
+          northwest$3,
+          southwest$3
+        ];
+      },
+      onRtl: function () {
+        return [
+          south$1,
+          southwest$1,
+          southeast$1,
+          northwest$1,
+          northeast$1,
+          north$1,
+          north$3,
+          south$3,
+          northwest$3,
+          southwest$3,
+          northeast$3,
+          southeast$3
+        ];
+      }
+    };
+    var getAnchorLayout = function (position, isTouch) {
+      if (position === 'line') {
+        return {
+          bubble: nu$8(bubbleSize, 0, bubbleAlignments$1),
+          layouts: {
+            onLtr: function () {
+              return [east$1];
+            },
+            onRtl: function () {
+              return [west$1];
+            }
+          },
+          overrides: anchorOverrides
+        };
+      } else {
+        return {
+          bubble: nu$8(0, bubbleSize, bubbleAlignments$1),
+          layouts: isTouch ? mobileAnchorSpecLayouts : desktopAnchorSpecLayouts,
+          overrides: anchorOverrides
+        };
+      }
+    };
     var register$4 = function (editor, registryContextToolbars, sink, extras) {
+      var isTouch = detect$3().deviceType.isTouch;
       var contextbar = build$1(renderContextToolbar({
         sink: sink,
         onEscape: function () {
@@ -23887,30 +24695,34 @@
           return Option.some(true);
         }
       }));
-      var toolbarOrMenubarEnabled = isMenubarEnabled(editor) || isToolbarEnabled(editor) || isMultipleToolbars(editor);
       var getBounds = function () {
-        var scroll = get$8();
-        var contentAreaBox = box(Element.fromDom(editor.getContentAreaContainer()));
-        if (editor.inline && !toolbarOrMenubarEnabled) {
-          return Option.some(getDistractionFreeBounds(editor, scroll, contentAreaBox));
-        } else if (editor.inline) {
-          return Option.some(getInlineBounds(editor, scroll, contentAreaBox));
-        } else {
-          return Option.some(getIframeBounds(editor, scroll, contentAreaBox));
-        }
+        return getContextToolbarBounds(editor);
       };
-      var getViewportTop = function () {
-        var isToolbarDocked = get$4(Element.fromDom(editor.getContainer()), 'position') === 'fixed';
-        return toolbarOrMenubarEnabled && isToolbarDocked ? editor.getContainer().getBoundingClientRect().bottom : 0;
+      var isRangeOverlapping = function (aTop, aBottom, bTop, bBottom) {
+        return Math.max(aTop, bTop) <= Math.min(aBottom, bBottom);
       };
-      var shouldContextToolbarHide = function () {
+      var getLastElementVerticalBound = function () {
         var nodeBounds = lastElement.get().map(function (ele) {
           return ele.getBoundingClientRect();
-        }).getOr(editor.selection.getRng().getBoundingClientRect());
-        var viewportHeight = defaultView(Element.fromDom(editor.getBody())).dom().innerHeight;
-        var aboveViewport = nodeBounds.bottom < getViewportTop();
-        var belowViewport = nodeBounds.top > viewportHeight;
-        return aboveViewport || belowViewport;
+        }).getOrThunk(function () {
+          return editor.selection.getRng().getBoundingClientRect();
+        });
+        var diffTop = editor.inline ? get$8().top() : absolute$1(Element.fromDom(editor.getBody())).y();
+        return {
+          y: nodeBounds.top + diffTop,
+          bottom: nodeBounds.bottom + diffTop
+        };
+      };
+      var shouldContextToolbarHide = function () {
+        if (isTouch() && extras.backstage.isContextMenuOpen()) {
+          return true;
+        }
+        var lastElementBounds = getLastElementVerticalBound();
+        var contextToolbarBounds = getBounds();
+        return !isRangeOverlapping(lastElementBounds.y, lastElementBounds.bottom, contextToolbarBounds.y(), contextToolbarBounds.bottom());
+      };
+      var forceHide = function () {
+        InlineView.hide(contextbar);
       };
       var hideOrRepositionIfNecessary = function () {
         lastAnchor.get().each(function (anchor) {
@@ -23919,20 +24731,10 @@
           if (shouldContextToolbarHide()) {
             set$2(contextBarEle, 'display', 'none');
           } else {
-            Positioning.positionWithinBounds(sink, anchor, contextbar, getBounds());
+            Positioning.positionWithinBounds(sink, anchor, contextbar, Option.some(getBounds()));
           }
         });
       };
-      editor.on('init', function () {
-        editor.on('ScrollWindow', hideOrRepositionIfNecessary);
-        if (!editor.inline) {
-          var scroller = defaultView(Element.fromDom(editor.getBody()));
-          var onScroll_1 = bind$3(scroller, 'scroll', hideOrRepositionIfNecessary);
-          editor.on('remove', function () {
-            onScroll_1.unbind();
-          });
-        }
-      });
       var lastAnchor = Cell(Option.none());
       var lastElement = Cell(Option.none());
       var timer = Cell(null);
@@ -23966,6 +24768,7 @@
       });
       var buildToolbar = function (ctx) {
         var buttons = editor.ui.registry.getAll().buttons;
+        var toolbarType = getToolbarDrawer(editor) === ToolbarDrawer.scrolling ? ToolbarDrawer.scrolling : ToolbarDrawer.default;
         var scopes = getScopes();
         return ctx.type === 'contexttoolbar' ? function () {
           var allButtons = merge(buttons, scopes.formNavigators);
@@ -23974,6 +24777,7 @@
             toolbar: ctx.items
           }, extras, Option.some(['form:']));
           return renderToolbar({
+            type: toolbarType,
             uid: generate$1('context-toolbar'),
             initGroups: initGroups,
             onEscape: Option.none,
@@ -23984,7 +24788,7 @@
             }
           });
         }() : function () {
-          return ContextForm.renderContextForm(ctx, extras.backstage);
+          return ContextForm.renderContextForm(toolbarType, ctx, extras.backstage);
         }();
       };
       editor.on(showContextToolbarEvent, function (e) {
@@ -23994,75 +24798,15 @@
           InlineView.getContent(contextbar).each(Keying.focusIn);
         });
       });
-      var bubbleSize = 12;
-      var bubbleAlignments = {
-        valignCentre: [],
-        alignCentre: [],
-        alignLeft: ['tox-pop--align-left'],
-        alignRight: ['tox-pop--align-right'],
-        right: ['tox-pop--right'],
-        left: ['tox-pop--left'],
-        bottom: ['tox-pop--bottom'],
-        top: ['tox-pop--top']
-      };
-      var anchorOverrides = { maxHeightFunction: expandable() };
-      var lineAnchorSpec = {
-        bubble: nu$7(bubbleSize, 0, bubbleAlignments),
-        layouts: {
-          onLtr: function () {
-            return [east$1];
-          },
-          onRtl: function () {
-            return [west$1];
-          }
-        },
-        overrides: anchorOverrides
-      };
-      var anchorSpec = {
-        bubble: nu$7(0, bubbleSize, bubbleAlignments),
-        layouts: {
-          onLtr: function () {
-            return [
-              north$1,
-              south$1,
-              northeast$1,
-              southeast$1,
-              northwest$1,
-              southwest$1,
-              north$3,
-              south$3,
-              northeast$3,
-              southeast$3,
-              northwest$3,
-              southwest$3
-            ];
-          },
-          onRtl: function () {
-            return [
-              north$1,
-              south$1,
-              northwest$1,
-              southwest$1,
-              northeast$1,
-              southeast$1,
-              north$3,
-              south$3,
-              northwest$3,
-              southwest$3,
-              northeast$3,
-              southeast$3
-            ];
-          }
-        },
-        overrides: anchorOverrides
-      };
       var getAnchor = function (position, element) {
         var anchorage = position === 'node' ? extras.backstage.shared.anchors.node(element) : extras.backstage.shared.anchors.cursor();
-        var anchor = deepMerge(anchorage, position === 'line' ? lineAnchorSpec : anchorSpec);
-        return anchor;
+        return deepMerge(anchorage, getAnchorLayout(position, isTouch()));
       };
       var launchContext = function (toolbarApi, elem) {
         clearTimer();
+        if (isTouch() && extras.backstage.isContextMenuOpen()) {
+          return;
+        }
         var toolbarSpec = buildToolbar(toolbarApi);
         var sElem = elem.map(Element.fromDom);
         var anchor = getAnchor(toolbarApi.position, sElem);
@@ -24070,7 +24814,9 @@
         lastElement.set(elem);
         var contextBarEle = contextbar.element();
         remove$6(contextBarEle, 'display');
-        InlineView.showWithinBounds(contextbar, anchor, wrapInPopDialog(toolbarSpec), getBounds());
+        InlineView.showWithinBounds(contextbar, anchor, wrapInPopDialog(toolbarSpec), function () {
+          return Option.some(getBounds());
+        });
         if (shouldContextToolbarHide()) {
           set$2(contextBarEle, 'display', 'none');
         }
@@ -24096,12 +24842,14 @@
         timer.set(t);
       };
       editor.on('init', function () {
+        editor.on(hideContextToolbarEvent, forceHide);
+        editor.on('ScrollContent ScrollWindow longpress', hideOrRepositionIfNecessary);
         editor.on('click keyup SetContent ObjectResized ResizeEditor', function (e) {
           resetTimer(global$2.setEditorTimeout(editor, launchContextToolbar, 0));
         });
         editor.on('focusout', function (e) {
           global$2.setEditorTimeout(editor, function () {
-            if (search$1(sink.element()).isNone() && search$1(contextbar.element()).isNone()) {
+            if (search(sink.element()).isNone() && search(contextbar.element()).isNone()) {
               lastAnchor.set(Option.none());
               InlineView.hide(contextbar);
             }
@@ -24114,7 +24862,7 @@
           }
         });
         editor.on('NodeChange', function (e) {
-          search$1(contextbar.element()).fold(function () {
+          search(contextbar.element()).fold(function () {
             resetTimer(global$2.setEditorTimeout(editor, launchContextToolbar, 0));
           }, function (_) {
           });
@@ -24123,80 +24871,76 @@
     };
     var ContextToolbar = { register: register$4 };
 
-    var setup$3 = function (editor, mothership, uiMothership) {
-      var onMousedown = bind$3(Element.fromDom(domGlobals.document), 'mousedown', function (evt) {
+    var setup$4 = function (editor, mothership, uiMothership) {
+      var broadcastEvent = function (name, evt) {
         each([
           mothership,
           uiMothership
         ], function (ship) {
-          ship.broadcastOn([dismissPopups()], { target: evt.target() });
+          ship.broadcastEvent(name, evt);
         });
-      });
-      var onTouchstart = bind$3(Element.fromDom(domGlobals.document), 'touchstart', function (evt) {
+      };
+      var broadcastOn = function (channel, message) {
         each([
           mothership,
           uiMothership
         ], function (ship) {
-          ship.broadcastOn([dismissPopups()], { target: evt.target() });
+          ship.broadcastOn([channel], message);
         });
+      };
+      var fireDismissPopups = function (evt) {
+        return broadcastOn(dismissPopups(), { target: evt.target() });
+      };
+      var onTouchstart = bind$3(Element.fromDom(domGlobals.document), 'touchstart', fireDismissPopups);
+      var onTouchmove = bind$3(Element.fromDom(domGlobals.document), 'touchmove', function (evt) {
+        return broadcastEvent(documentTouchmove(), evt);
       });
+      var onTouchend = bind$3(Element.fromDom(domGlobals.document), 'touchend', function (evt) {
+        return broadcastEvent(documentTouchend(), evt);
+      });
+      var onMousedown = bind$3(Element.fromDom(domGlobals.document), 'mousedown', fireDismissPopups);
       var onMouseup = bind$3(Element.fromDom(domGlobals.document), 'mouseup', function (evt) {
         if (evt.raw().button === 0) {
-          each([
-            mothership,
-            uiMothership
-          ], function (ship) {
-            ship.broadcastOn([mouseReleased()], { target: evt.target() });
-          });
+          broadcastOn(mouseReleased(), { target: evt.target() });
         }
       });
-      var onContentMousedown = function (raw) {
-        each([
-          mothership,
-          uiMothership
-        ], function (ship) {
-          ship.broadcastOn([dismissPopups()], { target: Element.fromDom(raw.target) });
-        });
+      var onContentClick = function (raw) {
+        return broadcastOn(dismissPopups(), { target: Element.fromDom(raw.target) });
       };
-      editor.on('mousedown', onContentMousedown);
-      editor.on('touchstart', onContentMousedown);
       var onContentMouseup = function (raw) {
         if (raw.button === 0) {
-          each([
-            mothership,
-            uiMothership
-          ], function (ship) {
-            ship.broadcastOn([mouseReleased()], { target: Element.fromDom(raw.target) });
-          });
+          broadcastOn(mouseReleased(), { target: Element.fromDom(raw.target) });
         }
       };
-      editor.on('mouseup', onContentMouseup);
       var onWindowScroll = function (evt) {
-        each([
-          mothership,
-          uiMothership
-        ], function (ship) {
-          ship.broadcastEvent(windowScroll(), evt);
-        });
+        return broadcastEvent(windowScroll(), fromRawEvent$1(evt));
       };
-      editor.on('ScrollWindow', onWindowScroll);
       var onWindowResize = function (evt) {
-        each([
-          mothership,
-          uiMothership
-        ], function (ship) {
-          ship.broadcastEvent(windowResize(), evt);
-        });
+        broadcastOn(repositionPopups(), {});
+        broadcastEvent(windowResize(), fromRawEvent$1(evt));
       };
-      editor.on('ResizeWindow', onWindowResize);
+      var onEditorResize = function () {
+        return broadcastOn(repositionPopups(), {});
+      };
+      editor.on('PostRender', function () {
+        editor.on('click', onContentClick);
+        editor.on('tap', onContentClick);
+        editor.on('mouseup', onContentMouseup);
+        editor.on('ScrollWindow', onWindowScroll);
+        editor.on('ResizeWindow', onWindowResize);
+        editor.on('ResizeEditor', onEditorResize);
+      });
       editor.on('remove', function () {
-        editor.off('mousedown', onContentMousedown);
-        editor.off('touchstart', onContentMousedown);
+        editor.off('click', onContentClick);
+        editor.off('tap', onContentClick);
         editor.off('mouseup', onContentMouseup);
-        editor.off('ResizeWindow', onWindowResize);
         editor.off('ScrollWindow', onWindowScroll);
+        editor.off('ResizeWindow', onWindowResize);
+        editor.off('ResizeEditor', onEditorResize);
         onMousedown.unbind();
         onTouchstart.unbind();
+        onTouchmove.unbind();
+        onTouchend.unbind();
         onMouseup.unbind();
       });
       editor.on('detach', function () {
@@ -24206,9 +24950,12 @@
         uiMothership.destroy();
       });
     };
-    var Events$1 = { setup: setup$3 };
+    var Events$1 = { setup: setup$4 };
 
-    var schema$p = constant([
+    var parts$c = AlloyParts;
+    var partType$1 = PartType;
+
+    var schema$q = constant([
       defaulted$1('shell', false),
       strict$1('makeItem'),
       defaulted$1('setupItem', noop),
@@ -24221,7 +24968,7 @@
       name: 'items',
       overrides: customListDetail
     });
-    var parts$c = constant([itemsPart]);
+    var parts$d = constant([itemsPart]);
     var name$2 = constant('CustomList');
 
     var factory$e = function (detail, components, spec, external) {
@@ -24269,8 +25016,8 @@
     };
     var CustomList = composite$1({
       name: name$2(),
-      configFields: schema$p(),
-      partFields: parts$c(),
+      configFields: schema$q(),
+      partFields: parts$d(),
       factory: factory$e,
       apis: {
         setItems: function (apis, list, items) {
@@ -24279,8 +25026,614 @@
       }
     });
 
-    var parts$d = AlloyParts;
-    var partType$1 = PartType;
+    var getOrigin = function (element) {
+      var isFixed = getRaw(element, 'position').is('fixed');
+      var offsetParent$1 = isFixed ? Option.none() : offsetParent(element);
+      return offsetParent$1.orThunk(function () {
+        var marker = Element.fromTag('span');
+        before(element, marker);
+        var offsetParent$1 = offsetParent(marker);
+        remove(marker);
+        return offsetParent$1;
+      }).map(absolute).getOrThunk(function () {
+        return Position(0, 0);
+      });
+    };
+
+    var adt$c = Adt.generate([
+      {
+        offset: [
+          'x',
+          'y'
+        ]
+      },
+      {
+        absolute: [
+          'x',
+          'y'
+        ]
+      },
+      {
+        fixed: [
+          'x',
+          'y'
+        ]
+      }
+    ]);
+    var subtract = function (change) {
+      return function (point) {
+        return point.translate(-change.left(), -change.top());
+      };
+    };
+    var add$4 = function (change) {
+      return function (point) {
+        return point.translate(change.left(), change.top());
+      };
+    };
+    var transform$1 = function (changes) {
+      return function (x, y) {
+        return foldl(changes, function (rest, f) {
+          return f(rest);
+        }, Position(x, y));
+      };
+    };
+    var asFixed = function (coord, scroll, origin) {
+      return coord.fold(transform$1([
+        add$4(origin),
+        subtract(scroll)
+      ]), transform$1([subtract(scroll)]), transform$1([]));
+    };
+    var asAbsolute = function (coord, scroll, origin) {
+      return coord.fold(transform$1([add$4(origin)]), transform$1([]), transform$1([add$4(scroll)]));
+    };
+    var asOffset = function (coord, scroll, origin) {
+      return coord.fold(transform$1([]), transform$1([subtract(origin)]), transform$1([
+        add$4(scroll),
+        subtract(origin)
+      ]));
+    };
+    var withinRange = function (coord1, coord2, xRange, yRange, scroll, origin) {
+      var a1 = asAbsolute(coord1, scroll, origin);
+      var a2 = asAbsolute(coord2, scroll, origin);
+      return Math.abs(a1.left() - a2.left()) <= xRange && Math.abs(a1.top() - a2.top()) <= yRange;
+    };
+    var getDeltas = function (coord1, coord2, xRange, yRange, scroll, origin) {
+      var a1 = asAbsolute(coord1, scroll, origin);
+      var a2 = asAbsolute(coord2, scroll, origin);
+      var left = Math.abs(a1.left() - a2.left());
+      var top = Math.abs(a1.top() - a2.top());
+      return Position(left, top);
+    };
+    var toStyles = function (coord, scroll, origin) {
+      return coord.fold(function (x, y) {
+        return {
+          position: 'absolute',
+          left: x + 'px',
+          top: y + 'px'
+        };
+      }, function (x, y) {
+        return {
+          position: 'absolute',
+          left: x - origin.left() + 'px',
+          top: y - origin.top() + 'px'
+        };
+      }, function (x, y) {
+        return {
+          position: 'fixed',
+          left: x + 'px',
+          top: y + 'px'
+        };
+      });
+    };
+    var translate$2 = function (coord, deltaX, deltaY) {
+      return coord.fold(function (x, y) {
+        return adt$c.offset(x + deltaX, y + deltaY);
+      }, function (x, y) {
+        return adt$c.absolute(x + deltaX, y + deltaY);
+      }, function (x, y) {
+        return adt$c.fixed(x + deltaX, y + deltaY);
+      });
+    };
+    var absorb = function (partialCoord, originalCoord, scroll, origin) {
+      var absorbOne = function (stencil, nu) {
+        return function (optX, optY) {
+          var original = stencil(originalCoord, scroll, origin);
+          return nu(optX.getOr(original.left()), optY.getOr(original.top()));
+        };
+      };
+      return partialCoord.fold(absorbOne(asOffset, adt$c.offset), absorbOne(asAbsolute, adt$c.absolute), absorbOne(asFixed, adt$c.fixed));
+    };
+    var offset = adt$c.offset;
+    var absolute$3 = adt$c.absolute;
+    var fixed$1 = adt$c.fixed;
+
+    var morphAdt = Adt.generate([
+      { static: [] },
+      {
+        absolute: [
+          'x',
+          'y'
+        ]
+      },
+      {
+        fixed: [
+          'x',
+          'y'
+        ]
+      }
+    ]);
+    var appear = function (component, contextualInfo) {
+      var elem = component.element();
+      add$2(elem, contextualInfo.transitionClass);
+      remove$4(elem, contextualInfo.fadeOutClass);
+      add$2(elem, contextualInfo.fadeInClass);
+      contextualInfo.onShow(component);
+    };
+    var disappear = function (component, contextualInfo) {
+      var elem = component.element();
+      add$2(elem, contextualInfo.transitionClass);
+      remove$4(elem, contextualInfo.fadeInClass);
+      add$2(elem, contextualInfo.fadeOutClass);
+      contextualInfo.onHide(component);
+    };
+    var isPartiallyVisible = function (box, viewport) {
+      return box.y() < viewport.bottom() && box.bottom() > viewport.y();
+    };
+    var isTopCompletelyVisible = function (box, viewport) {
+      return box.y() >= viewport.y();
+    };
+    var isBottomCompletelyVisible = function (box, viewport) {
+      return box.bottom() <= viewport.bottom();
+    };
+    var isVisibleForModes = function (modes, box, viewport) {
+      return forall(modes, function (mode) {
+        switch (mode) {
+        case 'bottom':
+          return isBottomCompletelyVisible(box, viewport);
+        case 'top':
+          return isTopCompletelyVisible(box, viewport);
+        }
+      });
+    };
+    var getAttr = function (elem, attr) {
+      return has$1(elem, attr) ? Option.some(parseInt(get$2(elem, attr), 10)) : Option.none();
+    };
+    var getPrior = function (elem, dockInfo) {
+      return getAttr(elem, dockInfo.leftAttr).bind(function (left) {
+        return getAttr(elem, dockInfo.topAttr).map(function (top) {
+          var w = get$7(elem);
+          var h = get$6(elem);
+          return bounds$1(left, top, w, h);
+        });
+      });
+    };
+    var setPrior = function (elem, dockInfo, absLeft, absTop, position) {
+      set$1(elem, dockInfo.leftAttr, absLeft);
+      set$1(elem, dockInfo.topAttr, absTop);
+      set$1(elem, dockInfo.positionAttr, position);
+    };
+    var clearPrior = function (elem, dockInfo) {
+      remove$1(elem, dockInfo.leftAttr);
+      remove$1(elem, dockInfo.topAttr);
+      remove$1(elem, dockInfo.positionAttr);
+    };
+    var revertToOriginal = function (elem, dockInfo, box) {
+      var position = get$2(elem, dockInfo.positionAttr);
+      clearPrior(elem, dockInfo);
+      switch (position) {
+      case 'static':
+        return Option.some(morphAdt.static());
+      case 'absolute':
+        return Option.some(morphAdt.absolute(box.x(), box.y()));
+      default:
+        return Option.none();
+      }
+    };
+    var morphToOriginal = function (elem, dockInfo, viewport) {
+      return getPrior(elem, dockInfo).filter(function (box) {
+        return isVisibleForModes(dockInfo.modes, box, viewport);
+      }).bind(function (box) {
+        return revertToOriginal(elem, dockInfo, box);
+      });
+    };
+    var morphToFixed = function (elem, dockInfo, viewport, scroll, lazyOrigin) {
+      var box$1 = box(elem);
+      if (!isVisibleForModes(dockInfo.modes, box$1, viewport)) {
+        var origin = lazyOrigin();
+        var position = get$4(elem, 'position');
+        setPrior(elem, dockInfo, box$1.x(), box$1.y(), position);
+        var coord = absolute$3(box$1.x(), box$1.y());
+        var asFixed$1 = asFixed(coord, scroll, origin);
+        var viewportPt = absolute$3(viewport.x(), viewport.y());
+        var fixedViewport = asFixed(viewportPt, scroll, origin);
+        var fixedY = box$1.y() <= viewport.y() ? fixedViewport.top() : fixedViewport.top() + viewport.height() - box$1.height();
+        return Option.some(morphAdt.fixed(asFixed$1.left(), fixedY));
+      } else {
+        return Option.none();
+      }
+    };
+    var getMorph = function (component, dockInfo, viewport, scroll, lazyOrigin) {
+      var elem = component.element();
+      var isDocked = getRaw(elem, 'position').is('fixed');
+      return isDocked ? morphToOriginal(elem, dockInfo, viewport) : morphToFixed(elem, dockInfo, viewport, scroll, lazyOrigin);
+    };
+    var getMorphToOriginal = function (component, dockInfo) {
+      var elem = component.element();
+      return getPrior(elem, dockInfo).bind(function (box) {
+        return revertToOriginal(elem, dockInfo, box);
+      });
+    };
+
+    var morphToStatic = function (component, config) {
+      each([
+        'left',
+        'top',
+        'position'
+      ], function (prop) {
+        return remove$6(component.element(), prop);
+      });
+      config.onUndocked(component);
+    };
+    var morphToCoord = function (component, config, scroll, origin, morph) {
+      var styles = toStyles(morph, scroll, origin);
+      setAll$1(component.element(), styles);
+      var method = styles.position === 'fixed' ? config.onDocked : config.onUndocked;
+      method(component);
+    };
+    var updateVisibility = function (component, config, state, viewport, morphToDocked) {
+      if (morphToDocked === void 0) {
+        morphToDocked = false;
+      }
+      config.contextual.each(function (contextInfo) {
+        contextInfo.lazyContext(component).each(function (box) {
+          var isVisible = isPartiallyVisible(box, viewport);
+          if (isVisible !== state.isVisible()) {
+            state.setVisible(isVisible);
+            if (morphToDocked && !isVisible) {
+              add$3(component.element(), [contextInfo.fadeOutClass]);
+              contextInfo.onHide(component);
+            } else {
+              var method = isVisible ? appear : disappear;
+              method(component, contextInfo);
+            }
+          }
+        });
+      });
+    };
+    var refreshInternal = function (component, config, state) {
+      var viewport = config.lazyViewport(component);
+      var elem = component.element();
+      var doc = owner(elem);
+      var scroll = get$8(doc);
+      var lazyOrigin = cached(function () {
+        return getOrigin(elem);
+      });
+      var isDocked = state.isDocked();
+      if (isDocked) {
+        updateVisibility(component, config, state, viewport);
+      }
+      getMorph(component, config, viewport, scroll, lazyOrigin).each(function (morph) {
+        state.setDocked(!isDocked);
+        morph.fold(function () {
+          return morphToStatic(component, config);
+        }, function (x, y) {
+          return morphToCoord(component, config, scroll, lazyOrigin(), absolute$3(x, y));
+        }, function (x, y) {
+          updateVisibility(component, config, state, viewport, true);
+          morphToCoord(component, config, scroll, lazyOrigin(), fixed$1(x, y));
+        });
+      });
+    };
+    var resetInternal = function (component, config, state) {
+      var elem = component.element();
+      state.setDocked(false);
+      getMorphToOriginal(component, config).each(function (morph) {
+        morph.fold(function () {
+          return morphToStatic(component, config);
+        }, function (x, y) {
+          var doc = owner(elem);
+          var scroll = get$8(doc);
+          var origin = getOrigin(elem);
+          morphToCoord(component, config, scroll, origin, absolute$3(x, y));
+        }, noop);
+      });
+      state.setVisible(true);
+      config.contextual.each(function (contextInfo) {
+        remove$5(elem, [
+          contextInfo.fadeInClass,
+          contextInfo.fadeOutClass,
+          contextInfo.transitionClass
+        ]);
+        contextInfo.onShow(component);
+      });
+      refresh$4(component, config, state);
+    };
+    var refresh$4 = function (component, config, state) {
+      if (component.getSystem().isConnected()) {
+        refreshInternal(component, config, state);
+      }
+    };
+    var reset = function (component, config, state) {
+      if (state.isDocked()) {
+        resetInternal(component, config, state);
+      }
+    };
+    var isDocked = function (component, config, state) {
+      return state.isDocked();
+    };
+
+    var DockingApis = /*#__PURE__*/Object.freeze({
+        refresh: refresh$4,
+        reset: reset,
+        isDocked: isDocked
+    });
+
+    var events$f = function (dockInfo, dockState) {
+      return derive([
+        runOnSource(transitionend(), function (component, simulatedEvent) {
+          dockInfo.contextual.each(function (contextInfo) {
+            if (has$2(component.element(), contextInfo.transitionClass)) {
+              remove$5(component.element(), [
+                contextInfo.transitionClass,
+                contextInfo.fadeInClass
+              ]);
+              var notify = dockState.isVisible() ? contextInfo.onShown : contextInfo.onHidden;
+              notify(component);
+            }
+            simulatedEvent.stop();
+          });
+        }),
+        run(windowScroll(), function (component, _) {
+          refresh$4(component, dockInfo, dockState);
+        }),
+        run(windowResize(), function (component, _) {
+          reset(component, dockInfo, dockState);
+        })
+      ]);
+    };
+
+    var ActiveDocking = /*#__PURE__*/Object.freeze({
+        events: events$f
+    });
+
+    var DockingSchema = [
+      optionObjOf('contextual', [
+        strictString('fadeInClass'),
+        strictString('fadeOutClass'),
+        strictString('transitionClass'),
+        strictFunction('lazyContext'),
+        onHandler('onShow'),
+        onHandler('onShown'),
+        onHandler('onHide'),
+        onHandler('onHidden')
+      ]),
+      defaultedFunction('lazyViewport', win),
+      strictString('leftAttr'),
+      strictString('topAttr'),
+      strictString('positionAttr'),
+      defaultedArrayOf('modes', [
+        'top',
+        'bottom'
+      ], string),
+      onHandler('onDocked'),
+      onHandler('onUndocked')
+    ];
+
+    var init$b = function () {
+      var docked = Cell(false);
+      var visible = Cell(true);
+      var readState = function () {
+        return 'docked:  ' + docked.get() + ', visible: ' + visible.get();
+      };
+      return nu$5({
+        isDocked: function () {
+          return docked.get();
+        },
+        setDocked: function (state) {
+          return docked.set(state);
+        },
+        isVisible: function () {
+          return visible.get();
+        },
+        setVisible: function (state) {
+          return visible.set(state);
+        },
+        readState: readState
+      });
+    };
+
+    var DockingState = /*#__PURE__*/Object.freeze({
+        init: init$b
+    });
+
+    var Docking = create$1({
+      fields: DockingSchema,
+      name: 'docking',
+      active: ActiveDocking,
+      apis: DockingApis,
+      state: DockingState
+    });
+
+    var visibility = {
+      fadeInClass: 'tox-editor-dock-fadein',
+      fadeOutClass: 'tox-editor-dock-fadeout',
+      transitionClass: 'tox-editor-dock-transition'
+    };
+    var editorStickyOnClass = 'tox-tinymce--toolbar-sticky-on';
+    var editorStickyOffClass = 'tox-tinymce--toolbar-sticky-off';
+    var updateIframeContentFlow = function (header) {
+      var elm = header.element();
+      parent(elm).each(function (parentElem) {
+        if (Docking.isDocked(header)) {
+          var parentWidth = get$7(parentElem);
+          set$2(elm, 'width', parentWidth + 'px');
+          var headerHeight = getOuter$1(elm);
+          set$2(parentElem, 'padding-top', headerHeight + 'px');
+        } else {
+          remove$6(elm, 'width');
+          remove$6(parentElem, 'padding-top');
+        }
+      });
+    };
+    var updateSinkVisibility = function (sinkElem, visible) {
+      if (visible) {
+        remove$4(sinkElem, visibility.fadeOutClass);
+        add$3(sinkElem, [
+          visibility.transitionClass,
+          visibility.fadeInClass
+        ]);
+      } else {
+        remove$4(sinkElem, visibility.fadeInClass);
+        add$3(sinkElem, [
+          visibility.fadeOutClass,
+          visibility.transitionClass
+        ]);
+      }
+    };
+    var updateEditorClasses = function (editor, docked) {
+      var editorContainer = Element.fromDom(editor.getContainer());
+      if (docked) {
+        add$2(editorContainer, editorStickyOnClass);
+        remove$4(editorContainer, editorStickyOffClass);
+      } else {
+        add$2(editorContainer, editorStickyOffClass);
+        remove$4(editorContainer, editorStickyOnClass);
+      }
+    };
+    var restoreFocus = function (headerElem, focusedElem) {
+      var ownerDoc = owner(focusedElem);
+      active(ownerDoc).filter(function (activeElm) {
+        return !eq(focusedElem, activeElm);
+      }).filter(function (activeElm) {
+        return eq(activeElm, Element.fromDom(ownerDoc.dom().body)) || contains$2(headerElem, activeElm);
+      }).each(function () {
+        return focus$1(focusedElem);
+      });
+    };
+    var findFocusedElem = function (rootElm, lazySink) {
+      return search(rootElm).orThunk(function () {
+        return lazySink().toOption().bind(function (sink) {
+          return search(sink.element());
+        });
+      });
+    };
+    var setup$5 = function (editor, lazyHeader) {
+      if (!editor.inline) {
+        editor.on('ResizeWindow ResizeEditor ResizeContent', function () {
+          lazyHeader().each(updateIframeContentFlow);
+        });
+        editor.on('SkinLoaded', function () {
+          lazyHeader().each(Docking.reset);
+        });
+        editor.on('FullscreenStateChanged', function () {
+          lazyHeader().each(Docking.refresh);
+        });
+      }
+      editor.on('PostRender', function () {
+        updateEditorClasses(editor, false);
+      });
+    };
+    var isDocked$1 = function (lazyHeader) {
+      return lazyHeader().map(Docking.isDocked).getOr(false);
+    };
+    var getIframeBehaviours = function () {
+      var _a;
+      return [Receiving.config({ channels: (_a = {}, _a[toolbarHeightChange()] = { onReceive: updateIframeContentFlow }, _a) })];
+    };
+    var getBehaviours$2 = function (editor, lazySink) {
+      var focusedElm = Cell(Option.none());
+      var runOnSinkElement = function (f) {
+        lazySink().each(function (sink) {
+          return f(sink.element());
+        });
+      };
+      var onDockingSwitch = function (comp) {
+        if (!editor.inline) {
+          updateIframeContentFlow(comp);
+        }
+        updateEditorClasses(editor, Docking.isDocked(comp));
+        comp.getSystem().broadcastOn([repositionPopups()], {});
+        lazySink().each(function (sink) {
+          return sink.getSystem().broadcastOn([repositionPopups()], {});
+        });
+      };
+      var additionalBehaviours = editor.inline ? [] : getIframeBehaviours();
+      return __spreadArrays([
+        Focusing.config({}),
+        Docking.config({
+          leftAttr: 'data-dock-left',
+          topAttr: 'data-dock-top',
+          positionAttr: 'data-dock-pos',
+          contextual: __assign({
+            lazyContext: function (comp) {
+              var headerHeight = getOuter$1(comp.element());
+              var container = editor.inline ? editor.getContentAreaContainer() : editor.getContainer();
+              var box$1 = box(Element.fromDom(container));
+              var boxHeight = box$1.height() - headerHeight;
+              return Option.some(bounds$1(box$1.x(), box$1.y(), box$1.width(), boxHeight));
+            },
+            onShow: function () {
+              runOnSinkElement(function (elem) {
+                return updateSinkVisibility(elem, true);
+              });
+            },
+            onShown: function (comp) {
+              runOnSinkElement(function (elem) {
+                return remove$5(elem, [
+                  visibility.transitionClass,
+                  visibility.fadeInClass
+                ]);
+              });
+              focusedElm.get().each(function (elem) {
+                restoreFocus(comp.element(), elem);
+                focusedElm.set(Option.none());
+              });
+            },
+            onHide: function (comp) {
+              focusedElm.set(findFocusedElem(comp.element(), lazySink));
+              runOnSinkElement(function (elem) {
+                return updateSinkVisibility(elem, false);
+              });
+            },
+            onHidden: function () {
+              runOnSinkElement(function (elem) {
+                return remove$5(elem, [visibility.transitionClass]);
+              });
+            }
+          }, visibility),
+          modes: ['top'],
+          onDocked: onDockingSwitch,
+          onUndocked: onDockingSwitch
+        })
+      ], additionalBehaviours);
+    };
+
+    var StickyHeader = /*#__PURE__*/Object.freeze({
+        setup: setup$5,
+        isDocked: isDocked$1,
+        getBehaviours: getBehaviours$2
+    });
+
+    var setup$6 = noop;
+    var isDocked$2 = never;
+    var getBehaviours$3 = constant([]);
+
+    var StaticHeader = /*#__PURE__*/Object.freeze({
+        setup: setup$6,
+        isDocked: isDocked$2,
+        getBehaviours: getBehaviours$3
+    });
+
+    var renderHeader = function (spec) {
+      var editor = spec.editor;
+      var getBehaviours = spec.sticky ? getBehaviours$2 : getBehaviours$3;
+      return {
+        uid: spec.uid,
+        dom: spec.dom,
+        components: spec.components,
+        behaviours: derive$1(getBehaviours(editor, spec.getSink))
+      };
+    };
 
     var factory$f = function (detail, spec) {
       var setMenus = function (comp, menus) {
@@ -24378,7 +25731,7 @@
     });
 
     var owner$4 = 'container';
-    var schema$q = [field$1('slotBehaviours', [])];
+    var schema$r = [field$1('slotBehaviours', [])];
     var getPartName$1 = function (name) {
       return '<alloy.field.' + name + '>';
     };
@@ -24404,7 +25757,7 @@
           pname: getPartName$1(n)
         });
       });
-      return composite(owner$4, schema$q, fieldParts, make$7, spec);
+      return composite(owner$4, schema$r, fieldParts, make$7, spec);
     };
     var make$7 = function (detail, components, spec) {
       var getSlotNames = function (_) {
@@ -24498,7 +25851,7 @@
         return apis.showSlot(c, key);
       }
     }, makeApi);
-    var SlotContainer = __assign({}, slotApis, { sketch: sketch$2 });
+    var SlotContainer = __assign(__assign({}, slotApis), { sketch: sketch$2 });
 
     var sidebarSchema = objOf([
       optionString('icon'),
@@ -24513,7 +25866,7 @@
       return asRaw('sidebar', sidebarSchema, spec);
     };
 
-    var setup$4 = function (editor) {
+    var setup$7 = function (editor) {
       var sidebars = editor.ui.registry.getAll().sidebars;
       each(keys(sidebars), function (name) {
         var spec = sidebars[name];
@@ -24748,7 +26101,7 @@
         components: []
       };
     };
-    var setup$5 = function (editor, lazyThrobber, sharedBackstage) {
+    var setup$8 = function (editor, lazyThrobber, sharedBackstage) {
       var throbberState = Cell(false);
       var timer = Cell(Option.none());
       var toggle = function (state) {
@@ -24774,64 +26127,67 @@
     var factory$g = function (detail, components, spec) {
       var apis = {
         getSocket: function (comp) {
-          return parts$d.getPart(comp, detail, 'socket');
+          return parts$c.getPart(comp, detail, 'socket');
         },
         setSidebar: function (comp, panelConfigs) {
-          parts$d.getPart(comp, detail, 'sidebar').each(function (sidebar) {
+          parts$c.getPart(comp, detail, 'sidebar').each(function (sidebar) {
             return setSidebar(sidebar, panelConfigs);
           });
         },
         toggleSidebar: function (comp, name) {
-          parts$d.getPart(comp, detail, 'sidebar').each(function (sidebar) {
+          parts$c.getPart(comp, detail, 'sidebar').each(function (sidebar) {
             return toggleSidebar(sidebar, name);
           });
         },
         whichSidebar: function (comp) {
-          return parts$d.getPart(comp, detail, 'sidebar').bind(whichSidebar).getOrNull();
+          return parts$c.getPart(comp, detail, 'sidebar').bind(whichSidebar).getOrNull();
+        },
+        getHeader: function (comp) {
+          return parts$c.getPart(comp, detail, 'header');
         },
         getToolbar: function (comp) {
-          return parts$d.getPart(comp, detail, 'toolbar');
+          return parts$c.getPart(comp, detail, 'toolbar');
         },
         setToolbar: function (comp, groups) {
-          parts$d.getPart(comp, detail, 'toolbar').each(function (toolbar) {
+          parts$c.getPart(comp, detail, 'toolbar').each(function (toolbar) {
             toolbar.getApis().setGroups(toolbar, groups);
           });
         },
         setToolbars: function (comp, toolbars) {
-          parts$d.getPart(comp, detail, 'multiple-toolbar').each(function (mToolbar) {
+          parts$c.getPart(comp, detail, 'multiple-toolbar').each(function (mToolbar) {
             CustomList.setItems(mToolbar, toolbars);
           });
         },
         refreshToolbar: function (comp) {
-          var toolbar = parts$d.getPart(comp, detail, 'toolbar');
+          var toolbar = parts$c.getPart(comp, detail, 'toolbar');
           toolbar.each(function (toolbar) {
             return toolbar.getApis().refresh(toolbar);
           });
         },
         getMoreButton: function (comp) {
-          var toolbar = parts$d.getPart(comp, detail, 'toolbar');
+          var toolbar = parts$c.getPart(comp, detail, 'toolbar');
           return toolbar.bind(function (toolbar) {
             return toolbar.getApis().getMoreButton(toolbar);
           });
         },
         getThrobber: function (comp) {
-          return parts$d.getPart(comp, detail, 'throbber');
+          return parts$c.getPart(comp, detail, 'throbber');
         },
         focusToolbar: function (comp) {
-          var optToolbar = parts$d.getPart(comp, detail, 'toolbar').orThunk(function () {
-            return parts$d.getPart(comp, detail, 'multiple-toolbar');
+          var optToolbar = parts$c.getPart(comp, detail, 'toolbar').orThunk(function () {
+            return parts$c.getPart(comp, detail, 'multiple-toolbar');
           });
           optToolbar.each(function (toolbar) {
             Keying.focusIn(toolbar);
           });
         },
         setMenubar: function (comp, menus) {
-          parts$d.getPart(comp, detail, 'menubar').each(function (menubar) {
+          parts$c.getPart(comp, detail, 'menubar').each(function (menubar) {
             SilverMenubar.setMenus(menubar, menus);
           });
         },
         focusMenubar: function (comp) {
-          parts$d.getPart(comp, detail, 'menubar').each(function (menubar) {
+          parts$c.getPart(comp, detail, 'menubar').each(function (menubar) {
             SilverMenubar.focus(menubar);
           });
         }
@@ -24870,6 +26226,7 @@
               })]),
             makeItem: function () {
               return renderToolbar({
+                type: spec.split,
                 uid: generate$1('multiple-toolbar-item'),
                 backstage: spec.backstage,
                 cyclicKeying: false,
@@ -24898,6 +26255,7 @@
         sketch: function (spec) {
           var renderer = toolbarFactory(spec);
           var toolbarSpec = {
+            type: spec.split,
             uid: spec.uid,
             onEscape: function () {
               spec.onEscape();
@@ -24909,7 +26267,8 @@
             backstage: spec.backstage,
             moreDrawerData: {
               lazyToolbar: spec.lazyToolbar,
-              lazyMoreButton: spec.lazyMoreButton
+              lazyMoreButton: spec.lazyMoreButton,
+              lazyHeader: spec.lazyHeader
             }
           };
           return renderer(toolbarSpec);
@@ -24921,6 +26280,11 @@
         strict$1('onEscape'),
         strict$1('getSink')
       ]
+    });
+    var partHeader = partType$1.optional({
+      factory: { sketch: renderHeader },
+      name: 'header',
+      schema: [strict$1('dom')]
     });
     var partSocket = partType$1.optional({
       name: 'socket',
@@ -24944,6 +26308,7 @@
         strict$1('behaviours')
       ],
       partFields: [
+        partHeader,
         partMenubar,
         partToolbar,
         partMultipleToolbar,
@@ -24963,6 +26328,9 @@
         },
         whichSidebar: function (apis, comp) {
           return apis.whichSidebar(comp);
+        },
+        getHeader: function (apis, comp) {
+          return apis.getHeader(comp);
         },
         getToolbar: function (apis, comp) {
           return apis.getToolbar(comp);
@@ -25028,7 +26396,7 @@
       },
       table: {
         title: 'Table',
-        items: 'inserttable tableprops deletetable row column cell'
+        items: 'inserttable | cell row column | advtablesort | tableprops deletetable'
       },
       help: {
         title: 'Help',
@@ -25137,30 +26505,35 @@
     };
 
     var DOM = global$7.DOM;
-    var detection = PlatformDetection$1.detect();
-    var isTouch$4 = detection.deviceType.isTouch();
+    var detection = detect$3();
+    var isiOS12 = detection.os.isiOS() && detection.os.version.major <= 12;
     var setupEvents = function (editor) {
       var contentWindow = editor.getWin();
       var initialDocEle = editor.getDoc().documentElement;
       var lastWindowDimensions = Cell(Position(contentWindow.innerWidth, contentWindow.innerHeight));
       var lastDocumentDimensions = Cell(Position(initialDocEle.offsetWidth, initialDocEle.offsetHeight));
-      var resize = function () {
+      var resize = function (e) {
         var docEle = editor.getDoc().documentElement;
         var outer = lastWindowDimensions.get();
         var inner = lastDocumentDimensions.get();
         if (outer.left() !== contentWindow.innerWidth || outer.top() !== contentWindow.innerHeight) {
           lastWindowDimensions.set(Position(contentWindow.innerWidth, contentWindow.innerHeight));
-          Events.fireResizeContent(editor);
+          Events.fireResizeContent(editor, e);
         } else if (inner.left() !== docEle.offsetWidth || inner.top() !== docEle.offsetHeight) {
           lastDocumentDimensions.set(Position(docEle.offsetWidth, docEle.offsetHeight));
-          Events.fireResizeContent(editor);
+          Events.fireResizeContent(editor, e);
         }
       };
+      var scroll = function (e) {
+        return Events.fireScrollContent(editor, e);
+      };
       DOM.bind(contentWindow, 'resize', resize);
+      DOM.bind(contentWindow, 'scroll', scroll);
       var elementLoad = capture$1(Element.fromDom(editor.getBody()), 'load', resize);
       editor.on('remove', function () {
         elementLoad.unbind();
         DOM.unbind(contentWindow, 'resize', resize);
+        DOM.unbind(contentWindow, 'scroll', scroll);
       });
     };
     var render = function (editor, uiComponents, rawUiConfig, backstage, args) {
@@ -25168,7 +26541,7 @@
       iframe(editor);
       attachSystemAfter(Element.fromDom(args.targetNode), uiComponents.mothership);
       attachSystem(body(), uiComponents.uiMothership);
-      editor.on('init', function () {
+      editor.on('PostRender', function () {
         setToolbar(editor, uiComponents, rawUiConfig, backstage);
         lastToolbarWidth.set(editor.getWin().innerWidth);
         OuterContainer.setMenubar(uiComponents.outerContainer, identifyMenus(editor, rawUiConfig));
@@ -25176,11 +26549,15 @@
         setupEvents(editor);
       });
       var socket = OuterContainer.getSocket(uiComponents.outerContainer).getOrDie('Could not find expected socket element');
-      if (isTouch$4 === true) {
+      if (isiOS12 === true) {
         setAll$1(socket.element(), {
           'overflow': 'scroll',
           '-webkit-overflow-scrolling': 'touch'
         });
+        var limit = first$1(function () {
+          editor.fire('ScrollContent');
+        }, 20);
+        bind$3(socket.element(), 'scroll', limit.throttle);
       }
       setupReadonlyModeSwitch(editor, uiComponents);
       editor.addCommand('ToggleSidebar', function (ui, value) {
@@ -25195,12 +26572,12 @@
         OuterContainer.refreshToolbar(uiComponents.outerContainer);
       };
       if (drawer === ToolbarDrawer.sliding || drawer === ToolbarDrawer.floating) {
-        editor.on('ResizeContent', function () {
+        editor.on('ResizeWindow ResizeEditor ResizeContent', function () {
           var width = editor.getWin().innerWidth;
           if (width !== lastToolbarWidth.get()) {
             refreshDrawer();
+            lastToolbarWidth.set(width);
           }
-          lastToolbarWidth.set(width);
         });
       }
       return {
@@ -25208,309 +26585,100 @@
         editorContainer: uiComponents.outerContainer.element().dom()
       };
     };
-    var Iframe = {
-      render: render,
-      getBehaviours: function (_) {
-        return [];
+    var Iframe = { render: render };
+
+    var parseToInt = function (val) {
+      var re = /^[0-9\.]+(|px)$/i;
+      if (re.test('' + val)) {
+        return Option.some(parseInt('' + val, 10));
       }
+      return Option.none();
+    };
+    var numToPx = function (val) {
+      return isNumber(val) ? val + 'px' : val;
+    };
+    var calcCappedSize = function (size, minSize, maxSize) {
+      var minOverride = minSize.filter(function (min) {
+        return size < min;
+      });
+      var maxOverride = maxSize.filter(function (max) {
+        return size > max;
+      });
+      return minOverride.or(maxOverride).getOr(size);
+    };
+    var Utils = {
+      calcCappedSize: calcCappedSize,
+      parseToInt: parseToInt,
+      numToPx: numToPx
     };
 
-    var getOrigin = function (element, scroll) {
-      return offsetParent(element).orThunk(function () {
-        var marker = Element.fromTag('span');
-        before(element, marker);
-        var offsetParent$1 = offsetParent(marker);
-        remove(marker);
-        return offsetParent$1;
-      }).map(function (offsetP) {
-        var loc = absolute(offsetP);
-        return loc.translate(-scroll.left(), -scroll.top());
-      }).getOrThunk(function () {
-        return Position(0, 0);
+    var getHeight$1 = function (editor) {
+      var baseHeight = getHeightSetting(editor);
+      var minHeight = getMinHeightSetting(editor);
+      var maxHeight = getMaxHeightSetting(editor);
+      return Utils.parseToInt(baseHeight).map(function (height) {
+        return Utils.calcCappedSize(height, minHeight, maxHeight);
       });
     };
-
-    var adt$c = Adt.generate([
-      {
-        offset: [
-          'x',
-          'y'
-        ]
-      },
-      {
-        absolute: [
-          'x',
-          'y'
-        ]
-      },
-      {
-        fixed: [
-          'x',
-          'y'
-        ]
-      }
-    ]);
-    var subtract = function (change) {
-      return function (point) {
-        return point.translate(-change.left(), -change.top());
-      };
+    var getHeightWithFallback = function (editor) {
+      var height = getHeight$1(editor);
+      return height.getOr(getHeightSetting(editor));
     };
-    var add$4 = function (change) {
-      return function (point) {
-        return point.translate(change.left(), change.top());
-      };
-    };
-    var transform$1 = function (changes) {
-      return function (x, y) {
-        return foldl(changes, function (rest, f) {
-          return f(rest);
-        }, Position(x, y));
-      };
-    };
-    var asFixed = function (coord, scroll, origin) {
-      return coord.fold(transform$1([
-        add$4(origin),
-        subtract(scroll)
-      ]), transform$1([subtract(scroll)]), transform$1([]));
-    };
-    var asAbsolute = function (coord, scroll, origin) {
-      return coord.fold(transform$1([add$4(origin)]), transform$1([]), transform$1([add$4(scroll)]));
-    };
-    var asOffset = function (coord, scroll, origin) {
-      return coord.fold(transform$1([]), transform$1([subtract(origin)]), transform$1([
-        add$4(scroll),
-        subtract(origin)
-      ]));
-    };
-    var withinRange = function (coord1, coord2, xRange, yRange, scroll, origin) {
-      var a1 = asAbsolute(coord1, scroll, origin);
-      var a2 = asAbsolute(coord2, scroll, origin);
-      return Math.abs(a1.left() - a2.left()) <= xRange && Math.abs(a1.top() - a2.top()) <= yRange;
-    };
-    var toStyles = function (coord, scroll, origin) {
-      return coord.fold(function (x, y) {
-        return {
-          position: 'absolute',
-          left: x + 'px',
-          top: y + 'px'
-        };
-      }, function (x, y) {
-        return {
-          position: 'absolute',
-          left: x - origin.left() + 'px',
-          top: y - origin.top() + 'px'
-        };
-      }, function (x, y) {
-        return {
-          position: 'fixed',
-          left: x + 'px',
-          top: y + 'px'
-        };
+    var getWidth$1 = function (editor) {
+      var baseWidth = getWidthSetting(editor);
+      var minWidth = getMinWidthSetting(editor);
+      var maxWidth = getMaxWidthSetting(editor);
+      return Utils.parseToInt(baseWidth).map(function (width) {
+        return Utils.calcCappedSize(width, minWidth, maxWidth);
       });
     };
-    var translate$1 = function (coord, deltaX, deltaY) {
-      return coord.fold(function (x, y) {
-        return adt$c.offset(x + deltaX, y + deltaY);
-      }, function (x, y) {
-        return adt$c.absolute(x + deltaX, y + deltaY);
-      }, function (x, y) {
-        return adt$c.fixed(x + deltaX, y + deltaY);
-      });
+    var getWidthWithFallback = function (editor) {
+      var width = getWidth$1(editor);
+      return width.getOr(getWidthSetting(editor));
     };
-    var absorb = function (partialCoord, originalCoord, scroll, origin) {
-      var absorbOne = function (stencil, nu) {
-        return function (optX, optY) {
-          var original = stencil(originalCoord, scroll, origin);
-          return nu(optX.getOr(original.left()), optY.getOr(original.top()));
-        };
-      };
-      return partialCoord.fold(absorbOne(asOffset, adt$c.offset), absorbOne(asAbsolute, adt$c.absolute), absorbOne(asFixed, adt$c.fixed));
-    };
-    var offset = adt$c.offset;
-    var absolute$2 = adt$c.absolute;
-    var fixed$1 = adt$c.fixed;
-
-    var appear = function (component, contextualInfo) {
-      add$2(component.element(), contextualInfo.transitionClass);
-      remove$4(component.element(), contextualInfo.fadeOutClass);
-      add$2(component.element(), contextualInfo.fadeInClass);
-    };
-    var disappear = function (component, contextualInfo) {
-      add$2(component.element(), contextualInfo.transitionClass);
-      remove$4(component.element(), contextualInfo.fadeInClass);
-      add$2(component.element(), contextualInfo.fadeOutClass);
-    };
-    var isPartiallyVisible = function (box, viewport) {
-      return box.y() < viewport.bottom() && box.bottom() > viewport.y();
-    };
-    var isCompletelyVisible = function (box, viewport) {
-      return box.y() >= viewport.y() && box.bottom() <= viewport.bottom();
-    };
-    var getAttr = function (elem, attr) {
-      return has$1(elem, attr) ? Option.some(parseInt(get$2(elem, attr), 10)) : Option.none();
-    };
-    var getPrior = function (component, dockInfo) {
-      var elem = component.element();
-      return getAttr(elem, dockInfo.leftAttr).bind(function (left) {
-        return getAttr(elem, dockInfo.topAttr).map(function (top) {
-          var w = get$7(component.element());
-          var h = get$6(component.element());
-          return bounds(left, top, w, h);
-        });
-      });
-    };
-    var setPrior = function (component, dockInfo, absLeft, absTop) {
-      var elem = component.element();
-      set$1(elem, dockInfo.leftAttr, absLeft);
-      set$1(elem, dockInfo.topAttr, absTop);
-    };
-    var clearPrior = function (component, dockInfo) {
-      var elem = component.element();
-      remove$1(elem, dockInfo.leftAttr);
-      remove$1(elem, dockInfo.topAttr);
-    };
-    var morphToAbsolute = function (component, dockInfo, viewport) {
-      return getPrior(component, dockInfo).bind(function (box) {
-        if (isCompletelyVisible(box, viewport)) {
-          clearPrior(component, dockInfo);
-          return Option.some(absolute$2(box.x(), box.y()));
-        } else {
-          return Option.none();
-        }
-      });
-    };
-    var morphToFixed = function (component, dockInfo, viewport, scroll, origin) {
-      var loc = absolute(component.element());
-      var box = bounds(loc.left(), loc.top(), get$7(component.element()), get$6(component.element()));
-      if (!isCompletelyVisible(box, viewport)) {
-        setPrior(component, dockInfo, loc.left(), loc.top());
-        var coord = absolute$2(loc.left(), loc.top());
-        var asFixed$1 = asFixed(coord, scroll, origin);
-        var viewportPt = absolute$2(viewport.x(), viewport.y());
-        var fixedViewport = asFixed(viewportPt, scroll, origin);
-        var fixedY = box.y() <= viewport.y() ? fixedViewport.top() : fixedViewport.top() + viewport.height() - box.height();
-        return Option.some(fixed$1(asFixed$1.left(), fixedY));
-      } else {
-        return Option.none();
-      }
-    };
-    var getMorph = function (component, dockInfo, viewport, scroll, origin) {
-      var isDocked = getRaw(component.element(), 'position').is('fixed');
-      return isDocked ? morphToAbsolute(component, dockInfo, viewport) : morphToFixed(component, dockInfo, viewport, scroll, origin);
-    };
-
-    var refresh$4 = function (component, config, state) {
-      var viewport = config.lazyViewport(component);
-      config.contextual.each(function (contextInfo) {
-        contextInfo.lazyContext(component).each(function (elem) {
-          var box$1 = box(elem);
-          var isVisible = isPartiallyVisible(box$1, viewport);
-          var method = isVisible ? appear : disappear;
-          method(component, contextInfo);
-        });
-      });
-      var doc = owner(component.element());
-      var scroll = get$8(doc);
-      var origin = getOrigin(component.element(), scroll);
-      getMorph(component, config, viewport, scroll, origin).each(function (morph) {
-        var styles = toStyles(morph, scroll, origin);
-        setAll$1(component.element(), styles);
-      });
-    };
-
-    var DockingApis = /*#__PURE__*/Object.freeze({
-        refresh: refresh$4
-    });
-
-    var events$f = function (dockInfo, dockState) {
-      return derive([
-        run(transitionend(), function (component, simulatedEvent) {
-          dockInfo.contextual.each(function (contextInfo) {
-            if (eq(component.element(), simulatedEvent.event().target())) {
-              remove$4(component.element(), contextInfo.transitionClass);
-              simulatedEvent.stop();
-            }
-          });
-        }),
-        run(windowScroll(), function (component, _) {
-          refresh$4(component, dockInfo);
-        })
-      ]);
-    };
-
-    var ActiveDocking = /*#__PURE__*/Object.freeze({
-        events: events$f
-    });
-
-    var defaultLazyViewport = function (_component) {
-      var scroll = get$8();
-      return bounds(scroll.left(), scroll.top(), domGlobals.window.innerWidth, domGlobals.window.innerHeight);
-    };
-    var DockingSchema = [
-      optionObjOf('contextual', [
-        strict$1('fadeInClass'),
-        strict$1('fadeOutClass'),
-        strict$1('transitionClass'),
-        strict$1('lazyContext')
-      ]),
-      defaulted$1('lazyViewport', defaultLazyViewport),
-      strict$1('leftAttr'),
-      strict$1('topAttr')
-    ];
-
-    var Docking = create$1({
-      fields: DockingSchema,
-      name: 'docking',
-      active: ActiveDocking,
-      apis: DockingApis
-    });
 
     var render$1 = function (editor, uiComponents, rawUiConfig, backstage, args) {
       var floatContainer;
       var DOM = global$7.DOM;
       var useFixedToolbarContainer = useFixedContainer(editor);
+      var isSticky = isStickyToolbar(editor);
+      var targetElm = Element.fromDom(args.targetNode);
+      var editorMaxWidthOpt = getMaxWidthSetting(editor).or(getWidth$1(editor));
       var splitSetting = getToolbarDrawer(editor);
       var split = splitSetting === ToolbarDrawer.sliding || splitSetting === ToolbarDrawer.floating;
       inline(editor);
-      var calcPosition = function (offset) {
-        if (offset === void 0) {
-          offset = 0;
-        }
-        var location = absolute(Element.fromDom(editor.getBody()));
-        return {
-          top: Math.round(location.top() - get$6(floatContainer.element())) + offset,
-          left: Math.round(location.left())
-        };
-      };
-      var setChromePosition = function (toolbar) {
-        var isDocked = getRaw(floatContainer.element(), 'position').is('fixed');
+      var updateChromePosition = function (toolbar) {
         var offset = split ? toolbar.fold(function () {
           return 0;
         }, function (tbar) {
           return tbar.components().length > 1 ? get$6(tbar.components()[1].element()) : 0;
         }) : 0;
-        var position = calcPosition(offset);
-        if (isDocked) {
-          setAll(floatContainer.element(), tupleMap(position, function (value, key) {
-            return {
-              k: 'data-dock-' + key,
-              v: value
-            };
-          }));
-        } else {
-          setAll$1(floatContainer.element(), map$1(position, function (value) {
-            return value + 'px';
-          }));
-        }
-        Docking.refresh(floatContainer);
+        var location = absolute(targetElm);
+        var top = location.top() - get$6(floatContainer.element()) + offset;
+        setAll$1(uiComponents.outerContainer.element(), {
+          position: 'absolute',
+          top: Math.round(top) + 'px',
+          left: Math.round(location.left()) + 'px'
+        });
+        var maxWidth = editorMaxWidthOpt.getOrThunk(function () {
+          var bodyMargin = Utils.parseToInt(get$4(body(), 'margin-left')).getOr(0);
+          return get$7(body()) - location.left() + bodyMargin;
+        });
+        set$2(floatContainer.element(), 'max-width', maxWidth + 'px');
       };
-      var updateChromeUi = function () {
-        var toolbar = OuterContainer.getToolbar(uiComponents.outerContainer);
+      var updateChromeUi = function (resetDocking) {
+        if (resetDocking === void 0) {
+          resetDocking = false;
+        }
         if (split) {
           OuterContainer.refreshToolbar(uiComponents.outerContainer);
         }
         if (!useFixedToolbarContainer) {
-          setChromePosition(toolbar);
+          var toolbar = OuterContainer.getToolbar(uiComponents.outerContainer);
+          updateChromePosition(toolbar);
+        }
+        if (isSticky) {
+          resetDocking ? Docking.reset(floatContainer) : Docking.refresh(floatContainer);
         }
       };
       var show = function () {
@@ -25531,20 +26699,20 @@
           show();
           return;
         }
-        floatContainer = uiComponents.outerContainer;
+        floatContainer = OuterContainer.getHeader(uiComponents.outerContainer).getOrDie();
         var uiContainer = getUiContainer(editor);
         attachSystem(uiContainer, uiComponents.mothership);
         attachSystem(uiContainer, uiComponents.uiMothership);
         setToolbar(editor, uiComponents, rawUiConfig, backstage);
         OuterContainer.setMenubar(uiComponents.outerContainer, identifyMenus(editor, rawUiConfig));
-        if (!useFixedToolbarContainer) {
-          set$2(floatContainer.element(), 'position', 'absolute');
-        }
-        updateChromeUi();
         show();
-        editor.on('NodeChange ResizeWindow', updateChromeUi);
         editor.on('activate', show);
         editor.on('deactivate', hide);
+        editor.on('NodeChange SkinLoaded ResizeWindow', function () {
+          if (!editor.hidden) {
+            updateChromeUi(true);
+          }
+        });
         editor.nodeChanged();
       };
       editor.on('focus', render);
@@ -25557,29 +26725,7 @@
       setupReadonlyModeSwitch(editor, uiComponents);
       return { editorContainer: uiComponents.outerContainer.element().dom() };
     };
-    var getBehaviours$2 = function (editor) {
-      return useFixedContainer(editor) ? [] : [
-        Docking.config({
-          leftAttr: 'data-dock-left',
-          topAttr: 'data-dock-top',
-          contextual: {
-            lazyContext: function (_) {
-              return Option.from(editor).map(function (ed) {
-                return Element.fromDom(ed.getBody());
-              });
-            },
-            fadeInClass: 'tox-toolbar-dock-fadein',
-            fadeOutClass: 'tox-toolbar-dock-fadeout',
-            transitionClass: 'tox-toolbar-dock-transition'
-          }
-        }),
-        Focusing.config({})
-      ];
-    };
-    var Inline = {
-      render: render$1,
-      getBehaviours: getBehaviours$2
-    };
+    var Inline = { render: render$1 };
 
     var register$5 = function (editor) {
       var alignToolbarButtons = [
@@ -26023,7 +27169,7 @@
     };
     var ComplexControls = { register: register$a };
 
-    var setup$6 = function (editor, backstage) {
+    var setup$9 = function (editor, backstage) {
       AlignmentButtons.register(editor);
       SimpleControls.register(editor);
       ComplexControls.register(editor, backstage);
@@ -26032,7 +27178,7 @@
       VisualAid.register(editor);
       IndentOutdent.register(editor);
     };
-    var FormatControls = { setup: setup$6 };
+    var FormatControls = { setup: setup$9 };
 
     var nu$d = function (x, y) {
       return {
@@ -26044,11 +27190,24 @@
     var transpose$1 = function (pos, dx, dy) {
       return nu$d(pos.x + dx, pos.y + dy);
     };
+    var isTouchEvent$1 = function (e) {
+      return e.type === 'longpress' || e.type.indexOf('touch') === 0;
+    };
     var fromPageXY = function (e) {
-      return nu$d(e.pageX, e.pageY);
+      if (isTouchEvent$1(e)) {
+        var touch = e.touches[0];
+        return nu$d(touch.pageX, touch.pageY);
+      } else {
+        return nu$d(e.pageX, e.pageY);
+      }
     };
     var fromClientXY = function (e) {
-      return nu$d(e.clientX, e.clientY);
+      if (isTouchEvent$1(e)) {
+        var touch = e.touches[0];
+        return nu$d(touch.clientX, touch.clientY);
+      } else {
+        return nu$d(e.clientX, e.clientY);
+      }
     };
     var transposeContentAreaContainer = function (element, pos) {
       var containerPos = global$7.DOM.getPos(element);
@@ -26077,6 +27236,158 @@
         node: Option.some(Element.fromDom(editor.selection.getNode())),
         root: Element.fromDom(editor.getBody())
       };
+    };
+
+    var getAnchorSpec = function (editor, e, isTriggeredByKeyboardEvent) {
+      return isTriggeredByKeyboardEvent ? getNodeAnchor$1(editor) : getPointAnchor(editor, e);
+    };
+    var initAndShow = function (editor, e, buildMenu, backstage, contextmenu, isTriggeredByKeyboardEvent) {
+      var items = buildMenu();
+      var anchorSpec = getAnchorSpec(editor, e, isTriggeredByKeyboardEvent);
+      build$2(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage, false).map(function (menuData) {
+        e.preventDefault();
+        InlineView.showMenuAt(contextmenu, anchorSpec, {
+          menu: { markers: markers$1('normal') },
+          data: menuData
+        });
+      });
+    };
+
+    var layouts = {
+      onLtr: function () {
+        return [
+          south$1,
+          southeast$1,
+          southwest$1,
+          northeast$1,
+          northwest$1,
+          north$1,
+          north$3,
+          south$3,
+          northeast$3,
+          southeast$3,
+          northwest$3,
+          southwest$3
+        ];
+      },
+      onRtl: function () {
+        return [
+          south$1,
+          southwest$1,
+          southeast$1,
+          northwest$1,
+          northeast$1,
+          north$1,
+          north$3,
+          south$3,
+          northwest$3,
+          southwest$3,
+          northeast$3,
+          southeast$3
+        ];
+      }
+    };
+    var bubbleSize$1 = 12;
+    var bubbleAlignments$2 = {
+      valignCentre: [],
+      alignCentre: [],
+      alignLeft: ['tox-pop--align-left'],
+      alignRight: ['tox-pop--align-right'],
+      right: ['tox-pop--right'],
+      left: ['tox-pop--left'],
+      bottom: ['tox-pop--bottom'],
+      top: ['tox-pop--top']
+    };
+    var isTouchWithinSelection = function (editor, e) {
+      var selection = editor.selection;
+      if (selection.isCollapsed() || e.touches.length < 1) {
+        return false;
+      } else {
+        var touch_1 = e.touches[0];
+        var rng = selection.getRng();
+        var rngRectOpt = getFirstRect$1(editor.getWin(), Selection.domRange(rng));
+        return rngRectOpt.exists(function (rngRect) {
+          return rngRect.left() <= touch_1.clientX && rngRect.right() >= touch_1.clientX && rngRect.top() <= touch_1.clientY && rngRect.bottom() >= touch_1.clientY;
+        });
+      }
+    };
+    var getAnchorSpec$1 = function (editor, isTriggeredByKeyboardEvent) {
+      var anchorSpec = isTriggeredByKeyboardEvent ? getNodeAnchor$1(editor) : getSelectionAnchor(editor);
+      return __assign({
+        bubble: nu$8(0, bubbleSize$1, bubbleAlignments$2),
+        layouts: layouts,
+        overrides: {
+          maxWidthFunction: expandable$1(),
+          maxHeightFunction: expandable()
+        }
+      }, anchorSpec);
+    };
+    var setupiOSOverrides = function (editor) {
+      var originalSelection = editor.selection.getRng();
+      var selectionReset = function () {
+        global$2.setEditorTimeout(editor, function () {
+          editor.selection.setRng(originalSelection);
+        }, 10);
+        unbindEventListeners();
+      };
+      editor.once('touchend', selectionReset);
+      var preventMousedown = function (e) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+      };
+      editor.on('mousedown', preventMousedown, true);
+      var clearSelectionReset = function () {
+        return unbindEventListeners();
+      };
+      editor.once('longpresscancel', clearSelectionReset);
+      var unbindEventListeners = function () {
+        editor.off('touchend', selectionReset);
+        editor.off('longpresscancel', clearSelectionReset);
+        editor.off('mousedown', preventMousedown);
+      };
+    };
+    var show = function (editor, e, items, backstage, contextmenu, isTriggeredByKeyboardEvent) {
+      var anchorSpec = getAnchorSpec$1(editor, isTriggeredByKeyboardEvent);
+      build$2(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage, true).map(function (menuData) {
+        e.preventDefault();
+        InlineView.showMenuWithinBounds(contextmenu, anchorSpec, {
+          menu: { markers: markers$1('normal') },
+          data: menuData,
+          type: 'horizontal'
+        }, function () {
+          return Option.some(getContextToolbarBounds(editor));
+        });
+        editor.fire(hideContextToolbarEvent);
+      });
+    };
+    var initAndShow$1 = function (editor, e, buildMenu, backstage, contextmenu, isTriggeredByKeyboardEvent) {
+      var detection = detect$3();
+      var isiOS = detection.os.isiOS();
+      var isOSX = detection.os.isOSX();
+      var isAndroid = detection.os.isAndroid();
+      var open = function () {
+        var items = buildMenu();
+        show(editor, e, items, backstage, contextmenu, isTriggeredByKeyboardEvent);
+      };
+      if ((isOSX || isiOS) && !isTriggeredByKeyboardEvent) {
+        var openiOS_1 = function () {
+          setupiOSOverrides(editor);
+          open();
+        };
+        if (isTouchWithinSelection(editor, e)) {
+          openiOS_1();
+        } else {
+          editor.once('selectionchange', openiOS_1);
+          editor.once('touchend', function () {
+            return editor.off('selectionchange', openiOS_1);
+          });
+        }
+      } else {
+        if (isAndroid && !isTriggeredByKeyboardEvent) {
+          editor.selection.setCursorLocation(e.target, 0);
+        }
+        open();
+      }
     };
 
     var patchPipeConfig = function (config) {
@@ -26155,13 +27466,13 @@
       return xs.concat(before).concat(groupItems).concat([separator$3]);
     };
     var generateContextMenu = function (contextMenus, menuConfig, selectedElement) {
-      var items = foldl(menuConfig, function (acc, name) {
+      var sections = foldl(menuConfig, function (acc, name) {
         if (has(contextMenus, name)) {
-          var items_1 = contextMenus[name].update(selectedElement);
-          if (isString(items_1)) {
-            return addContextMenuGroup(acc, items_1.split(' '));
-          } else if (items_1.length > 0) {
-            var allItems = map(items_1, makeContextItem);
+          var items = contextMenus[name].update(selectedElement);
+          if (isString(items)) {
+            return addContextMenuGroup(acc, items.split(' '));
+          } else if (items.length > 0) {
+            var allItems = map(items, makeContextItem);
             return addContextMenuGroup(acc, allItems);
           } else {
             return acc;
@@ -26170,20 +27481,31 @@
           return acc.concat([name]);
         }
       }, []);
-      if (items.length > 0 && isSeparator$1(items[items.length - 1])) {
-        items.pop();
+      if (sections.length > 0 && isSeparator$1(sections[sections.length - 1])) {
+        sections.pop();
       }
-      return items;
+      return sections;
     };
     var isNativeOverrideKeyEvent = function (editor, e) {
       return e.ctrlKey && !Settings$1.shouldNeverUseNative(editor);
     };
-    var setup$7 = function (editor, lazySink, backstage) {
+    var isTriggeredByKeyboard = function (editor, e) {
+      return e.type !== 'longpress' && (e.button !== 2 || e.target === editor.getBody() && e.pointerType === '');
+    };
+    var setup$a = function (editor, lazySink, backstage) {
+      var detection = detect$3();
+      var isTouch = detection.deviceType.isTouch;
       var contextmenu = build$1(InlineView.sketch({
         dom: { tag: 'div' },
         lazySink: lazySink,
         onEscape: function () {
           return editor.focus();
+        },
+        onShow: function () {
+          return backstage.setContextMenuState(true);
+        },
+        onHide: function () {
+          return backstage.setContextMenuState(false);
         },
         fireDismissalEventInstead: {},
         inlineBehaviours: derive$1([config('dismissContextMenu', [run(dismissRequested(), function (comp, se) {
@@ -26191,44 +27513,31 @@
               editor.focus();
             })])])
       }));
-      editor.on('init', function () {
-        editor.on('contextmenu', function (e) {
-          if (Settings$1.shouldNeverUseNative(editor)) {
-            e.preventDefault();
-          }
-          if (isNativeOverrideKeyEvent(editor, e) || Settings$1.isContextMenuDisabled(editor)) {
-            return;
-          }
-          var isTriggeredByKeyboardEvent = e.button !== 2 || e.target === editor.getBody();
-          var anchorSpec = isTriggeredByKeyboardEvent ? getNodeAnchor$1(editor) : getPointAnchor(editor, e);
+      var hideContextMenu = function (_e) {
+        return InlineView.hide(contextmenu);
+      };
+      var showContextMenu = function (e) {
+        if (Settings$1.shouldNeverUseNative(editor)) {
+          e.preventDefault();
+        }
+        if (isNativeOverrideKeyEvent(editor, e) || Settings$1.isContextMenuDisabled(editor)) {
+          return;
+        }
+        var isTriggeredByKeyboardEvent = isTriggeredByKeyboard(editor, e);
+        var buildMenu = function () {
+          var selectedElement = isTriggeredByKeyboardEvent ? editor.selection.getStart(true) : e.target;
           var registry = editor.ui.registry.getAll();
           var menuConfig = Settings$1.getContextMenu(editor);
-          var selectedElement = isTriggeredByKeyboardEvent ? editor.selection.getStart(true) : e.target;
-          var items = generateContextMenu(registry.contextMenus, menuConfig, selectedElement);
-          build$2(items, ItemResponse$1.CLOSE_ON_EXECUTE, backstage).map(function (menuData) {
-            e.preventDefault();
-            InlineView.showMenuAt(contextmenu, anchorSpec, {
-              menu: { markers: markers$1('normal') },
-              data: menuData
-            });
-          });
-        });
+          return generateContextMenu(registry.contextMenus, menuConfig, selectedElement);
+        };
+        var initAndShow$2 = isTouch() ? initAndShow$1 : initAndShow;
+        initAndShow$2(editor, e, buildMenu, backstage, contextmenu, isTriggeredByKeyboardEvent);
+      };
+      editor.on('init', function () {
+        var hideEvents = 'ResizeEditor ScrollContent ScrollWindow longpresscancel' + (isTouch() ? '' : ' ResizeWindow');
+        editor.on(hideEvents, hideContextMenu);
+        editor.on('longpress contextmenu', showContextMenu);
       });
-    };
-
-    var parseToInt = function (val) {
-      var re = /^[0-9\.]+(|px)$/i;
-      if (re.test('' + val)) {
-        return Option.some(parseInt(val, 10));
-      }
-      return Option.none();
-    };
-    var numToPx = function (val) {
-      return isNumber(val) ? val + 'px' : val;
-    };
-    var Utils = {
-      parseToInt: parseToInt,
-      numToPx: numToPx
     };
 
     var initialAttribute = 'data-initial-z-index';
@@ -26259,6 +27568,42 @@
       resetZIndex(blocker);
       blocker.getSystem().removeFromGui(blocker);
     };
+    var createComponent = function (component, blockerClass, blockerEvents) {
+      return component.getSystem().build(Container.sketch({
+        dom: {
+          styles: {
+            'left': '0px',
+            'top': '0px',
+            'width': '100%',
+            'height': '100%',
+            'position': 'fixed',
+            'z-index': '1000000000000000'
+          },
+          classes: [blockerClass]
+        },
+        events: blockerEvents
+      }));
+    };
+
+    var SnapSchema = optionObjOf('snaps', [
+      strict$1('getSnapPoints'),
+      onHandler('onSensor'),
+      strict$1('leftAttr'),
+      strict$1('topAttr'),
+      defaulted$1('lazyViewport', win),
+      defaulted$1('mustSnap', false)
+    ]);
+
+    var schema$s = [
+      defaulted$1('useFixed', never),
+      strict$1('blockerClass'),
+      defaulted$1('getTarget', identity),
+      defaulted$1('onDrag', noop),
+      defaulted$1('repositionTarget', true),
+      defaulted$1('onDrop', noop),
+      defaultedFunction('getBounds', win),
+      SnapSchema
+    ];
 
     var get$d = function (component, snapsInfo) {
       var element = component.element();
@@ -26286,7 +27631,7 @@
     };
     var moveOrSnap = function (component, snapInfo, coord, delta, scroll, origin) {
       var newCoord = getCoords(component, snapInfo, coord, delta);
-      var snap = findSnap(component, snapInfo, newCoord, scroll, origin);
+      var snap = snapInfo.mustSnap ? findClosestSnap(component, snapInfo, newCoord, scroll, origin) : findSnap(component, snapInfo, newCoord, scroll, origin);
       var fixedCoord = asFixed(newCoord, scroll, origin);
       set$8(component, snapInfo, fixedCoord);
       return snap.fold(function () {
@@ -26304,8 +27649,7 @@
     var stopDrag = function (component, snapInfo) {
       clear(component, snapInfo);
     };
-    var findSnap = function (component, snapInfo, newCoord, scroll, origin) {
-      var snaps = snapInfo.getSnapPoints(component);
+    var findMatchingSnap = function (snaps, newCoord, scroll, origin) {
       return findMap(snaps, function (snap) {
         var sensor = snap.sensor();
         var inRange = withinRange(newCoord, sensor, snap.range().left(), snap.range().top(), scroll, origin);
@@ -26315,26 +27659,68 @@
         }) : Option.none();
       });
     };
+    var findClosestSnap = function (component, snapInfo, newCoord, scroll, origin) {
+      var snaps = snapInfo.getSnapPoints(component);
+      var matchSnap = findMatchingSnap(snaps, newCoord, scroll, origin);
+      return matchSnap.orThunk(function () {
+        var bestSnap = foldl(snaps, function (acc, snap) {
+          var sensor = snap.sensor();
+          var deltas = getDeltas(newCoord, sensor, snap.range().left(), snap.range().top(), scroll, origin);
+          return acc.deltas.fold(function () {
+            return {
+              deltas: Option.some(deltas),
+              snap: Option.some(snap)
+            };
+          }, function (bestDeltas) {
+            var currAvg = (deltas.left() + deltas.top()) / 2;
+            var bestAvg = (bestDeltas.left() + bestDeltas.top()) / 2;
+            if (currAvg <= bestAvg) {
+              return {
+                deltas: Option.some(deltas),
+                snap: Option.some(snap)
+              };
+            } else {
+              return acc;
+            }
+          });
+        }, {
+          deltas: Option.none(),
+          snap: Option.none()
+        });
+        return bestSnap.snap.map(function (snap) {
+          return {
+            output: constant(absorb(snap.output(), newCoord, scroll, origin)),
+            extra: snap.extra
+          };
+        });
+      });
+    };
+    var findSnap = function (component, snapInfo, newCoord, scroll, origin) {
+      var snaps = snapInfo.getSnapPoints(component);
+      return findMatchingSnap(snaps, newCoord, scroll, origin);
+    };
+    var snapTo = function (snap, scroll, origin) {
+      return {
+        coord: absorb(snap.output(), snap.output(), scroll, origin),
+        extra: snap.extra()
+      };
+    };
 
     var getCurrentCoord = function (target) {
-      return getRaw(target, 'left').bind(function (left) {
-        return getRaw(target, 'top').bind(function (top) {
-          return getRaw(target, 'position').map(function (position) {
-            var nu = position === 'fixed' ? fixed$1 : offset;
-            return nu(parseInt(left, 10), parseInt(top, 10));
-          });
-        });
+      return lift3(getRaw(target, 'left'), getRaw(target, 'top'), getRaw(target, 'position'), function (left, top, position) {
+        var nu = position === 'fixed' ? fixed$1 : offset;
+        return nu(parseInt(left, 10), parseInt(top, 10));
       }).getOrThunk(function () {
         var location = absolute(target);
-        return absolute$2(location.left(), location.top());
+        return absolute$3(location.left(), location.top());
       });
     };
     var clampCoords = function (component, coords, scroll, origin, startData) {
       var bounds = startData.bounds;
       var absoluteCoord = asAbsolute(coords, scroll, origin);
-      var newX = cap(absoluteCoord.left(), bounds.x(), bounds.width() - startData.width);
-      var newY = cap(absoluteCoord.top(), bounds.y(), bounds.height() - startData.height);
-      var newCoords = absolute$2(newX, newY);
+      var newX = cap(absoluteCoord.left(), bounds.x(), bounds.x() + bounds.width() - startData.width);
+      var newY = cap(absoluteCoord.top(), bounds.y(), bounds.y() + bounds.height() - startData.height);
+      var newCoords = absolute$3(newX, newY);
       return coords.fold(function () {
         var offset$1 = asOffset(newCoords, scroll, origin);
         return offset(offset$1.left(), offset$1.top());
@@ -26347,7 +27733,7 @@
     };
     var calcNewCoord = function (component, optSnaps, currentCoord, scroll, origin, delta, startData) {
       var newCoord = optSnaps.fold(function () {
-        var translated = translate$1(currentCoord, delta.left(), delta.top());
+        var translated = translate$2(currentCoord, delta.left(), delta.top());
         var fixedCoord = asFixed(translated, scroll, origin);
         return fixed$1(fixedCoord.left(), fixedCoord.top());
       }, function (snapInfo) {
@@ -26364,7 +27750,7 @@
       if (dragConfig.repositionTarget) {
         var doc = owner(component.element());
         var scroll = get$8(doc);
-        var origin = getOrigin(target, scroll);
+        var origin = getOrigin(target);
         var currentCoord = getCurrentCoord(target);
         var newCoord = calcNewCoord(component, dragConfig.snaps, currentCoord, scroll, origin, delta, startData);
         var styles = toStyles(newCoord, scroll, origin);
@@ -26380,27 +27766,38 @@
         width: getOuter$2(comp.element())
       };
     };
-
-    var defaultLazyViewport$1 = function () {
-      var scroll = get$8();
-      return {
-        x: scroll.left,
-        y: scroll.top,
-        width: constant(domGlobals.window.innerWidth),
-        height: constant(domGlobals.window.innerHeight),
-        bottom: constant(scroll.top() + domGlobals.window.innerHeight),
-        right: constant(scroll.left() + domGlobals.window.innerWidth)
+    var move$1 = function (component, dragConfig, dragState, dragMode, event) {
+      var delta = dragState.update(dragMode, event);
+      var dragStartData = dragState.getStartData().getOrThunk(function () {
+        return calcStartData(dragConfig, component);
+      });
+      delta.each(function (dlt) {
+        dragBy(component, dragConfig, dragStartData, dlt);
+      });
+    };
+    var stop = function (component, blocker, dragConfig, dragState) {
+      blocker.each(discard);
+      dragConfig.snaps.each(function (snapInfo) {
+        stopDrag(component, snapInfo);
+      });
+      var target = dragConfig.getTarget(component.element());
+      dragState.reset();
+      dragConfig.onDrop(component, target);
+    };
+    var handlers = function (events) {
+      return function (dragConfig, dragState) {
+        var updateStartState = function (comp) {
+          dragState.setStartData(calcStartData(dragConfig, comp));
+        };
+        return derive(__spreadArrays([run(windowScroll(), function (comp) {
+            dragState.getStartData().each(function () {
+              return updateStartState(comp);
+            });
+          })], events(dragConfig, dragState, updateStartState)));
       };
     };
-    var SnapSchema = optionObjOf('snaps', [
-      strict$1('getSnapPoints'),
-      onHandler('onSensor'),
-      strict$1('leftAttr'),
-      strict$1('topAttr'),
-      defaulted$1('lazyViewport', defaultLazyViewport$1)
-    ]);
 
-    var init$b = function (dragApi) {
+    var init$c = function (dragApi) {
       return derive([
         run(mousedown(), dragApi.forceDrop),
         run(mouseup(), dragApi.drop),
@@ -26423,82 +27820,46 @@
         getDelta: getDelta$1
     });
 
-    var handlers = function (dragConfig, dragState) {
-      var updateStartState = function (comp) {
-        dragState.setStartData(calcStartData(dragConfig, comp));
-      };
-      return derive([
-        run(windowScroll(), updateStartState),
-        run(mousedown(), function (component, simulatedEvent) {
+    var events$g = function (dragConfig, dragState, updateStartState) {
+      return [run(mousedown(), function (component, simulatedEvent) {
           var raw = simulatedEvent.event().raw();
           if (raw.button !== 0) {
             return;
           }
           simulatedEvent.stop();
+          var stop$1 = function () {
+            return stop(component, Option.some(blocker), dragConfig, dragState);
+          };
+          var delayDrop = DelayedFunction(stop$1, 200);
           var dragApi = {
-            drop: function () {
-              stop();
-            },
-            delayDrop: function () {
-              delayDrop.schedule();
-            },
-            forceDrop: function () {
-              stop();
-            },
+            drop: stop$1,
+            delayDrop: delayDrop.schedule,
+            forceDrop: stop$1,
             move: function (event) {
               delayDrop.cancel();
-              var delta = dragState.update(MouseData, event);
-              var dragStartData = dragState.getStartData().getOrThunk(function () {
-                return calcStartData(dragConfig, component);
-              });
-              delta.each(function (dlt) {
-                dragBy(component, dragConfig, dragStartData, dlt);
-              });
+              move$1(component, dragConfig, dragState, MouseData, event);
             }
           };
-          var blocker = component.getSystem().build(Container.sketch({
-            dom: {
-              styles: {
-                'left': '0px',
-                'top': '0px',
-                'width': '100%',
-                'height': '100%',
-                'position': 'fixed',
-                'z-index': '1000000000000000'
-              },
-              classes: [dragConfig.blockerClass]
-            },
-            events: init$b(dragApi)
-          }));
-          var stop = function () {
-            discard(blocker);
-            dragConfig.snaps.each(function (snapInfo) {
-              stopDrag(component, snapInfo);
-            });
-            var target = dragConfig.getTarget(component.element());
-            dragState.reset();
-            dragConfig.onDrop(component, target);
-          };
-          var delayDrop = DelayedFunction(stop, 200);
+          var blocker = createComponent(component, dragConfig.blockerClass, init$c(dragApi));
           var start = function () {
             updateStartState(component);
             instigate(component, blocker);
           };
           start();
+        })];
+    };
+    var schema$t = __spreadArrays(schema$s, [output('dragger', { handlers: handlers(events$g) })]);
+
+    var init$d = function (dragApi) {
+      return derive([
+        run(touchstart(), dragApi.forceDrop),
+        run(touchend(), dragApi.drop),
+        run(touchcancel(), dragApi.drop),
+        run(touchmove(), function (comp, simulatedEvent) {
+          dragApi.move(simulatedEvent.event());
         })
       ]);
     };
-    var schema$r = [
-      defaulted$1('useFixed', false),
-      strict$1('blockerClass'),
-      defaulted$1('getTarget', identity),
-      defaulted$1('onDrag', noop),
-      defaulted$1('repositionTarget', true),
-      onHandler('onDrop'),
-      defaultedFunction('getBounds', win),
-      SnapSchema,
-      output('dragger', { handlers: handlers })
-    ];
 
     var getDataFrom = function (touches) {
       var touch = touches[0];
@@ -26518,56 +27879,65 @@
         getDelta: getDelta$2
     });
 
-    var handlers$1 = function (dragConfig, dragState) {
-      var updateStartState = function (comp) {
-        dragState.setStartData(calcStartData(dragConfig, comp));
-      };
-      return derive([
-        run(windowScroll(), updateStartState),
+    var events$h = function (dragConfig, dragState, updateStartState) {
+      var blockerCell = Cell(Option.none());
+      return [
         run(touchstart(), function (component, simulatedEvent) {
-          updateStartState(component);
           simulatedEvent.stop();
+          var stop$1 = function () {
+            stop(component, blockerCell.get(), dragConfig, dragState);
+            blockerCell.set(Option.none());
+          };
+          var dragApi = {
+            drop: stop$1,
+            delayDrop: function () {
+            },
+            forceDrop: stop$1,
+            move: function (event) {
+              move$1(component, dragConfig, dragState, TouchData, event);
+            }
+          };
+          var blocker = createComponent(component, dragConfig.blockerClass, init$d(dragApi));
+          blockerCell.set(Option.some(blocker));
+          var start = function () {
+            updateStartState(component);
+            instigate(component, blocker);
+          };
+          start();
         }),
         run(touchmove(), function (component, simulatedEvent) {
           simulatedEvent.stop();
-          var delta = dragState.update(TouchData, simulatedEvent.event());
-          var dragStartData = dragState.getStartData().getOrThunk(function () {
-            return calcStartData(dragConfig, component);
-          });
-          delta.each(function (dlt) {
-            dragBy(component, dragConfig, dragStartData, dlt);
-          });
+          move$1(component, dragConfig, dragState, TouchData, simulatedEvent.event());
         }),
         run(touchend(), function (component, simulatedEvent) {
-          dragConfig.snaps.each(function (snapInfo) {
-            stopDrag(component, snapInfo);
-          });
-          var target = dragConfig.getTarget(component.element());
-          dragState.reset();
-          dragConfig.onDrop(component, target);
+          simulatedEvent.stop();
+          stop(component, blockerCell.get(), dragConfig, dragState);
+          blockerCell.set(Option.none());
+        }),
+        run(touchcancel(), function (component) {
+          stop(component, blockerCell.get(), dragConfig, dragState);
+          blockerCell.set(Option.none());
         })
-      ]);
+      ];
     };
-    var schema$s = [
-      defaulted$1('useFixed', false),
-      defaulted$1('getTarget', identity),
-      defaulted$1('onDrag', noop),
-      defaulted$1('repositionTarget', true),
-      defaulted$1('onDrop', noop),
-      defaultedFunction('getBounds', win),
-      SnapSchema,
-      output('dragger', { handlers: handlers$1 })
-    ];
+    var schema$u = __spreadArrays(schema$s, [output('dragger', { handlers: handlers(events$h) })]);
 
-    var mouse = schema$r;
-    var touch = schema$s;
+    var events$i = function (dragConfig, dragState, updateStartState) {
+      return __spreadArrays(events$g(dragConfig, dragState, updateStartState), events$h(dragConfig, dragState, updateStartState));
+    };
+    var schema$v = __spreadArrays(schema$s, [output('dragger', { handlers: handlers(events$i) })]);
+
+    var mouse = schema$t;
+    var touch = schema$u;
+    var mouseOrTouch = schema$v;
 
     var DraggingBranches = /*#__PURE__*/Object.freeze({
         mouse: mouse,
-        touch: touch
+        touch: touch,
+        mouseOrTouch: mouseOrTouch
     });
 
-    var init$c = function () {
+    var init$e = function () {
       var previous = Option.none();
       var startData = Option.none();
       var reset = function () {
@@ -26603,7 +27973,23 @@
     };
 
     var DragState = /*#__PURE__*/Object.freeze({
-        init: init$c
+        init: init$e
+    });
+
+    var snapTo$1 = function (component, dragConfig, _state, snap) {
+      var target = dragConfig.getTarget(component.element());
+      if (dragConfig.repositionTarget) {
+        var doc = owner(component.element());
+        var scroll = get$8(doc);
+        var origin = getOrigin(target);
+        var snapPin = snapTo(snap, scroll, origin);
+        var styles = toStyles(snapPin.coord, scroll, origin);
+        setAll$1(target, styles);
+      }
+    };
+
+    var DraggingApis = /*#__PURE__*/Object.freeze({
+        snapTo: snapTo$1
     });
 
     var Dragging = createModes$1({
@@ -26623,8 +28009,190 @@
           'output'
         ], ['extra'])
       },
-      state: DragState
+      state: DragState,
+      apis: DraggingApis
     });
+
+    var platform$1 = detect$3();
+    var snapWidth = 40;
+    var snapOffset = snapWidth / 2;
+    var calcSnap = function (selectorOpt, td, x, y, width, height) {
+      return selectorOpt.fold(function () {
+        return Dragging.snap({
+          sensor: absolute$3(x - snapOffset, y - snapOffset),
+          range: Position(width, height),
+          output: absolute$3(Option.some(x), Option.some(y)),
+          extra: { td: td }
+        });
+      }, function (selectorHandle) {
+        var sensorLeft = x - snapOffset;
+        var sensorTop = y - snapOffset;
+        var sensorWidth = snapWidth;
+        var sensorHeight = snapWidth;
+        var rect = selectorHandle.element().dom().getBoundingClientRect();
+        return Dragging.snap({
+          sensor: absolute$3(sensorLeft, sensorTop),
+          range: Position(sensorWidth, sensorHeight),
+          output: absolute$3(Option.some(x - rect.width / 2), Option.some(y - rect.height / 2)),
+          extra: { td: td }
+        });
+      });
+    };
+    var getSnapsConfig = function (getSnapPoints, cell, onChange) {
+      var isSameCell = function (cellOpt, td) {
+        return cellOpt.exists(function (currentTd) {
+          return eq(currentTd, td);
+        });
+      };
+      return {
+        getSnapPoints: getSnapPoints,
+        leftAttr: 'data-drag-left',
+        topAttr: 'data-drag-top',
+        onSensor: function (component, extra) {
+          var td = extra.td;
+          if (!isSameCell(cell.get(), td)) {
+            cell.set(Option.some(td));
+            onChange(td);
+          }
+        },
+        mustSnap: true
+      };
+    };
+    var createSelector = function (snaps) {
+      return record(Button.sketch({
+        dom: {
+          tag: 'div',
+          classes: ['tox-selector']
+        },
+        buttonBehaviours: derive$1([
+          Dragging.config({
+            mode: 'mouseOrTouch',
+            blockerClass: 'blocker',
+            snaps: snaps
+          }),
+          Unselecting.config({})
+        ]),
+        eventOrder: {
+          mousedown: [
+            'dragging',
+            'alloy.base.behaviour'
+          ],
+          touchstart: [
+            'dragging',
+            'alloy.base.behaviour'
+          ]
+        }
+      }));
+    };
+    var setup$b = function (editor, sink) {
+      var tlTds = Cell([]);
+      var brTds = Cell([]);
+      var isVisible = Cell(false);
+      var startCell = Cell(Option.none());
+      var finishCell = Cell(Option.none());
+      var getTopLeftSnap = function (td) {
+        var box = absolute$1(td);
+        return calcSnap(memTopLeft.getOpt(sink), td, box.x(), box.y(), box.width(), box.height());
+      };
+      var getTopLeftSnaps = function () {
+        return map(tlTds.get(), function (td) {
+          return getTopLeftSnap(td);
+        });
+      };
+      var getBottomRightSnap = function (td) {
+        var box = absolute$1(td);
+        return calcSnap(memBottomRight.getOpt(sink), td, box.right(), box.bottom(), box.width(), box.height());
+      };
+      var getBottomRightSnaps = function () {
+        return map(brTds.get(), function (td) {
+          return getBottomRightSnap(td);
+        });
+      };
+      var topLeftSnaps = getSnapsConfig(getTopLeftSnaps, startCell, function (start) {
+        finishCell.get().each(function (finish) {
+          editor.fire('TableSelectorChange', {
+            start: start,
+            finish: finish
+          });
+        });
+      });
+      var bottomRightSnaps = getSnapsConfig(getBottomRightSnaps, finishCell, function (finish) {
+        startCell.get().each(function (start) {
+          editor.fire('TableSelectorChange', {
+            start: start,
+            finish: finish
+          });
+        });
+      });
+      var memTopLeft = createSelector(topLeftSnaps);
+      var memBottomRight = createSelector(bottomRightSnaps);
+      var topLeft = build$1(memTopLeft.asSpec());
+      var bottomRight = build$1(memBottomRight.asSpec());
+      var showOrHideHandle = function (selector, cell, isAbove, isBelow) {
+        var cellRect = cell.dom().getBoundingClientRect();
+        remove$6(selector.element(), 'display');
+        var viewportHeight = defaultView(Element.fromDom(editor.getBody())).dom().innerHeight;
+        var aboveViewport = isAbove(cellRect);
+        var belowViewport = isBelow(cellRect, viewportHeight);
+        if (aboveViewport || belowViewport) {
+          set$2(selector.element(), 'display', 'none');
+        }
+      };
+      var snapTo = function (selector, cell, getSnapConfig, pos) {
+        var snap = getSnapConfig(cell);
+        Dragging.snapTo(selector, snap);
+        var isAbove = function (rect) {
+          return rect[pos] < 0;
+        };
+        var isBelow = function (rect, viewportHeight) {
+          return rect[pos] > viewportHeight;
+        };
+        showOrHideHandle(selector, cell, isAbove, isBelow);
+      };
+      var snapTopLeft = function (cell) {
+        return snapTo(topLeft, cell, getTopLeftSnap, 'top');
+      };
+      var snapLastTopLeft = function () {
+        return startCell.get().each(snapTopLeft);
+      };
+      var snapBottomRight = function (cell) {
+        return snapTo(bottomRight, cell, getBottomRightSnap, 'bottom');
+      };
+      var snapLastBottomRight = function () {
+        return finishCell.get().each(snapBottomRight);
+      };
+      if (platform$1.deviceType.isTouch()) {
+        editor.on('TableSelectionChange', function (e) {
+          if (!isVisible.get()) {
+            attach$1(sink, topLeft);
+            attach$1(sink, bottomRight);
+            isVisible.set(true);
+          }
+          startCell.set(Option.some(e.start));
+          finishCell.set(Option.some(e.finish));
+          e.otherCells.each(function (otherCells) {
+            tlTds.set(otherCells.upOrLeftCells);
+            brTds.set(otherCells.downOrRightCells);
+            snapTopLeft(e.start);
+            snapBottomRight(e.finish);
+          });
+        });
+        editor.on('ResizeEditor ResizeWindow ScrollContent', function () {
+          snapLastTopLeft();
+          snapLastBottomRight();
+        });
+        editor.on('TableSelectionClear', function () {
+          if (isVisible.get()) {
+            detach(topLeft);
+            detach(bottomRight);
+            isVisible.set(false);
+          }
+          startCell.set(Option.none());
+          finishCell.set(Option.none());
+        });
+      }
+    };
+    var TableSelectorHandles = { setup: setup$b };
 
     var ResizeTypes;
     (function (ResizeTypes) {
@@ -26632,21 +28200,11 @@
       ResizeTypes[ResizeTypes['Both'] = 1] = 'Both';
       ResizeTypes[ResizeTypes['Vertical'] = 2] = 'Vertical';
     }(ResizeTypes || (ResizeTypes = {})));
-    var calcCappedSize = function (originalSize, delta, minSize, maxSize) {
-      var newSize = originalSize + delta;
-      var minOverride = minSize.filter(function (min) {
-        return newSize < min;
-      });
-      var maxOverride = maxSize.filter(function (max) {
-        return newSize > max;
-      });
-      return minOverride.or(maxOverride).getOr(newSize);
-    };
     var getDimensions = function (editor, deltas, resizeType, originalHeight, originalWidth) {
       var dimensions = {};
-      dimensions.height = calcCappedSize(originalHeight, deltas.top(), getMinHeightSetting(editor), getMaxHeightSetting(editor));
+      dimensions.height = Utils.calcCappedSize(originalHeight + deltas.top(), getMinHeightSetting(editor), getMaxHeightSetting(editor));
       if (resizeType === ResizeTypes.Both) {
-        dimensions.width = calcCappedSize(originalWidth, deltas.left(), getMinWidthSetting(editor), getMaxWidthSetting(editor));
+        dimensions.width = Utils.calcCappedSize(originalWidth + deltas.left(), getMinWidthSetting(editor), getMaxWidthSetting(editor));
       }
       return dimensions;
     };
@@ -26765,7 +28323,6 @@
     var ElementPath = { renderElementPath: renderElementPath };
 
     var renderWordCount = function (editor, providersBackstage) {
-      var _a;
       var replaceCountText = function (comp, count, mode) {
         return Replacing.set(comp, [text(providersBackstage.translate([
             '{0} ' + mode,
@@ -26794,7 +28351,7 @@
             }
           }),
           config('wordcount-events', [
-            run(tapOrClick(), function (comp) {
+            runOnExecute(function (comp) {
               var currentVal = Representing.getValue(comp);
               var newMode = currentVal.mode === 'words' ? 'characters' : 'words';
               Representing.setValue(comp, {
@@ -26814,11 +28371,7 @@
               });
             })
           ])
-        ]),
-        eventOrder: (_a = {}, _a[tapOrClick()] = [
-          'wordcount-events',
-          'alloy.base.behaviour'
-        ], _a)
+        ])
       });
     };
 
@@ -26905,14 +28458,21 @@
       };
     };
 
-    var setup$8 = function (editor) {
-      var isInline = editor.getParam('inline', false, 'boolean');
+    var setup$c = function (editor) {
+      var isInline = editor.inline;
       var mode = isInline ? Inline : Iframe;
+      var header = isStickyToolbar(editor) ? StickyHeader : StaticHeader;
       var lazyOuterContainer = Option.none();
-      var platform = PlatformDetection$1.detect();
+      var platform = detect$3();
       var isIE = platform.browser.isIE();
       var platformClasses = isIE ? ['tox-platform-ie'] : [];
+      var isTouch = platform.deviceType.isTouch();
+      var touchPlatformClass = 'tox-platform-touch';
+      var deviceClasses = isTouch ? [touchPlatformClass] : [];
       var dirAttributes = global$5.isRtl() ? { attributes: { dir: 'rtl' } } : {};
+      var lazyHeader = function () {
+        return lazyOuterContainer.bind(OuterContainer.getHeader);
+      };
       var sink = build$1({
         dom: __assign({
           tag: 'div',
@@ -26920,10 +28480,17 @@
             'tox',
             'tox-silver-sink',
             'tox-tinymce-aux'
-          ].concat(platformClasses)
+          ].concat(platformClasses).concat(deviceClasses)
         }, dirAttributes),
-        behaviours: derive$1([Positioning.config({ useFixed: false })])
+        behaviours: derive$1([Positioning.config({
+            useFixed: function () {
+              return header.isDocked(lazyHeader);
+            }
+          })])
       });
+      var lazySink = function () {
+        return Result.value(sink);
+      };
       var memAnchorBar = record({
         dom: {
           tag: 'div',
@@ -26951,9 +28518,6 @@
         }).getOrDie('Could not find throbber element');
       };
       var backstage = init$8(sink, editor, lazyAnchorBar, lazyMoreButton);
-      var lazySink = function () {
-        return Result.value(sink);
-      };
       var partMenubar = OuterContainer.parts().menubar({
         dom: {
           tag: 'div',
@@ -26964,9 +28528,7 @@
           editor.focus();
         }
       });
-      var toolbarDrawer = function (editor) {
-        return getToolbarDrawer(editor);
-      };
+      var toolbarDrawer = getToolbarDrawer(editor);
       var partToolbar = OuterContainer.parts().toolbar({
         dom: {
           tag: 'div',
@@ -26977,9 +28539,12 @@
         onEscape: function () {
           editor.focus();
         },
-        split: toolbarDrawer(editor),
+        split: toolbarDrawer,
         lazyToolbar: lazyToolbar,
-        lazyMoreButton: lazyMoreButton
+        lazyMoreButton: lazyMoreButton,
+        lazyHeader: function () {
+          return lazyHeader().getOrDie('Could not find header element');
+        }
       });
       var partMultipleToolbar = OuterContainer.parts()['multiple-toolbar']({
         dom: {
@@ -26987,7 +28552,8 @@
           classes: ['tox-toolbar-overlord']
         },
         onEscape: function () {
-        }
+        },
+        split: toolbarDrawer
       });
       var partSocket = OuterContainer.parts().socket({
         dom: {
@@ -27008,7 +28574,8 @@
         },
         backstage: backstage
       });
-      var statusbar = editor.getParam('statusbar', true, 'boolean') && !isInline ? Option.some(renderStatusbar(editor, backstage.shared.providers)) : Option.none();
+      var sb = editor.getParam('statusbar', true, 'boolean');
+      var statusbar = sb && !isInline ? Option.some(renderStatusbar(editor, backstage.shared.providers)) : Option.none();
       var socketSidebarContainer = {
         dom: {
           tag: 'div',
@@ -27022,12 +28589,8 @@
       var hasMultipleToolbar = isMultipleToolbars(editor);
       var hasToolbar = isToolbarEnabled(editor);
       var hasMenubar = isMenubarEnabled(editor);
-      var hasToolbarDrawer = toolbarDrawer(editor) !== ToolbarDrawer.default;
       var getPartToolbar = function () {
         if (hasMultipleToolbar) {
-          if (hasToolbarDrawer) {
-            domGlobals.console.warn('Toolbar drawer cannot be applied when multiple toolbars are active');
-          }
           return [partMultipleToolbar];
         } else if (hasToolbar) {
           return [partToolbar];
@@ -27035,10 +28598,22 @@
           return [];
         }
       };
+      var partHeader = OuterContainer.parts().header({
+        dom: {
+          tag: 'div',
+          classes: ['tox-editor-header']
+        },
+        components: flatten([
+          hasMenubar ? [partMenubar] : [],
+          getPartToolbar(),
+          useFixedContainer(editor) ? [] : [memAnchorBar.asSpec()]
+        ]),
+        sticky: isStickyToolbar(editor),
+        editor: editor,
+        getSink: lazySink
+      });
       var editorComponents = flatten([
-        hasMenubar ? [partMenubar] : [],
-        getPartToolbar(),
-        useFixedContainer(editor) ? [] : [memAnchorBar.asSpec()],
+        [partHeader],
         isInline ? [] : [socketSidebarContainer]
       ]);
       var editorContainer = {
@@ -27053,15 +28628,15 @@
         isInline ? [] : statusbar.toArray(),
         [partThrobber]
       ]);
-      var isHidden = isInline && !hasMenubar && !hasToolbar && !hasMultipleToolbar;
-      var attributes = __assign({ role: 'application' }, global$5.isRtl() ? { dir: 'rtl' } : {}, isHidden ? { 'aria-hidden': 'true' } : {});
+      var isHidden = isDistractionFree(editor);
+      var attributes = __assign(__assign({ role: 'application' }, global$5.isRtl() ? { dir: 'rtl' } : {}), isHidden ? { 'aria-hidden': 'true' } : {});
       var outerContainer = build$1(OuterContainer.sketch({
         dom: {
           tag: 'div',
           classes: [
             'tox',
             'tox-tinymce'
-          ].concat(isInline ? ['tox-tinymce-inline'] : []).concat(platformClasses),
+          ].concat(isInline ? ['tox-tinymce-inline'] : []).concat(deviceClasses).concat(platformClasses),
           styles: __assign({ visibility: 'hidden' }, isHidden ? {
             opacity: '0',
             border: '0'
@@ -27069,10 +28644,10 @@
           attributes: attributes
         },
         components: containerComponents,
-        behaviours: derive$1(mode.getBehaviours(editor).concat([Keying.config({
+        behaviours: derive$1([Keying.config({
             mode: 'cyclic',
             selector: '.tox-menubar, .tox-toolbar, .tox-toolbar__primary, .tox-toolbar__overflow--open, .tox-sidebar__overflow--open, .tox-statusbar__path, .tox-statusbar__wordcount, .tox-statusbar__branding a'
-          })]))
+          })])
       }));
       lazyOuterContainer = Option.some(outerContainer);
       editor.shortcuts.add('alt+F9', 'focus menubar', function () {
@@ -27084,6 +28659,7 @@
       var mothership = takeover(outerContainer);
       var uiMothership = takeover(sink);
       Events$1.setup(editor, mothership, uiMothership);
+      TouchEvents.setup(editor);
       var getUi = function () {
         var channels = {
           broadcastAll: uiMothership.broadcast,
@@ -27093,30 +28669,15 @@
         };
         return { channels: channels };
       };
-      var setEditorSize = function (elm) {
-        var DOM = global$7.DOM;
-        var baseWidth = editor.getParam('width', DOM.getStyle(elm, 'width'));
-        var baseHeight = getHeightSetting(editor);
-        var minWidth = getMinWidthSetting(editor);
-        var minHeight = getMinHeightSetting(editor);
-        var parsedWidth = Utils.parseToInt(baseWidth).bind(function (w) {
-          return Utils.numToPx(minWidth.map(function (mw) {
-            return Math.max(w, mw);
-          }));
-        }).getOr(Utils.numToPx(baseWidth));
-        var parsedHeight = Utils.parseToInt(baseHeight).bind(function (h) {
-          return minHeight.map(function (mh) {
-            return Math.max(h, mh);
-          });
-        }).getOr(baseHeight);
-        var stringWidth = Utils.numToPx(parsedWidth);
-        if (isValidValue('div', 'width', stringWidth)) {
-          set$2(outerContainer.element(), 'width', stringWidth);
-        }
+      var setEditorSize = function () {
+        var parsedHeight = Utils.numToPx(getHeightWithFallback(editor));
+        var parsedWidth = Utils.numToPx(getWidthWithFallback(editor));
         if (!editor.inline) {
-          var stringHeight = Utils.numToPx(parsedHeight);
-          if (isValidValue('div', 'height', stringHeight)) {
-            set$2(outerContainer.element(), 'height', stringHeight);
+          if (isValidValue('div', 'width', parsedWidth)) {
+            set$2(outerContainer.element(), 'width', parsedWidth);
+          }
+          if (isValidValue('div', 'height', parsedHeight)) {
+            set$2(outerContainer.element(), 'height', parsedHeight);
           } else {
             set$2(outerContainer.element(), 'height', '200px');
           }
@@ -27124,10 +28685,11 @@
         return parsedHeight;
       };
       var renderUI = function () {
+        header.setup(editor, lazyHeader);
         FormatControls.setup(editor, backstage);
-        setup$7(editor, lazySink, backstage);
-        setup$4(editor);
-        setup$5(editor, lazyThrobber, backstage.shared);
+        setup$a(editor, lazySink, backstage);
+        setup$7(editor);
+        setup$8(editor, lazyThrobber, backstage.shared);
         var _a = editor.ui.registry.getAll(), buttons = _a.buttons, menuItems = _a.menuItems, contextToolbars = _a.contextToolbars, sidebars = _a.sidebars;
         var toolbarOpt = getMultipleToolbarsSetting(editor);
         var rawUiConfig = {
@@ -27143,8 +28705,9 @@
           sidebar: sidebars
         };
         ContextToolbar.register(editor, contextToolbars, sink, { backstage: backstage });
+        TableSelectorHandles.setup(editor, sink);
         var elm = editor.getElement();
-        var height = setEditorSize(elm);
+        var height = setEditorSize();
         var uiComponents = {
           mothership: mothership,
           uiMothership: uiMothership,
@@ -27164,7 +28727,7 @@
         getUi: getUi
       };
     };
-    var Render = { setup: setup$8 };
+    var Render = { setup: setup$c };
 
     var describedBy = function (describedElement, describeElement) {
       var describeId = Option.from(get$2(describedElement, 'id')).fold(function () {
@@ -27186,7 +28749,7 @@
       }
     };
 
-    var schema$t = constant([
+    var schema$w = constant([
       strict$1('lazySink'),
       option('dragBlockClass'),
       defaultedFunction('getBounds', win),
@@ -27235,7 +28798,7 @@
       external$1({
         factory: {
           sketch: function (spec, detail) {
-            return __assign({}, spec, {
+            return __assign(__assign({}, spec), {
               dom: detail.dom,
               components: detail.components
             });
@@ -27277,9 +28840,14 @@
         var sink = detail.lazySink(dialog).getOrDie();
         var busyComp = Cell(Option.none());
         var externalBlocker = externals.blocker();
-        var blocker = sink.getSystem().build(__assign({}, externalBlocker, {
+        var blocker = sink.getSystem().build(__assign(__assign({}, externalBlocker), {
           components: externalBlocker.components.concat([premade$1(dialog)]),
-          behaviours: derive$1([config('dialog-blocker-events', [
+          behaviours: derive$1([
+            Focusing.config({}),
+            config('dialog-blocker-events', [
+              runOnSource(focusin(), function () {
+                Keying.focusIn(dialog);
+              }),
               run(dialogIdleEvent, function (blocker, se) {
                 if (has$1(dialog.element(), 'aria-busy')) {
                   remove$1(dialog.element(), 'aria-busy');
@@ -27302,9 +28870,10 @@
                   Keying.focusIn(busy);
                 }
               })
-            ])])
+            ])
+          ])
         }));
-        attach(sink, blocker);
+        attach$1(sink, blocker);
         Keying.focusIn(dialog);
       };
       var hideDialog = function (dialog) {
@@ -27327,7 +28896,7 @@
         emit(dialog, dialogIdleEvent);
       };
       var modalEventsId = generate$1('modal-events');
-      var eventOrder = __assign({}, detail.eventOrder, { 'alloy.system.attached': [modalEventsId].concat(detail.eventOrder['alloy.system.attached'] || []) });
+      var eventOrder = __assign(__assign({}, detail.eventOrder), { 'alloy.system.attached': [modalEventsId].concat(detail.eventOrder['alloy.system.attached'] || []) });
       return {
         uid: detail.uid,
         dom: detail.dom,
@@ -27364,7 +28933,7 @@
     };
     var ModalDialog = composite$1({
       name: 'ModalDialog',
-      configFields: schema$t(),
+      configFields: schema$w(),
       partFields: parts$e(),
       factory: factory$h,
       apis: {
@@ -27463,6 +29032,7 @@
     var iframeDataProcessor = string;
 
     var inputFields = formComponentWithLabelFields.concat([
+      optionString('inputMode'),
       optionString('placeholder'),
       defaultedBoolean('maximized', false),
       defaultedBoolean('disabled', false)
@@ -27623,6 +29193,13 @@
     ];
     var tabPanelSchema = objOf(tabPanelFields);
 
+    var dialogToggleMenuItemSchema = objOf([
+      strictString('type'),
+      strictString('name'),
+      defaultedBoolean('active', false)
+    ].concat(commonMenuItemFields));
+    var dialogToggleMenuItemDataProcessor = boolean;
+
     var baseButtonFields = [
       field('name', 'name', defaultedThunk(function () {
         return generate$1('button-name');
@@ -27635,19 +29212,31 @@
       defaultedBoolean('primary', false),
       defaultedBoolean('disabled', false)
     ];
-    var dialogButtonFields = baseButtonFields.concat([strictString('text')]);
-    var normalButtonFields = [strictStringEnum('type', [
+    var dialogButtonFields = __spreadArrays(baseButtonFields, [strictString('text')]);
+    var normalButtonFields = __spreadArrays([strictStringEnum('type', [
         'submit',
         'cancel',
         'custom'
-      ])].concat(dialogButtonFields);
-    var menuButtonFields = [strictStringEnum('type', ['menu'])].concat(baseButtonFields, baseMenuButtonFields);
+      ])], dialogButtonFields);
+    var menuButtonFields = __spreadArrays([
+      strictStringEnum('type', ['menu']),
+      optionString('text'),
+      optionString('tooltip'),
+      optionString('icon'),
+      strictArrayOf('items', dialogToggleMenuItemSchema),
+      defaultedFunction('onSetup', function () {
+        return noop;
+      })
+    ], baseButtonFields);
     var dialogButtonSchema = choose$1('type', {
       submit: normalButtonFields,
       cancel: normalButtonFields,
       custom: normalButtonFields,
       menu: menuButtonFields
     });
+
+    var dialogButtonFields$1 = dialogButtonFields;
+    var dialogButtonSchema$1 = dialogButtonSchema;
     var dialogSchema = objOf([
       strictString('title'),
       strictOf('body', chooseProcessor('type', {
@@ -27655,7 +29244,7 @@
         tabpanel: tabPanelSchema
       })),
       defaultedString('size', 'normal'),
-      strictArrayOf('buttons', dialogButtonSchema),
+      strictArrayOf('buttons', dialogButtonSchema$1),
       defaulted$1('initialData', {}),
       defaultedFunction('onAction', noop),
       defaultedFunction('onChange', noop),
@@ -27694,7 +29283,8 @@
       textarea: textAreaDataProcessor,
       urlinput: urlInputDataProcessor,
       customeditor: customEditorDataProcessor,
-      collection: collectionDataProcessor
+      collection: collectionDataProcessor,
+      togglemenuitem: dialogToggleMenuItemDataProcessor
     };
     var getDataProcessor = function (item) {
       return Option.from(dataProcessors[item.type]);
@@ -27704,7 +29294,8 @@
     };
 
     var createDataValidator = function (structure) {
-      var fields = bind(getNamedItems(structure), function (item) {
+      var namedItems = getNamedItems(structure);
+      var fields = bind(namedItems, function (item) {
         return getDataProcessor(item).fold(function () {
           return [];
         }, function (schema) {
@@ -27714,10 +29305,10 @@
       return objOf(fields);
     };
 
-    var urlDialogButtonSchema = objOf([strictStringEnum('type', [
+    var urlDialogButtonSchema = objOf(__spreadArrays([strictStringEnum('type', [
         'cancel',
         'custom'
-      ])].concat(dialogButtonFields));
+      ])], dialogButtonFields$1));
     var urlDialogSchema = objOf([
       strictString('title'),
       strictString('url'),
@@ -27755,6 +29346,28 @@
       redial: function (structure) {
         return extract$1(structure);
       }
+    };
+
+    var value$3 = function () {
+      var subject = Cell(Option.none());
+      var clear = function () {
+        subject.set(Option.none());
+      };
+      var set = function (s) {
+        subject.set(Option.some(s));
+      };
+      var on = function (f) {
+        subject.get().each(f);
+      };
+      var isSet = function () {
+        return subject.get().isSome();
+      };
+      return {
+        clear: clear,
+        set: set,
+        isSet: isSet,
+        on: on
+      };
     };
 
     var toValidValues = function (values) {
@@ -27863,7 +29476,7 @@
       factory: factory$i
     });
 
-    var schema$u = constant([
+    var schema$x = constant([
       strict$1('tabs'),
       strict$1('dom'),
       defaulted$1('clickToDismiss', false),
@@ -27949,7 +29562,7 @@
     };
     var Tabbar = composite$1({
       name: 'Tabbar',
-      configFields: schema$u(),
+      configFields: schema$x(),
       partFields: parts$f(),
       factory: factory$j
     });
@@ -27968,7 +29581,7 @@
       factory: factory$k
     });
 
-    var schema$v = constant([
+    var schema$y = constant([
       defaulted$1('selectFirst', true),
       onHandler('onChangeTab'),
       onHandler('onDismissTab'),
@@ -28061,7 +29674,7 @@
     };
     var TabSection = composite$1({
       name: 'TabSection',
-      configFields: schema$v(),
+      configFields: schema$y(),
       partFields: parts$g(),
       factory: factory$l,
       apis: {
@@ -28093,76 +29706,101 @@
         }
       }));
     };
-    var getMaxTabviewHeight = function (dialog, dialogBody) {
+    var getMaxTabviewHeight = function (dialog, tabview, tablist) {
+      var documentElement$1 = documentElement(dialog).dom();
       var rootElm = ancestor$1(dialog, '.tox-dialog-wrap').getOr(dialog);
       var isFixed = get$4(rootElm, 'position') === 'fixed';
       var maxHeight;
       if (isFixed) {
-        maxHeight = Math.max(domGlobals.document.documentElement.clientHeight, domGlobals.window.innerHeight);
+        maxHeight = Math.max(documentElement$1.clientHeight, domGlobals.window.innerHeight);
       } else {
-        maxHeight = Math.max(domGlobals.document.documentElement.offsetHeight, domGlobals.document.documentElement.scrollHeight);
+        maxHeight = Math.max(documentElement$1.offsetHeight, documentElement$1.scrollHeight);
       }
-      var dialogChrome = dialog.dom().getBoundingClientRect().height - dialogBody.dom().getBoundingClientRect().height;
-      return maxHeight - dialogChrome;
+      var tabviewHeight = get$6(tabview);
+      var isTabListBeside = tabview.dom().offsetLeft >= tablist.dom().offsetLeft + get$7(tablist);
+      var currentTabHeight = isTabListBeside ? Math.max(get$6(tablist), tabviewHeight) : tabviewHeight;
+      var dialogTopMargin = parseInt(get$4(dialog, 'margin-top'), 10) || 0;
+      var dialogBottomMargin = parseInt(get$4(dialog, 'margin-bottom'), 10) || 0;
+      var dialogHeight = get$6(dialog) + dialogTopMargin + dialogBottomMargin;
+      var chromeHeight = dialogHeight - currentTabHeight;
+      return maxHeight - chromeHeight;
     };
     var showTab = function (allTabs, comp) {
       head(allTabs).each(function (tab) {
         return TabSection.showTab(comp, tab.value);
       });
     };
+    var setTabviewHeight = function (tabview, height) {
+      set$2(tabview, 'height', height + 'px');
+      if (!detect$3().browser.isIE()) {
+        set$2(tabview, 'flex-basis', height + 'px');
+      } else {
+        remove$6(tabview, 'flex-basis');
+      }
+    };
     var updateTabviewHeight = function (dialogBody, tabview, maxTabHeight) {
       ancestor$1(dialogBody, '[role="dialog"]').each(function (dialog) {
-        maxTabHeight.get().map(function (height) {
-          set$2(tabview, 'height', '0');
-          return Math.min(height, getMaxTabviewHeight(dialog, dialogBody));
-        }).each(function (height) {
-          set$2(tabview, 'height', height + 'px');
+        descendant$1(dialog, '[role="tablist"]').each(function (tablist) {
+          maxTabHeight.get().map(function (height) {
+            set$2(tabview, 'height', '0');
+            set$2(tabview, 'flex-basis', '0');
+            return Math.min(height, getMaxTabviewHeight(dialog, tabview, tablist));
+          }).each(function (height) {
+            setTabviewHeight(tabview, height);
+          });
         });
       });
+    };
+    var getTabview = function (dialog) {
+      return descendant$1(dialog, '[role="tabpanel"]');
     };
     var setMode = function (allTabs) {
       var smartTabHeight = function () {
         var maxTabHeight = Cell(Option.none());
         var extraEvents = [
           runOnAttached(function (comp) {
-            descendant$1(comp.element(), '[role="tabpanel"]').each(function (tabview) {
+            var dialog = comp.element();
+            getTabview(dialog).each(function (tabview) {
               set$2(tabview, 'visibility', 'hidden');
               comp.getSystem().getByDom(tabview).toOption().each(function (tabviewComp) {
                 var heights = measureHeights(allTabs, tabview, tabviewComp);
                 var maxTabHeightOpt = getMaxHeight(heights);
                 maxTabHeight.set(maxTabHeightOpt);
               });
-              updateTabviewHeight(comp.element(), tabview, maxTabHeight);
+              updateTabviewHeight(dialog, tabview, maxTabHeight);
               remove$6(tabview, 'visibility');
               showTab(allTabs, comp);
               global$2.requestAnimationFrame(function () {
-                updateTabviewHeight(comp.element(), tabview, maxTabHeight);
+                updateTabviewHeight(dialog, tabview, maxTabHeight);
               });
             });
           }),
           run(windowResize(), function (comp) {
-            descendant$1(comp.element(), '[role="tabpanel"]').each(function (tabview) {
-              updateTabviewHeight(comp.element(), tabview, maxTabHeight);
+            var dialog = comp.element();
+            getTabview(dialog).each(function (tabview) {
+              updateTabviewHeight(dialog, tabview, maxTabHeight);
             });
           }),
           run(formResizeEvent, function (comp, se) {
-            descendant$1(comp.element(), '[role="tabpanel"]').each(function (tabview) {
+            var dialog = comp.element();
+            getTabview(dialog).each(function (tabview) {
               var oldFocus = active();
               set$2(tabview, 'visibility', 'hidden');
               var oldHeight = getRaw(tabview, 'height').map(function (h) {
                 return parseInt(h, 10);
               });
               remove$6(tabview, 'height');
+              remove$6(tabview, 'flex-basis');
               var newHeight = tabview.dom().getBoundingClientRect().height;
               var hasGrown = oldHeight.forall(function (h) {
                 return newHeight > h;
               });
               if (hasGrown) {
                 maxTabHeight.set(Option.from(newHeight));
-                updateTabviewHeight(comp.element(), tabview, maxTabHeight);
+                updateTabviewHeight(dialog, tabview, maxTabHeight);
               } else {
                 oldHeight.each(function (h) {
-                  set$2(tabview, 'height', h + 'px');
+                  setTabviewHeight(tabview, h);
                 });
               }
               remove$6(tabview, 'visibility');
@@ -28341,9 +29979,9 @@
         dom: {
           tag: 'div',
           classes: ['tox-dialog__content-js'],
-          attributes: __assign({}, id.map(function (x) {
+          attributes: __assign(__assign({}, id.map(function (x) {
             return { id: x };
-          }).getOr({}), ariaAttrs ? ariaAttributes : {})
+          }).getOr({})), ariaAttrs ? ariaAttributes : {})
         },
         components: [],
         behaviours: derive$1([
@@ -28426,7 +30064,7 @@
           f(currentDialog, c);
         });
       };
-      return initCommonEvents(fireApiEvent, extras).concat([fireApiEvent(formActionEvent, function (api, spec, event) {
+      return __spreadArrays(initCommonEvents(fireApiEvent, extras), [fireApiEvent(formActionEvent, function (api, spec, event) {
           spec.onAction(api, { name: event.name() });
         })]);
     };
@@ -28443,7 +30081,7 @@
           f(currentDialogInit.internalDialog, c);
         });
       };
-      return initCommonEvents(fireApiEvent, extras).concat([
+      return __spreadArrays(initCommonEvents(fireApiEvent, extras), [
         fireApiEvent(formSubmitEvent, function (api, spec) {
           return spec.onSubmit(api);
         }),
@@ -28580,7 +30218,7 @@
         return getOrDie(asRaw('data', dialogState.dataValidator, data));
       }).getOr(data);
     };
-    var getDialogApi = function (access, doRedial) {
+    var getDialogApi = function (access, doRedial, menuItemStates) {
       var withRoot = function (f) {
         var root = access.getRoot();
         if (root.getSystem().isConnected()) {
@@ -28590,7 +30228,11 @@
       var getData = function () {
         var root = access.getRoot();
         var valueComp = root.getSystem().isConnected() ? access.getFormWrapper() : root;
-        return Representing.getValue(valueComp);
+        var representedValues = Representing.getValue(valueComp);
+        var menuItemCurrentState = map$1(menuItemStates, function (cell) {
+          return cell.get();
+        });
+        return __assign(__assign({}, representedValues), menuItemCurrentState);
       };
       var setData = function (newData) {
         withRoot(function (_) {
@@ -28599,6 +30241,11 @@
           var newInternalData = validateData(access, mergedData);
           var form = access.getFormWrapper();
           Representing.setValue(form, newInternalData);
+          each$1(menuItemStates, function (v, k) {
+            if (has(mergedData, k)) {
+              v.set(mergedData[k]);
+            }
+          });
         });
       };
       var disable = function (name) {
@@ -28664,6 +30311,155 @@
         close: close
       };
       return instanceApi;
+    };
+
+    var isTouch = global$6.deviceType.isTouch();
+    var hiddenHeader = function (title, close) {
+      return {
+        dom: {
+          tag: 'div',
+          styles: { display: 'none' },
+          classes: ['tox-dialog__header']
+        },
+        components: [
+          title,
+          close
+        ]
+      };
+    };
+    var pClose = function (onClose, providersBackstage) {
+      return ModalDialog.parts().close(Button.sketch({
+        dom: {
+          tag: 'button',
+          classes: [
+            'tox-button',
+            'tox-button--icon',
+            'tox-button--naked'
+          ],
+          attributes: {
+            'type': 'button',
+            'aria-label': providersBackstage.translate('Close')
+          }
+        },
+        action: onClose,
+        buttonBehaviours: derive$1([Tabstopping.config({})])
+      }));
+    };
+    var pUntitled = function () {
+      return ModalDialog.parts().title({
+        dom: {
+          tag: 'div',
+          classes: ['tox-dialog__title'],
+          innerHtml: '',
+          styles: { display: 'none' }
+        }
+      });
+    };
+    var pBodyMessage = function (message, providersBackstage) {
+      return ModalDialog.parts().body({
+        dom: {
+          tag: 'div',
+          classes: ['tox-dialog__body']
+        },
+        components: [{
+            dom: {
+              tag: 'div',
+              classes: ['tox-dialog__body-content']
+            },
+            components: [{ dom: fromHtml$2('<p>' + providersBackstage.translate(message) + '</p>') }]
+          }]
+      });
+    };
+    var pFooter = function (buttons) {
+      return ModalDialog.parts().footer({
+        dom: {
+          tag: 'div',
+          classes: ['tox-dialog__footer']
+        },
+        components: buttons
+      });
+    };
+    var pFooterGroup = function (startButtons, endButtons) {
+      return [
+        Container.sketch({
+          dom: {
+            tag: 'div',
+            classes: ['tox-dialog__footer-start']
+          },
+          components: startButtons
+        }),
+        Container.sketch({
+          dom: {
+            tag: 'div',
+            classes: ['tox-dialog__footer-end']
+          },
+          components: endButtons
+        })
+      ];
+    };
+    var renderDialog = function (spec) {
+      var _a;
+      var dialogClass = 'tox-dialog';
+      var blockerClass = dialogClass + '-wrap';
+      var blockerBackdropClass = blockerClass + '__backdrop';
+      var scrollLockClass = dialogClass + '__disable-scroll';
+      return ModalDialog.sketch({
+        lazySink: spec.lazySink,
+        onEscape: function (comp) {
+          spec.onEscape(comp);
+          return Option.some(true);
+        },
+        useTabstopAt: function (elem) {
+          return !NavigableObject.isPseudoStop(elem);
+        },
+        dom: {
+          tag: 'div',
+          classes: [dialogClass].concat(spec.extraClasses),
+          styles: __assign({ position: 'relative' }, spec.extraStyles)
+        },
+        components: __spreadArrays([
+          spec.header,
+          spec.body
+        ], spec.footer.toArray()),
+        parts: {
+          blocker: {
+            dom: fromHtml$2('<div class="' + blockerClass + '"></div>'),
+            components: [{
+                dom: {
+                  tag: 'div',
+                  classes: isTouch ? [
+                    blockerBackdropClass,
+                    blockerBackdropClass + '--opaque'
+                  ] : [blockerBackdropClass]
+                }
+              }]
+          }
+        },
+        dragBlockClass: blockerClass,
+        modalBehaviours: derive$1(__spreadArrays([
+          Focusing.config({}),
+          config('dialog-events', spec.dialogEvents.concat([runOnSource(focusin(), function (comp, se) {
+              Keying.focusIn(comp);
+            })])),
+          config('scroll-lock', [
+            runOnAttached(function () {
+              add$2(body(), scrollLockClass);
+            }),
+            runOnDetached(function () {
+              remove$4(body(), scrollLockClass);
+            })
+          ])
+        ], spec.extraBehaviours)),
+        eventOrder: __assign((_a = {}, _a[execute()] = ['dialog-events'], _a[attachedToDom()] = [
+          'scroll-lock',
+          'dialog-events',
+          'alloy.base.behaviour'
+        ], _a[detachedFromDom()] = [
+          'alloy.base.behaviour',
+          'dialog-events',
+          'scroll-lock'
+        ], _a), spec.eventOrder)
+      });
     };
 
     var renderClose = function (providersBackstage) {
@@ -28791,79 +30587,72 @@
       var updateState = function (_comp, incoming) {
         return Option.some(incoming);
       };
-      return build$1(ModalDialog.sketch({
+      return build$1(renderDialog(__assign(__assign({}, spec), {
         lazySink: backstage.shared.getSink,
-        onEscape: function (c) {
-          emit(c, formCancelEvent);
-          return Option.some(true);
-        },
-        useTabstopAt: function (elem) {
-          return !NavigableObject.isPseudoStop(elem);
-        },
-        modalBehaviours: derive$1([
+        extraBehaviours: __spreadArrays([
           Reflecting.config({
             channel: dialogChannel,
             updateState: updateState,
             initialData: initialData
           }),
-          RepresentingConfigs.memory({}),
-          Focusing.config({}),
-          config('execute-on-form', dialogEvents.concat([runOnSource(focusin(), function (comp, se) {
-              Keying.focusIn(comp);
-            })])),
-          config('scroll-lock', [
-            runOnAttached(function () {
-              add$2(body(), 'tox-dialog__disable-scroll');
-            }),
-            runOnDetached(function () {
-              remove$4(body(), 'tox-dialog__disable-scroll');
-            })
-          ])
-        ].concat(spec.extraBehaviours)),
-        eventOrder: (_a = {}, _a[execute()] = ['execute-on-form'], _a[receive()] = [
+          RepresentingConfigs.memory({})
+        ], spec.extraBehaviours),
+        onEscape: function (comp) {
+          emit(comp, formCancelEvent);
+        },
+        dialogEvents: dialogEvents,
+        eventOrder: (_a = {}, _a[receive()] = [
           'reflecting',
           'receiving'
         ], _a[attachedToDom()] = [
           'scroll-lock',
           'reflecting',
           'messages',
-          'execute-on-form',
+          'dialog-events',
           'alloy.base.behaviour'
         ], _a[detachedFromDom()] = [
           'alloy.base.behaviour',
-          'execute-on-form',
+          'dialog-events',
           'messages',
           'reflecting',
           'scroll-lock'
-        ], _a),
-        dom: {
-          tag: 'div',
-          classes: ['tox-dialog'].concat(spec.extraClasses),
-          styles: __assign({ position: 'relative' }, spec.extraStyles)
-        },
-        components: [
-          spec.header,
-          spec.body
-        ].concat(spec.footer.toArray()),
-        dragBlockClass: 'tox-dialog-wrap',
-        parts: {
-          blocker: {
-            dom: fromHtml$2('<div class="tox-dialog-wrap"></div>'),
-            components: [{
-                dom: {
-                  tag: 'div',
-                  classes: ['tox-dialog-wrap__backdrop']
-                }
-              }]
-          }
+        ], _a)
+      })));
+    };
+    var mapMenuButtons = function (buttons) {
+      var mapItems = function (button) {
+        var items = map(button.items, function (item) {
+          var cell = Cell(false);
+          return __assign(__assign({}, item), { storage: cell });
+        });
+        return __assign(__assign({}, button), { items: items });
+      };
+      return map(buttons, function (button) {
+        if (button.type === 'menu') {
+          return mapItems(button);
         }
-      }));
+        return button;
+      });
+    };
+    var extractCellsToObject = function (buttons) {
+      return foldl(buttons, function (acc, button) {
+        if (button.type === 'menu') {
+          var menuButton = button;
+          return foldl(menuButton.items, function (innerAcc, item) {
+            innerAcc[item.name] = item.storage;
+            return innerAcc;
+          }, acc);
+        }
+        return acc;
+      }, {});
     };
 
-    var renderDialog = function (dialogInit, extra, backstage) {
+    var renderDialog$1 = function (dialogInit, extra, backstage) {
       var header = getHeader(dialogInit.internalDialog.title, backstage);
       var body = renderModalBody({ body: dialogInit.internalDialog.body }, backstage);
-      var footer = renderModalFooter({ buttons: dialogInit.internalDialog.buttons }, backstage);
+      var storagedMenuButtons = mapMenuButtons(dialogInit.internalDialog.buttons);
+      var objOfCells = extractCellsToObject(storagedMenuButtons);
+      var footer = renderModalFooter({ buttons: storagedMenuButtons }, backstage);
       var dialogEvents = SilverDialogEvents.initDialog(function () {
         return instanceApi;
       }, getEventExtras(function () {
@@ -28897,7 +30686,98 @@
           getFormWrapper: getForm
         };
       }();
-      var instanceApi = getDialogApi(modalAccess, extra.redial);
+      var instanceApi = getDialogApi(modalAccess, extra.redial, objOfCells);
+      return {
+        dialog: dialog,
+        instanceApi: instanceApi
+      };
+    };
+
+    var renderInlineDialog = function (dialogInit, extra, backstage, ariaAttrs) {
+      var _a, _b;
+      var dialogLabelId = generate$1('dialog-label');
+      var dialogContentId = generate$1('dialog-content');
+      var updateState = function (_comp, incoming) {
+        return Option.some(incoming);
+      };
+      var memHeader = record(renderInlineHeader({
+        title: dialogInit.internalDialog.title,
+        draggable: true
+      }, dialogLabelId, backstage.shared.providers));
+      var memBody = record(renderInlineBody({ body: dialogInit.internalDialog.body }, dialogContentId, backstage, ariaAttrs));
+      var storagedMenuButtons = mapMenuButtons(dialogInit.internalDialog.buttons);
+      var objOfCells = extractCellsToObject(storagedMenuButtons);
+      var memFooter = record(renderInlineFooter({ buttons: storagedMenuButtons }, backstage));
+      var dialogEvents = SilverDialogEvents.initDialog(function () {
+        return instanceApi;
+      }, {
+        onBlock: function () {
+        },
+        onUnblock: function () {
+        },
+        onClose: function () {
+          return extra.closeWindow();
+        }
+      });
+      var dialog = build$1({
+        dom: {
+          tag: 'div',
+          classes: [
+            'tox-dialog',
+            'tox-dialog-inline'
+          ],
+          attributes: (_a = { role: 'dialog' }, _a['aria-labelledby'] = dialogLabelId, _a['aria-describedby'] = '' + dialogContentId, _a)
+        },
+        eventOrder: (_b = {}, _b[receive()] = [
+          Reflecting.name(),
+          Receiving.name()
+        ], _b[execute()] = ['execute-on-form'], _b[attachedToDom()] = [
+          'reflecting',
+          'execute-on-form'
+        ], _b),
+        behaviours: derive$1([
+          Keying.config({
+            mode: 'cyclic',
+            onEscape: function (c) {
+              emit(c, formCloseEvent);
+              return Option.some(true);
+            },
+            useTabstopAt: function (elem) {
+              return !NavigableObject.isPseudoStop(elem) && (name(elem) !== 'button' || get$2(elem, 'disabled') !== 'disabled');
+            }
+          }),
+          Reflecting.config({
+            channel: dialogChannel,
+            updateState: updateState,
+            initialData: dialogInit
+          }),
+          Focusing.config({}),
+          config('execute-on-form', dialogEvents.concat([runOnSource(focusin(), function (comp, se) {
+              Keying.focusIn(comp);
+            })])),
+          RepresentingConfigs.memory({})
+        ]),
+        components: [
+          memHeader.asSpec(),
+          memBody.asSpec(),
+          memFooter.asSpec()
+        ]
+      });
+      var instanceApi = getDialogApi({
+        getRoot: function () {
+          return dialog;
+        },
+        getFooter: function () {
+          return memFooter.get(dialog);
+        },
+        getBody: function () {
+          return memBody.get(dialog);
+        },
+        getFormWrapper: function () {
+          var body = memBody.get(dialog);
+          return Composing.getCurrent(body).getOr(body);
+        }
+      }, extra.redial, objOfCells);
       return {
         dialog: dialog,
         instanceApi: instanceApi
@@ -28996,14 +30876,14 @@
       }, getEventExtras(function () {
         return dialog;
       }, extra));
-      var styles = __assign({}, internalDialog.height.fold(function () {
+      var styles = __assign(__assign({}, internalDialog.height.fold(function () {
         return {};
       }, function (height) {
         return {
           'height': height + 'px',
           'max-height': height + 'px'
         };
-      }), internalDialog.width.fold(function () {
+      })), internalDialog.width.fold(function () {
         return {};
       }, function (width) {
         return {
@@ -29063,222 +30943,7 @@
       };
     };
 
-    var renderInlineDialog = function (dialogInit, extra, backstage, ariaAttrs) {
-      var _a, _b;
-      var dialogLabelId = generate$1('dialog-label');
-      var dialogContentId = generate$1('dialog-content');
-      var updateState = function (_comp, incoming) {
-        return Option.some(incoming);
-      };
-      var memHeader = record(renderInlineHeader({
-        title: dialogInit.internalDialog.title,
-        draggable: true
-      }, dialogLabelId, backstage.shared.providers));
-      var memBody = record(renderInlineBody({ body: dialogInit.internalDialog.body }, dialogContentId, backstage, ariaAttrs));
-      var memFooter = record(renderInlineFooter({ buttons: dialogInit.internalDialog.buttons }, backstage));
-      var dialogEvents = SilverDialogEvents.initDialog(function () {
-        return instanceApi;
-      }, {
-        onBlock: function () {
-        },
-        onUnblock: function () {
-        },
-        onClose: function () {
-          return extra.closeWindow();
-        }
-      });
-      var dialog = build$1({
-        dom: {
-          tag: 'div',
-          classes: [
-            'tox-dialog',
-            'tox-dialog-inline'
-          ],
-          attributes: (_a = { role: 'dialog' }, _a['aria-labelledby'] = dialogLabelId, _a['aria-describedby'] = '' + dialogContentId, _a)
-        },
-        eventOrder: (_b = {}, _b[receive()] = [
-          Reflecting.name(),
-          Receiving.name()
-        ], _b[execute()] = ['execute-on-form'], _b[attachedToDom()] = [
-          'reflecting',
-          'execute-on-form'
-        ], _b),
-        behaviours: derive$1([
-          Keying.config({
-            mode: 'cyclic',
-            onEscape: function (c) {
-              emit(c, formCloseEvent);
-              return Option.some(true);
-            },
-            useTabstopAt: function (elem) {
-              return !NavigableObject.isPseudoStop(elem) && (name(elem) !== 'button' || get$2(elem, 'disabled') !== 'disabled');
-            }
-          }),
-          Reflecting.config({
-            channel: dialogChannel,
-            updateState: updateState,
-            initialData: dialogInit
-          }),
-          Focusing.config({}),
-          config('execute-on-form', dialogEvents.concat([runOnSource(focusin(), function (comp, se) {
-              Keying.focusIn(comp);
-            })])),
-          RepresentingConfigs.memory({})
-        ]),
-        components: [
-          memHeader.asSpec(),
-          memBody.asSpec(),
-          memFooter.asSpec()
-        ]
-      });
-      var instanceApi = getDialogApi({
-        getRoot: function () {
-          return dialog;
-        },
-        getFooter: function () {
-          return memFooter.get(dialog);
-        },
-        getBody: function () {
-          return memBody.get(dialog);
-        },
-        getFormWrapper: function () {
-          var body = memBody.get(dialog);
-          return Composing.getCurrent(body).getOr(body);
-        }
-      }, extra.redial);
-      return {
-        dialog: dialog,
-        instanceApi: instanceApi
-      };
-    };
-
-    var hiddenHeader = {
-      dom: {
-        tag: 'div',
-        styles: { display: 'none' },
-        classes: ['tox-dialog__header']
-      }
-    };
-    var defaultHeader = {
-      dom: {
-        tag: 'div',
-        classes: ['tox-dialog__header']
-      }
-    };
-    var pClose = function (onClose, providersBackstage) {
-      return ModalDialog.parts().close(Button.sketch({
-        dom: {
-          tag: 'button',
-          classes: [
-            'tox-button',
-            'tox-button--icon',
-            'tox-button--naked'
-          ],
-          attributes: {
-            'type': 'button',
-            'aria-label': providersBackstage.translate('Close')
-          }
-        },
-        action: onClose,
-        buttonBehaviours: derive$1([Tabstopping.config({})])
-      }));
-    };
-    var pUntitled = function () {
-      return ModalDialog.parts().title({
-        dom: {
-          tag: 'div',
-          classes: ['tox-dialog__title'],
-          innerHtml: '',
-          styles: { display: 'none' }
-        }
-      });
-    };
-    var pBodyMessage = function (message, providersBackstage) {
-      return ModalDialog.parts().body({
-        dom: {
-          tag: 'div',
-          classes: ['tox-dialog__body']
-        },
-        components: [{
-            dom: {
-              tag: 'div',
-              classes: ['tox-dialog__body-content']
-            },
-            components: [{ dom: fromHtml$2('<p>' + providersBackstage.translate(message) + '</p>') }]
-          }]
-      });
-    };
-    var pFooter = function (buttons) {
-      return ModalDialog.parts().footer({
-        dom: {
-          tag: 'div',
-          classes: ['tox-dialog__footer']
-        },
-        components: buttons
-      });
-    };
-    var pFooterGroup = function (startButtons, endButtons) {
-      return [
-        Container.sketch({
-          dom: {
-            tag: 'div',
-            classes: ['tox-dialog__footer-start']
-          },
-          components: startButtons
-        }),
-        Container.sketch({
-          dom: {
-            tag: 'div',
-            classes: ['tox-dialog__footer-end']
-          },
-          components: endButtons
-        })
-      ];
-    };
-    var renderDialog$1 = function (spec) {
-      return ModalDialog.sketch({
-        lazySink: spec.lazySink,
-        onEscape: function () {
-          spec.onCancel();
-          return Option.some(true);
-        },
-        dom: {
-          tag: 'div',
-          classes: ['tox-dialog'].concat(spec.extraClasses)
-        },
-        components: [
-          deepMerge(spec.headerOverride.getOr(defaultHeader), {
-            components: [
-              spec.partSpecs.title,
-              spec.partSpecs.close
-            ]
-          }),
-          spec.partSpecs.body,
-          spec.partSpecs.footer
-        ],
-        parts: {
-          blocker: {
-            dom: fromHtml$2('<div class="tox-dialog-wrap"></div>'),
-            components: [{
-                dom: {
-                  tag: 'div',
-                  classes: ['tox-dialog-wrap__backdrop']
-                }
-              }]
-          }
-        },
-        modalBehaviours: derive$1([config('basic-dialog-events', [
-            run(formCancelEvent, function (comp, se) {
-              spec.onCancel();
-            }),
-            run(formSubmitEvent, function (comp, se) {
-              spec.onSubmit();
-            })
-          ])])
-      });
-    };
-
-    var setup$9 = function (extras) {
+    var setup$d = function (extras) {
       var sharedBackstage = extras.backstage.shared;
       var open = function (message, callback) {
         var closeDialog = function () {
@@ -29293,24 +30958,21 @@
           disabled: false,
           icon: Option.none()
         }, 'cancel', extras.backstage));
-        var alertDialog = build$1(renderDialog$1({
+        var titleSpec = pUntitled();
+        var closeSpec = pClose(closeDialog, sharedBackstage.providers);
+        var alertDialog = build$1(renderDialog({
           lazySink: function () {
             return sharedBackstage.getSink();
           },
-          headerOverride: Option.some(hiddenHeader),
-          partSpecs: {
-            title: pUntitled(),
-            close: pClose(function () {
-              closeDialog();
-            }, sharedBackstage.providers),
-            body: pBodyMessage(message, sharedBackstage.providers),
-            footer: pFooter(pFooterGroup([], [memFooterClose.asSpec()]))
-          },
-          onCancel: function () {
-            return closeDialog();
-          },
-          onSubmit: noop,
-          extraClasses: ['tox-alert-dialog']
+          header: hiddenHeader(titleSpec, closeSpec),
+          body: pBodyMessage(message, sharedBackstage.providers),
+          footer: Option.some(pFooter(pFooterGroup([], [memFooterClose.asSpec()]))),
+          onEscape: closeDialog,
+          extraClasses: ['tox-alert-dialog'],
+          extraBehaviours: [],
+          extraStyles: {},
+          dialogEvents: [run(formCancelEvent, closeDialog)],
+          eventOrder: {}
         }));
         ModalDialog.show(alertDialog);
         var footerCloseButton = memFooterClose.get(alertDialog);
@@ -29319,7 +30981,7 @@
       return { open: open };
     };
 
-    var setup$a = function (extras) {
+    var setup$e = function (extras) {
       var sharedBackstage = extras.backstage.shared;
       var open = function (message, callback) {
         var closeDialog = function (state) {
@@ -29342,29 +31004,35 @@
           disabled: false,
           icon: Option.none()
         }, 'cancel', extras.backstage);
-        var confirmDialog = build$1(renderDialog$1({
+        var titleSpec = pUntitled();
+        var closeSpec = pClose(function () {
+          return closeDialog(false);
+        }, sharedBackstage.providers);
+        var confirmDialog = build$1(renderDialog({
           lazySink: function () {
             return sharedBackstage.getSink();
           },
-          headerOverride: Option.some(hiddenHeader),
-          partSpecs: {
-            title: pUntitled(),
-            close: pClose(function () {
-              closeDialog(false);
-            }, sharedBackstage.providers),
-            body: pBodyMessage(message, sharedBackstage.providers),
-            footer: pFooter(pFooterGroup([], [
-              footerNo,
-              memFooterYes.asSpec()
-            ]))
-          },
-          onCancel: function () {
+          header: hiddenHeader(titleSpec, closeSpec),
+          body: pBodyMessage(message, sharedBackstage.providers),
+          footer: Option.some(pFooter(pFooterGroup([], [
+            footerNo,
+            memFooterYes.asSpec()
+          ]))),
+          onEscape: function () {
             return closeDialog(false);
           },
-          onSubmit: function () {
-            return closeDialog(true);
-          },
-          extraClasses: ['tox-confirm-dialog']
+          extraClasses: ['tox-confirm-dialog'],
+          extraBehaviours: [],
+          extraStyles: {},
+          dialogEvents: [
+            run(formCancelEvent, function () {
+              return closeDialog(false);
+            }),
+            run(formSubmitEvent, function () {
+              return closeDialog(true);
+            })
+          ],
+          eventOrder: {}
         }));
         ModalDialog.show(confirmDialog);
         var footerYesButton = memFooterYes.get(confirmDialog);
@@ -29376,14 +31044,37 @@
     var validateData$1 = function (data, validator) {
       return getOrDie(asRaw('data', validator, data));
     };
-    var setup$b = function (extras) {
-      var alertDialog = setup$9(extras);
-      var confirmDialog = setup$a(extras);
+    var inlineAdditionalBehaviours = function (editor, isStickyToolbar) {
+      if (isStickyToolbar) {
+        return [];
+      } else {
+        return [Docking.config({
+            contextual: {
+              lazyContext: function () {
+                return Option.some(box(Element.fromDom(editor.getContentAreaContainer())));
+              },
+              fadeInClass: 'tox-dialog-dock-fadein',
+              fadeOutClass: 'tox-dialog-dock-fadeout',
+              transitionClass: 'tox-dialog-dock-transition'
+            },
+            leftAttr: 'data-dock-left',
+            topAttr: 'data-dock-top',
+            positionAttr: 'data-dock-pos',
+            modes: ['top']
+          })];
+      }
+    };
+    var setup$f = function (extras) {
+      var backstage = extras.backstage;
+      var editor = extras.editor;
+      var isStickyToolbar$1 = isStickyToolbar(editor);
+      var alertDialog = setup$d(extras);
+      var confirmDialog = setup$e(extras);
       var open = function (config, params, closeWindow) {
         if (params !== undefined && params.inline === 'toolbar') {
-          return openInlineDialog(config, extras.backstage.shared.anchors.toolbar(), closeWindow, params.ariaAttrs);
+          return openInlineDialog(config, backstage.shared.anchors.toolbar(), closeWindow, params.ariaAttrs);
         } else if (params !== undefined && params.inline === 'cursor') {
-          return openInlineDialog(config, extras.backstage.shared.anchors.cursor(), closeWindow, params.ariaAttrs);
+          return openInlineDialog(config, backstage.shared.anchors.cursor(), closeWindow, params.ariaAttrs);
         } else {
           return openModalDialog(config, closeWindow);
         }
@@ -29398,7 +31089,7 @@
               ModalDialog.hide(dialog.dialog);
               closeWindow(dialog.instanceApi);
             }
-          }, extras.editor, extras.backstage);
+          }, editor, backstage);
           ModalDialog.show(dialog.dialog);
           return dialog.instanceApi;
         };
@@ -29412,13 +31103,13 @@
             initialData: initialData,
             internalDialog: contents
           };
-          var dialog = renderDialog(dialogInit, {
+          var dialog = renderDialog$1(dialogInit, {
             redial: DialogManager.redial,
             closeWindow: function () {
               ModalDialog.hide(dialog.dialog);
               closeWindow(dialog.instanceApi);
             }
-          }, extras.backstage);
+          }, backstage);
           ModalDialog.show(dialog.dialog);
           dialog.instanceApi.setData(initialData);
           return dialog.instanceApi;
@@ -29428,30 +31119,43 @@
       var openInlineDialog = function (config$1, anchor, closeWindow, ariaAttrs) {
         var factory = function (contents, internalInitialData, dataValidator) {
           var initialData = validateData$1(internalInitialData, dataValidator);
+          var inlineDialog = value$3();
           var dialogInit = {
             dataValidator: dataValidator,
             initialData: initialData,
             internalDialog: contents
           };
+          var refreshDocking = function () {
+            return inlineDialog.on(function (dialog) {
+              Docking.refresh(dialog);
+            });
+          };
           var dialogUi = renderInlineDialog(dialogInit, {
             redial: DialogManager.redial,
             closeWindow: function () {
-              InlineView.hide(inlineDialog);
+              inlineDialog.on(InlineView.hide);
+              editor.off('ResizeEditor', refreshDocking);
+              inlineDialog.clear();
               closeWindow(dialogUi.instanceApi);
             }
-          }, extras.backstage, ariaAttrs);
-          var inlineDialog = build$1(InlineView.sketch({
-            lazySink: extras.backstage.shared.getSink,
+          }, backstage, ariaAttrs);
+          var inlineDialogComp = build$1(InlineView.sketch({
+            lazySink: backstage.shared.getSink,
             dom: {
               tag: 'div',
               classes: []
             },
             fireDismissalEventInstead: {},
-            inlineBehaviours: derive$1([config('window-manager-inline-events', [run(dismissRequested(), function (comp, se) {
+            inlineBehaviours: derive$1(__spreadArrays([config('window-manager-inline-events', [run(dismissRequested(), function (comp, se) {
                   emit(dialogUi.dialog, formCancelEvent);
-                })])])
+                })])], inlineAdditionalBehaviours(editor, isStickyToolbar$1)))
           }));
-          InlineView.showAt(inlineDialog, anchor, premade$1(dialogUi.dialog));
+          inlineDialog.set(inlineDialogComp);
+          InlineView.showWithin(inlineDialogComp, anchor, premade$1(dialogUi.dialog), Option.some(body()));
+          if (!isStickyToolbar$1) {
+            Docking.refresh(inlineDialogComp);
+            editor.on('ResizeEditor', refreshDocking);
+          }
           dialogUi.instanceApi.setData(initialData);
           Keying.focusIn(dialogUi.dialog);
           return dialogUi.instanceApi;
@@ -29479,7 +31183,7 @@
         confirm: confirm
       };
     };
-    var WindowManager = { setup: setup$b };
+    var WindowManager = { setup: setup$f };
 
     function Theme () {
       global$1.add('silver', function (editor) {

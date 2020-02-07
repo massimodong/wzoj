@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.14 (2019-08-19)
+ * Version: 5.1.6 (2020-01-28)
  */
 (function (domGlobals) {
     'use strict';
@@ -639,7 +639,7 @@
           };
         }
       };
-      var splitButtonArgs = __assign({}, buttonArgs, {
+      var splitButtonArgs = __assign(__assign({}, buttonArgs), {
         type: 'splitbutton',
         select: function (value) {
           return value === currentLanguageState.get();

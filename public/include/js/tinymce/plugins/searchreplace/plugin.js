@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.14 (2019-08-19)
+ * Version: 5.1.6 (2020-01-28)
  */
 (function () {
     'use strict';
@@ -309,11 +309,13 @@
         dom.remove(parent);
       }
     };
+    var escapeSearchText = function (text, wholeWord) {
+      var escapedText = text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&').replace(/\s/g, '[^\\S\\r\\n]');
+      return wholeWord ? '\\b' + escapedText + '\\b' : escapedText;
+    };
     var find = function (editor, currentSearchState, text, matchCase, wholeWord) {
-      text = text.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
-      text = text.replace(/\s/g, '[^\\S\\r\\n]');
-      text = wholeWord ? '\\b' + text + '\\b' : text;
-      var count = markAllMatches(editor, currentSearchState, new RegExp(text, matchCase ? 'g' : 'gi'));
+      var escapedText = escapeSearchText(text, wholeWord);
+      var count = markAllMatches(editor, currentSearchState, new RegExp(escapedText, matchCase ? 'g' : 'gi'));
       if (count) {
         var newIndex = moveSelection(editor, currentSearchState, true);
         currentSearchState.set({
@@ -328,11 +330,11 @@
     };
     var next = function (editor, currentSearchState) {
       var index = moveSelection(editor, currentSearchState, true);
-      currentSearchState.set(__assign({}, currentSearchState.get(), { index: index }));
+      currentSearchState.set(__assign(__assign({}, currentSearchState.get()), { index: index }));
     };
     var prev = function (editor, currentSearchState) {
       var index = moveSelection(editor, currentSearchState, false);
-      currentSearchState.set(__assign({}, currentSearchState.get(), { index: index }));
+      currentSearchState.set(__assign(__assign({}, currentSearchState.get()), { index: index }));
     };
     var isMatchSpan = function (node) {
       var matchIndex = getElmIndex(node);
@@ -371,7 +373,7 @@
           nodes[i].setAttribute('data-mce-index', String(currentMatchIndex - 1));
         }
       }
-      currentSearchState.set(__assign({}, searchState, {
+      currentSearchState.set(__assign(__assign({}, searchState), {
         count: all ? 0 : searchState.count - 1,
         index: nextIndex
       }));
@@ -398,7 +400,7 @@
           unwrap(nodes[i]);
         }
       }
-      currentSearchState.set(__assign({}, searchState, {
+      currentSearchState.set(__assign(__assign({}, searchState), {
         index: -1,
         count: 0,
         text: ''
@@ -446,6 +448,8 @@
     };
     var Api = { get: get };
 
+    var noop = function () {
+    };
     var constant = function (value) {
       return function () {
         return value;
@@ -454,8 +458,6 @@
     var never = constant(false);
     var always = constant(true);
 
-    var never$1 = never;
-    var always$1 = always;
     var none = function () {
       return NONE;
     };
@@ -469,37 +471,27 @@
       var id = function (n) {
         return n;
       };
-      var noop = function () {
-      };
-      var nul = function () {
-        return null;
-      };
-      var undef = function () {
-        return undefined;
-      };
       var me = {
         fold: function (n, s) {
           return n();
         },
-        is: never$1,
-        isSome: never$1,
-        isNone: always$1,
+        is: never,
+        isSome: never,
+        isNone: always,
         getOr: id,
         getOrThunk: call,
         getOrDie: function (msg) {
           throw new Error(msg || 'error: getOrDie called on none.');
         },
-        getOrNull: nul,
-        getOrUndefined: undef,
+        getOrNull: constant(null),
+        getOrUndefined: constant(undefined),
         or: id,
         orThunk: call,
         map: none,
-        ap: none,
         each: noop,
         bind: none,
-        flatten: none,
-        exists: never$1,
-        forall: always$1,
+        exists: never,
+        forall: always,
         filter: none,
         equals: eq,
         equals_: eq,
@@ -514,14 +506,9 @@
       return me;
     }();
     var some = function (a) {
-      var constant_a = function () {
-        return a;
-      };
+      var constant_a = constant(a);
       var self = function () {
         return me;
-      };
-      var map = function (f) {
-        return some(f(a));
       };
       var bind = function (f) {
         return f(a);
@@ -533,8 +520,8 @@
         is: function (v) {
           return a === v;
         },
-        isSome: always$1,
-        isNone: never$1,
+        isSome: always,
+        isNone: never,
         getOr: constant_a,
         getOrThunk: constant_a,
         getOrDie: constant_a,
@@ -542,35 +529,31 @@
         getOrUndefined: constant_a,
         or: self,
         orThunk: self,
-        map: map,
-        ap: function (optfab) {
-          return optfab.fold(none, function (fab) {
-            return some(fab(a));
-          });
+        map: function (f) {
+          return some(f(a));
         },
         each: function (f) {
           f(a);
         },
         bind: bind,
-        flatten: constant_a,
         exists: bind,
         forall: bind,
         filter: function (f) {
           return f(a) ? me : NONE;
-        },
-        equals: function (o) {
-          return o.is(a);
-        },
-        equals_: function (o, elementEq) {
-          return o.fold(never$1, function (b) {
-            return elementEq(a, b);
-          });
         },
         toArray: function () {
           return [a];
         },
         toString: function () {
           return 'some(' + a + ')';
+        },
+        equals: function (o) {
+          return o.is(a);
+        },
+        equals_: function (o, elementEq) {
+          return o.fold(never, function (b) {
+            return elementEq(a, b);
+          });
         }
       };
       return me;
@@ -604,15 +587,15 @@
     };
     var isFunction = isType('function');
 
-    var slice = Array.prototype.slice;
+    var nativeSlice = Array.prototype.slice;
     var each = function (xs, f) {
       for (var i = 0, len = xs.length; i < len; i++) {
         var x = xs[i];
-        f(x, i, xs);
+        f(x, i);
       }
     };
     var from$1 = isFunction(Array.from) ? Array.from : function (x) {
-      return slice.call(x);
+      return nativeSlice.call(x);
     };
 
     var value = function () {
@@ -637,10 +620,10 @@
       };
     };
 
+    var global$2 = tinymce.util.Tools.resolve('tinymce.Env');
+
     var open = function (editor, currentSearchState) {
       var dialogApi = value();
-      var matchcase = Cell(currentSearchState.get().matchCase);
-      var wholewords = Cell(currentSearchState.get().wholeWord);
       editor.undoManager.add();
       var selectedText = global$1.trim(editor.selection.getContent({ format: 'text' }));
       function updateButtonStates(api) {
@@ -649,6 +632,14 @@
         var updatePrev = hasPrev(editor, currentSearchState) ? api.enable : api.disable;
         updatePrev('prev');
       }
+      var updateSearchState = function (api) {
+        var data = api.getData();
+        var current = currentSearchState.get();
+        currentSearchState.set(__assign(__assign({}, current), {
+          matchCase: data.matchcase,
+          wholeWord: data.wholewords
+        }));
+      };
       var disableAll = function (api, disable) {
         var buttons = [
           'replace',
@@ -664,6 +655,11 @@
           api.focus('findtext');
         });
       }
+      var focusButtonIfRequired = function (api, name) {
+        if (global$2.browser.isSafari() && global$2.deviceType.isTouch() && (name === 'find' || name === 'replace' || name === 'replaceall')) {
+          api.focus(name);
+        }
+      };
       var reset = function (api) {
         done(editor, currentSearchState, false);
         disableAll(api, true);
@@ -676,10 +672,10 @@
           reset(api);
           return;
         }
-        if (last.text === data.findtext && last.matchCase === matchcase.get() && last.wholeWord === wholewords.get()) {
+        if (last.text === data.findtext && last.matchCase === data.matchcase && last.wholeWord === data.wholewords) {
           next(editor, currentSearchState);
         } else {
-          var count = find(editor, currentSearchState, data.findtext, matchcase.get(), wholewords.get());
+          var count = find(editor, currentSearchState, data.findtext, data.matchcase, data.wholewords);
           if (count <= 0) {
             notFoundAlert(api);
           }
@@ -687,9 +683,12 @@
         }
         updateButtonStates(api);
       };
+      var initialState = currentSearchState.get();
       var initialData = {
         findtext: selectedText,
-        replacetext: ''
+        replacetext: '',
+        wholewords: initialState.wholeWord,
+        matchcase: initialState.matchCase
       };
       var spec = {
         title: 'Find and Replace',
@@ -704,7 +703,8 @@
                   type: 'input',
                   name: 'findtext',
                   placeholder: 'Find',
-                  maximized: true
+                  maximized: true,
+                  inputMode: 'search'
                 },
                 {
                   type: 'button',
@@ -727,7 +727,8 @@
             {
               type: 'input',
               name: 'replacetext',
-              placeholder: 'Replace with'
+              placeholder: 'Replace with',
+              inputMode: 'search'
             }
           ]
         },
@@ -738,32 +739,18 @@
             icon: 'preferences',
             tooltip: 'Preferences',
             align: 'start',
-            fetch: function (done) {
-              done([
-                {
-                  type: 'togglemenuitem',
-                  text: 'Match case',
-                  onAction: function (api) {
-                    matchcase.set(!matchcase.get());
-                    dialogApi.on(function (dApi) {
-                      return dApi.focus('options');
-                    });
-                  },
-                  active: matchcase.get()
-                },
-                {
-                  type: 'togglemenuitem',
-                  text: 'Find whole words only',
-                  onAction: function (api) {
-                    wholewords.set(!wholewords.get());
-                    dialogApi.on(function (dApi) {
-                      return dApi.focus('options');
-                    });
-                  },
-                  active: wholewords.get()
-                }
-              ]);
-            }
+            items: [
+              {
+                type: 'togglemenuitem',
+                name: 'matchcase',
+                text: 'Match case'
+              },
+              {
+                type: 'togglemenuitem',
+                name: 'wholewords',
+                text: 'Find whole words only'
+              }
+            ]
           },
           {
             type: 'custom',
@@ -815,11 +802,20 @@
             next(editor, currentSearchState);
             updateButtonStates(api);
             break;
+          case 'matchcase':
+          case 'wholewords':
+            updateSearchState(api);
+            reset(api);
+            break;
           default:
             break;
           }
+          focusButtonIfRequired(api, details.name);
         },
-        onSubmit: doFind,
+        onSubmit: function (api) {
+          doFind(api);
+          focusButtonIfRequired(api, 'find');
+        },
         onClose: function () {
           editor.focus();
           done(editor, currentSearchState);

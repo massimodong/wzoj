@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.0.14 (2019-08-19)
+ * Version: 5.1.6 (2020-01-28)
  */
 (function () {
     'use strict';
@@ -85,7 +85,7 @@
     };
     var register$1 = function (editor, enabledState) {
       editor.ui.registry.addToggleButton('visualblocks', {
-        icon: 'paragraph',
+        icon: 'visualblocks',
         tooltip: 'Show blocks',
         onAction: function () {
           return editor.execCommand('mceVisualBlocks');
