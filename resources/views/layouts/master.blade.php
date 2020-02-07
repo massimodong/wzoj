@@ -89,8 +89,8 @@
 <footer class="mt-auto">
   <div class="container text-center">
     <span class="text-muted">
-    Copyright 2016
-    <a class="text-muted" href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
+      <a class="text-muted" href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
+      <a class="text-muted" href="https://github.com/massimodong/wzoj/releases/tag/{{ojoption('current_version_tag')}}" target="_blank">{{ojoption('current_version_tag')}}</a>
     </span>
   </div>
 </footer>
