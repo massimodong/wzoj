@@ -14,7 +14,6 @@
     <link rel="stylesheet" href="/include/css/common.css">
     <link rel="stylesheet" href="/include/css/datatables.min.css">
     <link rel="stylesheet" href="/include/css/tempusdominus-bootstrap-4.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     @show
   </head>

@@ -40,14 +40,18 @@ module.exports = function(grunt) {
           '3rd/navbar-fixed-left.min.css',
           'node_modules/bootstrap/dist/css/bootstrap.min.css',
           'node_modules/bootstrap-select/dist/css/bootstrap-select.min.css',
-          '3rd/prism.css'
+          '3rd/prism.css',
+          'node_modules/font-awesome/css/font-awesome.min.css'
         ],
         dest: 'build/_concated.css'
       }
     },
     copy: {
       main: {
-        files: [{expand:true, cwd: 'node_modules/tinymce', src: '**', dest: 'public/include/js/tinymce/'}]
+        files: [
+          {expand:true, cwd: 'node_modules/tinymce', src: '**', dest: 'public/include/js/tinymce/'},
+          {expand:true, cwd: 'node_modules/font-awesome/fonts', src: '**', dest: 'public/include/fonts/'}
+        ]
       }
     }
 });
