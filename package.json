@@ -18,7 +18,7 @@
     "laravel-elixir": "^4.0.0",
     "popper.js": "^1.15.0",
     "socket.io": "^2.2.0",
-    "tinymce": "^5.0.14"
+    "tinymce": "^5.1.4"
   },
   "name": "wzoj",
   "version": "1.0.0",
