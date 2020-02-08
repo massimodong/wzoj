@@ -79,12 +79,11 @@
       <pre>{{$solution->ce}}</pre>
     @endcan
   @else
-    <h3>{{trans('wzoj.testcases')}}</h3>
     <div class="table-responsive">
     <table class="table">
       <thead>
         <tr>
-          <th>{{trans('wzoj.name')}}</th>
+          <th>{{trans('wzoj.testcase')}}</th>
           <th>{{trans('wzoj.score')}}</th>
           <th>{{trans('wzoj.time_used')}}</th>
           <th>{{trans('wzoj.memory_used')}}</th>
@@ -122,7 +121,6 @@
 
 @if ($solution->problem->type <> 3)
   @can ('view_code', $solution)
-    <h3>{{trans('wzoj.code')}}</h3>
     <pre><code class="{{ojPrimusClass($solution->language)}}">{{$solution->code}}</code></pre>
   @endcan
 @endif
