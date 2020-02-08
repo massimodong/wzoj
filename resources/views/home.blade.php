@@ -50,7 +50,7 @@ class="main-home"
                   @endif
                 @endif
               </div>
-              <div class="col-11">
+              <div class="col-10">
                 <a href="/s/{{$history['psid']}}/{{$history['pid']}}">{{$history["pn"]}}</a> <small>(<a href="/s/{{$history['psid']}}">{{$history["psn"]}}</a>)</small>
               </div>
             </div>
