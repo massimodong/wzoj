@@ -1,6 +1,6 @@
 @if ($breadcrumbs)
   <nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
+    <ol class="breadcrumb bg-light">
     @foreach ($breadcrumbs as $breadcrumb)
       @if (!$breadcrumb->last)
         <li class="breadcrumb-item"><a href="{{ $breadcrumb->url }}">{{ $breadcrumb->title }}</a></li>
