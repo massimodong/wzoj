@@ -204,6 +204,9 @@ class SolutionController extends Controller
         if($res == 'OK') $solution = $request->user()->solutions()->create($solution_meta);
         else return response()->json(['msg' => trans('wzoj.submit_too_frequent')], 422);
 
+        DB::statement('INSERT INTO problem_statistics VALUES(?, ?, 1, 0) ON DUPLICATE KEY UPDATE count = count + 1',
+            [$problemset->id, $request->problem_id]);
+
         $request->user()->answerfiles()
             ->where('problemset_id', $request->problemset_id)
             ->where('problem_id', $request->problem_id)

@@ -16,14 +16,7 @@ use Cache;
 class AdminProblemRejudgeController extends Controller
 {
 	public function rejudgeSolutions($solutions){
-		$solutions->update(['time_used' => 0,
-				    'memory_used' => 0.0,
-				    'status' => SL_PENDING_REJUDGING,
-				    'testcases' => '[]',
-				    'score' => 0,
-				    'ce' => NULL,
-				    'sim_id' => NULL,
-				    'judger_id' => 0]);
+		$solutions->update(['status' => SL_PENDING_REJUDGING]);
 		Cache::tags(['solutions'])->flush();
 	}
 	public function getProblemRejudge(){
