@@ -374,13 +374,14 @@ class ProblemsetController extends Controller
       };
     }
 
-    $statistics = DB::select('SELECT count, score_sum FROM problem_statistics WHERE problemset_id = ? AND problem_id = ?', [$problemset->id, $problem->id]);
-    if(count($statistics) > 0){
-      $cnt_submit = $statistics[0]->count;
-      $tot_score = $statistics[0]->score_sum;
-    }else{
-      $cnt_submit = 0;
-      $tot_score = 0;
+    $cnt_submit = 0;
+    $tot_score = 0;
+    if($problemset->type == "set"){
+      $statistics = DB::select('SELECT count, score_sum FROM problem_statistics WHERE problemset_id = ? AND problem_id = ?', [$problemset->id, $problem->id]);
+      if(count($statistics) > 0){
+        $cnt_submit = $statistics[0]->count;
+        $tot_score = $statistics[0]->score_sum;
+      }
     }
 
     return view('problems.view_'.$problemset->type,['problemset' => $problemset,
