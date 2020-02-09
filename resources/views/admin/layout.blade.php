@@ -12,12 +12,13 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="/include/css/_concated.min.css">
     <link rel="stylesheet" href="/include/css/common.css">
+    <link rel="stylesheet" href="/include/css/admin.css">
     <link rel="stylesheet" href="/include/css/datatables.min.css">
     <link rel="stylesheet" href="/include/css/tempusdominus-bootstrap-4.min.css">
 
     @show
   </head>
-  <body style="margin-left: 160px;">
+  <body>
   <nav class="navbar navbar-expand-sm navbar-light bg-light fixed-left">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
