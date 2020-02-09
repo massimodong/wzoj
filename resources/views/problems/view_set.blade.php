@@ -216,8 +216,7 @@ function submit_solution(){
       enable_submit();
     })
     .fail(function(data){
-      addAlertWarning(data.responseJSON.msg);
-      enable_submit();
+        setTimeout(submit_solution, 2000);
     });
 }
 
