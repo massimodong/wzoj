@@ -7,7 +7,11 @@
 @section ('content')
 {!! Breadcrumbs::render('problemset', $problemset) !!}
 <h1 class='page-header text-center'>{{$problemset->name}}</h1>
-<h6 class='text-center'><span style="color:green">{{$problemset->contest_start_at}}</span> - <span style="color:red">{{$problemset->contest_end_at}}</span></h6>
+<h6 class='text-center'>
+  <span style="color:green">{{$problemset->contest_start_at}}</span>
+  <span style="color:red">{{$problemset->contest_end_at}}</span>
+  <a href="/s/{{$problemset->id}}/ranklist">{{trans('wzoj.ranklist')}}</a>
+</h6>
 @can ('update', $problemset)
 <div class="pull-right"><a href="/s/{{$problemset->id}}/edit">{{trans('wzoj.edit')}}</a></div>
 @endif

@@ -33,8 +33,8 @@
         @endif
       </td>
       <td>{{trans('wzoj.problem_type_'.$problemset->type)}}</td>
-      <td>{{$problemset->contest_start_at}}</td>
-      <td>{{$problemset->contest_end_at}}</td>
+      <td><span style="color: green">{{$problemset->contest_start_at}}</span></td>
+      <td><span style="color: red">{{$problemset->contest_end_at}}</span></td>
       <td>{{$problemset->tag}}</td>
     </tr>
     @endforeach
