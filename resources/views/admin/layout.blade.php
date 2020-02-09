@@ -10,11 +10,11 @@
     <title>admin - @yield('title')</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="/include/css/_concated.min.css">
-    <link rel="stylesheet" href="/include/css/common.css">
-    <link rel="stylesheet" href="/include/css/admin.css">
-    <link rel="stylesheet" href="/include/css/datatables.min.css">
-    <link rel="stylesheet" href="/include/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href={{ojcache("/include/css/_concated.min.css")}}>
+    <link rel="stylesheet" href={{ojcache("/include/css/common.css")}}>
+    <link rel="stylesheet" href={{ojcache("/include/css/admin.css")}}>
+    <link rel="stylesheet" href={{ojcache("/include/css/datatables.min.css")}}>
+    <link rel="stylesheet" href={{ojcache("/include/css/tempusdominus-bootstrap-4.min.css")}}>
 
     @show
   </head>
@@ -124,14 +124,14 @@
   </div>
 </main><!-- /.container -->
 
-<script src="/include/js/_concated.min.js"></script>
-<script src="/include/js/common.js"></script>
-<script src="/include/js/datatables.min.js"></script>
-<script src="/include/js/admin.js"></script>
-<script src="/include/js/moment.min.js"></script>
-<script src="/include/js/tempusdominus-bootstrap-4.min.js"></script>
-<script src="/include/js/tinymce/tinymce.min.js"></script>
-<script src="/include/js/tinymce.js"></script>
+<script src={{ojcache("/include/js/_concated.min.js")}}></script>
+<script src={{ojcache("/include/js/common.js")}}></script>
+<script src={{ojcache("/include/js/datatables.min.js")}}></script>
+<script src={{ojcache("/include/js/admin.js")}}></script>
+<script src={{ojcache("/include/js/moment.min.js")}}></script>
+<script src={{ojcache("/include/js/tempusdominus-bootstrap-4.min.js")}}></script>
+<script src={{ojcache("/include/js/tinymce/tinymce.min.js")}}></script>
+<script src={{ojcache("/include/js/tinymce.js")}}></script>
 <script>
   var socket = io("{{env('SOCKET_IO_SERVER')}}");
   socket_init();
