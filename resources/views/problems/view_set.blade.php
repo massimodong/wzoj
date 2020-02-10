@@ -210,8 +210,12 @@ function submit_solution(){
 
   disable_submit();
 
-  $.post('/solutions', $('#sol-form').serialize())
-    .done(function(data){
+  $.post({
+    url: '/solutions',
+    data: new FormData($('#sol-form')[0]),
+    processData: false,
+    contentType: false,
+  }).done(function(data){
       new_pending_solution(data.id);
       enable_submit();
     })
