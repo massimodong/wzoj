@@ -18,6 +18,8 @@ return [
     'back' => '返回',
     'end' => 'end',
 
+    'blocked' => '禁止访问',
+
     'class' => '学校',
     'home' => '主页',
     'problemset' => '题库',

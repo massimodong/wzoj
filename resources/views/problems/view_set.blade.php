@@ -216,7 +216,16 @@ function submit_solution(){
       enable_submit();
     })
     .fail(function(data){
+      if(data.status == 401){
+        window.location.href = '/auth/login';
+      }else if(data.responseJSON.err_code == 'blocked'){
+        window.location.reload();
+      }else if(data.responseJSON.err_code == 'too_frequent'){
         setTimeout(submit_solution, 2000);
+      }else{
+        addAlertWarning(data.responseJSON.msg);
+        enable_submit();
+      }
     });
 }
 

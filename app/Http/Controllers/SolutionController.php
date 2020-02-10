@@ -202,7 +202,7 @@ class SolutionController extends Controller
         //we use redit to implement a `submit lock` for each user, which automatically expires in 3 seconds
         $res = Redis::set('wzoj.submit_lock.'.$request->user()->id, '1', 'ex', 3, 'nx');
         if($res == 'OK') $solution = $request->user()->solutions()->create($solution_meta);
-        else return response()->json(['msg' => trans('wzoj.submit_too_frequent')], 422);
+        else return response()->json(['msg' => trans('wzoj.submit_too_frequent'), 'err_code' => 'too_frequent'], 422);
 
         DB::statement('INSERT INTO problem_statistics VALUES(?, ?, 1, 0) ON DUPLICATE KEY UPDATE count = count + 1',
             [$problemset->id, $request->problem_id]);

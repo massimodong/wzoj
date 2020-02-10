@@ -20,12 +20,20 @@ class BlockIfBot
 	    $user = Auth::user();
 	    if($user->bot_tendency >= 1000){ //Definitely a bot, ban user
 		    Auth::logout();
-		    return redirect('/');
+        if($request->ajax()){
+          return response()->json(['msg' => trans('wzoj.blocked'), 'err_code' => 'blocked'], 422);
+        }else{
+          return redirect('/');
+        }
 	    }else if($user->bot_tendency >= 100){ //block request
 		    if($request->path() === 'sorry' || $request->path() === '_captcha/default') return $next($request);
 		    else{
-			    $user->isbot(10);
-			    return redirect('/sorry');
+          if($request->ajax()){
+            return response()->json(['msg' => trans('wzoj.blocked'), 'err_code' => 'blocked'], 422);
+          }else{
+            $user->isbot(10);
+            return redirect('/sorry');
+          }
 		    }
 	    }
 	    return $next($request);
