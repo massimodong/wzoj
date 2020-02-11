@@ -22,7 +22,7 @@ class VerifyIfAdmin
      */
     public function __construct(Guard $auth)
     {
-	    $this->auth = $auth;
+      $this->auth = $auth;
     }
 
     /**
@@ -34,21 +34,19 @@ class VerifyIfAdmin
      */
     public function handle($request, Closure $next)
     {
-	    if ($this->auth->guest()) {
-		    if ($request->ajax()) {
-			    return response('Unauthorized.', 401);
-		    } else {
-			    return redirect()->guest('auth/login');
-		    }
-	    }
+      if ($this->auth->guest()) {
+        if ($request->ajax()) {
+          return response('Unauthorized.', 401);
+        } else {
+          return redirect()->guest('auth/login');
+        }
+      }
 
-	    if($this->auth->user()->has_role('admin')){
+      if($this->auth->user()->has_role('admin')){
         DB::setDefaultConnection('mysql_write');
-	    	return $next($request);
-	    }else{
-		return response('Unauthorized.', 401);
-	    }
-
+        return $next($request);
+      }else{
+        return response('Unauthorized.', 401);
+      }
     }
-
 }

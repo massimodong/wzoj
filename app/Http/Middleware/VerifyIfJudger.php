@@ -25,7 +25,7 @@ class VerifyIfJudger
      */
     public function __construct(Guard $auth)
     {
-	    $this->auth = $auth;
+      $this->auth = $auth;
     }
 
     /**
@@ -37,17 +37,17 @@ class VerifyIfJudger
      */
     public function handle($request, Closure $next)
     {
-	    if(!isset($request->judger_token)){
-		    return response('Need Token', 401);
-	    }
-	    $judger = Cache::tags(['judgers'])->rememberForever($request->judger_token, function() use ($request){
-		    return Judger::where('token', $request->judger_token)->first();
-	    });
-	    if($judger == NULL){
-		    return response('Invalid Token', 401);
-	    }
-	    $request->attributes->add(['judger' => $judger]);
+      if(!isset($request->judger_token)){
+        return response('Need Token', 401);
+      }
+      $judger = Cache::tags(['judgers'])->rememberForever($request->judger_token, function() use ($request){
+        return Judger::where('token', $request->judger_token)->first();
+      });
+      if($judger == NULL){
+        return response('Invalid Token', 401);
+      }
+      $request->attributes->add(['judger' => $judger]);
       DB::setDefaultConnection('mysql_write');
-	    return $next($request);
+      return $next($request);
     }
 }
