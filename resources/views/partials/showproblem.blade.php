@@ -35,14 +35,14 @@
 
 @if (strlen($problem->sampleinput))
 <h3>{{trans('wzoj.sample_input')}}:</h3>
-<pre>
+<pre class="sample_io">
 {{$problem->sampleinput}}
 </pre>
 @endif
 
 @if (strlen($problem->sampleoutput))
 <h3>{{trans('wzoj.sample_output')}}:</h3>
-<pre>
+<pre class="sample_io">
 {{$problem->sampleoutput}}
 </pre>
 @endif
