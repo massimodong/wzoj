@@ -17,9 +17,9 @@
     <tr>
       <th> {{trans('wzoj.rank')}} </th>
       <th> {{trans('wzoj.user')}} </th>
-      <th> {{trans('wzoj.score')}} </th>
+      <th><a href="/solutions?problemset_id={{$problemset->id}}"> {{trans('wzoj.score')}} </a></th>
       @foreach ($problems as $problem)
-        <th> {{$problem->name}} </th>
+        <th><a href="/s/{{$problemset->id}}/{{$problem->id}}"> {{$problem->name}} </a></th>
       @endforeach
     </tr>
   </thead>
