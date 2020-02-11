@@ -59,7 +59,18 @@ return [
             'write' => [
                 'host' => env('DB_HOST', 'localhost'),
             ],
-            'sticky' => true,
+            'driver'    => 'mysql',
+            'database'  => env('DB_DATABASE', 'forge'),
+            'username'  => env('DB_USERNAME', 'forge'),
+            'password'  => env('DB_PASSWORD', ''),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+            'strict'    => false,
+        ],
+
+        'mysql_write' => [
+            'host'      => env('DB_HOST', 'localhost'),
             'driver'    => 'mysql',
             'database'  => env('DB_DATABASE', 'forge'),
             'username'  => env('DB_USERNAME', 'forge'),

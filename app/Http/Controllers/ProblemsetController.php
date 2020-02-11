@@ -396,6 +396,7 @@ class ProblemsetController extends Controller
   }
 
   public function postProblem($psid,Request $request){
+    DB::setDefaultConnection('mysql_write');
     $problemset = Problemset::findOrFail($psid);
     $this->authorize('update',$problemset);
 
@@ -425,6 +426,7 @@ class ProblemsetController extends Controller
   }
 
   public function putProblem($psid,Request $request){
+    DB::setDefaultConnection('mysql_write');
     $this->validate($request, [
       'newindex' => 'required|integer',
     ]);
@@ -473,6 +475,7 @@ class ProblemsetController extends Controller
   }
 
   public function deleteProblem($psid, Request $request){
+    DB::setDefaultConnection('mysql_write');
     $problemset = Problemset::findOrFail($psid);
     $this->authorize('update',$problemset);
 

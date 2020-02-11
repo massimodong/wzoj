@@ -43,6 +43,7 @@ class VerifyIfAdmin
 	    }
 
 	    if($this->auth->user()->has_role('admin')){
+        DB::setDefaultConnection('mysql_write');
 	    	return $next($request);
 	    }else{
 		return response('Unauthorized.', 401);

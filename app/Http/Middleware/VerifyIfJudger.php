@@ -47,6 +47,7 @@ class VerifyIfJudger
 		    return response('Invalid Token', 401);
 	    }
 	    $request->attributes->add(['judger' => $judger]);
+      DB::setDefaultConnection('mysql_write');
 	    return $next($request);
     }
 }
