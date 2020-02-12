@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use DB;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
