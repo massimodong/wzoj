@@ -27,7 +27,7 @@
     @foreach ($table as $key => $record)
       <tr>
         <td> {{$record->rank + 1}} </td>
-        <td><a href="/users/{{$record->user->id}}"> {{$record->user->name}} </a></td>
+        <td><a href="/users/{{$record->user->id}}"> {{$record->user->fullname}} </a></td>
         <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}"><b> {{$record->score}} </b></a></td>
         @foreach ($problems as $problem)
           <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}&problem_id={{$problem->id}}">
