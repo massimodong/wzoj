@@ -26,6 +26,24 @@
       <input type="text" class="form-control" id="icp" name="icp" value="{{ojoption('icp')}}">
     </div>
   </div>
+  <div class="form-group row">
+    <label for="gongan_icon_url" class="col-sm-2 control-label">{{trans('wzoj.gongan_icon_url')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="gongan_icon_url" name="gongan_icon_url" value="{{ojoption('gongan_icon_url')}}">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="gongan_code" class="col-sm-2 control-label">{{trans('wzoj.gongan_code')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="gongan_code" name="gongan_code" value="{{ojoption('gongan_code')}}">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="gongan_name" class="col-sm-2 control-label">{{trans('wzoj.gongan_name')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="gongan_name" name="gongan_name" value="{{ojoption('gongan_name')}}">
+    </div>
+  </div>
 
   <h3 aria-describedby="helpBlockRelease">{{trans('wzoj.release_informations')}}</h3>
   <span id="helpBlockRelease" class="help-block">{{trans('wzoj.msg_release_help')}}</span>

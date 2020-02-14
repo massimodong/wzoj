@@ -91,6 +91,9 @@
     <span class="text-muted">
       <a class="text-muted" href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
       <a class="text-muted" href="https://github.com/massimodong/wzoj/releases/tag/{{ojoption('current_version_tag')}}" target="_blank">{{ojoption('current_version_tag')}}</a>
+      @if (ojoption('icp') != '')<a class="text-muted" href="http://beian.miit.gov.cn/" target="_blank">{{ojoption('icp')}}</a>@endif
+      @if (ojoption('gongan_icon_url') != '')<img src="{{ojoption('gongan_icon_url')}}">@endif
+      @if (ojoption('gongan_code') != '')<a class="text-muted" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode={{ojoption('gongan_code')}}" target="_blank">{{ojoption('gongan_name')}}</a>@endif
     </span>
   </div>
 </footer>

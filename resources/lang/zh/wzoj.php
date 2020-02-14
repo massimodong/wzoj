@@ -368,6 +368,9 @@ return [
     'tutorial' => '题解',
 
     'icp' => 'ICP备案号',
+    'gongan_code' => '公安备案号',
+    'gongan_name' => '公安备案名称',
+    'gongan_icon_url' => '公安备案图标地址',
 
     'home_diy' => '主页的自定义页面',
 
