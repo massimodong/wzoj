@@ -8,6 +8,12 @@ body {
   }
 }
 
+@media (max-width:767px){
+  footer span {
+    display: block;
+  }
+}
+
 .form-signin {
   text-align: center!important;
   width: 100%;
@@ -39,7 +45,7 @@ body {
   border-top-right-radius: 0;
 }
 #home_sidebar {
-  height: 100%;
+  height: calc(100% - 30px);
   padding-top: 10px;
 }
 
