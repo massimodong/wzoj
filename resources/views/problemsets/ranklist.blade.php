@@ -12,6 +12,7 @@
 </div>
 @endif
 
+<div class="table-responsive-sm">
 <table class="table ranklist-table">
   <thead>
     <tr>
@@ -41,5 +42,6 @@
     @endforeach
   <tbody>
 </table>
+</div>
 
 @endsection
