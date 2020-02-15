@@ -6,6 +6,7 @@
   "dependencies": {
     "bootstrap": "^4.4.1",
     "bootstrap-select": "^1.13.12",
+    "croppie": "^2.6.4",
     "express": "^4.17.1",
     "font-awesome": "^4.7.0",
     "grunt": "^1.0.4",

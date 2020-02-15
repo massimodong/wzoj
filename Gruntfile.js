@@ -31,7 +31,8 @@ module.exports = function(grunt) {
           'node_modules/bootstrap/dist/js/bootstrap.min.js',
           'node_modules/bootstrap-select/dist/js/bootstrap-select.min.js',
           '3rd/prism.js',
-          'node_modules/socket.io-client/dist/socket.io.js'
+          'node_modules/socket.io-client/dist/socket.io.js',
+          'node_modules/croppie/croppie.js'
         ],
         dest: 'build/_concated.js'
       },
@@ -41,7 +42,8 @@ module.exports = function(grunt) {
           'node_modules/bootstrap-select/dist/css/bootstrap-select.min.css',
           '3rd/prism.css',
           'node_modules/font-awesome/css/font-awesome.min.css',
-          '3rd/navbar-fixed-left.min.css'
+          '3rd/navbar-fixed-left.min.css',
+          'node_modules/croppie/croppie.css'
         ],
         dest: 'build/_concated.css'
       }
