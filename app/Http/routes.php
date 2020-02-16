@@ -43,7 +43,6 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 
 		//users
 		Route::get('users/{id}','UserController@getId');
-		Route::get('users/{id}/edit','UserController@getEdit');
 		Route::put('users', 'UserController@putUsers')->middleware('admin');
 		Route::post('users/{id}','UserController@postId')->middleware('auth');
 
