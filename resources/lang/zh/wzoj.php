@@ -429,4 +429,5 @@ return [
 
     'choose_avatar' => '选择头像',
     'change_avatar' => '修改头像',
+    'edit_profile' => '修改个人信息',
 ];

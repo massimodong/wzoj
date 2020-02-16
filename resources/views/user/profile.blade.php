@@ -7,11 +7,6 @@
 @section ('content')
 {!! Breadcrumbs::render('user', $user) !!}
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#configModal">
-  {{trans('wzoj.edit')}}
-</button>
-
 <input type="file" id="image_upload" accept="image/*" style="display: none"/>
 
 <!-- Modal -->
@@ -123,7 +118,7 @@
       </div>
     </div>
   </div>
-  <div class="col-12">
+  <div class="col-12 my-2">
     <div class="card">
       <div class="card-header">
         {{trans('wzoj.user_description')}}
@@ -133,7 +128,20 @@
       </div>
     </div>
   </div>
+  <div class="col-12">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#configModal">
+      {{trans('wzoj.edit_profile')}}
+    </button>
+    @if (Auth::check() && Auth::user()->id == $user->id)
+    <a href="/password/change">
+      <button type="button" class="btn btn-primary">
+        {{trans('wzoj.change_password')}}
+      </button>
+    </a>
+    @endif
+  </div>
 </div>
+
 @endsection
 
 @section ('scripts')
