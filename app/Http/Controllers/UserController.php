@@ -74,14 +74,20 @@ class UserController extends Controller
       Storage::disk('files')->makeDirectory('avatar/'.$user->id);
 
       $image_sm = imagecreatetruecolor(32, 32);
+      imagealphablending($image_sm, false);
+      imagesavealpha($image_sm, true);
       imagecopyresampled($image_sm, $image, 0, 0, 0, 0, 32, 32, $width, $height);
       imagepng($image_sm, $dir.'/avatar-sm.png');
 
       $image_md = imagecreatetruecolor(128, 128);
+      imagealphablending($image_md, false);
+      imagesavealpha($image_md, true);
       imagecopyresampled($image_md, $image, 0, 0, 0, 0, 128, 128, $width, $height);
       imagepng($image_md, $dir.'/avatar-md.png');
 
       $image_lg = imagecreatetruecolor(205, 205);
+      imagealphablending($image_lg, false);
+      imagesavealpha($image_lg, true);
       imagecopyresampled($image_lg, $image, 0, 0, 0, 0, 205, 205, $width, $height);
       imagepng($image_lg, $dir.'/avatar-lg.png');
 
