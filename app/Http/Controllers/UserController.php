@@ -70,8 +70,8 @@ class UserController extends Controller
       list($width, $height) = getimagesize($request->avatar);
       $image = imagecreatefrompng($request->avatar);
 
-      $dir = storage_path('app').'/files/'.$user->id;
-      Storage::disk('files')->makeDirectory($user->id);
+      $dir = storage_path('app').'/files/avatar/'.$user->id;
+      Storage::disk('files')->makeDirectory('avatar/'.$user->id);
 
       $image_sm = imagecreatetruecolor(32, 32);
       imagecopyresampled($image_sm, $image, 0, 0, 0, 0, 32, 32, $width, $height);

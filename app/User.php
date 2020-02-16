@@ -166,7 +166,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function avatar_url($size){
-      return '/files/'.$this->id.'/avatar-'.$size.'.png';
+      return '/files/avatar/'.$this->id.'/avatar-'.$size.'.png';
     }
 
     public function __get($key){
