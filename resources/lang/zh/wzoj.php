@@ -17,6 +17,8 @@ return [
     'add' => '添加',
     'back' => '返回',
     'end' => 'end',
+    'upload' => '上传',
+    'close' => '关闭',
 
     'blocked' => '禁止访问',
 
@@ -424,4 +426,7 @@ return [
     'avrg_score' => '平均分',
 
     'view_history' => '浏览历史',
+
+    'choose_avatar' => '选择头像',
+    'change_avatar' => '修改头像',
 ];

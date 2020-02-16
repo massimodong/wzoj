@@ -165,6 +165,10 @@ class User extends Model implements AuthenticatableContract,
       }
     }
 
+    public function avatar_url($size){
+      return '/files/'.$this->id.'/avatar-'.$size.'.png';
+    }
+
     public function __get($key){
       if($this->has_role('admin')){
         switch($key){

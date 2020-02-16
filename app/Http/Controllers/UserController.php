@@ -15,6 +15,7 @@ use App\FileManager;
 use Auth;
 use Cache;
 use DB;
+use Storage;
 
 class UserController extends Controller
 {
@@ -69,6 +70,25 @@ class UserController extends Controller
 
       $user->new_description = $request->description;
       $user->description_changed_at = DB::raw('now()');
+    }
+    if(isset($request->avatar) && $request->avatar <> ''){
+      list($width, $height) = getimagesize($request->avatar);
+      $image = imagecreatefrompng($request->avatar);
+
+      $dir = storage_path('app').'/files/'.$user->id;
+      Storage::disk('files')->makeDirectory($user->id);
+
+      $image_sm = imagecreatetruecolor(32, 32);
+      imagecopyresampled($image_sm, $image, 0, 0, 0, 0, 32, 32, $width, $height);
+      imagepng($image_sm, $dir.'/avatar-sm.png');
+
+      $image_md = imagecreatetruecolor(128, 128);
+      imagecopyresampled($image_md, $image, 0, 0, 0, 0, 128, 128, $width, $height);
+      imagepng($image_md, $dir.'/avatar-md.png');
+
+      $image_lg = imagecreatetruecolor(205, 205);
+      imagecopyresampled($image_lg, $image, 0, 0, 0, 0, 205, 205, $width, $height);
+      imagepng($image_lg, $dir.'/avatar-lg.png');
     }
 
     if($profile_changed){

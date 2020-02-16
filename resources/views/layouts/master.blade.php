@@ -27,7 +27,7 @@
       <li class="nav-item dropdown">
         @if (Auth::check())
           <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="dropdown01" aria-haspopup="true" role="button">
-            <img src="//cn.gravatar.com/avatar/{{md5(strtolower(trim(Auth::user()->email)))}}?d=retro&s=32">
+            <img src="{{Auth::user()->avatar_url('sm')}}">
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown01">
             <a class="dropdown-item" href="/users/{{Auth::user()->id}}"> {{Auth::user()->name}} </a>

@@ -84,3 +84,36 @@ li.L5, li.L6, li.L7, li.L8 {
   border: 1px solid #CCC;
   border-radius: 6px;
 }
+
+#avatar_image {
+  display: none;
+}
+#avatar_image.ready {
+  width: 230;
+  height: 287px;
+  display: block;
+}
+#avatar_image_msg {
+  height: 287px;
+  text-align: center;
+}
+#avatar_image_msg.ready {
+  display: none;
+}
+#avatar_image_msg_2 {
+  display: inline-block;
+  width: 230px;
+  height: 230px;
+  border: 1px solid #ced4da;
+  color: #ced4da;
+  text-align: center;
+  line-height: 230px;
+  font-size: 30px;
+  cursor: pointer;
+}
+#fullname_lock_icon {
+  cursor: pointer;
+}
+#class_lock_icon {
+  cursor: pointer;
+}

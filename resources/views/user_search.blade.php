@@ -9,7 +9,7 @@
     <div class="card">
       <div class="row no-gutters">
         <div class="col-md-2">
-          <a href="/users/{{$user->id}}"><img src="//cn.gravatar.com/avatar/{{md5(strtolower(trim($user->email)))}}?d=retro&s=128" class="card-img"></a>
+          <a href="/users/{{$user->id}}"><img src="{{$user->avatar_url('md')}}" class="card-img"></a>
         </div>
         <div class="col-md-10">
           <div class="card-body">
