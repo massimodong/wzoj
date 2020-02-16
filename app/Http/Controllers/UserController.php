@@ -84,6 +84,9 @@ class UserController extends Controller
       $image_lg = imagecreatetruecolor(205, 205);
       imagecopyresampled($image_lg, $image, 0, 0, 0, 0, 205, 205, $width, $height);
       imagepng($image_lg, $dir.'/avatar-lg.png');
+
+      $user->has_avatar = true;
+      $profile_changed = true;
     }
 
     if($profile_changed){

@@ -14,7 +14,7 @@
         "soundasleep/html2text": "^0.3.4",
         "yajra/laravel-datatables-oracle": "~6.28.1",
         "davejamesmiller/laravel-breadcrumbs": "3.x",
-        "doctrine/dbal": "^2.9",
+        "doctrine/dbal": "^2.10",
         "mews/purifier": "^3.1"
     },
     "require-dev": {
