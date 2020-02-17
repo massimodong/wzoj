@@ -91,7 +91,7 @@ class UserController extends Controller
       imagecopyresampled($image_lg, $image, 0, 0, 0, 0, 205, 205, $width, $height);
       imagepng($image_lg, $dir.'/avatar-lg.png');
 
-      $user->has_avatar = true;
+      $user->avatar_token = time();
       $profile_changed = true;
     }
 
