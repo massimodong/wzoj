@@ -73,7 +73,7 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <textarea class="form-control" id="description" name="description" rows="5"
+                  <textarea class="form-control" id="description" name="description" rows="5" placeholder="{{trans('wzoj.user_description')}}"
                     @can ('change_description', $user)
                     @else
                       disabled
