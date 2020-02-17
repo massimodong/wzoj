@@ -38,6 +38,10 @@ class UserPolicy
 	    return $auth->id == $user->id;
     }
 
+    public function change_avatar(User $auth, User $user){
+      return $auth->id == $user->id;
+    }
+
     public function view_files(User $auth, User $user){
 	    return $auth->id == $user->id;
     }

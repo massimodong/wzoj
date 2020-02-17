@@ -66,7 +66,7 @@ class UserController extends Controller
       $user->new_description = $request->description;
       $user->description_changed_at = DB::raw('now()');
     }
-    if(isset($request->avatar) && $request->avatar <> ''){
+    if(Gate::allows('change_avatar', $user) && isset($request->avatar) && $request->avatar <> ''){
       list($width, $height) = getimagesize($request->avatar);
       $image = imagecreatefrompng($request->avatar);
 
