@@ -8,7 +8,6 @@
 {!! Breadcrumbs::render('user', $user) !!}
 
 <input type="file" id="image_upload" accept="image/*" style="display: none"/>
-
 <!-- Modal -->
 <div class="modal fade" id="configModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="configModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" role="document">
@@ -86,8 +85,21 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onclick="$('#image_upload').trigger('click')">{{trans('wzoj.choose_avatar')}}</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">{{trans('wzoj.close')}}</button>
+        <div class="btn-group">
+          <button type="button" class="btn btn-light" onclick="use_gravatar()"><img src="/include/img/grav-tag.png"> {{trans('wzoj.use_gravatar')}}</button>
+          <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+          </button>
+          <div class="dropdown-menu">
+            <form class="px-1 py-0">
+              <div class="form-group">
+                <label for="gravatar_url">{{trans('wzoj.gravatar_address')}}</label>
+                <input type="text" class="form-control" id="gravatar_url" value="//cn.gravatar.com/avatar/{{md5(strtolower(trim($user->email)))}}?d=retro&s=205">
+              </div>
+            </form>
+          </div>
+        </div>
+        <button type="button" class="btn btn-info" onclick="$('#image_upload').trigger('click')">{{trans('wzoj.choose_avatar')}}</button>
         <button type="button" class="btn btn-primary" onclick="configForm_submit();">{{trans('wzoj.submit')}}</button>
       </div>
     </div>
@@ -157,7 +169,6 @@ function readFile(input){
         zoom: 0
       }).then(function(){
       });
-      $('#configModal').modal('handleUpdate');
     }
     reader.readAsDataURL(input.files[0]);
   }else{
@@ -200,6 +211,21 @@ function change_lock(lock){
     $(lock).removeClass('fa-unlock');
     $(lock).addClass('fa-lock');
   }
+}
+
+function use_gravatar(){
+  $('#avatar_image_msg_2').html("<div role='status' class='spinner-border'><span class='sr-only'>Loading...</span></div>");
+  $('#avatar_image').removeClass('ready');
+  $('#avatar_image_msg').removeClass('ready');
+  $('#image_upload').val('');
+  uploadCrop.croppie('bind', {
+    url: $('#gravatar_url').val(),
+    zoom: 0
+  }).then(function(){
+    $('#avatar_image').addClass('ready');
+    $('#avatar_image_msg').addClass('ready');
+    uploadCrop.croppie('bind');
+  });
 }
 </script>
 @endsection

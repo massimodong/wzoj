@@ -430,4 +430,6 @@ return [
     'choose_avatar' => '选择头像',
     'change_avatar' => '修改头像',
     'edit_profile' => '修改个人信息',
+    'use_gravatar' => '使用 Gravatar 头像',
+    'gravatar_address' => 'Gravatar 头像地址'
 ];
