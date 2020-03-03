@@ -46,6 +46,8 @@
         </button>
       </div>
       <div id="modalContent" class="modal-body">
+        <pre id="modalText"></pre>
+        <img id="modalImg" class="img-fluid">
       </div>
     </div>
   </div>
@@ -98,10 +100,21 @@ function transit(path){
 function preview(path){
   $('#previewModalTitle').html(path);
   var url = window.location.origin + window.location.pathname + '?file=' + '{{$userPath}}' + path;
-  $.get(url).done(function(data){
-    $('#modalContent').html(data);
+  if(path.match(/.(jpg|jpeg|png|gif)$/i)){
+    $('#modalText').hide();
+    $('#modalImg').show();
+
+    $('#modalImg').attr('src', url);
     $('#previewModal').modal("show");
-  });
+  }else{
+    $.get(url).done(function(data){
+      $('#modalImg').hide();
+      $('#modalText').show();
+
+      $('#modalText').text(data);
+      $('#previewModal').modal("show");
+    });
+  }
 }
 
 function fileManager_action( action, method = 'POST'){
