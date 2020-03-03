@@ -1,4 +1,4 @@
-@extends ('fileManager.layout')
+@extends ('admin.layout')
 
 @section ('title')
 {!! $config['title'] !!}
@@ -35,7 +35,23 @@
   </div>
 </div>
 
-<table id="fileManagerTable" class="table table-striped">
+<!-- Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewModalTitle"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div id="modalContent" class="modal-body">
+      </div>
+    </div>
+  </div>
+</div>
+
+<table id="fileManagerTable" class="table">
 <thead>
   <th style="width: 1%"><input name="select_all" value="1" type="checkbox"></th>
   <th style="display:none">{{trans('wzoj.filename')}}</th>
@@ -79,14 +95,13 @@ function transit(path){
 	$('#transit_form').submit();
 }
 
-var div_on_preview = false;
 function preview(path){
-	if(div_on_preview) return;
-	$('#preview_div').html('<iframe height="500"  allowTransparency="true" frameborder="0" scrolling="yes" style="width:100%;" src="' +
-		       window.location.origin + window.location.pathname + '?file=' + '{{$userPath}}' + path +
-		       '" type= "text/javascript"></iframe>');
-	$('#preview_div').show();
-	setTimeout('div_on_preview = true', 1000);
+  $('#previewModalTitle').html(path);
+  var url = window.location.origin + window.location.pathname + '?file=' + '{{$userPath}}' + path;
+  $.get(url).done(function(data){
+    $('#modalContent').html(data);
+    $('#previewModal').modal("show");
+  });
 }
 
 function fileManager_action( action, method = 'POST'){
@@ -102,13 +117,6 @@ function fileManager_action( action, method = 'POST'){
 	$("#fileManager_form").append(submitInput);
         submitInput.trigger("click");
 }
-
-$(document).click(function(){
-	if(div_on_preview){
-		$('#preview_div').hide();
-		div_on_preview = false;
-	}
-});
 
 var file_names = [];
 jQuery(document).ready(function($){
