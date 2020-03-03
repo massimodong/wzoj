@@ -18,7 +18,7 @@ class FileManager
 			}
 		}
 		if(empty($dir_names)) return '/';
-		else return '/'.join('/', $dir_names).'/';
+		else return '/'.join('/', $dir_names);
 	}
 	static function downloadFiles($disk, $basePath, $userPath, $files,$name){
 		$zip = new ZipArchive;
@@ -57,9 +57,13 @@ class FileManager
 		}else if(isset($request->file)){
 			$userFile = FileManager::resolvePath($request->file);
 			if(Storage::disk($config['disk'])->has($config['basepath'].$userFile)){
-				return view('fileManager.readText', [
-						'text' => Storage::disk($config['disk'])->get($config['basepath'].$userFile)
-				]);
+        $path = Storage::disk($config['disk'])->getAdapter()->getPathPrefix().'/'.$config['basepath'].$userFile;
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $path);
+        finfo_close($finfo);
+
+        return response(Storage::disk($config['disk'])->get($config['basepath'].$userFile), 200)->header('Content-Type', $mime);
+
 			}else{
 				abort(404);
 			}
