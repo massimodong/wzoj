@@ -131,7 +131,7 @@ class UserController extends Controller
 		return FileManager::getRequests($request, [
 			'disk' => 'files',
 			'basepath' => strval($user->id),
-			'title' => '<a href="/users/'.$user->id.'">'.$user->name.'</a>-'.trans('wzoj.files'),
+			'title' => $user->name.trans('wzoj.files'),
 			'modify' => $can_modify,
 		]);
 	}

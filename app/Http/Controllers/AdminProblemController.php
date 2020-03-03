@@ -57,7 +57,7 @@ class AdminProblemController extends Controller
 		return FileManager::getRequests($request, [
 			'disk' => 'data',
 			'basepath' => strval($problem->id),
-			'title' => '<a href="/admin/problems/'.$problem->id.'">'.$problem->id.'-'.$problem->name.'</a>-'.trans('wzoj.testdata'),
+			'title' => $problem->name.trans('wzoj.testdata'),
 			'modify' => true,
 		]);
 	}
