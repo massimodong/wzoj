@@ -42,7 +42,13 @@ class AdminUpdateSystemController extends Controller
 		return view('admin.update_system');
 	}
 
-	public function postUpdate(){
+	public function postUpdate(Request $request){
+    if(!($request->hasFile('pkg') && $request->file('pkg')->isValid())){
+      if(!$request->hasFile('pkg')) print("file not found<br>");
+      if(!$request->file('pkg')->isValid()) print("file not valid<br>");
+      return "Error!!"; //TODO
+    }
+
 		//header("Content-type: text/plain");
 		ignore_user_abort(true);
 		$this->disable_ob();
@@ -54,26 +60,9 @@ class AdminUpdateSystemController extends Controller
 		chdir("../");
 
 		putenv('COMPOSER_HOME=' . getcwd());
-		$opts = [
-			'http' => [
-				'method' => 'GET',
-				'header' => [
-					'User-Agent: PHP'
-				]
-			]
-		];
-		$context = stream_context_create($opts);
 
-		echo "Getting latest release:";
-
-		$latest_release = file_get_contents("https://api.github.com/repos/massimodong/wzoj/releases/latest?access_token=".env('GITHUB_ACCESS_TOKEN'), false, $context);
-
-		$latest_release = json_decode($latest_release);
-
-		echo $latest_release->tag_name."\n";
-		echo "Downloading..\n";
-
-		file_put_contents("storage/app/tmpfile.tar.gz", fopen($latest_release->tarball_url, 'r', false, $context));
+    $file = $request->file('pkg');
+		file_put_contents("storage/app/tmpfile.tar.gz", fopen($file->getRealPath(), "r"));
 
 		echo "Enabling Maintenance Mode\n";
 		system("php artisan down");
@@ -85,6 +74,7 @@ class AdminUpdateSystemController extends Controller
 
 		$phar = new PharData('storage/app/tmpfile.tar');
 		$phar->extractTo('storage/app');
+
 		system('cp -r -a storage/app/massimodong-wzoj-*/. ./');
 
 		system('rm -Rf storage/app/massimodong-wzoj-* 2>&1');
@@ -100,8 +90,8 @@ class AdminUpdateSystemController extends Controller
 		system("php artisan up");
 		echo "</pre>";
 
-		Option::where('name', 'current_version_tag')->update(['value' => $latest_release->tag_name]);
-		Option::where('name', 'current_version_id')->update(['value' => $latest_release->id]);
+		Option::where('name', 'current_version_tag')->update(['value' => $request->version_tag]);
+		Option::where('name', 'current_version_id')->update(['value' => $request->version_id]);
 		Cache::tags(['options'])->flush();
 
 		return back();
