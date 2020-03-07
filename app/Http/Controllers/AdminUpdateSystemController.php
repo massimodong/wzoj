@@ -85,6 +85,7 @@ class AdminUpdateSystemController extends Controller
 		system('php artisan config:cache 2>&1');
 		system('php artisan route:cache 2>&1');
 		system('php artisan migrate 2>&1');
+		\Redis::command('flushall');
 
 		echo "Disabling Maintenance Mode\n";
 		system("php artisan up");
