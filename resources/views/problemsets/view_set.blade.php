@@ -34,6 +34,8 @@
         <th>{{trans('wzoj.name')}}</th>
         <th>{{trans('wzoj.tags')}}</th>
         <th>{{trans('wzoj.source')}}</th>
+        <th>{{trans('wzoj.count_submit')}}</th>
+        <th>{{trans('wzoj.avrg_score')}}</th>
       </tr>
     </thead>
     <tbody>
@@ -57,6 +59,14 @@
         @endif
       </td>
       <td>{{$problem->source}}</td>
+      <td>{{intval($problem->count)}}</td>
+      <td>
+        @if ($problem->count)
+          {{round($problem->score_sum / $problem->count, 2)}}
+        @else
+          -
+        @endif
+      </td>
       </tr>
       @endforeach
     </tbody>

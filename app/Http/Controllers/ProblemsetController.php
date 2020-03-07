@@ -114,12 +114,20 @@ class ProblemsetController extends Controller
         $page = $request->page;
       }
 
-      $problems = Cache::tags(['problemsets', 'problems', $psid])->rememberForever($page, 
+      $problems = Cache::tags(['problemsets', 'problems', $psid])->remember($page, CACHE_ONE_DAY,
           function() use($problemset, $page){
         return $problemset->problems()->orderByIndex()
           ->where('problem_problemset.index', '>', ($page-1) * self::PAGE_LIMIT)
           ->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT)
           ->with(['tags'])
+          ->leftJoin('problem_statistics', 'problems.id', '=', 'problem_statistics.problem_id')
+          ->where(function($query) use($problemset){
+              $query->where('problem_statistics.problemset_id', '=', $problemset->id)
+                    ->orWhere(function($query2){
+                        $query2->whereNull('problem_statistics.problemset_id');
+                      });
+            })
+          ->select(['problems.*', 'problem_statistics.*'])
           ->get();
       });
     }else{
