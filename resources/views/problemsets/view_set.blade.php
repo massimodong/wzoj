@@ -32,10 +32,10 @@
         <th></th>
         <th>{{trans('wzoj.index')}}</th>
         <th>{{trans('wzoj.name')}}</th>
-        <th>{{trans('wzoj.tags')}}</th>
-        <th>{{trans('wzoj.source')}}</th>
         <th>{{trans('wzoj.count_submit')}}</th>
         <th>{{trans('wzoj.avrg_score')}}</th>
+        <th>{{trans('wzoj.tags')}}</th>
+        <th>{{trans('wzoj.source')}}</th>
       </tr>
     </thead>
     <tbody>
@@ -51,14 +51,6 @@
       </td>
       <td>{{$problem->pivot->index}}</td>
       <td class="text-left"><a href='/s/{{$problemset->id}}/{{$problem->id}}'>{{$problem->name}}</a></td>
-      <td>
-        @if ($problemset->show_problem_tags)
-        <span>
-          @include ('partials.problem_tags', ['problem' => $problem])
-        </span>
-        @endif
-      </td>
-      <td>{{$problem->source}}</td>
       <td>{{intval($problem->count)}}</td>
       <td>
         @if ($problem->count)
@@ -67,6 +59,14 @@
           -
         @endif
       </td>
+      <td>
+        @if ($problemset->show_problem_tags)
+        <span>
+          @include ('partials.problem_tags', ['problem' => $problem])
+        </span>
+        @endif
+      </td>
+      <td>{{$problem->source}}</td>
       </tr>
       @endforeach
     </tbody>
