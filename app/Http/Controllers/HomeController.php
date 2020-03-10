@@ -171,14 +171,12 @@ class HomeController extends Controller
                ->select(DB::raw('id, problemset_id, COUNT(*) as count'))
                ->groupBy("id", 'problemset_id')
                ->orderBy("count", "desc")
-               ->take(20)
                ->get();
     }else{
       $res = \App\Problem::join('problem_problemset', 'problems.id', '=', 'problem_problemset.problem_id')
                          ->whereIn('problem_problemset.problemset_id', $psids)
                          ->where('problems.name', 'like', '%'.$request->name.'%')
                          ->select('problems.id', 'problem_problemset.problemset_id')
-                         ->take(20)
                          ->get()
                          ->all();
     }
