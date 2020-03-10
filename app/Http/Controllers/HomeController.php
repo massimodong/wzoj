@@ -173,6 +173,7 @@ class HomeController extends Controller
                ->orderBy("count", "desc")
                ->get();
     }else{
+      if($request->name == "") abort(400);
       $res = \App\Problem::join('problem_problemset', 'problems.id', '=', 'problem_problemset.problem_id')
                          ->whereIn('problem_problemset.problemset_id', $psids)
                          ->where('problems.name', 'like', '%'.$request->name.'%')
