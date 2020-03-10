@@ -84,7 +84,7 @@ class="main-home"
     <div class="overflow-auto" id="home_sidebar">
     <form action="/search" method="GET">
       <div class="d-table-cell w-100">
-        <input type="text" class="form-control" name="name" placeholder="{{trans('wzoj.search')}}">
+        <input type="text" class="form-control" id ="search_name" name="name" placeholder="{{trans('wzoj.search')}}" required>
       </div>
       <div class="d-table-cell align-middle">
         <button type="button" class="btn btn-light dropdown-toggle dropdown-toggle-split" data-toggle="collapse" data-target="#search_options" aria-expanded="false" aria-controls="search_options">
@@ -135,11 +135,15 @@ $(document).ready(function(){
     $('#tags-select').prop("disabled", false);
     $('#tags-select').selectpicker("refresh");
   });
-});
-$(document).ready(function(){
+
   $("#search_users").change(function(){
     $('#tags-select').prop("disabled", true);
     $('#tags-select').selectpicker("refresh");
+  });
+
+  $('#tags-select').change(function(){
+      var l = $('#tags-select').val().length;
+      $('#search_name').prop('required', !l);
   });
 });
 </script>
