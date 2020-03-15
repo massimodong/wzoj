@@ -120,12 +120,9 @@ class ProblemsetController extends Controller
           ->where('problem_problemset.index', '>', ($page-1) * self::PAGE_LIMIT)
           ->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT)
           ->with(['tags'])
-          ->leftJoin('problem_statistics', 'problems.id', '=', 'problem_statistics.problem_id')
-          ->where(function($query) use($problemset){
-              $query->where('problem_statistics.problemset_id', '=', $problemset->id)
-                    ->orWhere(function($query2){
-                        $query2->whereNull('problem_statistics.problemset_id');
-                      });
+          ->leftJoin('problem_statistics', function($join) use($problemset){
+              $join->on('problems.id', '=', 'problem_statistics.problem_id')
+                   ->where('problem_statistics.problemset_id', '=', $problemset->id);
             })
           ->select(['problems.*', 'problem_statistics.*'])
           ->get();
