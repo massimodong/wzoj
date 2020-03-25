@@ -111,8 +111,8 @@ class JudgerController extends Controller
 			]);
 
 			if($ok){
-        DB::update('UPDATE problem_statistics SET score_sum = score_sum - ? WHERE problemset_id = ? AND problem_id = ?',
-            [$solution->score, $solution->problemset_id, $solution->problem_id]);
+        DB::update('UPDATE problem_statistics SET score_sum = score_sum - ?, count_ac = count_ac - IF(? = 100, 1, 0) WHERE problemset_id = ? AND problem_id = ?',
+            [$solution->score, $solution->score, $solution->problemset_id, $solution->problem_id]);
 				$solution->time_used = 0;
 				$solution->memory_used = 0.0;
 				$solution->status = SL_COMPILING;
@@ -216,8 +216,8 @@ class JudgerController extends Controller
 		
 		$solution->save();
 
-    DB::update('UPDATE problem_statistics SET score_sum = score_sum + ? WHERE problemset_id = ? AND problem_id = ?',
-        [$solution->score, $solution->problemset_id, $solution->problem_id]);
+    DB::update('UPDATE problem_statistics SET score_sum = score_sum + ?, count_ac = count_ac + IF(? = 100, 1, 0) WHERE problemset_id = ? AND problem_id = ?',
+        [$solution->score, $solution->score, $solution->problemset_id, $solution->problem_id]);
 
 		$cache_path = $solution->user_id.'-'.$solution->problemset_id.'-'.$solution->problem_id;
 		if($solution->score > Cache::tags(['problemsets', 'max_score'])->get($cache_path, -1)){
