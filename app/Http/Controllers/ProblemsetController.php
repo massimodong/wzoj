@@ -381,11 +381,13 @@ class ProblemsetController extends Controller
 
     $cnt_submit = 0;
     $tot_score = 0;
+    $cnt_ac = 0;
     if($problemset->type == "set"){
-      $statistics = DB::select('SELECT count, score_sum FROM problem_statistics WHERE problemset_id = ? AND problem_id = ?', [$problemset->id, $problem->id]);
+      $statistics = DB::select('SELECT count, score_sum, count_ac FROM problem_statistics WHERE problemset_id = ? AND problem_id = ?', [$problemset->id, $problem->id]);
       if(count($statistics) > 0){
         $cnt_submit = $statistics[0]->count;
         $tot_score = $statistics[0]->score_sum;
+        $cnt_ac = $statistics[0]->count_ac;
       }
     }
 
@@ -396,6 +398,7 @@ class ProblemsetController extends Controller
         'has_test_data' => $has_test_data,
         'cnt_submit' => $cnt_submit,
         'tot_score' => $tot_score,
+        'cnt_ac' => $cnt_ac,
         'topics' => $topics,
     ]);
   }

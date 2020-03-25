@@ -13,7 +13,7 @@
 @endif
 
 @if (isset($cnt_submit) && $cnt_submit > 0)
-  {{trans('wzoj.count_submit')}}: {{$cnt_submit}}, {{trans('wzoj.avrg_score')}}: {{round($tot_score / $cnt_submit, 2)}}
+  {{trans('wzoj.count_submit')}}: {{$cnt_submit}}, {{trans('wzoj.pass_rate')}}: {{round(100 * $cnt_ac / $cnt_submit, 2)}}%, {{trans('wzoj.avrg_score')}}: {{round($tot_score / $cnt_submit, 2)}}
 @endif
 </small>
 </div>
