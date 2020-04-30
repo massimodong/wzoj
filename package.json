@@ -16,7 +16,7 @@
     "grunt-contrib-cssmin": "^3.0.0",
     "grunt-contrib-uglify": "^4.0.1",
     "ioredis": "^4.14.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "laravel-elixir": "^6.0.0-18",
     "popper.js": "^1.16.1",
     "socket.io": "^2.3.0",
