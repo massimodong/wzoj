@@ -165,9 +165,9 @@
     {{csrf_field()}}
     <div class="form-group">
       <label for="gids">{{trans ('wzoj.choose_group')}}:</label>
-      <select name="gid" id="gid" class="selectpicker">
+      <select name="gid" id="gid" class="selectpicker" data-live-search="true">
       @foreach ($groups as $group)
-        <option value="{{$group->id}}">{{$group->name}}</option>
+        <option value="{{$group->id}}">{{$group->id}}-{{$group->name}}</option>
       @endforeach
       </select>
     </div>
