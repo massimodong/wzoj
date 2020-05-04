@@ -7,6 +7,14 @@
 @section ('content')
 {!! Breadcrumbs::render('contests') !!}
 
+@can ('create',App\Problemset::class)
+<form method='POST' action="/s">
+    {{csrf_field()}}
+    <input name="type" value="apio" style="display:none">
+    <button type="submit" class="btn btn-default">+</button>
+</form>
+@endcan
+
 <div class="table-responsive">
   <table class="table">
   <thead>

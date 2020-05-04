@@ -267,7 +267,11 @@ class ProblemsetController extends Controller
 
   public function postNewProblemset(Request $request){
     $this->authorize('create',Problemset::class);
-    $problemset = Problemset::create(['name'=>'problemset name','type'=>'set','public'=>'1', 'manager_id'=>$request->user()->id]);
+
+    $type = 'set';
+    if(isset($request->type) && $request->type != "")  $type = $request->type;
+
+    $problemset = Problemset::create(['name'=>'problemset name','type'=>$type,'public'=>'1', 'manager_id'=>$request->user()->id]);
     Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
     return redirect('/s/'.$problemset->id.'/edit');
   }
