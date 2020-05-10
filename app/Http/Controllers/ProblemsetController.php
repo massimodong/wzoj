@@ -271,7 +271,7 @@ class ProblemsetController extends Controller
     $type = 'set';
     if(isset($request->type) && $request->type != "")  $type = $request->type;
 
-    $problemset = Problemset::create(['name'=>'problemset name','type'=>$type,'public'=>'1', 'manager_id'=>$request->user()->id]);
+    $problemset = Problemset::create(['name'=>'problemset name','type'=>$type,'public'=>'0', 'manager_id'=>$request->user()->id]);
     Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
     return redirect('/s/'.$problemset->id.'/edit');
   }
