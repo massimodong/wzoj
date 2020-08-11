@@ -4891,10 +4891,10 @@ time-stamp@^1.0.0:
   resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-1.1.0.tgz#764a5a11af50561921b133f3b44e618687e0f5c3"
   integrity sha1-dkpaEa9QVhkhsTPztE5hhofg9cM=
 
-tinymce@^5.1.6:
-  version "5.1.6"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.1.6.tgz#20b484dbb31f7678484fa5c7b639ff6992f27e8b"
-  integrity sha512-QDFLqHhYyHaY8e6nWLeM5zrkWOzPA3FqcBKbhEin47cna/0jNHL4DzNqmZpmA7ch9AWBF24Nzvhf1gzUFkE4aQ==
+tinymce@^5.4.0:
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-5.4.0.tgz#ae9c784fd36651d4d457be844a18fc138ca4f1f3"
+  integrity sha512-b3j+cUogfOtRt07Zc6iOrOAVosm4hekLtE85lmvjH7tPH7ncAIBv/cpdre9GdfeXSz7TVIJWASVvi4hkOTTh3A==
 
 to-absolute-glob@^2.0.0:
   version "2.0.2"
