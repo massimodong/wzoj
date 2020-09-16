@@ -54,7 +54,7 @@
         <td>{{intval($problem->count)}}</td>
         <td>
           @if ($problem->count)
-            {{round(100 * $problem->count_ac / $problem->count, 2)}}
+            {{round(100 * $problem->count_ac / $problem->count, 2)}}%
           @else
             -
           @endif

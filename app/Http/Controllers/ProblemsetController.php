@@ -28,9 +28,9 @@ class RanklistUser{
   public $problem_scores;
   public $problem_corrected_scores;
   public $problem_solutions;
-  function __construct($u, $p){
+  function __construct($u, $p, $score = 0){
     $this->user = $u;
-    $this->score = 0;
+    $this->score = $score;
     $this->penalty = 0;
     foreach($p as $s){
       $this->problem_scores[$s->id] = 0;
@@ -173,12 +173,18 @@ class ProblemsetController extends Controller
     if(!$contest_running){//ended
       $solutions = $problemset->solutions()
         ->where('created_at', '>', $problemset->contest_end_at)
+        ->with(['user'])
         ->get();
       foreach($solutions as $solution){
-        if(!isset($users_id[$solution->user_id])) continue;
+        if(!isset($users_id[$solution->user_id])){
+          array_push($table, new RanklistUser($solution->user, $problems, -1));
+          $users_id[$solution->user_id] = count($table)-1;
+        }
         $id = $users_id[$solution->user_id];
-        if($solution->score > $table[$id]->problem_corrected_scores[$solution->problem_id])
-          $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
+        if(isset($table[$id]->problem_corrected_scores[$solution->problem_id])){
+          if($solution->score > $table[$id]->problem_corrected_scores[$solution->problem_id])
+            $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
+        }
       }
     }
 
