@@ -54,6 +54,22 @@
         <input type="text" class="form-control datetimepicker-input" name='contest_end_at' id="contest_end_at" data-toggle="datetimepicker" data-target="#contest_end_at" data-date-format="YYYY-MM-DD HH:mm:ss">
       </div>
     </div>
+    <div class="form-group row">
+      <div class="col-sm-offset-2 col-sm-10">
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="participate_type_radio_0" name="participate_type" value="0" class="custom-control-input" @if ($problemset->participate_type == 0) checked @endif>
+          <label class="custom-control-label" for="participate_type_radio_0">{{trans('wzoj.participate_type_standard')}}</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="participate_type_radio_1" name="participate_type" value="1" class="custom-control-input" @if ($problemset->participate_type == 1) checked @endif>
+          <label class="custom-control-label" for="participate_type_radio_1">{{trans('wzoj.participate_type_duration')}}</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="participate_type_radio_2" name="participate_type" value="2" class="custom-control-input" @if ($problemset->participate_type == 2) checked @endif>
+          <label class="custom-control-label" for="participate_type_radio_2">{{trans('wzoj.participate_type_allow_virtual')}}</label>
+        </div>
+      </div>
+    </div>
 
     <div class="form-group row">
       <label class="col-form-label col-sm-2" for="tag">{{trans('wzoj.tag')}}:</label>

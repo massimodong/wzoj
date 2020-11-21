@@ -311,12 +311,17 @@ class ProblemsetController extends Controller
       'type' => 'required|in:set,oi,acm,apio',
       'public' => 'in:1',
       'show_problem_tags' => 'in:1',
+      'participate_type' => 'in:0,1,2',
+      'contest_duration' => 'integer',
     ]);
 
     $newval = $request->except(['manager']);
+
     if(!isset($newval['public'])) $newval['public'] = 0;
     if(!isset($newval['show_problem_tags'])) $newval['show_problem_tags'] = 0;
     if(!isset($newval['contest_hide_solutions'])) $newval['contest_hide_solutions'] = 0;
+    if(!isset($newval['participate_type'])) $newval['participate_type'] = 0;
+    if(!isset($newval['contest_duration'])) $newval['contest_duration'] = 10800;
 
     $newval['description'] = Purifier::clean($newval['description']);
 

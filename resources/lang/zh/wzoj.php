@@ -431,5 +431,9 @@ return [
     'change_avatar' => '修改头像',
     'edit_profile' => '修改个人信息',
     'use_gravatar' => '使用 Gravatar 头像',
-    'gravatar_address' => 'Gravatar 头像地址'
+    'gravatar_address' => 'Gravatar 头像地址',
+
+    'participate_type_standard' => '标准参赛模式',
+    'participate_type_duration' => '时限????',
+    'participate_type_allow_virtual' => '允许虚拟参赛',
 ];
