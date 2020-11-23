@@ -435,9 +435,9 @@ return [
     'use_gravatar' => '使用 Gravatar 头像',
     'gravatar_address' => 'Gravatar 头像地址',
 
-    'participate_type_standard' => '标准参赛模式',
-    'participate_type_duration' => '时限????',
-    'participate_type_allow_virtual' => '允许虚拟参赛',
+    'participate_type_standard' => '标准模式',
+    'participate_type_duration' => '参赛时限（秒）',
+    'participate_type_allow_virtual' => '允许虚拟参赛(TODO)',
     'participate_contest' => '开始比赛',
     'contest_duration' => '比赛限时',
 ];
