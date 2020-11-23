@@ -155,11 +155,29 @@ class ProblemsetController extends Controller
   }
 
   public function getRanklistTable($problemset, $problems, $contest_running){
-    $solutions = $problemset->solutions()
-      ->where('created_at', '>=', $problemset->contest_start_at)
-      ->where('created_at', '<=', $problemset->contest_end_at)
-      ->with(['user'])
-      ->get(['id', 'user_id', 'problem_id', 'problemset_id', 'score', 'status', 'ce']);
+    $solutions = collect();
+    switch($problemset->participate_type){
+      case 0:
+        $solutions = $problemset->solutions()
+          ->where('created_at', '>=', $problemset->contest_start_at)
+          ->where('created_at', '<=', $problemset->contest_end_at)
+          ->with(['user'])
+          ->get(['id', 'user_id', 'problem_id', 'problemset_id', 'score', 'status', 'ce']);
+        break;
+      case 1:
+        $solutions = $problemset->solutions()
+          ->join('virtual_participations', 'solutions.user_id', '=', 'virtual_participations.user_id')
+          ->where('virtual_participations.problemset_id', $problemset->id)
+          ->where('virtual_participations.contest_start_at', '>=', $problemset->contest_start_at)
+          ->where('virtual_participations.contest_start_at', '<=', $problemset->contest_end_at)
+          ->whereRaw('solutions.created_at >= virtual_participations.contest_start_at')
+          ->whereRaw('solutions.created_at <= virtual_participations.contest_end_at')
+          ->with(['user'])
+          ->get(['solutions.id', 'solutions.user_id', 'solutions.problem_id', 'solutions.problemset_id', 'solutions.score', 'solutions.status', 'solutions.ce']);
+        break;
+      case 2:
+        abort(400);
+    }
 
     $table = array();
     $users_id = [];
@@ -183,7 +201,6 @@ class ProblemsetController extends Controller
 
     if(!$contest_running){//ended
       $solutions = $problemset->solutions()
-        ->where('created_at', '>', $problemset->contest_end_at)
         ->with(['user'])
         ->get();
       foreach($solutions as $solution){
