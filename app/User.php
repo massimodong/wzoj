@@ -56,6 +56,10 @@ class User extends Model implements AuthenticatableContract,
 	    return isset(Session::get('roles', [])[$role]);
     }
 
+    public function virtual_participations(){
+      return $this->hasMany('App\VirtualParticipation');
+    }
+
     public function solutions(){
 	    return $this->hasMany('App\Solution');
     }

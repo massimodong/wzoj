@@ -18,11 +18,30 @@ function ojoption($name){
 	});
 }
 
-function ojCanViewProblems($problemset){
+function ojCanViewProblems($problemset, $vp = NULL){
 	if(Gate::allows('update',$problemset)){
 		return true;
 	}
-	return ($problemset->type === 'set') || (strtotime($problemset->contest_start_at)<time());
+  if($problemset->type == 'set') return true;
+
+  switch($problemset->participate_type){
+    case 0:
+      return strtotime($problemset->contest_start_at) < time();
+    case 1:
+      if((!isset($vp)) && Auth::check()){
+        $vp = Auth::user()->virtual_participations()
+                          ->where('problemset_id', $problemset->id)
+                          ->orderBy('id', 'desc')
+                          ->first();
+        if(!isset($vp)) $vp = false;
+      }
+
+      if(strtotime($problemset->contest_end_at) < time()) return true;
+      if($vp && $vp->contest_start_at < time()) return true;
+      return false;
+    case 2:
+      return false;
+  }
 }
 
 function ojcache($url){

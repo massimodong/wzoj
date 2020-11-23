@@ -46,6 +46,16 @@
       @endforeach
     </tbody>
   </table>
+  @if ($problemset->participate_type == 1)
+    @if ($virtual_participation)
+      {{$virtual_participation->contest_start_at}} - {{$virtual_participation->contest_end_at}}
+    @else
+      <form method="POST" action="/s/{{$problemset->id}}/virtual_participate">
+        {{csrf_field()}}
+        <button type="submit" class="btn btn-primary">{{trans('wzoj.participate_contest')}}</button>
+      </form>
+    @endif
+  @endif
 </div>
 
 @endsection

@@ -101,8 +101,17 @@ class ProblemsetController extends Controller
       }
     }
 
+    $vp = false;
+    if(Auth::check()){
+      $vp = Auth::user()->virtual_participations()
+                        ->where('problemset_id', $problemset->id)
+                        ->orderBy('id', 'desc')
+                        ->first();
+      if(!isset($vp)) $vp = false;
+    }
+
     $page = $cnt_pages = NULL;
-    if(ojCanViewProblems($problemset)){
+    if(ojCanViewProblems($problemset, $vp)){
       //select page
       $page = 1;
       $cnt_problems = Cache::tags(['problemsets', 'cnt_problems'])
@@ -128,7 +137,7 @@ class ProblemsetController extends Controller
           ->get();
       });
     }else{
-      $problems = [];
+      $problems = collect();
     }
 
     $problem_ids = $problems->map(function($item, $key){
@@ -140,7 +149,9 @@ class ProblemsetController extends Controller
         'problems' => $problems,
         'max_scores' => Auth::check()?max_scores([Auth::user()->id], [$problemset->id], $problem_ids)[Auth::user()->id][$problemset->id]:[],
         'cnt_pages' => $cnt_pages,
-        'cur_page' => $page]);
+        'cur_page' => $page,
+        'virtual_participation' => $vp,
+    ]);
   }
 
   public function getRanklistTable($problemset, $problems, $contest_running){
@@ -321,7 +332,7 @@ class ProblemsetController extends Controller
     if(!isset($newval['show_problem_tags'])) $newval['show_problem_tags'] = 0;
     if(!isset($newval['contest_hide_solutions'])) $newval['contest_hide_solutions'] = 0;
     if(!isset($newval['participate_type'])) $newval['participate_type'] = 0;
-    if(!isset($newval['contest_duration'])) $newval['contest_duration'] = 10800;
+    if(!isset($newval['contest_duration'])) $newval['contest_duration'] = 120;
 
     $newval['description'] = Purifier::clean($newval['description']);
 
@@ -335,9 +346,51 @@ class ProblemsetController extends Controller
     return back();
   }
 
+  public function postVirtualParticipate($psid, Request $request){
+    $problemset = Problemset::findOrFail($psid);
+    if(!$problemset->public){
+      if(Gate::denies('view', $problemset)){
+        if(Auth::check()){
+          abort(403);
+        }else{
+          return redirect('/auth/login');
+        }
+      }
+    }
+
+    if($problemset->type == 'set') abort(400);
+
+    switch($problemset->participate_type){
+      case 0:
+        abort(400);
+      case 1:
+        if(time() < strtotime($problemset->contest_start_at) || strtotime($problemset->contest_end_at) < time()) abort(400);
+        break;
+      case 2:
+        abort(400);
+        break;
+    }
+
+    $vp = Auth::user()->virtual_participations()
+                      ->where('problemset_id', $problemset->id)
+                      ->orderBy('id', 'desc')
+                      ->first();
+
+    if(isset($vp)) abort(400); //TODO: prevent multithreading attacks
+
+    $vp = new \App\VirtualParticipation();
+    $vp->problemset_id = $problemset->id;
+    $vp->contest_start_at = date('Y-m-d H:i:s');
+    $vp->contest_end_at = date('Y-m-d H:i:s', time() + $problemset->contest_duration); //TODO: virtual contest should end before real contest ends
+
+    Auth::user()->virtual_participations()->save($vp);
+    return redirect()->back();
+  }
+
   //problems
   public function getProblem($psid, $pid, Request $request){
     $problemset = Problemset::findOrFail($psid);
+
     if(!ojCanViewProblems($problemset)) return redirect('/s/'.$psid);
     if(!$problemset->public){
       $this->authorize('view',$problemset);

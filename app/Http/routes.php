@@ -58,6 +58,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::get('s/{psid}/ranklist_csv','ProblemsetController@getRanklistCSV')->middleware('admin');
 		Route::get('s/{psid}/edit','ProblemsetController@getEditProblemset')->middleware('auth');
 		Route::put('s/{psid}','ProblemsetController@putProblemset');
+    Route::post('s/{psid}/virtual_participate', 'ProblemsetController@postVirtualParticipate')->middleware('auth');
 
 		Route::get('contests','ProblemsetController@getContestsIndex');
 		//problems
