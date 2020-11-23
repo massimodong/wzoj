@@ -278,10 +278,12 @@ return [
     'content' => '内容',
     'title_needed' => '需要标题',
 
+    'days' => '天',
     'seconds' => '秒',
     'minutes' => '分钟',
     'hours' => '小时',
     'year' => '年',
+    'years' => '年',
 
     'before' => '前',
     'reply' => '回复',
@@ -436,4 +438,6 @@ return [
     'participate_type_standard' => '标准参赛模式',
     'participate_type_duration' => '时限????',
     'participate_type_allow_virtual' => '允许虚拟参赛',
+    'participate_contest' => '开始比赛',
+    'contest_duration' => '比赛限时',
 ];

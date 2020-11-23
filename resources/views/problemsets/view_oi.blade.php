@@ -8,9 +8,9 @@
 {!! Breadcrumbs::render('problemset', $problemset) !!}
 <h1 class='page-header text-center'>{{$problemset->name}}</h1>
 <h6 class='text-center'>
-  <span style="color:green">{{$problemset->contest_start_at}}</span>
-  <span style="color:red">{{$problemset->contest_end_at}}</span>
-  <a href="/s/{{$problemset->id}}/ranklist">{{trans('wzoj.ranklist')}}</a>
+  <span style="color:green">{{$virtual_participation ? $virtual_participation->contest_start_at : $problemset->contest_start_at}}</span>
+  <span style="color:red">{{$virtual_participation ? $virtual_participation->contest_end_at : $problemset->contest_end_at}}</span>
+  @if (!$problemset->isHideSolutions()) <a href="/s/{{$problemset->id}}/ranklist">{{trans('wzoj.ranklist')}}</a> @endif
 </h6>
 @can ('update', $problemset)
 <div class="pull-right"><a href="/s/{{$problemset->id}}/edit">{{trans('wzoj.edit')}}</a></div>
@@ -48,8 +48,8 @@
   </table>
   @if ($problemset->participate_type == 1)
     @if ($virtual_participation)
-      {{$virtual_participation->contest_start_at}} - {{$virtual_participation->contest_end_at}}
     @else
+      {{trans('wzoj.contest_duration')}}: {{time2string($problemset->contest_duration)}}
       <form method="POST" action="/s/{{$problemset->id}}/virtual_participate">
         {{csrf_field()}}
         <button type="submit" class="btn btn-primary">{{trans('wzoj.participate_contest')}}</button>

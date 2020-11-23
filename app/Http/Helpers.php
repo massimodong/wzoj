@@ -178,3 +178,18 @@ function ojPrimusClass($language){
     case 4: return "language-python";
   }
 }
+
+function time2String($t){
+  $y = (int)gmdate('Y', $t) - 1970;
+  $d = (int)gmdate('z', $t);
+  $h = (int)gmdate('G', $t);
+  $i = (int)gmdate('i', $t);
+  $s = (int)gmdate('s', $t);
+  $ret = "";
+  if($y) $ret .= $y.trans('wzoj.years');
+  if($d) $ret .= $d.trans('wzoj.days');
+  if($h) $ret .= $h.trans('wzoj.hours');
+  if($i) $ret .= $i.trans('wzoj.minutes');
+  if($s) $ret .= $s.trans('wzoj.seconds');
+  return $ret;
+}
