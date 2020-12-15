@@ -440,4 +440,6 @@ return [
     'participate_type_allow_virtual' => '允许虚拟参赛(TODO)',
     'participate_contest' => '开始比赛',
     'contest_duration' => '比赛限时',
+
+    'show_tutorial' => '显示题解',
 ];

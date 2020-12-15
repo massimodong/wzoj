@@ -56,6 +56,9 @@ class ProblemsetPolicy
 	    }
 	    if(!$flag) return false;
 
+      return $problemset->show_tutorial;
+
+      /*
 	    if($problemset->type == 'set') return true;
 	    else{
 		    if(time() > strtotime($problemset->contest_end_at)){
@@ -64,5 +67,6 @@ class ProblemsetPolicy
 	    }
 
 	    return false;
+      */
     }
 }
