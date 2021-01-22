@@ -76,7 +76,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 		Route::post('solutions/answerfile', 'SolutionController@postSubmitAnswerfile');
 		Route::resource('solutions','SolutionController');
 
-		Route::get('files/{user_id}/{name}','FileController@showfile');
+    Route::get('files/{name}','FileController@showfile')->where('name', '.*');
 		Route::resource('files','FileController');
 
 		Route::get('search', 'HomeController@search')->middleware('auth');

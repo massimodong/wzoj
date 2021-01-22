@@ -110,8 +110,8 @@ class FileController extends Controller
         //
     }
 
-    public function showfile($user_id, $name){
-	    $path = '/'.$user_id.'/'.$name;
+    public function showfile($name){
+	    $path = '/'.$name;
 
 	    $finfo = finfo_open(FILEINFO_MIME_TYPE);
 	    $mime = finfo_file($finfo,  storage_path('app').'/files'.$path);
