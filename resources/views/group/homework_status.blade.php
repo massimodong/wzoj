@@ -4,6 +4,11 @@
 {{trans('wzoj.homework').'-'.$group->name}}
 @endsection
 
+@section ('head')
+@parent
+<link rel="stylesheet" href={{ojcache("/include/css/datatables.min.css")}}>
+@endsection
+
 @section ('content')
 
 <div class="col-xs-12">
@@ -21,7 +26,7 @@
     </thead>
     <tbody>
     @foreach ($group->users as $user)
-      <tr @if (Auth::check() && ($user->id == Auth::user()->id)) class="info" @endif>
+      <tr @if (Auth::check() && ($user->id == Auth::user()->id)) class="table-primary" @endif>
         <td style="display: none">@if (Auth::check() && ($user->id == Auth::user()->id)) 1 @endif</td>
         <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
 	<td>{{$user->fullname}}</td>
@@ -45,6 +50,7 @@
 @endsection
 
 @section ('scripts')
+<script src={{ojcache("/include/js/datatables.min.js")}}></script>
 <script>
 $('#homework-status-table').DataTable({
 	searching: false,
