@@ -82,6 +82,11 @@ li.L5, li.L6, li.L7, li.L8 {
   color: black;
 }
 
+.ranklist-table td:nth-child(2){
+  position:sticky;
+  left:0px;
+}
+
 .sample_io {
   padding: 0.5rem;
   background-color: #F5F5F5;
@@ -125,4 +130,8 @@ li.L5, li.L6, li.L7, li.L8 {
 .overflow-auto{
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+
+.user-badge{
+  font-size: 1.2em;
 }

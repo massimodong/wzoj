@@ -16,7 +16,7 @@
 <table class="table ranklist-table">
   <thead>
     <tr>
-      <th> {{trans('wzoj.rank')}} </th>
+      <th></th>
       <th> {{trans('wzoj.user')}} </th>
       <th><a href="/solutions?problemset_id={{$problemset->id}}"> {{trans('wzoj.score')}} </a></th>
       @foreach ($problems as $problem)
@@ -29,7 +29,7 @@
       <tr>
         @if ($record->score >= 0)
         <td> {{$record->rank + 1}} </td>
-        <td><a href="/users/{{$record->user->id}}"> {{$record->user->fullname}} </a></td>
+        <td>@include ('partials.user_badge', ['user' => $record->user])</td>
         <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}"><b> {{$record->score}} </b></a></td>
           @foreach ($problems as $problem)
           <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}&problem_id={{$problem->id}}">
@@ -41,7 +41,7 @@
           @endforeach
         @else
         <td> - </td>
-        <td><a href="/users/{{$record->user->id}}"> {{$record->user->fullname}} </a></td>
+        <td>@include ('partials.user_badge', ['user' => $record->user])</td>
         <td> - </td>
           @foreach ($problems as $problem)
           <td>
