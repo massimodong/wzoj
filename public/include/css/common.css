@@ -1,6 +1,10 @@
 body {
 } 
 
+.table {
+  white-space: nowrap;
+}
+
 @media (min-width:768px){
   main.main-home {
     height: 100%!important;

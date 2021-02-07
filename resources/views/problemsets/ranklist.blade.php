@@ -12,7 +12,7 @@
 </div>
 @endif
 
-<div class="table-responsive-sm">
+<div class="table-responsive">
 <table class="table ranklist-table">
   <thead>
     <tr>
