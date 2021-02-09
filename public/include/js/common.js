@@ -55,3 +55,32 @@ function socket_init(){
 function changeCaptcha(){
 	document.getElementById('captchaImage').src="/_captcha/default?"+Date.now();
 }
+
+//inits
+/*
+$(function () {
+  $('.user-badge').popover({
+    trigger: 'hover',
+    content: function(){
+      var img = document.createElement("img");
+      img.className = "card-img-top";
+      img.src = $(this).data('avatarurl');
+
+      var h = document.createElement("h5");
+      h.append($(this).data('fullname'))
+
+      var cbody = document.createElement("div");
+      cbody.className = "card-body";
+      cbody.appendChild(h);
+
+      var ndiv = document.createElement("div");
+      ndiv.appendChild(img);
+      ndiv.appendChild(cbody);
+      console.log(ndiv);
+      return ndiv;
+    },
+    template: '<div class="popover"><div class="arrow"></div><div class="popover-body card" style="flex-direction: row;"></div></div>',
+    html: true,
+  });
+})
+*/

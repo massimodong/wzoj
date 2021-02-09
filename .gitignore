@@ -9,3 +9,4 @@ bower
 build
 dump.rdb
 server.js
+public/files
