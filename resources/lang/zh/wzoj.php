@@ -60,6 +60,7 @@ return [
     'problems' => '题目',
     'status' => '状态',
     'score' => '分数',
+    'total_score' => '总分',
     'time_used' => '耗时',
     'memory_used' => '内存',
     'language' => '语言',
