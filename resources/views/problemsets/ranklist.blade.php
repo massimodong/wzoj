@@ -12,7 +12,7 @@
 </div>
 @endif
 
-<div class="table-responsive">
+<div id="ranklist-table-container" class="table-responsive">
 <table class="table ranklist-table">
   <thead>
     <tr>
@@ -64,4 +64,15 @@
 </table>
 </div>
 
+@endsection
+
+@section ('scripts')
+<script>
+  if(window.chrome){ // Restore scroll position for chrome. Firefox does it automatically.
+    $('#ranklist-table-container').scrollLeft(localStorage.getItem("sidebar-scroll"));
+    window.addEventListener("beforeunload", () => {
+        localStorage.setItem("sidebar-scroll", $('#ranklist-table-container').scrollLeft());
+    });
+  }
+</script>
 @endsection
