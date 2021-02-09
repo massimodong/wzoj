@@ -18,19 +18,18 @@
     <tr>
       <th></th>
       <th> {{trans('wzoj.user')}} </th>
-      <th><a href="/solutions?problemset_id={{$problemset->id}}"> {{trans('wzoj.score')}} </a></th>
       @foreach ($problems as $problem)
         <th><a href="/s/{{$problemset->id}}/{{$problem->id}}"> {{$problem->name}} </a></th>
       @endforeach
+      <th><a href="/solutions?problemset_id={{$problemset->id}}"> {{trans('wzoj.score')}} </a></th>
     </tr>
   </thead>
   <tbody>
     @foreach ($table as $key => $record)
       <tr>
         @if ($record->score >= 0)
-        <td> {{$record->rank + 1}} </td>
-        <td>@include ('partials.user_badge', ['user' => $record->user])</td>
-        <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}"><b> {{$record->score}} </b></a></td>
+        <td></td>
+        <td>{{$record->rank + 1}} @include ('partials.user_badge', ['user' => $record->user])</td>
           @foreach ($problems as $problem)
           <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}&problem_id={{$problem->id}}">
             {{$record->problem_scores[$problem->id]}}
@@ -39,10 +38,10 @@
             @endif
           </a></td>
           @endforeach
+        <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}"><b> {{$record->score}} </b></a></td>
         @else
-        <td> - </td>
-        <td>@include ('partials.user_badge', ['user' => $record->user])</td>
-        <td> - </td>
+        <td></td>
+        <td>- @include ('partials.user_badge', ['user' => $record->user])</td>
           @foreach ($problems as $problem)
           <td>
             @if (!$contest_running && $record->problem_corrected_scores[$problem->id] >= 0)
@@ -54,6 +53,7 @@
             @endif
           </td>
           @endforeach
+        <td> - </td>
         @endif
       </tr>
     @endforeach
