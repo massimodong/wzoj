@@ -62,7 +62,7 @@ class Solution extends Model
 				'solutions.judger_id', 'solutions.judged_at', 'solutions.sim_id', 'solutions.created_at'])
 			->addSelect(DB::raw('solutions.ce is NOT NULL as ce'))
 			->with(['user' => function($query){
-				$query->select(['id', 'name', 'fullname', 'class']);
+				$query->select(['id', 'name', 'fullname', 'class', 'avatar_token', 'stored_description', 'description_changed_at', 'new_description']);
 			  }])
 			->with(['problem' => function($query){
 				$query->select(['id', 'name']);
