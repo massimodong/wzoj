@@ -62,23 +62,32 @@ $(function () {
     trigger: 'hover',
     content: function(){
       var img = document.createElement("img");
-      img.className = "card-img-top";
+      img.style = "display: inline-block; vertical-align: top;";
       img.src = $(this).data('avatarurl');
 
       var h = document.createElement("h5");
+      h.style = "margin-bottom: 0";
       h.append($(this).data('fullname'))
 
+      var small = document.createElement("small");
+      small.append($(this).data('uname'));
+
+      var p = document.createElement("p");
+      p.append($(this).data('description'));
+
       var cbody = document.createElement("div");
-      cbody.className = "card-body";
+      cbody.style = "display: inline-block; max-width: 122px; max-height: 128px; white-space: normal; overflow: hidden; padding-left: .5rem";
       cbody.appendChild(h);
+      cbody.appendChild(small);
+      cbody.append(p);
 
       var ndiv = document.createElement("div");
+      ndiv.style = "white-space: nowrap;";
       ndiv.appendChild(img);
       ndiv.appendChild(cbody);
-      console.log(ndiv);
       return ndiv;
     },
-    template: '<div class="popover"><div class="arrow"></div><div class="popover-body card" style="flex-direction: row;"></div></div>',
+    template: '<div class="popover"><div class="arrow"></div><div class="popover-body"></div></div>',
     html: true,
   });
 })
