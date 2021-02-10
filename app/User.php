@@ -174,6 +174,11 @@ class User extends Model implements AuthenticatableContract,
       else return '/files/avatar/default/avatar-'.$size.'.png';
     }
 
+    public function shortname($length){
+      if($this->fullname) return mb_substr($this->fullname, 0, $length);
+      else return mb_substr($this->name, 0, $length);
+    }
+
     public function __get($key){
       if($this->has_role('admin')){
         switch($key){

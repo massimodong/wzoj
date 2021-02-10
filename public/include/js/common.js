@@ -57,7 +57,6 @@ function changeCaptcha(){
 }
 
 //inits
-/*
 $(function () {
   $('.user-badge').popover({
     trigger: 'hover',
@@ -83,4 +82,3 @@ $(function () {
     html: true,
   });
 })
-*/
