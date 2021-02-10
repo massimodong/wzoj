@@ -69,9 +69,11 @@
 @section ('scripts')
 <script>
   if(window.chrome){ // Restore scroll position for chrome. Firefox does it automatically.
-    $('#ranklist-table-container').scrollLeft(localStorage.getItem("sidebar-scroll"));
+    var lastPos = localStorage.getItem(location.href + "scroll");
+    if(lastPos) $('#ranklist-table-container').scrollLeft(lastPos);
+    else $('#ranklist-table-container').scrollLeft($('#ranklist-table-container').width());
     window.addEventListener("beforeunload", () => {
-        localStorage.setItem("sidebar-scroll", $('#ranklist-table-container').scrollLeft());
+        localStorage.setItem(location.href + "scroll", $('#ranklist-table-container').scrollLeft());
     });
   }
 </script>
