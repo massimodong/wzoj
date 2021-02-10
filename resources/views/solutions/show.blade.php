@@ -19,7 +19,7 @@
 
     <tr>
       <th>{{trans('wzoj.user')}}</th>
-      <td><a href='/users/{{$solution->user->id}}'>{{$solution->user->name}}</a></td>
+      <td>@include ('partials.user_badge', ['user' => $solution->user])</td>
 
       <th>{{trans('wzoj.memory_used')}}</th>
       <td>{{sprintf('%.2f', $solution->memory_used / 1024 / 1024)}}MB</td>

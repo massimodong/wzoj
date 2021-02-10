@@ -65,7 +65,7 @@
     @foreach ($solutions as $solution)
     <tr>
       <td><a href="/solutions/{{$solution->id}}">{{$solution->id}}</a></td>
-      <td>{{$solution->user?$solution->user->name:""}}</td>
+      <td>@if ($solution->user)@include ('partials.user_badge', ['user' => $solution->user])@endif </td>
       <td>{{$solution->problem?$solution->problem->name:""}}</td>
 
       <td>

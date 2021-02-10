@@ -20,7 +20,7 @@
   @foreach ($users as $user)
     <tr>
       <td>{{++$start_rank}}</td>
-      <td><a href="/users/{{$user->id}}">{{$user->name}}</a></td>
+      <td>@include ('partials.user_badge', ['user' => $user])</td>
       <td><div style="overflow-y: auto;max-height: 58px">{{$user->description}}</div></td>
       <td>{{$user->cnt_ac}}</td>
     </tr>
