@@ -19,7 +19,7 @@
       <th style="display: none"></th>
       <th> {{trans('wzoj.user')}} </th>
       @foreach ($problems as $problem)
-        <th><a href="/s/{{$problemset->id}}/{{$problem->id}}"> {{$problem->name}} </a></th>
+        <th><a href="/s/{{$problemset->id}}/{{$problem->id}}" title="{{$problem->name}}"> {{$problem->pivot->index}} </a></th>
       @endforeach
       <th><a href="/solutions?problemset_id={{$problemset->id}}"> {{trans('wzoj.total_score')}} </a></th>
       <th>{{trans('wzoj.rank')}}</th>
