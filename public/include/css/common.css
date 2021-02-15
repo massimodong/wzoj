@@ -83,6 +83,7 @@ li.L5, li.L6, li.L7, li.L8 {
 }
 
 .ranklist-table td:nth-child(2){
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 1) 20%, rgba(255, 255, 255, 0));
   position:sticky;
   left:0px;
 }

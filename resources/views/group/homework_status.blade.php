@@ -19,7 +19,7 @@
       <th>{{trans('wzoj.user')}}</th>
       <th>x/{{$total_score}}</th>
       @foreach ($problems as $problem)
-        <th><a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}" style="color:black">{{$problem->name}}</a></th>
+        <th><a href="/s/{{$problem->pivot->problemset_id}}/{{$problem->id}}" title="{{$problem->name}}" style="color:black; max-width: 3em; overflow: hidden; display: block">{{$problem->name}}</a></th>
       @endforeach
     </tr>
   </thead>
