@@ -33,7 +33,7 @@ class RanklistUser{
     $this->score = $score;
     $this->penalty = 0;
     foreach($p as $s){
-      $this->problem_scores[$s->id] = 0;
+      $this->problem_scores[$s->id] = -1;
       $this->problem_corrected_scores[$s->id] = -1;
     }
   }
@@ -190,11 +190,15 @@ class ProblemsetController extends Controller
       ++$table[$id]->penalty;
 
       if(isset($table[$id]->problem_scores[$solution->problem_id])){
-        $table[$id]->score -= $table[$id]->problem_scores[$solution->problem_id];
-        $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
-        $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
-        $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
-
+        if($table[$id]->problem_scores[$solution->problem_id] >= 0){
+          $table[$id]->score -= $table[$id]->problem_scores[$solution->problem_id];
+          $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
+          $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
+          $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
+        }else{
+          $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
+          $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
+        }
         $table[$id]->problem_solutions[$solution->problem_id] = $solution;
       }
     }

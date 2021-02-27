@@ -32,12 +32,18 @@
         <td style="display: none"></td>
         <td>@include ('partials.user_badge', ['user' => $record->user])</td>
           @foreach ($problems as $problem)
-          <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}&problem_id={{$problem->id}}">
-            {{$record->problem_scores[$problem->id]}}
+          <td>
+            @if ($record->problem_scores[$problem->id] >= 0)
+              <a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}&problem_id={{$problem->id}}">
+              {{$record->problem_scores[$problem->id]}}
+              </a>
+            @else
+              -
+            @endif
             @if (!$contest_running && $record->problem_corrected_scores[$problem->id] > $record->problem_scores[$problem->id])
               ({{$record->problem_corrected_scores[$problem->id]}})
             @endif
-          </a></td>
+          </td>
           @endforeach
         <td><a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}"><b> {{$record->score}} </b></a></td>
         <td>{{$record->rank+1}}</td>
