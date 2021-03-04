@@ -88,6 +88,10 @@ li.L5, li.L6, li.L7, li.L8 {
   left:0px;
 }
 
+.ranklist-table{
+  white-space: nowrap;
+}
+
 .sample_io {
   padding: 0.5rem;
   background-color: #F5F5F5;
