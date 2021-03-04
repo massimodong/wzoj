@@ -138,3 +138,32 @@ li.L5, li.L6, li.L7, li.L8 {
   min-width: 40px;
   min-height: 18px;
 }
+
+@media (min-width:768px){
+  #sb-left{
+    opacity: 0;
+  }
+  #sb-leftmost{
+    opacity: 0;
+  }
+  #sb-right{
+    opacity: 0;
+  }
+  #sb-rightmost{
+    opacity: 0;
+  }
+}
+@media (max-width:767px){
+  #sb-left{
+    display: none;
+  }
+  #sb-leftmost{
+    display: none;
+  }
+  #sb-right{
+    display: none;
+  }
+  #sb-rightmost{
+    display: none;
+  }
+}

@@ -13,7 +13,10 @@
 @endif
 
 <div id="ranklist-table-container" class="table-responsive">
-<table class="table ranklist-table">
+<div style="position: absolute;">
+  <a id="sb-leftmost" href="#">&lt;&lt;</a> <a id="sb-left" href="#">&lt;</a> <a id="sb-right" href="#">&gt;</a> <a id="sb-rightmost" href="#">&gt;&gt;</a>
+</div>
+<table id="ranklist-table" class="table ranklist-table">
   <thead>
     <tr>
       <th style="display: none"></th>
@@ -82,5 +85,49 @@
         localStorage.setItem(location.href + "scroll", $('#ranklist-table-container').scrollLeft());
     });
   }
+  function updateScrollButtons(){
+    var width = $('#ranklist-table').width() - $('#ranklist-table-container').width();
+    var pos = $('#ranklist-table-container').scrollLeft();
+    if(pos == 0){
+      $('#sb-left').animate({"opacity": 0}, 200);
+      $('#sb-leftmost').animate({"opacity": 0}, 200);
+    }else{
+      $('#sb-left').animate({"opacity": 0.7}, 0);
+      $('#sb-leftmost').animate({"opacity": 0.7}, 0);
+    }
+    if(pos >= width){
+      $('#sb-right').animate({"opacity": 0}, 200);
+      $('#sb-rightmost').animate({"opacity": 0}, 200);
+    }else{
+      $('#sb-right').animate({"opacity": 0.7}, 0);
+      $('#sb-rightmost').animate({"opacity": 0.7}, 0);
+    }
+  }
+  $('#ranklist-table-container').scroll(function(){
+      updateScrollButtons();
+  });
+  updateScrollButtons();
+
+  $("#sb-left").click(function(){
+    var width = $('#ranklist-table').width() - $('#ranklist-table-container').width();
+    var pos = $('#ranklist-table-container').scrollLeft();
+    $('#ranklist-table-container').scrollLeft(pos - width / 10)
+    return false;
+  });
+  $("#sb-leftmost").click(function(){
+    $('#ranklist-table-container').scrollLeft(0);
+    return false;
+  });
+  $("#sb-right").click(function(){
+    var width = $('#ranklist-table').width() - $('#ranklist-table-container').width();
+    var pos = $('#ranklist-table-container').scrollLeft();
+    $('#ranklist-table-container').scrollLeft(pos + width / 10)
+    return false;
+  });
+  $("#sb-rightmost").click(function(){
+    $('#ranklist-table-container').scrollLeft($('#ranklist-table-container').width());
+    return false;
+  });
+
 </script>
 @endsection
