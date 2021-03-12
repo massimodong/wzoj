@@ -36,7 +36,7 @@
           @elseif ($score >= 0)
             <a href="/solutions?problemset_id={{$problem->pivot->problemset_id}}&user_name={{$user->name}}&problem_id={{$problem->id}}"><span style="color: red;">{{$score}}</span></a>
           @else
-            <span style="color: grey">0</span>
+            <span style="color: grey">-</span>
           @endif
         </td>
       @endforeach
