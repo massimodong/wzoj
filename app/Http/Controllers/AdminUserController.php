@@ -57,7 +57,7 @@ class AdminUserController extends Controller
 
         $user->save();
 
-        return back();
+        return back()->with(['status' => trans('wzoj.success')]);
     }
 
     /**

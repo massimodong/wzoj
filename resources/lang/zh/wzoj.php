@@ -19,6 +19,7 @@ return [
     'end' => 'end',
     'upload' => '上传',
     'close' => '关闭',
+    'success' => '成功',
 
     'blocked' => '禁止访问',
 
@@ -357,6 +358,7 @@ return [
     'rolename_problem_creator' => '创建题目',
     'rolename_problemset_creator' => '创建题库',
     'rolename_code_viewer' => '阅读代码',
+    'rolename_user_manager' => '用户管理员',
 
 
     'flush_cache' => '清除所有缓存信息',

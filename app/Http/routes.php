@@ -162,6 +162,11 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 					Route::delete('{id}', 'AdminProblemController@deleteProblems');
 				});
 
+				Route::group(['middleware' => 'role:user_manager'], function(){
+					//users
+					Route::resource('users', 'AdminUserController');
+        });
+
 				Route::group(['middleware' => 'role:admin'], function(){
 
 					//import problems
@@ -190,9 +195,6 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 					Route::get('roles', 'AdminRolesController@getIndex');
 					Route::post('roles', 'AdminRolesController@postIndex');
 					Route::delete('roles', 'AdminRolesController@deleteIndex');
-
-					//users
-					Route::resource('users', 'AdminUserController');
 
 					//update system
 					Route::get('update-system', 'AdminUpdateSystemController@getUpdate');

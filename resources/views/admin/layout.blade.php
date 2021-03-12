@@ -74,6 +74,12 @@
         </li>
         @endif
 
+        @if (Auth::user()->has_role('user_manager'))
+        <li class="nav-item" id='users_sidebar'>
+          <a class="nav-link" href="/admin/users"> {{trans('wzoj.users')}} </a>
+        </li>
+        @endif
+
         @if (Auth::user()->has_role('admin'))
         <li class="nav-item" id='import-problems_sidebar'>
           <a class="nav-link" href="/admin/import-problems"> {{trans('wzoj.import_problems')}} </a>
@@ -89,9 +95,6 @@
         </li>
         <li class="nav-item" id='roles_sidebar'>
           <a class="nav-link" href="/admin/roles"> {{trans('wzoj.roles')}} </a>
-        </li>
-        <li class="nav-item" id='users_sidebar'>
-          <a class="nav-link" href="/admin/users"> {{trans('wzoj.users')}} </a>
         </li>
         <li class="nav-item" id='update-system'>
           <a class="nav-link" href="/admin/update-system"> {{trans('wzoj.update_system')}} </a>
