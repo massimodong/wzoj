@@ -26,6 +26,14 @@ class UserPolicy
 	    }
     }
 
+    public function view_fullname(User $auth, User $user){
+      return ($auth->id == $user->id) || ($auth->has_role('user_manager'));
+    }
+
+    public function view_class(User $auth, User $user){
+      return ($auth->id == $user->id) || ($auth->has_role('user_manager'));
+    }
+
     public function change_fullname(User $auth, User $user){
 	    return ($auth->id == $user->id) && ($auth->fullname_lock == false);
     }

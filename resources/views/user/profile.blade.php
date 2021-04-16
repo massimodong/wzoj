@@ -42,7 +42,7 @@
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <div class="input-group">
-                      <input type="text" class="form-control" id="fullname" name="fullname" value="{{$user->fullname}}" placeholder="{{trans('wzoj.fullname')}}"
+                      <input type="text" class="form-control" id="fullname" name="fullname" @can ('view_fullname', $user) value="{{$user->fullname}}" @endcan placeholder="{{trans('wzoj.fullname')}}"
                       @can ('change_fullname', $user)
                       @else
                       disabled
@@ -57,7 +57,7 @@
                   </div>
                   <div class="form-group col-md-6">
                     <div class="input-group">
-                      <input type="text" class="form-control" id="class" name="class" value="{{$user->class}}" placeholder="{{trans('wzoj.class')}}"
+                      <input type="text" class="form-control" id="class" name="class" @can ('view_class', $user) value="{{$user->class}}" @endcan placeholder="{{trans('wzoj.class')}}"
                       @can ('change_class', $user)
                       @else
                       disabled
