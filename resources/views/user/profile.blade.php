@@ -39,6 +39,14 @@
                 <input id="avatar" name="avatar" style="display: none"/>
                 <input id="fullname_lock" name="fullname_lock" value="0" style="display: none"/>
                 <input id="class_lock" name="class_lock" value="0" style="display: none"/>
+                <div class="form-group">
+                  <input type="text" class="form-control" id="nickname" name="nickname" value="{{$user->nickname}}" placeholder="{{trans('wzoj.nickname')}}"
+                  @can ('change_nickname', $user)
+                  @else
+                  disabled
+                  @endcan
+                  >
+                </div>
                 <div class="form-row">
                   <div class="form-group col-md-6">
                     <div class="input-group">

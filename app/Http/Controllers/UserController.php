@@ -34,12 +34,18 @@ class UserController extends Controller
 
   public function postId($id,Request $request){
     $this->validate($request, [
+      'nickname' => 'max:255',
       'fullname' => 'max:255',
       'class'    => 'max:255',
       'description' => 'max:255',
     ]);
     $user = User::findOrFail($id);
     $profile_changed = false;
+
+    if(Gate::allows('change_nickname', $user)){
+      $profile_changed = true;
+      $user->nickname = $request->nickname;
+    }
 
     if(Gate::allows('change_fullname' , $user)){
       $profile_changed = true;

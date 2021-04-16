@@ -34,6 +34,10 @@ class UserPolicy
       return ($auth->id == $user->id) || ($auth->has_role('user_manager'));
     }
 
+    public function change_nickname(User $auth, User $user){
+	    return $auth->id == $user->id;
+    }
+
     public function change_fullname(User $auth, User $user){
 	    return ($auth->id == $user->id) && ($auth->fullname_lock == false);
     }
