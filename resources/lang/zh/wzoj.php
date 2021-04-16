@@ -50,6 +50,7 @@ return [
     'email' => '邮箱',
     'username' => '用户名',
     'fullname' => '姓名',
+    'nickname' => '昵称',
     'password' => '密码',
     'password_confirmation' => '确认密码',
     'please_login' => '请登录',

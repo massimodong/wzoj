@@ -175,7 +175,7 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function shortname($length){
-      if($this->fullname) return mb_substr($this->fullname, 0, $length);
+      if($this->nickname) return mb_substr($this->nickname, 0, $length);
       else return mb_substr($this->name, 0, $length);
     }
 

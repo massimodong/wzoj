@@ -197,7 +197,7 @@ class HomeController extends Controller
 
   private function searchUser($request){
     $users = \App\User::where('name', 'like', '%'.$request->name.'%')
-                      ->orWhere('fullname', 'like', '%'.$request->name.'%')
+                      ->orWhere('nickname', 'like', '%'.$request->name.'%')
                       ->take(20)
                       ->get();
     return view('user_search', [

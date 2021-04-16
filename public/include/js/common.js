@@ -67,7 +67,7 @@ $(function () {
 
       var h = document.createElement("h5");
       h.style = "margin-bottom: 0";
-      h.append($(this).data('fullname'))
+      h.append($(this).data('nickname'))
 
       var small = document.createElement("small");
       small.append($(this).data('uname'));
