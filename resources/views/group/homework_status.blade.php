@@ -27,7 +27,7 @@
   @foreach ($group->users as $user)
     <tr @if (Auth::check() && ($user->id == Auth::user()->id)) class="table-primary" @endif>
       <td style="display: none">@if (Auth::check() && ($user->id == Auth::user()->id)) 1 @endif</td>
-      <td>@include ('partials.user_badge', ['user' => $user])</td>
+      <td>@include ('partials.user_badge_fullname', ['user' => $user])</td>
       <td>{{$user_total_scores[$user->id]}}</td>
       @foreach ($problems as $problem)
         <td>

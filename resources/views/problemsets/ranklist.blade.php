@@ -33,7 +33,12 @@
       <tr>
         @if ($record->score >= 0)
         <td style="display: none"></td>
-        <td>@include ('partials.user_badge', ['user' => $record->user])</td>
+        <td>
+          @if ($problemset->public)
+            @include ('partials.user_badge', ['user' => $record->user])</td>
+          @else
+            @include ('partials.user_badge_fullname', ['user' => $record->user])</td>
+          @endif
           @foreach ($problems as $problem)
           <td>
             @if ($record->problem_scores[$problem->id] >= 0)
