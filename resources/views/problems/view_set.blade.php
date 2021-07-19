@@ -145,6 +145,7 @@
 @endsection
 
 @section ('scripts')
+<script type="text/javascript" src="{{ojoption('mathjax_url')}}"></script>
 <script>
 function detectLanguage(){
 	if($('#language').val() != -1) return true;
