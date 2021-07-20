@@ -4,10 +4,11 @@ tinymce.init({
 	    height: 300,
 	    plugins: 'image imagetools paste autolink autosave code codesample link lists media preview searchreplace table',
 	    menubar:false,
-	    toolbar: "undo redo | styleselect formatselect fontselect fontsizeselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument ",
+	    toolbar: "undo redo | styleselect formatselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument ",
 	    contextmenu: "link image inserttable | cell row column deletetable | paste",
 	    paste_data_images: true,
 	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style]',
+      invalid_styles: 'font font-family font-size',
 	    imagetools_cors_hosts: [''],
 	    setup: function (editor) {
 		    editor.on('change', function () {
@@ -99,10 +100,11 @@ tinymce.init({
 	    theme: 'silver',
 	    plugins: 'image imagetools paste autolink autosave code codesample link lists media preview searchreplace table save',
 	    menubar:false,
-	    toolbar: "undo redo | styleselect formatselect fontselect fontsizeselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument | save",
+	    toolbar: "undo redo | styleselect formatselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument | save",
 	    contextmenu: "link image inserttable | cell row column deletetable | paste",
 	    paste_data_images: true,
 	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style]',
+      invalid_styles: 'font font-family font-size',
 	    imagetools_cors_hosts: [''],
 	    images_upload_handler: function (blobInfo, success, failure) {
 
