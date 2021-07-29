@@ -59,6 +59,7 @@ class AdminInvitationController extends Controller
 		download_send_headers('invitations-' . date("Y-m-d") . ".csv");
 
 		$df = fopen("php://output", "w");
+    utf8_bom($df);
 
 		$head = array(trans('wzoj.id'),trans('wzoj.description'),trans('wzoj.fullname'),trans('wzoj.class'),trans('wzoj.invitation_token'));
 		fputcsv($df, $head);

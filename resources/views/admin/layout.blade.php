@@ -90,6 +90,9 @@
         <li class="nav-item" id='invitations-generate'>
           <a class="nav-link" href="/admin/invitations-generate"> {{trans('wzoj.invitations_generate')}} </a>
         </li>
+        <li class="nav-item" id='accounts-generate'>
+          <a class="nav-link" href="/admin/accounts-generate"> {{trans('wzoj.accounts_generate')}} </a>
+        </li>
         <li class="nav-item" id='judgers_sidebar'>
           <a class="nav-link" href="/admin/judgers"> {{trans('wzoj.judgers')}} </a>
         </li>

@@ -274,6 +274,7 @@ class ProblemsetController extends Controller
     $table = $this->getRanklistTable($problemset, $problems, $contest_running);
 
     $df = fopen("php://output", "w");
+    utf8_bom($df);
 
     $head=array(trans('wzoj.rank'),trans('wzoj.user'),trans('wzoj.fullname'),trans('wzoj.class'),trans('wzoj.score'));
     foreach($problems as $problem){
