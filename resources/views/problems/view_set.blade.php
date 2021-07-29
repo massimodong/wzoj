@@ -228,7 +228,9 @@ function submit_solution(){
       }else if(data.responseJSON.err_code == 'too_frequent'){
         setTimeout(submit_solution, 2000);
       }else{
-        addAlertWarning(data.responseJSON.language);
+        for (var msg in data.responseJSON){
+          addAlertWarning(data.responseJSON[msg]);
+        }
         enable_submit();
       }
     });
