@@ -46,10 +46,9 @@
       <div class="form-group">
         <select class="custom-select" name="language" id="language">
           <option selected value="-1">{{trans('wzoj.language_auto')}}</option>
-          <option value='0'>C</option>
-          <option value='1'>C++</option>
-          <option value='2'>Pascal</option>
-          <option value='4'>Python</option>
+          @foreach (explode(",",ojoption("allowed_languages")) as $language)
+          <option value='{{intval($language)}}'>{{trans('wzoj.programing_language_'.intval($language))}}</option>
+          @endforeach
         </select>
       </div>
       <div class="form-group">
