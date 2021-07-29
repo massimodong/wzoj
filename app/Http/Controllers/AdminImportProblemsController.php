@@ -19,7 +19,7 @@ class AdminImportProblemsController extends Controller
 
 	public function postImportProblems(Request $request){
 		$this->validate($request, [
-			'fps' => 'required|mimes:xml',
+			'fps' => 'required',
 		]);
 		$xml=simplexml_load_file($request->file('fps')->getRealPath(), 'SimpleXMLElement', LIBXML_PARSEHUGE)
 			or die("Error: Cannot create object");

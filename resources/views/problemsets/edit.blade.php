@@ -140,7 +140,7 @@
         <label for="pids" class="sr-only"></label>
         <select name="pids[]" id="pids" class="selectpicker" data-live-search="true" title="{{trans('wzoj.search_problem')}}" multiple>
         @foreach (Auth::user()->manage_problems()->orderBy('id', 'desc')->get() as $problem)
-          <option value="{{$problem->id}}">{{$problem->id}}-{{mb_substr($problem->name, 0, 5)}}</option>
+          <option value="{{$problem->id}}">{{$problem->id}}-{{$problem->name}}</option>
         @endforeach
         </select>
       </div>

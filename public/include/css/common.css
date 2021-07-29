@@ -1,6 +1,10 @@
 body {
 } 
 
+[id*="bs-select-"] {
+  overflow-x: hidden;
+}
+
 .table th{
   white-space: nowrap;
 }
