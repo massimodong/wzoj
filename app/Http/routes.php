@@ -188,6 +188,9 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
           Route::get('invitations-generate', 'AdminInvitationsGenerateController@getIndex');
           Route::post('invitations-generate', 'AdminInvitationsGenerateController@postIndex');
 
+          //accounts generate
+          Route::resource('accounts-generate', 'AdminAccountsGenerateController');
+
           //judgers
           Route::resource('judgers', 'AdminJudgerController');
 

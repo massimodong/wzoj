@@ -91,6 +91,10 @@ function download_send_headers($filename) {
     header("Content-Transfer-Encoding: binary");
 }
 
+function utf8_bom($df){
+  fwrite($df, chr(239) . chr(187) . chr(191));
+}
+
 function ojUdpSend($ip, $port, $msg){
 	if($socket = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP)) {
 		socket_sendto($socket, $msg, strlen($msg), 0, $ip, $port);

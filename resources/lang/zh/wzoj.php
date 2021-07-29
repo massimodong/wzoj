@@ -219,6 +219,7 @@ return [
     'add_to_problemset' => '加入到题库',
 
     'invitations_generate' => '批量生成注册码',
+    'accounts_generate' => '批量生成账号',
     'prefix' => '前缀',
     'generate' => '生成',
     'msg_explain_remaining' => '生成的注册码剩余使用次数,用-1表示不限次数',
@@ -448,4 +449,7 @@ return [
     'show_tutorial' => '显示题解',
 
     'allowed_languages' => '允许编程语言',
+
+    'start_number' => '起始编号',
+    'password_length' => '密码长度',
 ];
