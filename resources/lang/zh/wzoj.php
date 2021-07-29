@@ -446,4 +446,6 @@ return [
     'contest_duration' => '比赛限时',
 
     'show_tutorial' => '显示题解',
+
+    'allowed_languages' => '允许编程语言',
 ];

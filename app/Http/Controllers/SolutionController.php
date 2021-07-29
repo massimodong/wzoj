@@ -178,7 +178,7 @@ class SolutionController extends Controller
 
         $this->validate($request,[
         'problem_id' => 'required|exists:problem_problemset,problem_id,problemset_id,'.$problemset->id,
-        'language' => 'required|in:0,1,2,4', //c,cpp,pas,java,python
+        'language' => 'required|in:'.ojoption('allowed_languages'), //c,cpp,pas,java,python
         ]);
 
         if(!ojCanViewProblems($problemset)){
