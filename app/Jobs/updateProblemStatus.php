@@ -13,10 +13,9 @@ use App\Problem;
 use App\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class updateProblemStatus extends Job implements SelfHandling, ShouldQueue
+class updateProblemStatus extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 

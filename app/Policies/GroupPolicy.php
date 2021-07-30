@@ -41,7 +41,7 @@ class GroupPolicy
 
     }
 
-    public function create(User $user, $group){
+    public function create(User $user){
 	    return $user->has_role('group_creator');
     }
 

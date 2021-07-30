@@ -130,7 +130,7 @@ class ProblemsetController extends Controller
           ->where('problem_problemset.index', '<=', $page * self::PAGE_LIMIT)
           ->with(['tags'])
           ->leftJoin('problem_statistics', function($join) use($problemset){
-              $join->on('problems.id', '=', 'problem_statistics.problem_id')
+              $join->on('problems.id', 'problem_statistics.problem_id')
                    ->where('problem_statistics.problemset_id', '=', $problemset->id);
             })
           ->select(['problems.*', 'problem_statistics.*'])

@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
+        'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'encrypt_cookies' => \App\Http\Middleware\EncryptCookies::class,
         'cookie' => \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
         'session' => \Illuminate\Session\Middleware\StartSession::class,

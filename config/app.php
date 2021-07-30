@@ -3,6 +3,16 @@
 return [
 
     /*
+    | Update to laravel 5.3
+    */
+    'name' => 'WZOJ',
+
+    /*
+    | Update to laravel 5.2
+    */
+    'env' => env('APP_ENV', 'production'),
+
+    /*
     |--------------------------------------------------------------------------
     | Application Debug Mode
     |--------------------------------------------------------------------------
@@ -113,13 +123,11 @@ return [
         /*
          * Laravel Framework Service Providers...
          */
-        Illuminate\Foundation\Providers\ArtisanServiceProvider::class,
         Illuminate\Auth\AuthServiceProvider::class,
         Illuminate\Broadcasting\BroadcastServiceProvider::class,
         Illuminate\Bus\BusServiceProvider::class,
         Illuminate\Cache\CacheServiceProvider::class,
         Illuminate\Foundation\Providers\ConsoleSupportServiceProvider::class,
-        Illuminate\Routing\ControllerServiceProvider::class,
         Illuminate\Cookie\CookieServiceProvider::class,
         Illuminate\Database\DatabaseServiceProvider::class,
         Illuminate\Encryption\EncryptionServiceProvider::class,
@@ -136,6 +144,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -144,10 +153,11 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
 	Barryvdh\Debugbar\ServiceProvider::class,
 	Mews\Purifier\PurifierServiceProvider::class,
 	Mews\Captcha\CaptchaServiceProvider::class,
-	Yajra\Datatables\DatatablesServiceProvider::class,
+	Yajra\DataTables\DataTablesServiceProvider::class,
 	DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
 
     ],
@@ -197,6 +207,7 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
 	'Purifier' => Mews\Purifier\Facades\Purifier::class,
 	'Captcha' => Mews\Captcha\Facades\Captcha::class,
 	'DataTables' => Yajra\DataTables\Facades\DataTables::class,

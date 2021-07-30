@@ -39,7 +39,7 @@ class ProblemsetPolicy
 	    return $user->id === $problemset->manager_id;
     }
 
-    public function create(User $user, $problemset){
+    public function create(User $user){
 	    return $user->has_role('problemset_creator');
     }
 

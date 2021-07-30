@@ -9,7 +9,7 @@
 <div class="container">
 <div class="row">
 <div class="col-md-12">
-<form method="POST" action="/password/email">
+<form method="POST" action="/auth/password/email">
 	{!! csrf_field() !!}
 	<div class="col-md-offset-4 col-md-4">
 

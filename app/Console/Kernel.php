@@ -26,9 +26,5 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('inspire')
                  ->hourly();
-        $schedule->exec('mysqldump -h '.env('DB_HOST').' -u '.env('DB_USERNAME').' -p'.env('DB_PASSWORD').' '.env('DB_DATABASE'))
-                 ->daily()
-                 ->before(function(){exec('mkdir -p '.base_path().'/storage/backup/database/');})
-                 ->sendOutputTo(base_path().'/storage/backup/database/'.time().'.sql');
     }
 }

@@ -9,7 +9,7 @@
 <div class="container">
 <div class="row">
 <div class="col-md-12">
-<form method="POST" action="/password/reset">
+<form method="POST" action="/auth/password/reset">
 	{!! csrf_field() !!}
 	<input type="hidden" name="token" value="{{ $token }}">
 
