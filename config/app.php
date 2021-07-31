@@ -143,7 +143,6 @@ return [
 	Mews\Purifier\PurifierServiceProvider::class,
 	Mews\Captcha\CaptchaServiceProvider::class,
 	Yajra\DataTables\DataTablesServiceProvider::class,
-	DaveJamesMiller\Breadcrumbs\ServiceProvider::class,
 
     ],
 
@@ -196,7 +195,6 @@ return [
 	'Purifier' => Mews\Purifier\Facades\Purifier::class,
 	'Captcha' => Mews\Captcha\Facades\Captcha::class,
 	'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-	'Breadcrumbs' => DaveJamesMiller\Breadcrumbs\Facade::class,
 
     ],
 
