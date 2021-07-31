@@ -7,8 +7,9 @@ define('SL_RUNNING' , 3);
 define('SL_JUDGED' , 4);
 define('SL_CANCELED' ,5);
 
-define('CACHE_ONE_DAY', 1440);
-define('CACHE_ONE_MONTH', 43200);
+define('CACHE_ONE_MINUTE', 60);
+define('CACHE_ONE_DAY', 86400);
+define('CACHE_ONE_MONTH', 2592000);
 
 define('OJ_UDP_PORT', 13107);
 

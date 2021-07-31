@@ -53,7 +53,7 @@ class RegisterController extends Controller
             'fullname' => 'max:255',
             'class' => 'max:255',
             'token' => 'required|invitation',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:8|confirmed',
             'captcha' => 'required|captcha',
         ]);
     }

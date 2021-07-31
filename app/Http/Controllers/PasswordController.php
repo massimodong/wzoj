@@ -17,7 +17,7 @@ class PasswordController extends Controller
       $this->validate($request, [
           'name' => 'required|username|unique:users,name,'.Auth::user()->id,
           'email' => 'required|email|max:255|unique:users,email,'.Auth::user()->id,
-          'new_password' => 'confirmed|min:6',
+          'new_password' => 'confirmed|min:8',
           'old_password' => 'required',
       ]);
       if(Auth::attempt(['name' => Auth::user()->name, 'password' => $request->old_password])){

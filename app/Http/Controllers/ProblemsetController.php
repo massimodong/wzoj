@@ -449,7 +449,7 @@ class ProblemsetController extends Controller
       $download_url = '/s/'.$problemset->id.'/'.$problem->id.'?download_attached_file=true';
     }
 
-    $topics = Cache::tags(['problem_topics'])->remember($problem->id, 1, function() use($problem){
+    $topics = Cache::tags(['problem_topics'])->remember($problem->id, CACHE_ONE_MINUTE, function() use($problem){
       return \App\ForumTopic::whereIn('id', function($query) use($problem){
           $query->select('forum_topic_id')
           ->from(with(new \App\ForumTag)->getTable())

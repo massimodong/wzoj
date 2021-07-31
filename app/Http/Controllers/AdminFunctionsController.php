@@ -21,7 +21,7 @@ class AdminFunctionsController extends Controller
 			'title' => 'required',
 			'content' => 'required',
 		]);
-		Event::fire(new Broadcast($request->title, $request->content));
+		Event::dispatch(new Broadcast($request->title, $request->content));
 		return back();
 	}
 }
