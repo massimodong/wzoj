@@ -230,6 +230,7 @@ return [
     'import_problems' => '导入题目',
     'problem_rejudge' => '重判题目',
     'update_system' => '更新系统',
+    'update_system_guide' => '每次更新系统前，请阅读更新指南：',
 
     'solution_id' => '提交编号',
 

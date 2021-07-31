@@ -33,12 +33,7 @@
       <tr>
         @if ($record->score >= 0)
         <td style="display: none"></td>
-        <td>
-          @if ($problemset->public)
-            @include ('partials.user_badge', ['user' => $record->user])</td>
-          @else
-            @include ('partials.user_badge_fullname', ['user' => $record->user])</td>
-          @endif
+        <td>@include ('partials.user_badge', ['user' => $record->user, 'public' => $problemset->public])</td>
           @foreach ($problems as $problem)
           <td>
             @if ($record->problem_scores[$problem->id] >= 0)
@@ -57,7 +52,7 @@
         <td>{{$record->rank+1}}</td>
         @else
         <td style="display: none"></td>
-        <td>@include ('partials.user_badge', ['user' => $record->user])</td>
+        <td>@include ('partials.user_badge', ['user' => $record->user, 'public' => $problemset->public])</td>
           @foreach ($problems as $problem)
           <td>
             @if (!$contest_running && $record->problem_corrected_scores[$problem->id] >= 0)

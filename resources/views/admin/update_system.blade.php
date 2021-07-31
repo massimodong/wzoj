@@ -5,6 +5,9 @@
 @endsection
 
 @section ('content')
+<h3>{{trans('wzoj.update_system')}}</h3>
+<p>{{trans('wzoj.update_system_guide')}}<a href="https://github.com/massimodong/wzoj/wiki/%E6%9B%B4%E6%96%B0%E6%8C%87%E5%8D%97" target="_blank">link</a></p>
+<hr>
 <form method='POST' enctype='multipart/form-data'>
 {{csrf_field()}}
 <input type="file" name="pkg">
