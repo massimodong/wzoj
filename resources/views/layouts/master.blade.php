@@ -10,7 +10,7 @@
     <title>@yield('title')</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href={{ojcache("/include/css/_concated.min.css")}}>
+    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
     <link rel="stylesheet" href={{ojcache("/include/css/common.css")}}>
 
     @show
@@ -102,12 +102,8 @@
   </div>
 </footer>
 
-<script src={{ojcache("/include/js/_concated.min.js")}}></script>
+<script src="{{ mix('/js/app.js') }}"></script>
 <script src={{ojcache("/include/js/common.js")}}></script>
-<script>
-  var socket = io("{{env('SOCKET_IO_SERVER')}}");
-  socket_init();
-</script>
 @yield ('scripts')
 </body>
 </html>

@@ -1,0 +1,11 @@
+{
+  "plugins": [
+
+    ["prismjs", {
+      "languages": ["cpp", "javascript", "css", "twig", "php"],
+      "plugins": [],
+      "theme": "solarizedlight",
+      "css": true
+    }]
+  ]
+}
