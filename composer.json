@@ -18,7 +18,8 @@
         "diglactic/laravel-breadcrumbs": "7.x",
         "doctrine/dbal": "^2.10",
         "mews/purifier": "^3.1",
-        "beyondcode/laravel-websockets": "^1.12"
+        "beyondcode/laravel-websockets": "^1.12",
+        "pusher/pusher-php-server": "^4.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
