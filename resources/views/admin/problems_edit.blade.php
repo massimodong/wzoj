@@ -92,7 +92,7 @@
     <div class="form-group row">
       <label for="description" class="col-sm-2 col-form-label"> {{trans('wzoj.description')}} </label>
       <div class="col-sm-10">
-        <textarea class='ojeditor' id='description' name='description'>{{htmlspecialchars($problem->description)}}</textarea>
+        <textarea class='ojeditor' id='description' name='description'>{{$problem->description}}</textarea>
       </div>
     </div>
 
@@ -103,14 +103,14 @@
     <div class="form-group row">
       <label for="inputformat" class="col-sm-2 col-form-label"> {{trans('wzoj.input_format')}} </label>
       <div class="col-sm-10">
-        <textarea class='ojeditor' id='inputformat' name='inputformat'>{{htmlspecialchars($problem->inputformat)}}</textarea>
+        <textarea class='ojeditor' id='inputformat' name='inputformat'>{{$problem->inputformat}}</textarea>
       </div>
     </div>
 
     <div class="form-group row">
       <label for="outputformat" class="col-sm-2 col-form-label"> {{trans('wzoj.output_format')}} </label>
       <div class="col-sm-10">
-        <textarea class='ojeditor' id='outputformat' name='outputformat'>{{htmlspecialchars($problem->outputformat)}}</textarea>
+        <textarea class='ojeditor' id='outputformat' name='outputformat'>{{$problem->outputformat}}</textarea>
       </div>
     </div>
   </div>
@@ -137,7 +137,7 @@
     <div class="form-group row">
       <label for="hint" class="col-sm-2 col-form-label"> {{trans('wzoj.hints')}} </label>
       <div class="col-sm-10">
-        <textarea class='ojeditor' id='hint' name='hint'>{{htmlspecialchars($problem->hint)}}</textarea>
+        <textarea class='ojeditor' id='hint' name='hint'>{{$problem->hint}}</textarea>
       </div>
     </div>
 
@@ -165,7 +165,7 @@
     <div class="form-group row">
       <label for="subtasks" class="col-sm-2 col-form-label"> {{trans('wzoj.subtasks')}} </label>
       <div class="col-sm-10">
-        <textarea class='form-control' rows='20' id='subtasks' name='subtasks'>{{htmlspecialchars(json_encode($problem->subtasks, JSON_PRETTY_PRINT))}}</textarea>
+        <textarea class='form-control' rows='20' id='subtasks' name='subtasks'>{{json_encode($problem->subtasks, JSON_PRETTY_PRINT)}}</textarea>
       </div>
     </div>
   </div>
@@ -190,7 +190,7 @@
     <div class="form-group row">
       <label for="tutorial" class="col-sm-2 col-form-label"> {{trans('wzoj.tutorial')}} </label>
       <div class="col-sm-10">
-        <textarea class='ojeditor' id='tutorial' name='tutorial'>{{htmlspecialchars($problem->tutorial)}}</textarea>
+        <textarea class='ojeditor' id='tutorial' name='tutorial'>{{$problem->tutorial}}</textarea>
       </div>
     </div>
 
