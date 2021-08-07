@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Event;
 use App\Events\SolutionUpdated;
+use App\Events\ListTestcases;
+use App\Events\CompileErr;
 
 use Illuminate\Http\Request;
 
@@ -135,19 +137,26 @@ class JudgerController extends Controller
 			"solution_id" => "required|integer",
 		]);
 		$solution = \App\Solution::findOrFail($request->solution_id);
+
+    DB::update('UPDATE problem_statistics SET score_sum = score_sum - ?, count_ac = count_ac - IF(? = 100, 1, 0) WHERE problemset_id = ? AND problem_id = ?',
+        [$solution->score, $solution->score, $solution->problemset_id, $solution->problem_id]);
+    $solution->time_used = 0;
+    $solution->memory_used = 0.0;
+    $solution->status = SL_COMPILING;
+    $solution->score = 0;
+    $solution->ce = NULL;
+    $solution->testcases = Array();
+    $solution->sim_id = NULL;
+    $solution->judger_id = \Request::get('judger')->id;
+    $solution->save();
+    //Event::dispatch(new SolutionUpdated($solution));
+
 		return response()->json([
 			'id' => $solution->id,
 			'user_id' => $solution->user_id,
 			'problem_id' => $solution->problem_id,
 			'language' => $solution->language,
 			'code' => $solution->code,
-			'time_used' => $solution->time_used,
-			'memory_used' => $solution->memory_used,
-			'status' => $solution->status,
-			'score' => $solution->score,
-			'ce' => $solution->ce,
-			'testcases' => $solution->testcases,
-			'cnt_testcases' => $solution->cnt_testcases,
 		]);
 	}
 	public function getProblem(Request $request){
@@ -270,4 +279,24 @@ class JudgerController extends Controller
 		}
 		return response()->json(['ok' => true]);
 	}
+
+  public function postListTestcases(Request $request){
+		$this->validate($request,[
+			"solution_id" => "required|integer",
+		]);
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
+		Event::dispatch(new ListTestcases($solution, $request->testcases));
+    return response()->json(['ok' => true]);
+  }
+
+  public function postCompileError(Request $request){
+		$this->validate($request,[
+			"solution_id" => "required|integer",
+		]);
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
+		Event::dispatch(new CompileErr($solution));
+    return response()->json(['ok' => true]);
+  }
 }

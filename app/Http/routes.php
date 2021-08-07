@@ -199,4 +199,10 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
     Route::get('{url}', 'HomeController@getDiyPage');
 });
 
+Route::group(['prefix' => 'judger'], function(){
+    Route::post('solution', 'JudgerController@getSolution');
+    Route::get('problem', 'JudgerController@getProblem');
+    Route::post('list-testcases', 'JudgerController@postListTestcases');
+    Route::post('compile-error', 'JudgerController@postCompileError');
+});
 //Route::controller('judger','JudgerController');

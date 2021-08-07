@@ -92,7 +92,8 @@
     @if (Auth::check())
     <div><p><a href="/solutions?user_name={{Auth::user()->name}}&problemset_id={{$problemset->id}}&problem_id={{$problem->id}}">{{trans('wzoj.history_solutions')}}</a></p></div>
     @endif
-    <div id="sol-table-template" style="display: none" class="row pb-3">
+    <!--<div id="sol-table-template" class="row pb-3">-->
+    <div id="solt-601836" class="row pb-3">
       <div class="col-12">
         <div class="progress" style="height: 30px;" onclick="progress_click(this);">
           <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary"
@@ -280,6 +281,7 @@ function append_testcase(pr, solution, testcase){
   bar.animate({width: v + "%"}, {duration: 300});
 }
 
+/*
 socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
   b = $('#solt-' + solution.id);
   if(b.length == 0) return;
@@ -303,6 +305,15 @@ socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
       b.data('testcase_num', i + 1);
     }
   }
+});
+*/
+
+Echo.private("user.1").listen('ListTestcases', (e)=>{
+    console.log(e);
+});
+
+Echo.private("user.1").listen('CompileErr', (e)=>{
+    console.log(e);
 });
 
 function progress_click(e){
