@@ -8,7 +8,7 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "barryvdh/laravel-debugbar": "^2.3",
-        "tinymce/tinymce": "^4.5",
+        "tinymce/tinymce": "^5.9",
         "mews/captcha": "^2.1",
         "predis/predis": "^1.1",
         "soundasleep/html2text": "^0.3.4",
