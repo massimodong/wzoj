@@ -6,6 +6,7 @@ use Event;
 use App\Events\SolutionUpdated;
 use App\Events\ListTestcases;
 use App\Events\CompileErr;
+use App\Events\TestcaseEv;
 
 use Illuminate\Http\Request;
 
@@ -297,6 +298,16 @@ class JudgerController extends Controller
 		$solution = \App\Solution::findOrFail($request->solution_id);
 
 		Event::dispatch(new CompileErr($solution));
+    return response()->json(['ok' => true]);
+  }
+
+  public function postTestcase(Request $request){
+		$this->validate($request,[
+			"solution_id" => "required|integer",
+		]);
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
+    Event::dispatch(new TestcaseEv($solution, $request));
     return response()->json(['ok' => true]);
   }
 }

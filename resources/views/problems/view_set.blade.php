@@ -36,6 +36,40 @@
   </div>
   <!-- problem -->
 
+  <!-- Modal -->
+  <div class="modal fade" id="sol-modal-template" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+
+          <h3></h3>
+
+          {{trans('wzoj.status')}}: 等待评测
+
+          <table class="table">
+            <thead>
+              <tr><th colspan="4">{{trans('wzoj.testcases')}}</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>A</td>
+                <td colspan="3">
+                  <div class="spinner-border spinner-border-sm" role="status">
+                    <span class="sr-only">Loading...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <div id="submit" class="tab-pane fade" role="tabpanel" aria-labelledby="submit-tab">
     @if ($problem->type <> 3)
     <form id='sol-form' action='/solutions' method='POST' enctype='multipart/form-data'>
@@ -92,47 +126,7 @@
     @if (Auth::check())
     <div><p><a href="/solutions?user_name={{Auth::user()->name}}&problemset_id={{$problemset->id}}&problem_id={{$problem->id}}">{{trans('wzoj.history_solutions')}}</a></p></div>
     @endif
-    <!--<div id="sol-table-template" class="row pb-3">-->
-    <div id="solt-601836" class="row pb-3">
-      <div class="col-12">
-        <div class="progress" style="height: 30px;" onclick="progress_click(this);">
-          <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary"
-            role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-            {{trans('wzoj.solution_status_0')}}
-          </div>
-        </div>
-      </div>
-      <div class="col-12 pt-1">
-        <ul class="list-group list-group-horizontal-sm">
-          <li class="list-group-item flex-fill">
-            <b>{{trans('wzoj.score')}}: </b>
-            <span class="solt-score">
-              <div class="spinner-border spinner-border-sm" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
-            </span>
-          </li>
-          <li class="list-group-item flex-fill">
-            <b>{{trans('wzoj.time_used')}}: </b>
-            <span class="solt-time-used">
-              <div class="spinner-border spinner-border-sm" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
-            </span>
-          </li>
-          <li class="list-group-item flex-fill">
-            <b>{{trans('wzoj.memory_used')}} :</b>
-            <span class="solt-memory-used">
-              <div class="spinner-border spinner-border-sm" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
-            </span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <!-- submit -->
+    <!-- submit -->
 
   @can ('view_tutorial', $problemset)
   <div id="tutorial" class="tab-pane fade" role="tabpanel" aria-labelledby="tutorial-tab">
@@ -146,6 +140,52 @@
 
 @section ('scripts')
 <script type="text/javascript" src="{{ojoption('mathjax_url')}}"></script>
+
+<script>
+function watchSolution(id){
+  var nb = $('#sol-modal-template').clone();
+  nb.attr('id', 'solt-' + id);
+  nb.find('h3').html(id);
+  nb.modal('show');
+}
+</script>
+
+<script> //for testing
+var lts = {
+  "testcases": [
+    "b",
+    "a",
+    "c"
+  ],
+  "solution_id": 601836
+};
+var ta = {
+  "solution_id": 601836,
+  "testcase_name": "a",
+  "time_used": "1",
+  "memory_used": "0.003685",
+  "verdict": "AC",
+  "score": "100"
+};
+var tb = {
+  "solution_id": 601836,
+  "testcase_name": "b",
+  "time_used": "2",
+  "memory_used": "0.003685",
+  "verdict": "AC",
+  "score": "100"
+};
+var tc = {
+  "solution_id": 601836,
+  "testcase_name": "c",
+  "time_used": "0",
+  "memory_used": "0.003685",
+  "verdict": "AC",
+  "score": "100"
+};
+watchSolution(601836);
+</script>
+
 <script>
 function detectLanguage(){
 	if($('#language').val() != -1) return true;
@@ -313,6 +353,10 @@ Echo.private("user.1").listen('ListTestcases', (e)=>{
 });
 
 Echo.private("user.1").listen('CompileErr', (e)=>{
+    console.log(e);
+});
+
+Echo.private("user.1").listen('TestcaseEv', (e)=>{
     console.log(e);
 });
 

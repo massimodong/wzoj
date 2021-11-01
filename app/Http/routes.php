@@ -204,5 +204,6 @@ Route::group(['prefix' => 'judger'], function(){
     Route::get('problem', 'JudgerController@getProblem');
     Route::post('list-testcases', 'JudgerController@postListTestcases');
     Route::post('compile-error', 'JudgerController@postCompileError');
+    Route::post('testcase', 'JudgerController@postTestcase');
 });
 //Route::controller('judger','JudgerController');
