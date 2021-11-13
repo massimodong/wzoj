@@ -7,6 +7,10 @@ define('SL_RUNNING' , 3);
 define('SL_JUDGED' , 4);
 define('SL_CANCELED' ,5);
 
+define('CONTEST_PENDING', 0);
+define('CONTEST_RUNNING', 1);
+define('CONTEST_ENDED', 2);
+
 define('CACHE_ONE_MINUTE', 60);
 define('CACHE_ONE_DAY', 86400);
 define('CACHE_ONE_MONTH', 2592000);
@@ -38,7 +42,7 @@ function ojCanViewProblems($problemset, $vp = NULL){
       }
 
       if(strtotime($problemset->contest_end_at) < time()) return true;
-      if($vp && $vp->contest_start_at < time()) return true;
+      if($vp && strtotime($vp->contest_start_at) < time()) return true;
       return false;
     case 2:
       return false;

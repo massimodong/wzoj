@@ -144,6 +144,13 @@ class ProblemsetController extends Controller
       return $item->id;
     })->toArray();
 
+    $contest_start_time = strtotime($vp ? $vp->contest_start_at : $problemset->contest_start_at);
+    $contest_end_time = strtotime($vp ? $vp->contest_end_at : $problemset->contest_end_at);
+    $cur_time = time();
+    $contest_period = CONTEST_PENDING;
+    if($cur_time > $contest_start_time) $contest_period = CONTEST_RUNNING;
+    if($cur_time > $contest_end_time) $contest_period = CONTEST_ENDED;
+
     return view('problemsets.view_'.$problemset->type,[
         'problemset' => $problemset,
         'problems' => $problems,
@@ -151,6 +158,9 @@ class ProblemsetController extends Controller
         'cnt_pages' => $cnt_pages,
         'cur_page' => $page,
         'virtual_participation' => $vp,
+        'contest_start_time' => $contest_start_time,
+        'contest_end_time' => $contest_end_time,
+        'contest_period' => $contest_period,
     ]);
   }
 
@@ -358,7 +368,7 @@ class ProblemsetController extends Controller
     if(!isset($newval['contest_duration'])) $newval['contest_duration'] = 120;
 
     $newval['description'] = Purifier::clean($newval['description']);
-
+    $newval['contest_duration'] = $newval['contest_duration'] * 60;
     if($request->user()->has_role('admin')){
       $newval['manager_id'] = $request->manager;
     }
