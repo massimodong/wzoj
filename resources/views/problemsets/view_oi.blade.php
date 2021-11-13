@@ -87,13 +87,13 @@
 <script>
   @if ($contest_period == CONTEST_PENDING)
     var countdown = {{$contest_start_time - time()}};
-    do_countdown();
   @elseif ($contest_period == CONTEST_RUNNING)
     var countdown = {{$contest_end_time - time()}};
-    do_countdown();
   @else
     var countdown = 0;
   @endif
+  var ddl = Math.floor((new Date()).getTime()/1000) + countdown;
+  do_countdown();
   function parseTime(t){
     const I = 60;
     const H = 60 * I;
@@ -124,9 +124,10 @@
     return ret;
   }
   function do_countdown(){
-    if(countdown > 0) setTimeout(do_countdown, 1000);
-    $('#h-countdown').html(parseTime(countdown));
-    countdown--;
+    var date = new Date();
+    var cur_time = Math.floor(date.getTime() / 1000);
+    if(ddl > cur_time) setTimeout(do_countdown, 1000);
+    $('#h-countdown').html(parseTime(ddl - cur_time));
   }
 </script>
 @endsection
