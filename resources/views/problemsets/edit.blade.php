@@ -64,7 +64,7 @@
           <input type="radio" id="participate_type_radio_1" name="participate_type" value="1" class="custom-control-input" @if ($problemset->participate_type == 1) checked @endif>
           <label class="custom-control-label" for="participate_type_radio_1">{{trans('wzoj.participate_type_duration')}}</label>
         </div>
-        <input type="text" name="contest_duration" value="{{$problemset->contest_duration}}">
+        <input type="text" name="contest_duration" value="{{$problemset->contest_duration/60}}">
         <div class="custom-control custom-radio custom-control-inline">
           <input type="radio" id="participate_type_radio_2" name="participate_type" value="2" class="custom-control-input" disabled @if ($problemset->participate_type == 2) checked @endif>
           <label class="custom-control-label" for="participate_type_radio_2">{{trans('wzoj.participate_type_allow_virtual')}}</label>
@@ -104,7 +104,7 @@
     <div class="form-group row">
       <label class="col-form-label col-sm-2" for="description">{{trans('wzoj.description')}}:</label>
       <div class="col-sm-10">
-        <textarea class="form-control ojeditor" name="description" id="description">{{htmlspecialchars($problemset->description)}}</textarea>
+        <textarea class="form-control ojeditor" name="description" id="description">{{$problemset->description}}</textarea>
       </div>
     </div>
     <div class="form-group row">

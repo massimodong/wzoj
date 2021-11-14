@@ -442,9 +442,9 @@ return [
     'gravatar_address' => 'Gravatar 头像地址',
 
     'participate_type_standard' => '标准模式',
-    'participate_type_duration' => '参赛时限（秒）',
+    'participate_type_duration' => '参赛时限（分钟）',
     'participate_type_allow_virtual' => '允许虚拟参赛(TODO)',
-    'participate_contest' => '开始比赛',
+    'participate_contest' => '参加比赛',
     'contest_duration' => '比赛限时',
 
     'show_tutorial' => '显示题解',
@@ -453,4 +453,10 @@ return [
 
     'start_number' => '起始编号',
     'password_length' => '密码长度',
+
+    'contest_period_0' => '等待开始',
+    'contest_period_1' => '进行中',
+    'contest_period_2' => '已结束',
+    'start_contest' => '开始答题',
+    'end_contest' => '停止提交',
 ];

@@ -8,10 +8,33 @@
 {!! Breadcrumbs::render('problemset', $problemset) !!}
 <h1 class='page-header text-center'>{{$problemset->name}}</h1>
 <h6 class='text-center'>
-  <span style="color:green">{{$virtual_participation ? $virtual_participation->contest_start_at : $problemset->contest_start_at}}</span>
-  <span style="color:red">{{$virtual_participation ? $virtual_participation->contest_end_at : $problemset->contest_end_at}}</span>
+  <span style="color:green">{{$problemset->contest_start_at}}</span> -
+  <span style="color:red">{{$problemset->contest_end_at}}</span>
   @if (!$problemset->isHideSolutions()) <a href="/s/{{$problemset->id}}/ranklist">{{trans('wzoj.ranklist')}}</a> @endif
 </h6>
+<div class="card mb-1">
+  <div class="card-body text-center">
+    @if ($virtual_participation)
+    <div class="float-left">
+      <span style="color: green">{{trans('wzoj.start_contest')}}：{{$virtual_participation->contest_start_at}}</span><br>
+      <span style="color: red">{{trans('wzoj.end_contest')}}：{{$virtual_participation->contest_end_at}}</span>
+    </div>
+    @endif
+
+    <span style="font-size: xx-large" class="align-middle">
+      {{trans('wzoj.contest_period_'.$contest_period)}}
+    </span>
+    @if ($contest_period != CONTEST_ENDED)
+      <span style="font-size: xx-large" class="align-middle">
+        {{trans('wzoj.remaining')}}:
+      </span>
+      <div style="display: inline-block;" class="align-middle">
+        <pre id="h-countdown" style="margin-bottom: 0; overflow: visible; font-size: xx-large"></pre>
+      </div>
+    @else
+    @endif
+  </div>
+</div>
 @can ('update', $problemset)
 <div class="pull-right"><a href="/s/{{$problemset->id}}/edit">{{trans('wzoj.edit')}}</a></div>
 @endif
@@ -58,4 +81,53 @@
   @endif
 </div>
 
+@endsection
+
+@section ('scripts')
+<script>
+  @if ($contest_period == CONTEST_PENDING)
+    var countdown = {{$contest_start_time - time()}};
+  @elseif ($contest_period == CONTEST_RUNNING)
+    var countdown = {{$contest_end_time - time()}};
+  @else
+    var countdown = 0;
+  @endif
+  var ddl = Math.floor((new Date()).getTime()/1000) + countdown;
+  do_countdown();
+  function parseTime(t){
+    const I = 60;
+    const H = 60 * I;
+    const D = 24 * H;
+    const Y = 365 * D;
+
+    var y = Math.floor(t / Y);
+    t -= y * Y;
+
+    var d = Math.floor(t / D);
+    t -= d * D;
+
+    var h = Math.floor(t / H);
+    t -= h * H;
+
+    var i = Math.floor(t / I);
+    t -= i * I;
+
+    var s = t;
+
+    var ret = "";
+    if(y) ret += y + "年";
+    if(d) ret += d + "天";
+    if(h) ret += h + "小时";
+    if(i) ret += i + "分钟";
+    if(s < 10) ret += "0";
+    ret += s + "秒";
+    return ret;
+  }
+  function do_countdown(){
+    var date = new Date();
+    var cur_time = Math.floor(date.getTime() / 1000);
+    if(ddl > cur_time) setTimeout(do_countdown, 1000);
+    $('#h-countdown').html(parseTime(ddl - cur_time));
+  }
+</script>
 @endsection
