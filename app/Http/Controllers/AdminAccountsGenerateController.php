@@ -54,7 +54,7 @@ class AdminAccountsGenerateController extends Controller
       download_send_headers('accounts-' . date("Y-m-d") . ".csv");
       $df = fopen("php://output", "w");
       utf8_bom($df);
-      $head = array(trans('wzoj.name'), trans('wzoj.password'));
+      $head = array(trans('wzoj.fullname'), trans('wzoj.account'), trans('wzoj.password'));
       fputcsv($df, $head);
 
       foreach($fullnames as $fullname){
@@ -78,7 +78,7 @@ class AdminAccountsGenerateController extends Controller
           }
         }
 
-        $item = array($name, $password);
+        $item = array($newuser->fullname, $name, $password);
         fputcsv($df, $item);
       }
 
