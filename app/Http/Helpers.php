@@ -11,9 +11,8 @@ define('CONTEST_PENDING', 0);
 define('CONTEST_RUNNING', 1);
 define('CONTEST_ENDED', 2);
 
-define('CACHE_ONE_MINUTE', 60);
-define('CACHE_ONE_DAY', 86400);
-define('CACHE_ONE_MONTH', 2592000);
+define('CACHE_ONE_DAY', 1440);
+define('CACHE_ONE_MONTH', 43200);
 
 define('OJ_UDP_PORT', 13107);
 

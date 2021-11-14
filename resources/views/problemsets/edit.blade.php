@@ -104,7 +104,7 @@
     <div class="form-group row">
       <label class="col-form-label col-sm-2" for="description">{{trans('wzoj.description')}}:</label>
       <div class="col-sm-10">
-        <textarea class="form-control ojeditor" name="description" id="description">{{$problemset->description}}</textarea>
+        <textarea class="form-control ojeditor" name="description" id="description">{{htmlspecialchars($problemset->description)}}</textarea>
       </div>
     </div>
     <div class="form-group row">
