@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -54,7 +55,7 @@ class AdminAccountsGenerateController extends Controller
       download_send_headers('accounts-' . date("Y-m-d") . ".csv");
       $df = fopen("php://output", "w");
       utf8_bom($df);
-      $head = array(trans('wzoj.name'), trans('wzoj.password'));
+      $head = array(trans('wzoj.fullname'), trans('wzoj.account'), trans('wzoj.password'));
       fputcsv($df, $head);
 
       foreach($fullnames as $fullname){
@@ -62,7 +63,7 @@ class AdminAccountsGenerateController extends Controller
           $name = $request->prefix.($name_cnt++);
         }while(User::where('name', $name)->count());
 
-        $password = str_random($request->password_length);
+        $password = Str::random($request->password_length);
         $newuser = User::create([
             'name' => $name,
             'class' => $request->class,
@@ -78,7 +79,7 @@ class AdminAccountsGenerateController extends Controller
           }
         }
 
-        $item = array($name, $password);
+        $item = array($newuser->fullname, $name, $password);
         fputcsv($df, $item);
       }
 
