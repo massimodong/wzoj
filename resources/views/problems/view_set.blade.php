@@ -36,40 +36,6 @@
   </div>
   <!-- problem -->
 
-  <!-- Modal -->
-  <div class="modal fade" id="sol-modal-template" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-body">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-
-          <h3></h3>
-
-          {{trans('wzoj.status')}}: 等待评测
-
-          <table class="table">
-            <thead>
-              <tr><th colspan="4">{{trans('wzoj.testcases')}}</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>A</td>
-                <td colspan="3">
-                  <div class="spinner-border spinner-border-sm" role="status">
-                    <span class="sr-only">Loading...</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
   <div id="submit" class="tab-pane fade" role="tabpanel" aria-labelledby="submit-tab">
     @if ($problem->type <> 3)
     <form id='sol-form' action='/solutions' method='POST' enctype='multipart/form-data'>
@@ -126,7 +92,46 @@
     @if (Auth::check())
     <div><p><a href="/solutions?user_name={{Auth::user()->name}}&problemset_id={{$problemset->id}}&problem_id={{$problem->id}}">{{trans('wzoj.history_solutions')}}</a></p></div>
     @endif
-    <!-- submit -->
+    <div id="sol-table-template" style="display: none" class="row pb-3">
+      <div class="col-12">
+        <div class="progress" style="height: 30px;" onclick="progress_click(this);">
+          <div class="progress-bar progress-bar-striped progress-bar-animated bg-secondary"
+            role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+            {{trans('wzoj.solution_status_0')}}
+          </div>
+        </div>
+      </div>
+      <div class="col-12 pt-1">
+        <ul class="list-group list-group-horizontal-sm">
+          <li class="list-group-item flex-fill">
+            <b>{{trans('wzoj.score')}}: </b>
+            <span class="solt-score">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </li>
+          <li class="list-group-item flex-fill">
+            <b>{{trans('wzoj.time_used')}}: </b>
+            <span class="solt-time-used">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </li>
+          <li class="list-group-item flex-fill">
+            <b>{{trans('wzoj.memory_used')}} :</b>
+            <span class="solt-memory-used">
+              <div class="spinner-border spinner-border-sm" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- submit -->
 
   @can ('view_tutorial', $problemset)
   <div id="tutorial" class="tab-pane fade" role="tabpanel" aria-labelledby="tutorial-tab">
@@ -140,15 +145,6 @@
 
 @section ('scripts')
 <script type="text/javascript" src="{{ojoption('mathjax_url')}}"></script>
-
-<script>
-function watchSolution(id){
-  var nb = $('#sol-modal-template').clone();
-  nb.attr('id', 'solt-' + id);
-  nb.find('h3').html(id);
-  nb.modal('show');
-}
-</script>
 
 <script> //for testing
 var lts = {
@@ -183,7 +179,12 @@ var tc = {
   "verdict": "AC",
   "score": "100"
 };
-watchSolution(601836);
+var tall = {
+  "solution_id": 601836,
+  "time_used": 2,
+  "memory_used": 0.003685,
+  "score": 100
+};
 </script>
 
 <script>
@@ -241,9 +242,13 @@ function new_pending_solution(id){
   nb.attr('style', 'display: block');
   nb.attr('id', 'solt-' + id);
 
-  nb.data('testcase_num', 0);
-
   $('#pending-sol').prepend(nb);
+}
+
+function prepare_testcases(testcases){
+  b = $('#solt-' + testcases.solution_id);
+  b.data("testcases", testcases.testcases);
+  b.find('.progress').html("");
 }
 
 function submit_solution(){
@@ -291,8 +296,11 @@ function append_ce(pr){
   pr.html(bar);
 }
 
-function append_testcase(pr, solution, testcase){
-  bar = jQuery("<div></div>");
+//function append_testcase(pr, solution, testcase){
+function append_testcase(testcase){
+  var b = $('#solt-' + testcase.solution_id);
+  var pr = b.find('.progress');
+  var bar = jQuery("<div></div>");
   bar.addClass("progress-bar");
   switch(testcase.verdict){
     case "AC":
@@ -309,7 +317,7 @@ function append_testcase(pr, solution, testcase){
       bar.addClass("bg-info");
   }
 
-  var v = 100 / solution.cnt_testcases;
+  var v = 100 / b.data('testcases').length;
 
   bar.attr("role", "progressbar");
   bar.attr("aria-valuenow", v);
@@ -319,6 +327,17 @@ function append_testcase(pr, solution, testcase){
   pr.append(bar);
 
   bar.animate({width: v + "%"}, {duration: 300});
+}
+
+function finish_solution(solution){
+  var b = $('#solt-' + solution.solution_id);
+
+  b.find('.solt-score').html(solution.score);
+  b.find('.solt-time-used').html(solution.time_used + " ms");
+  b.find('.solt-memory-used').html(solution.memory_used.toFixed(2) + " MB");
+
+  b.data("id", solution.solution_id);
+  b.find('.progress').addClass("clickable");
 }
 
 /*
@@ -366,6 +385,8 @@ function progress_click(e){
     window.open("/solutions/" + b.data("id"), '_blank');
   }
 }
+
+new_pending_solution(601836);
 </script>
 @if ($problem->type == 3)
 	<script>
