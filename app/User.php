@@ -53,8 +53,13 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function has_role($role){
-	    if(isset(Session::get('roles', [])['admin'])) return true;
-	    return isset(Session::get('roles', [])[$role]);
+      $rs = [];
+      foreach($this->roles as $r){
+        $rs[$r->name] = true;
+      }
+
+	    if(isset($rs['admin'])) return true;
+	    return isset($rs[$role]);
     }
 
     public function virtual_participations(){
@@ -181,18 +186,13 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function __get($key){
-      if($this->has_role('admin')){
-        switch($key){
-          case 'manage_groups':
-            return \App\Group::all();
-          case 'manage_problems':
-            return \App\Problem::all();
-          case 'manage_problemsets':
-            return \App\Problemset::all();
-        }
-      }
-
       switch($key){
+        case 'manage_groups':
+          if($this->has_role('admin')) return \App\Group::all();
+        case 'manage_problems':
+          if($this->has_role('admin')) return \App\Problem::all();
+        case 'manage_problemsets':
+          if($this->has_role('admin')) return \App\Problemset::all();
         case 'description':
           return $this->get_description();
       }

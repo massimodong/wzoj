@@ -46,11 +46,6 @@ class LoginController extends Controller
     }
 
     public function authenticated($request, $user){
-      $roles = [];
-      foreach($user->roles as $role){
-        $roles[$role->name] = true;
-      }
-      $request->session()->put('roles', $roles);
       $user->last_login_at = date('Y-m-d H:i:s');
       $user->last_token = Session::getId();
       $user->save();
