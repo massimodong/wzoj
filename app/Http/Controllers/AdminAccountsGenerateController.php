@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
@@ -62,7 +63,7 @@ class AdminAccountsGenerateController extends Controller
           $name = $request->prefix.($name_cnt++);
         }while(User::where('name', $name)->count());
 
-        $password = str_random($request->password_length);
+        $password = Str::random($request->password_length);
         $newuser = User::create([
             'name' => $name,
             'class' => $request->class,

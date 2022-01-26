@@ -13,10 +13,9 @@ use App\Problem;
 use App\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class updateProblemStatus extends Job implements SelfHandling, ShouldQueue
+class updateProblemStatus extends Job implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
 
@@ -42,7 +41,7 @@ class updateProblemStatus extends Job implements SelfHandling, ShouldQueue
     {
 	$problemset = $this->problemset;
 	$problem = $this->problem;
-	$problem_status = Cache::tags(['problem_status', $problemset->id])->remember($problem->id, 1,
+	$problem_status = Cache::tags(['problem_status', $problemset->id])->remember($problem->id, CACHE_ONE_MINUTE,
 			function() use($problemset, $problem){
 		//best solutions for this problemset/problem
 		$best_solutions_meta = $problemset->solutions()
@@ -77,7 +76,7 @@ class updateProblemStatus extends Job implements SelfHandling, ShouldQueue
 			->where('score', '>=', 100)
 			->count();
 
-		Event::fire(new ProblemStatusUpdate($problemset->id,
+		Event::dispatch(new ProblemStatusUpdate($problemset->id,
 							$problem->id,
 							$best_solutions,
 							$cnt_submit,

@@ -121,7 +121,7 @@ class JudgerController extends Controller
 				$solution->testcases = Array();
 				$solution->sim_id = NULL;
 				$solution->judger_id = \Request::get('judger')->id;
-				Event::fire(new SolutionUpdated($solution));
+				Event::dispatch(new SolutionUpdated($solution));
 				return response()->json(["ok" => true]);
 			}else{
 				return response()->json(["ok" => false]);
@@ -176,7 +176,7 @@ class JudgerController extends Controller
 		$solution->ce = $request->ce;
 		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
-		Event::fire(new SolutionUpdated($solution));
+		Event::dispatch(new SolutionUpdated($solution));
 		return response()->json(["ok" => true]);
 	}
 	public function postUpdateSolution(Request $request){
@@ -193,7 +193,7 @@ class JudgerController extends Controller
 		$solution->testcases = json_decode($request->testcases);
 		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->save();
-		Event::fire(new SolutionUpdated($solution));
+		Event::dispatch(new SolutionUpdated($solution));
 
 		return response()->json(["ok" => true]);
 	}
@@ -225,7 +225,7 @@ class JudgerController extends Controller
 		}
 
 		$solution->user->update_cnt_ac();
-		Event::fire(new SolutionUpdated($solution));
+		Event::dispatch(new SolutionUpdated($solution));
 	}
 
 	public function getGetAnswer(Request $request){

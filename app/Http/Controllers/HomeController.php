@@ -41,7 +41,7 @@ class HomeController extends Controller
       }
       $recent_contests = $recent_contests->sortByDesc('contest_start_at')->take(4);
     }else{
-      $recent_contests = Cache::tags(['wzoj'])->remember('recent_contests', 1, function(){
+      $recent_contests = Cache::tags(['wzoj'])->remember('recent_contests', CACHE_ONE_MINUTE, function(){
           return \App\Problemset::where('type','<>', 'set')->where('public', 1)->orderBy('contest_start_at', 'desc')->take(4)->get();
       });
     }
@@ -167,7 +167,7 @@ class HomeController extends Controller
                          ->select('problems.id', 'problem_problem_tag.problem_tag_id', 'problem_problemset.problemset_id')
                          ->distinct();
       $res = DB::table(DB::raw("({$subquery->toSql()}) as sub"))
-               ->mergeBindings($subquery->getQuery())
+               ->mergeBindings($subquery->toBase())
                ->select(DB::raw('id, problemset_id, COUNT(*) as count'))
                ->groupBy("id", 'problemset_id')
                ->orderBy("count", "desc")

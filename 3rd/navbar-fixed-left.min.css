@@ -8,7 +8,7 @@ body{
 }
 @media (min-width:768px){
   body{
-    margin-left:90px;
+    margin-left:90px !important;
   }
 }
 .navbar.fixed-left{

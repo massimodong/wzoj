@@ -4,6 +4,11 @@ namespace App\Events;
 
 use App\Solution;
 use App\Events\Event;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 
@@ -30,7 +35,7 @@ class SolutionUpdated extends Event implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        return ['solutions'];
+        return new PrivateChannel('user.'.$this->solution->user_id);
     }
 
     public function broadcastWith(){

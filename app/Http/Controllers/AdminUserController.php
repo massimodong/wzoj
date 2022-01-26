@@ -49,6 +49,8 @@ class AdminUserController extends Controller
         if($user->name != $request->name) 
             return back()->withErrors(trans('wzoj.msg_users_update_id_name_match'));
 
+        if($user->has_role('manager')) abort(403);
+
         if(isset($request->new_password) && $request->new_password != '')
             $user->password = bcrypt($request->new_password);
 

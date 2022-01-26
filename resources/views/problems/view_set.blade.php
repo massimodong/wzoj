@@ -145,6 +145,7 @@
 
 @section ('scripts')
 <script type="text/javascript" src="{{ojoption('mathjax_url')}}"></script>
+
 <script>
 function detectLanguage(){
 	if($('#language').val() != -1) return true;
@@ -203,6 +204,12 @@ function new_pending_solution(id){
   nb.data('testcase_num', 0);
 
   $('#pending-sol').prepend(nb);
+}
+
+function prepare_testcases(testcases){
+  b = $('#solt-' + testcases.solution_id);
+  b.data("testcases", testcases.testcases);
+  b.find('.progress').html("");
 }
 
 function submit_solution(){
@@ -267,20 +274,17 @@ function append_testcase(pr, solution, testcase){
     default:
       bar.addClass("bg-info");
   }
-
   var v = 100 / solution.cnt_testcases;
-
   bar.attr("role", "progressbar");
   bar.attr("aria-valuenow", v);
   bar.attr("aria-valuemin", 0);
   bar.attr("aria-valuemax", 100);
-
   pr.append(bar);
-
   bar.animate({width: v + "%"}, {duration: 300});
 }
 
-socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
+@if (Auth::check())
+Echo.private("user.{{Auth::user()->id}}").listen('SolutionUpdated', (solution) => {
   b = $('#solt-' + solution.id);
   if(b.length == 0) return;
   if(solution.status >= 4){
@@ -304,6 +308,7 @@ socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
     }
   }
 });
+@endif
 
 function progress_click(e){
   b = $(e).parent().parent();
@@ -311,6 +316,7 @@ function progress_click(e){
     window.open("/solutions/" + b.data("id"), '_blank');
   }
 }
+
 </script>
 @if ($problem->type == 3)
 	<script>

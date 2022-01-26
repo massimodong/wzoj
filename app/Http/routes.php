@@ -20,26 +20,13 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
     Route::get('sorry', 'HomeController@getSorry');
     Route::post('sorry', 'HomeController@postSorry');
 
-    // auth
-    Route::get('auth/login', 'Auth\AuthController@getLogin');
-    Route::post('auth/login', 'Auth\AuthController@postLogin');
+    Route::get('password/change', 'PasswordController@getChangePassword');
+    Route::post('password/change', 'PasswordController@postChangePassword');
 
-    Route::get('auth/logout', 'Auth\AuthController@getLogout');
-    Route::post('auth/logout', 'Auth\AuthController@postLogout');
-
-    Route::get('auth/register','Auth\AuthController@oj_getRegister');
-    Route::post('auth/register', 'Auth\AuthController@postRegister');
-
-    Route::get('password/change', 'Auth\PasswordController@getChangePassword');
-    Route::post('password/change', 'Auth\PasswordController@postChangePassword');
-
-    // Password reset link request routes...
-    Route::get('password/email', 'Auth\PasswordController@getEmail');
-    Route::post('password/email', 'Auth\PasswordController@postEmailWithCaptcha');
-
-    // Password reset routes...
-    Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
-    Route::post('password/reset', 'Auth\PasswordController@postReset');
+    Route::group(['prefix' => 'auth'], function(){
+      Route::get('logout', 'Auth\LoginController@getLogout');
+      Auth::routes();
+    });
 
     //users
     Route::get('users/{id}','UserController@getId');
@@ -100,7 +87,7 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
       Route::delete('tags/{id}', 'ForumController@deleteTag')->middleware('auth');
     });
 
-    get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
+    Route::get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
     Route::group(['prefix' => 'admin', 'middleware' => 'role:manager'], function(){
         Route::get('/', 'AdminHomeController@index');
         Route::post('cache-clear', 'AdminHomeController@flushCache');
@@ -205,10 +192,32 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
         });
 
         //ajax
-        Route::controller('ajax', 'AdminAjaxController');
+        Route::group(['prefix' => 'ajax'], function(){
+            Route::get('problemset-problems', 'AdminAjaxController@getProblemsetProblems');
+        });
     });
     Route::get('{url}', 'HomeController@getDiyPage');
 });
 
-Route::controller('judger','JudgerController');
-Route::controller('ajax','AjaxController');
+Route::group(['prefix' => 'judger'], function(){
+    Route::get('index', 'JudgerController@getIndex');
+    Route::get('pending-solutions', 'JudgerController@getPendingSolutions');
+    Route::post('checkout', 'JudgerController@postCheckout');
+    Route::get('solution', 'JudgerController@getSolution');
+    Route::get('problem', 'JudgerController@getProblem');
+    Route::post('update-ce', 'JudgerController@postUpdateCe');
+    Route::post('update-solution', 'JudgerController@postUpdateSolution');
+    Route::post('finish-judging', 'JudgerController@postFinishJudging');
+    Route::get('get-answer', 'JudgerController@getGetAnswer');
+    Route::get('get-sim-solutions', 'JudgerController@getGetSimSolutions');
+    Route::post('update-sim', 'JudgerController@postUpdateSim');
+
+    /*
+    Route::post('solution', 'JudgerController@getSolution');
+    Route::get('problem', 'JudgerController@getProblem');
+    Route::post('list-testcases', 'JudgerController@postListTestcases');
+    Route::post('compile-error', 'JudgerController@postCompileError');
+    Route::post('testcase', 'JudgerController@postTestcase');
+    */
+});
+//Route::controller('judger','JudgerController');

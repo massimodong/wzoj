@@ -29,7 +29,7 @@
   <div class="form-group row">
     <label for="content" class="col-sm-2 col-form-label"> {{trans('wzoj.content')}} </label>
     <div class="col-sm-10">
-      <textarea class='ojeditor' id='content' name='content'>{{htmlspecialchars($sidePanel->content)}}</textarea>
+      <textarea class='ojeditor' id='content' name='content'>{{$sidePanel->content}}</textarea>
     </div>
   </div>
   <button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
