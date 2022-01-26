@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Event;
 use App\Events\SolutionUpdated;
-use App\Events\ListTestcases;
-use App\Events\CompileErr;
-use App\Events\TestcaseEv;
 
 use Illuminate\Http\Request;
 
@@ -91,31 +88,66 @@ class JudgerController extends Controller
 
 		return response()->json($solutions);
 	}
+	public function postCheckout(Request $request){
+		$this->validate($request,[
+			"solution_id" => "required|integer",
+		]);
+		$solution = Solution::find($request->solution_id);
+		if($solution == NULL) return response()->json(["ok" => false]);
+		if($solution->status <= 1 || $request->force === "true"){
+			$query = Solution::where('id', $solution->id);
+			if(!$request->force){
+				$query = $query->where('status', '<=', 1);
+			}
+			$ok = $query->update([
+				'time_used' => 0,
+				'memory_used' => 0.0,
+				'status' => SL_COMPILING,
+				'score' => 0,
+				'ce' => NULL,
+				'testcases' => '[]',
+				'sim_id' => NULL,
+				'judger_id' => \Request::get('judger')->id,
+			]);
+
+			if($ok){
+        DB::update('UPDATE problem_statistics SET score_sum = score_sum - ?, count_ac = count_ac - IF(? = 100, 1, 0) WHERE problemset_id = ? AND problem_id = ?',
+            [$solution->score, $solution->score, $solution->problemset_id, $solution->problem_id]);
+				$solution->time_used = 0;
+				$solution->memory_used = 0.0;
+				$solution->status = SL_COMPILING;
+				$solution->score = 0;
+				$solution->ce = NULL;
+				$solution->testcases = Array();
+				$solution->sim_id = NULL;
+				$solution->judger_id = \Request::get('judger')->id;
+				Event::dispatch(new SolutionUpdated($solution));
+				return response()->json(["ok" => true]);
+			}else{
+				return response()->json(["ok" => false]);
+			}
+		}else{
+			return response()->json(["ok" => false]);
+		}
+	}
 	public function getSolution(Request $request){
 		$this->validate($request,[
 			"solution_id" => "required|integer",
 		]);
 		$solution = \App\Solution::findOrFail($request->solution_id);
-
-    DB::update('UPDATE problem_statistics SET score_sum = score_sum - ?, count_ac = count_ac - IF(? = 100, 1, 0) WHERE problemset_id = ? AND problem_id = ?',
-        [$solution->score, $solution->score, $solution->problemset_id, $solution->problem_id]);
-    $solution->time_used = 0;
-    $solution->memory_used = 0.0;
-    $solution->status = SL_COMPILING;
-    $solution->score = 0;
-    $solution->ce = NULL;
-    $solution->testcases = Array();
-    $solution->sim_id = NULL;
-    $solution->judger_id = \Request::get('judger')->id;
-    $solution->save();
-    //Event::dispatch(new SolutionUpdated($solution));
-
 		return response()->json([
 			'id' => $solution->id,
 			'user_id' => $solution->user_id,
 			'problem_id' => $solution->problem_id,
 			'language' => $solution->language,
 			'code' => $solution->code,
+			'time_used' => $solution->time_used,
+			'memory_used' => $solution->memory_used,
+			'status' => $solution->status,
+			'score' => $solution->score,
+			'ce' => $solution->ce,
+			'testcases' => $solution->testcases,
+			'cnt_testcases' => $solution->cnt_testcases,
 		]);
 	}
 	public function getProblem(Request $request){
@@ -134,7 +166,37 @@ class JudgerController extends Controller
 			'memorylimit' => $problem->memorylimit,
 		]);
 	}
+	public function postUpdateCe(Request $request){
+		$this->validate($request,[
+			"solution_id" => "required|integer",
+		]);
 
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
+		$solution->ce = $request->ce;
+		$solution->judged_at = date('Y-m-d H:i:s');
+		$solution->save();
+		Event::dispatch(new SolutionUpdated($solution));
+		return response()->json(["ok" => true]);
+	}
+	public function postUpdateSolution(Request $request){
+		$this->validate($request,[
+			"solution_id" => "required|integer",
+		]);
+
+		$solution = \App\Solution::findOrFail($request->solution_id);
+
+		$solution->time_used = $request->time_used;
+		$solution->memory_used = $request->memory_used;
+		$solution->status = $request->status;
+		$solution->score = $request->cnt_testcases?floor($request->score / $request->cnt_testcases):0;
+		$solution->testcases = json_decode($request->testcases);
+		$solution->cnt_testcases = $request->cnt_testcases;
+		$solution->save();
+		Event::dispatch(new SolutionUpdated($solution));
+
+		return response()->json(["ok" => true]);
+	}
 	public function postFinishJudging(Request $request){
 		$this->validate($request,[
 			"solution_id" => "required|integer",
@@ -172,47 +234,40 @@ class JudgerController extends Controller
 		return response()->json($answer);
 	}
 
-  public function postListTestcases(Request $request){
-		$this->validate($request,[
-			"solution_id" => "required|integer",
-		]);
-		$solution = \App\Solution::findOrFail($request->solution_id);
+	public function getGetSimSolutions(){
+		$solutions = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
+			->leftJoin('problems', 'solutions.problem_id', '=', 'problems.id')
+			->whereNull('solutions.sim_id')
+			->where('problems.type', '<>', 3)
+			->select('solutions.id')
+			->take(500)
+			->get();
+		return response()->json($solutions);
+	}
 
-		Event::dispatch(new ListTestcases($solution, $request->testcases));
-    return response()->json(['ok' => true]);
-  }
-
-  public function postCompileError(Request $request){
-		$this->validate($request,[
-			"solution_id" => "required|integer",
-		]);
-		$solution = \App\Solution::findOrFail($request->solution_id);
-
-		$solution->ce = $request->ce;
-		$solution->judged_at = date('Y-m-d H:i:s');
-		$solution->save();
-
-		Event::dispatch(new CompileErr($solution));
-    return response()->json(['ok' => true]);
-  }
-
-  public function postTestcase(Request $request){
-		$this->validate($request,[
-			"solution_id" => "required|integer",
-		]);
-		$solution = \App\Solution::findOrFail($request->solution_id);
-
-    $testcase = [];
-    $testcase["filename"] = $request->testcase_name;
-    $testcase["score"] = $request->score;
-    $testcase["time_used"] = $request->time_used;
-    $testcase["memory_used"] = $request->memory_used;
-    $testcase["verdict"] = $request->verdict;
-    $testcase["checklog"] = "TODO";
-    array_push($solution->testcases, $testcase); //TODO: testcases in a seperate table
-
-    Event::dispatch(new TestcaseEv($solution, $request));
-
-    return response()->json(['ok' => true]);
-  }
+	public function postUpdateSim(Request $request){
+		if($request->solution2_id ==0 || $request->rate < 10){
+			Solution::where('id', $request->solution_id)
+				->update(['sim_id' => -1]);
+			return response()->json(['ok' => true]);
+		}
+		$solution1 = Solution::where('id', $request->solution_id)
+					->select(['user_id'])->first();
+		$solution2 = Solution::where('id', $request->solution2_id)
+					->select(['user_id'])->first();
+		if($solution1->user_id == $solution2->user_id){
+			Solution::where('id', $request->solution_id)
+				->update(['sim_id' => -1]);
+			return response()->json(['ok' => true]);
+		}else{
+			$sim = Sim::create([
+				'solution1_id' => $request->solution_id,
+				'solution2_id' => $request->solution2_id,
+				'rate' => $request->rate,
+			]);
+			Solution::where('id', $request->solution_id)
+				->update(['sim_id' => $sim->id]);
+		}
+		return response()->json(['ok' => true]);
+	}
 }

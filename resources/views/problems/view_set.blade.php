@@ -146,47 +146,6 @@
 @section ('scripts')
 <script type="text/javascript" src="{{ojoption('mathjax_url')}}"></script>
 
-<script> //for testing
-var lts = {
-  "testcases": [
-    "b",
-    "a",
-    "c"
-  ],
-  "solution_id": 601836
-};
-var ta = {
-  "solution_id": 601836,
-  "testcase_name": "a",
-  "time_used": "1",
-  "memory_used": "0.003685",
-  "verdict": "AC",
-  "score": "100"
-};
-var tb = {
-  "solution_id": 601836,
-  "testcase_name": "b",
-  "time_used": "2",
-  "memory_used": "0.003685",
-  "verdict": "AC",
-  "score": "100"
-};
-var tc = {
-  "solution_id": 601836,
-  "testcase_name": "c",
-  "time_used": "0",
-  "memory_used": "0.003685",
-  "verdict": "AC",
-  "score": "100"
-};
-var tall = {
-  "solution_id": 601836,
-  "time_used": 2,
-  "memory_used": 0.003685,
-  "score": 100
-};
-</script>
-
 <script>
 function detectLanguage(){
 	if($('#language').val() != -1) return true;
@@ -242,6 +201,8 @@ function new_pending_solution(id){
   nb.attr('style', 'display: block');
   nb.attr('id', 'solt-' + id);
 
+  nb.data('testcase_num', 0);
+
   $('#pending-sol').prepend(nb);
 }
 
@@ -296,11 +257,8 @@ function append_ce(pr){
   pr.html(bar);
 }
 
-//function append_testcase(pr, solution, testcase){
-function append_testcase(testcase){
-  var b = $('#solt-' + testcase.solution_id);
-  var pr = b.find('.progress');
-  var bar = jQuery("<div></div>");
+function append_testcase(pr, solution, testcase){
+  bar = jQuery("<div></div>");
   bar.addClass("progress-bar");
   switch(testcase.verdict){
     case "AC":
@@ -316,32 +274,17 @@ function append_testcase(testcase){
     default:
       bar.addClass("bg-info");
   }
-
-  var v = 100 / b.data('testcases').length;
-
+  var v = 100 / solution.cnt_testcases;
   bar.attr("role", "progressbar");
   bar.attr("aria-valuenow", v);
   bar.attr("aria-valuemin", 0);
   bar.attr("aria-valuemax", 100);
-
   pr.append(bar);
-
   bar.animate({width: v + "%"}, {duration: 300});
 }
 
-function finish_solution(solution){
-  var b = $('#solt-' + solution.solution_id);
-
-  b.find('.solt-score').html(solution.score);
-  b.find('.solt-time-used').html(solution.time_used + " ms");
-  b.find('.solt-memory-used').html(solution.memory_used.toFixed(2) + " MB");
-
-  b.data("id", solution.solution_id);
-  b.find('.progress').addClass("clickable");
-}
-
-/*
-socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
+@if (Auth::check())
+Echo.private("user.{{Auth::user()->id}}").listen('SolutionUpdated', (solution) => {
   b = $('#solt-' + solution.id);
   if(b.length == 0) return;
   if(solution.status >= 4){
@@ -365,19 +308,7 @@ socket.on('solutions:App\\Events\\SolutionUpdated', function(solution){
     }
   }
 });
-*/
-
-Echo.private("user.1").listen('ListTestcases', (e)=>{
-    console.log(e);
-});
-
-Echo.private("user.1").listen('CompileErr', (e)=>{
-    console.log(e);
-});
-
-Echo.private("user.1").listen('TestcaseEv', (e)=>{
-    console.log(e);
-});
+@endif
 
 function progress_click(e){
   b = $(e).parent().parent();
@@ -386,7 +317,6 @@ function progress_click(e){
   }
 }
 
-new_pending_solution(601836);
 </script>
 @if ($problem->type == 3)
 	<script>

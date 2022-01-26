@@ -200,10 +200,24 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
 });
 
 Route::group(['prefix' => 'judger'], function(){
+    Route::get('index', 'JudgerController@getIndex');
+    Route::get('pending-solutions', 'JudgerController@getPendingSolutions');
+    Route::post('checkout', 'JudgerController@postCheckout');
+    Route::get('solution', 'JudgerController@getSolution');
+    Route::get('problem', 'JudgerController@getProblem');
+    Route::post('update-ce', 'JudgerController@postUpdateCe');
+    Route::post('update-solution', 'JudgerController@postUpdateSolution');
+    Route::post('finish-judging', 'JudgerController@postFinishJudging');
+    Route::get('get-answer', 'JudgerController@getGetAnswer');
+    Route::get('get-sim-solutions', 'JudgerController@getGetSimSolutions');
+    Route::post('update-sim', 'JudgerController@postUpdateSim');
+
+    /*
     Route::post('solution', 'JudgerController@getSolution');
     Route::get('problem', 'JudgerController@getProblem');
     Route::post('list-testcases', 'JudgerController@postListTestcases');
     Route::post('compile-error', 'JudgerController@postCompileError');
     Route::post('testcase', 'JudgerController@postTestcase');
+    */
 });
 //Route::controller('judger','JudgerController');
