@@ -104,7 +104,6 @@
 </footer>
 
 <script src="{{ mix('/js/app.js') }}"></script>
-<script src={{ojcache("/include/js/common.js")}}></script>
 @yield ('scripts')
 </body>
 </html>

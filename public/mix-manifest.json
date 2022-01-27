@@ -1,4 +1,15 @@
 {
     "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/include/js/tinymce/CHANGELOG.md": "/include/js/tinymce/CHANGELOG.md",
+    "/include/js/tinymce/README.md": "/include/js/tinymce/README.md",
+    "/include/js/tinymce/bower.json": "/include/js/tinymce/bower.json",
+    "/include/js/tinymce/composer.json": "/include/js/tinymce/composer.json",
+    "/include/js/tinymce/jquery.tinymce.js": "/include/js/tinymce/jquery.tinymce.js",
+    "/include/js/tinymce/jquery.tinymce.min.js": "/include/js/tinymce/jquery.tinymce.min.js",
+    "/include/js/tinymce/license.txt": "/include/js/tinymce/license.txt",
+    "/include/js/tinymce/package.json": "/include/js/tinymce/package.json",
+    "/include/js/tinymce/tinymce.d.ts": "/include/js/tinymce/tinymce.d.ts",
+    "/include/js/tinymce/tinymce.js": "/include/js/tinymce/tinymce.js",
+    "/include/js/tinymce/tinymce.min.js": "/include/js/tinymce/tinymce.min.js"
 }
