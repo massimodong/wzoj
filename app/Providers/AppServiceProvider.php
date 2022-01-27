@@ -34,9 +34,6 @@ class AppServiceProvider extends ServiceProvider
 			    if(in_array($value[0], $numbers)) return false;
 			    return true;
 	    });
-	     $this->publishes([
-			    'vendor/tinymce/tinymce' => public_path('vendor/tinymce'),
-	    ],'wzoj');
     }
 
     /**
