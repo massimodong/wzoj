@@ -1,3 +1,4 @@
+<div style="font-size: 20px">
 <h1 class="page-header text-center">{{$problem->name}}</h1>
 
 <div class="w-100 text-center">
@@ -19,29 +20,29 @@
 </div>
 
 @if (strlen($problem->description))
-<h3>{{trans('wzoj.problem_description')}}:</h3>
+<h4><b>{{trans('wzoj.problem_description')}}:</b></h4>
 {!! $problem->description !!}
 @endif
 
 @if (strlen($problem->inputformat))
-<h3>{{trans('wzoj.input_format')}}:</h3>
+<h4><b>{{trans('wzoj.input_format')}}:</b></h4>
 {!! $problem->inputformat !!}
 @endif
 
 @if (strlen($problem->outputformat))
-<h3>{{trans('wzoj.output_format')}}:</h3>
+<h4><b>{{trans('wzoj.output_format')}}:</b></h4>
 {!! $problem->outputformat !!}
 @endif
 
 @if (strlen($problem->sampleinput))
-<h3>{{trans('wzoj.sample_input')}}:</h3>
+<h4><b>{{trans('wzoj.sample_input')}}:</b></h4>
 <pre class="sample_io">
 {{$problem->sampleinput}}
 </pre>
 @endif
 
 @if (strlen($problem->sampleoutput))
-<h3>{{trans('wzoj.sample_output')}}:</h3>
+<h4><b>{{trans('wzoj.sample_output')}}:</b></h4>
 <pre class="sample_io">
 {{$problem->sampleoutput}}
 </pre>
@@ -52,7 +53,7 @@
 @endif
 
 @if (strlen($problem->hint))
-<h3>{{trans('wzoj.hints')}}:</h3>
+<h4><b>{{trans('wzoj.hints')}}:</b></h4>
 {!! $problem->hint !!}
 @endif
 
@@ -63,3 +64,4 @@
 @if (strlen($problem->source))
 <p>{{trans('wzoj.source')}}: {{$problem->source}}</p>
 @endif
+</div>
