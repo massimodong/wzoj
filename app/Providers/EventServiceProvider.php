@@ -35,15 +35,15 @@ class EventServiceProvider extends ServiceProvider
         });
 
         Event::listen('Illuminate\Auth\Events\Login', function ($data) {
-          logAction('login', $data, LOG_NORMAL);
+          logAction('login', [], LOG_NORMAL);
         });
 
         Event::listen('Illuminate\Auth\Events\Failed', function ($data) {
-          logAction('failed_login', $data, LOG_MODERATE);
+          logAction('failed_login', $data->credentials, LOG_MODERATE);
         });
 
         Event::listen('Illuminate\Auth\Events\Logout', function ($data) {
-          logAction('logout', $data, LOG_NORMAL);
+          logAction('logout', [], LOG_NORMAL);
         });
 
         Event::listen('Illuminate\Auth\Events\PasswordReset', function ($data) {
