@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Session;
 
 class LoginController extends Controller
@@ -48,6 +48,7 @@ class LoginController extends Controller
     public function authenticated($request, $user){
       $user->last_login_at = date('Y-m-d H:i:s');
       $user->save();
+      Auth::logoutOtherDevices($request->password);
     }
 
     public function getLogout(){
