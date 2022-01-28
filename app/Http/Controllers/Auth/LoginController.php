@@ -54,12 +54,4 @@ class LoginController extends Controller
     public function getLogout(){
       return view('auth.logout');
     }
-
-    public function logout(){
-      Auth::logout();
-      \Session::forget('roles');
-      \Session::forget('problemsets_last_updated_at');
-      \Session::forget('problemsets');
-      return redirect("/");
-    }
 }
