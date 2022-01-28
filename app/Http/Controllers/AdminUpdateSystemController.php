@@ -49,6 +49,8 @@ class AdminUpdateSystemController extends Controller
       return "Error!!"; //TODO
     }
 
+    logAction('admin_update_system', [], LOG_SEVERE);
+
 		//header("Content-type: text/plain");
 		ignore_user_abort(true);
 		$this->disable_ob();

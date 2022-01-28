@@ -90,7 +90,6 @@ Route::group(['middleware' => ['web', 'antibot', 'contest']], function(){
     Route::get('_captcha/{config?}', '\Mews\Captcha\CaptchaController@getCaptcha');
     Route::group(['prefix' => 'admin', 'middleware' => 'role:manager'], function(){
         Route::get('/', 'AdminHomeController@index');
-        Route::post('cache-clear', 'AdminHomeController@flushCache');
         Route::post('options','AdminHomeController@postOptions');
         //appearance
         Route::group(['prefix' => 'appearance', 'middleware' => 'role:admin'], function(){

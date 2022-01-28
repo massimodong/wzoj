@@ -30,6 +30,8 @@ class AdminRolesController extends Controller
 			abort(403);
 		}
 
+    logAction('admin_give_role', ["user_id" => $user->id, "role_id" => $role->id, "remark" => $request->remark], LOG_SEVERE);
+
 		if($user->roles->map(function($item, $key){return $item->id;})->search($role->id) !== false){
 			DB::table('role_user')
 				->where('role_id', $role->id)
@@ -49,6 +51,8 @@ class AdminRolesController extends Controller
 		if($role->name === 'admin'){
 			abort(403);
 		}
+
+    logAction('admin_take_role', ["user_id" => $user->id, "role_id" => $role->id], LOG_SEVERE);
 
 		$user->roles()->detach($role->id);
 		return back();

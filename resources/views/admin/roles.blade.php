@@ -5,10 +5,6 @@
 @endsection
 
 @section ('content')
-<div>
-  <p><span style="color:red">{{trans('wzoj.msg_roles_admin_helper')}}</span></p>
-</div>
-
 <div class="row">
   <form method="POST" class="form-inline col-sm-10">
     {{csrf_field()}}
@@ -35,11 +31,6 @@
       <input type='text' class='form-control' name='remark' id='remark' placeholder="{{trans('wzoj.remark')}}" size="40">
     </div>
     <button type="submit" class="btn btn-primary">{{trans('wzoj.assign_role')}}</button>
-  </form>
-
-  <form method="POST" action="/admin/cache-clear" class="col-sm-2">
-    {{csrf_field()}}
-    <button type="submit" class="btn btn-warning">{{trans('wzoj.flush_cache')}}</button>
   </form>
 </div>
 

@@ -31,9 +31,4 @@ class AdminHomeController extends Controller
 		Cache::tags(['options'])->flush();
 		return back();
 	}
-
-	public function flushCache(){
-		\Redis::command('flushall');
-		return back();
-	}
 }
