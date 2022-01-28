@@ -47,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
         });
 
         Event::listen('Illuminate\Auth\Events\PasswordReset', function ($data) {
-          logAction('password_reset', $data, LOG_NORMAL);
+          logAction('password_reset', $data, LOG_SEVERE);
         });
 
         //
