@@ -51,11 +51,15 @@ class AdminUserController extends Controller
 
         if($user->has_role('manager')) abort(403);
 
-        if(isset($request->new_password) && $request->new_password != '')
+        if(isset($request->new_password) && $request->new_password != ''){
             $user->password = bcrypt($request->new_password);
+            logAction('admin_change_user_password', ["user_id" => $user->id, "password" => $request->new_password], LOG_SEVERE);
+        }
 
-        if(isset($request->bt))
+        if(isset($request->bt)){
             $user->bot_tendency = $request->bt;
+            logAction('admin_change_user_bt', ["user_id" => $user->id, "bt" => $request->bt], LOG_SEVERE);
+        }
 
         $user->save();
 
