@@ -64,6 +64,7 @@ class AdminProblemRejudgeController extends Controller
 	}
 
 	public function postProblemRejudge(Request $request){
+    logAction('admin_problem_rejudge', ["solution_id" => $request->solution_id, "problemset_id" => $request->problemset_id, "problem_id" => $request->problem_id], LOG_MODERATE);
 		$solutions = $this->genSolutionsQuery($request);
 		$this->rejudgeSolutions($solutions);
 		wakeJudgers();

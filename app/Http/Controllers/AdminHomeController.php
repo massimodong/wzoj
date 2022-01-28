@@ -25,6 +25,7 @@ class AdminHomeController extends Controller
 		$this->validate($request, [
 			'sim_threshold' => 'integer|min:1|max:100',
 		]);
+    logAction('admin_change_options', $request->except(['_token']), LOG_SEVERE);
 		foreach($request->except(['_token']) as $option => $value){
 			Option::where('name', $option)->update(['value' => $value]);
 		}

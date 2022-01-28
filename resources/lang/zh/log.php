@@ -12,4 +12,7 @@ return [
   'admin_update_system' => '更新系统',
   'admin_give_role' => '分配角色',
   'admin_take_role' => '收回角色',
+  'admin_problem_rejudge' => '重判题目',
+  'admin_broadcast' => '发送广播',
+  'admin_change_options' => '更改系统选项',
 ];

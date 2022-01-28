@@ -22,6 +22,7 @@ class AdminFunctionsController extends Controller
 			'content' => 'required',
 		]);
 		Event::dispatch(new Broadcast($request->title, $request->content));
+    logAction('admin_broadcast', ["title" => $request->title, "content" => $request->content], LOG_MODERATE);
 		return back();
 	}
 }
