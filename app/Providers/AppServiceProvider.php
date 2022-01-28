@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Validator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
 			    if(in_array($value[0], $numbers)) return false;
 			    return true;
 	    });
+
+      Paginator::useBootstrap();
     }
 
     /**

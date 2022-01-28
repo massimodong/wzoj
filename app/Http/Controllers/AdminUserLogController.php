@@ -14,7 +14,8 @@ class AdminUserLogController extends Controller
      */
     public function index()
     {
-      $logs = UserLog::all();
+      $logs = UserLog::with(['user'])
+                      ->cursorPaginate(15);
       return view('admin.user_logs', [
         'logs' => $logs,
       ]);

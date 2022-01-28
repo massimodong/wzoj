@@ -85,6 +85,10 @@ class User extends Model implements AuthenticatableContract,
 	    return $this->hasMany('App\ForumReply');
     }
 
+    public function user_logs(){
+	    return $this->hasMany('App\UserLog');
+    }
+
     public function manage_groups(){
 	    if($this->has_role('admin')) return \App\Group::query();
 	    return $this->hasMany('App\Group', 'manager_id');

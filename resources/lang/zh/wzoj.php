@@ -20,6 +20,7 @@ return [
     'upload' => '上传',
     'close' => '关闭',
     'success' => '成功',
+    'date' => '日期',
 
     'blocked' => '禁止访问',
 
@@ -461,4 +462,8 @@ return [
     'end_contest' => '停止提交',
 
     'user_logs' => '用户日志',
+    'ip_address' => 'IP 地址',
+    'port_number' => '端口号',
+    'action' => '操作',
+    'data' => '数据',
 ];

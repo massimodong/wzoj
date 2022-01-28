@@ -18,4 +18,8 @@ class UserLog extends Model
   public function prunable(){
     return static::where('created_at', '<=', now()->subMonth());
   }
+
+	public function user(){
+		return $this->belongsTo('App\User');
+	}
 }
