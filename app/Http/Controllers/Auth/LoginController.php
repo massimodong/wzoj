@@ -47,7 +47,6 @@ class LoginController extends Controller
 
     public function authenticated($request, $user){
       $user->last_login_at = date('Y-m-d H:i:s');
-      $user->last_token = Session::getId();
       $user->save();
     }
 
