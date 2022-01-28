@@ -459,4 +459,6 @@ return [
     'contest_period_2' => '已结束',
     'start_contest' => '开始答题',
     'end_contest' => '停止提交',
+
+    'user_logs' => '用户日志',
 ];

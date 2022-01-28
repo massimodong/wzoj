@@ -102,6 +102,9 @@
         <li class="nav-item" id='update-system'>
           <a class="nav-link" href="/admin/update-system"> {{trans('wzoj.update_system')}} </a>
         </li>
+        <li class="nav-item" id='user-logs'>
+          <a class="nav-link" href="/admin/user-logs"> {{trans('wzoj.user_logs')}} </a>
+        </li>
         @endif
       </ul>
     </div>

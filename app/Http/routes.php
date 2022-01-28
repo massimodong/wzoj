@@ -189,6 +189,9 @@ Route::group(['middleware' => ['encrypt_cookies', 'cookie', 'session', 'session_
           //update system
           Route::get('update-system', 'AdminUpdateSystemController@getUpdate');
           Route::post('update-system', 'AdminUpdateSystemController@postUpdate');
+
+          //user logs
+          Route::resource('user-logs', 'AdminUserLogController');
         });
 
         //ajax
