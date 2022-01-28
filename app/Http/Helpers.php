@@ -203,6 +203,10 @@ function time2String($t){
   return $ret;
 }
 
+define('LOG_NORMAL', 1);
+define('LOG_MODERATE', 2);
+define('LOG_SEVERE', 3);
+
 function logAction($action_name, $action_payload, $level){
   $user_id = null;
   if(Auth::check()) $user_id = Auth::user()->id;

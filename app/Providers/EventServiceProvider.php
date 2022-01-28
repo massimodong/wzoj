@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,26 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
+
+        Event::listen('Illuminate\Auth\Events\Registered', function ($data) {
+          logAction('registered', $data, LOG_MODERATE);
+        });
+
+        Event::listen('Illuminate\Auth\Events\Login', function ($data) {
+          logAction('login', $data, LOG_NORMAL);
+        });
+
+        Event::listen('Illuminate\Auth\Events\Failed', function ($data) {
+          logAction('failed_login', $data, LOG_MODERATE);
+        });
+
+        Event::listen('Illuminate\Auth\Events\Logout', function ($data) {
+          logAction('logout', $data, LOG_NORMAL);
+        });
+
+        Event::listen('Illuminate\Auth\Events\PasswordReset', function ($data) {
+          logAction('password_reset', $data, LOG_NORMAL);
+        });
 
         //
     }

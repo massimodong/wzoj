@@ -18,6 +18,6 @@
 <input type="checkbox" name="remember" checked style="display: none">
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">{{trans('wzoj.login')}}</button>
-<a href='/password/email'>{{trans('wzoj.forgot_password')}}</a> <span class="text-muted">|</span> <a href="/auth/register">{{trans('wzoj.register')}}</a>
+<a href='/auth/password/reset'>{{trans('wzoj.forgot_password')}}</a> <span class="text-muted">|</span> <a href="/auth/register">{{trans('wzoj.register')}}</a>
 </form>
 @endsection
