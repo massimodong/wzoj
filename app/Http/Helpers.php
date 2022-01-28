@@ -202,3 +202,21 @@ function time2String($t){
   if($s) $ret .= $s.trans('wzoj.seconds');
   return $ret;
 }
+
+function logAction($action_name, $action_payload, $level){
+  $user_id = null;
+  if(Auth::check()) $user_id = Auth::user()->id;
+
+  //TODO: get ip and port from proxy
+  $request_ip = $_SERVER['REMOTE_ADDR'];
+  $request_port = $_SERVER['REMOTE_PORT'];
+
+  \App\UserLog::create([
+    'user_id' => $user_id,
+    'request_ip' => $request_ip,
+    'request_port' => $request_port,
+    'level' => $level,
+    'action_name' => $action_name,
+    'action_payload' => $action_payload,
+  ]);
+}
