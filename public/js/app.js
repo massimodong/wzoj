@@ -2242,8 +2242,8 @@ window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/d
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_12__["default"]({
   broadcaster: 'pusher',
   key: "websocketkey",
-  wsHost: window.location.hostname,
-  wsPort: 6001,
+  wsHost: socket_io_server,
+  wsPort: socket_io_port,
   forceTLS: false
 });
 window.Echo.channel("broadcast").listen('Broadcast', function (e) {
