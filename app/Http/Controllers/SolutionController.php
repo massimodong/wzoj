@@ -100,32 +100,11 @@ class SolutionController extends Controller
       }
       //limits end
 
-      //get prev top
-      $prev_id = -1;
-      if($top <> $max_id){
-        $tq = clone $solutions;
-        $prev = $tq->where('id', '>=', $top)->orderBy('id', 'asc')->skip(self::PAGE_LIMIT)->first();
-        if($prev){
-          $prev_id = $prev->id;
-        }else{
-          $prev_id = $max_id;
-        }
-      }
+      $solutions = $solutions->orderBy('id', 'desc')->cursorPaginate(self::PAGE_LIMIT)->withQueryString();
 
-      //get next top
-      $next_id = -1;
-      $tq = clone $solutions;
-      $next = $tq->where('id', '<=', $top)->orderBy('id', 'desc')->skip(self::PAGE_LIMIT)->first();
-      if($next){
-        $next_id = $next->id;
-      }
-
-      $solutions = $solutions->where('id', '<=', $top)->public()->take(self::PAGE_LIMIT)->orderBy('id', 'desc')->get();
-
-      return view('solutions.index',['solutions' => $solutions,
+      return view('solutions.index',[
+          'solutions' => $solutions,
           'request' => $request,
-          'prev_id' => $prev_id,
-          'next_id' => $next_id,
       ]);
     }
 

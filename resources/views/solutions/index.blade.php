@@ -45,7 +45,8 @@
   <button type="submit" class="btn btn-primary mb-2">{{trans('wzoj.search')}}</button>
 </form>
 
-@include ('partials.solutions_pagination')
+{{$solutions->links()}}
+
 <div class="table-responsive">
 <table class="table">
   <thead>
@@ -91,21 +92,6 @@
 </table>
 </div>
 
-@include ('partials.solutions_pagination')
-@endsection
+{{$solutions->links()}}
 
-@section ('scripts')
-<script>
-  $url = '/solutions?' + $('#solutions-search').serialize();
-
-  @if ($prev_id != -1)
-    $('.prev_page_url').attr('href', $url + '&top={{$prev_id}}');
-  @endif
-
-  @if ($next_id != -1)
-    $('.next_page_url').attr('href', $url + '&top={{$next_id}}');
-  @endif
-
-  $('.top_page_url').attr('href', $url);
-</script>
 @endsection
