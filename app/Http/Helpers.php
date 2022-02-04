@@ -207,18 +207,24 @@ define('LOG_NORMAL', 1);
 define('LOG_MODERATE', 2);
 define('LOG_SEVERE', 3);
 
+function getRemoteAddr(){
+  if(env('USE_PROXY', false)){
+    return ['ip' => $_SERVER['HTTP_X_REAL_IP'], 'port' => $_SERVER['HTTP_X_REAL_PORT']];
+  }else{
+    return ['ip' => $_SERVER['REMOTE_ADDR'], 'port' => $_SERVER['REMOTE_PORT']];
+  }
+}
+
 function logAction($action_name, $action_payload, $level){
   $user_id = null;
   if(Auth::check()) $user_id = Auth::user()->id;
 
-  //TODO: get ip and port from proxy
-  $request_ip = $_SERVER['REMOTE_ADDR'];
-  $request_port = $_SERVER['REMOTE_PORT'];
+  $remote = getRemoteAddr();
 
   \App\UserLog::create([
     'user_id' => $user_id,
-    'request_ip' => $request_ip,
-    'request_port' => $request_port,
+    'request_ip' => $remote['ip'],
+    'request_port' => $remote['port'],
     'level' => $level,
     'action_name' => $action_name,
     'action_payload' => $action_payload,
