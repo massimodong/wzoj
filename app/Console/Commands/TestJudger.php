@@ -44,7 +44,7 @@ class TestJudger extends Command
       foreach($judgers as $judger){
         $this->info("Testing judger ".$judger->name." (".$judger->ip_addr.")");
 
-        $client = new \WJudgerClient($judger->ip_addr, [
+        $client = new \WJudger\WJudgerClient($judger->ip_addr, [
             'credentials' => \Grpc\ChannelCredentials::createInsecure(),
         ]);
 
@@ -55,7 +55,7 @@ class TestJudger extends Command
           continue;
         }
 
-        $args = new \JudgeArgs();
+        $args = new \WJudger\JudgeArgs();
         //TODO: prepare args
 
         $call = $client->Judge($args);

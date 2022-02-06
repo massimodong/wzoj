@@ -1,6 +1,8 @@
 <?php
 // GENERATED CODE -- DO NOT EDIT!
 
+namespace WJudger;
+
 /**
  */
 class WJudgerClient extends \Grpc\BaseStub {
@@ -15,16 +17,16 @@ class WJudgerClient extends \Grpc\BaseStub {
     }
 
     /**
-     * @param \JudgeArgs $argument input argument
+     * @param \WJudger\JudgeArgs $argument input argument
      * @param array $metadata metadata
      * @param array $options call options
      * @return \Grpc\ServerStreamingCall
      */
-    public function Judge(\JudgeArgs $argument,
+    public function Judge(\WJudger\JudgeArgs $argument,
       $metadata = [], $options = []) {
-        return $this->_serverStreamRequest('/WJudger/Judge',
+        return $this->_serverStreamRequest('/WJudger.WJudger/Judge',
         $argument,
-        ['\JudgeReply', 'decode'],
+        ['\WJudger\JudgeReply', 'decode'],
         $metadata, $options);
     }
 
