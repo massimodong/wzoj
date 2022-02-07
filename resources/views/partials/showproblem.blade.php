@@ -34,6 +34,11 @@
 {!! $problem->outputformat !!}
 @endif
 
+@if (strlen($problem->dataconstraints))
+<h4><b>{{trans('wzoj.data_constraints')}}:</b></h4>
+{!! $problem->dataconstraints !!}
+@endif
+
 @if (strlen($problem->sampleinput))
 <h4><b>{{trans('wzoj.sample_input')}}:</b></h4>
 <pre class="sample_io">

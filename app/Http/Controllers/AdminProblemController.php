@@ -96,6 +96,7 @@ class AdminProblemController extends Controller
 		$newval['description'] = Purifier::clean($newval['description']);
 		$newval['inputformat'] = Purifier::clean($newval['inputformat']);
 		$newval['outputformat'] = Purifier::clean($newval['outputformat']);
+    $newval['dataconstraints'] = Purifier::clean($newval['dataconstraints']);
 		$newval['hint'] = Purifier::clean($newval['hint']);
 		$newval['tutorial'] = Purifier::clean($newval['tutorial']);
 		$newval['subtasks'] = json_decode($newval['subtasks']);

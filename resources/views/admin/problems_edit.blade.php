@@ -113,6 +113,13 @@
         <textarea class='ojeditor' id='outputformat' name='outputformat'>{{$problem->outputformat}}</textarea>
       </div>
     </div>
+
+    <div class="form-group row">
+      <label for="dataconstraints" class="col-sm-2 col-form-label"> {{trans('wzoj.data_constraints')}} </label>
+      <div class="col-sm-10">
+        <textarea class='ojeditor' id='dataconstraints' name='dataconstraints'>{{$problem->dataconstraints}}</textarea>
+      </div>
+    </div>
   </div>
   <!-- io_format -->
 

@@ -146,6 +146,7 @@ return [
     'problem_description' => '题目描述',
     'input_format' => '输入格式',
     'output_format' => '输出格式',
+    'data_constraints' => '数据范围',
     'sample_input' => '样例输入',
     'sample_output' => '样例输出',
     'hints' => '提示',
