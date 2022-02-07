@@ -1,6 +1,10 @@
 <?php
 
 return [
+  'level-1' => '普通',
+  'level-2' => '中等',
+  'level-3' => '重要',
+
   'registered' => '注册',
   'login' => '登录',
   'failed_login' => '登录失败',

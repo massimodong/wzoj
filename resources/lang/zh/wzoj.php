@@ -466,4 +466,5 @@ return [
     'port_number' => '端口号',
     'action' => '操作',
     'data' => '数据',
+    'log_level' => '等级',
 ];
