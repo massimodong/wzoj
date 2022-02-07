@@ -120,19 +120,13 @@ class HomeController extends Controller
   }
 
   public function ranklist(Request $request){
-    $this->validate($request, ['page' => 'integer']);
-    $page = 1;
-    if(isset($request->page)) $page = $request->page;
     $users = User::orderBy('cnt_ac', 'desc')
-        ->skip(($page - 1) * self::USER_LIMIT)
-        ->take(self::USER_LIMIT)
         ->withoutAdmin()
-        ->get();
+        ->paginate(100);
     return view('ranklist', [
         'users' => $users,
-        'start_rank' => ($page-1) * self::USER_LIMIT,
-        'cur_page' => $page,
-        'max_page' => intval((User::count()-1) / self::USER_LIMIT + 1)]);
+        'start_rank' => $users->firstItem(),
+    ]);
   }
 
   public function getSorry(Request $request){
