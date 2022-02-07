@@ -465,6 +465,12 @@ return [
     'ip_address' => 'IP 地址',
     'port_number' => '端口号',
     'action' => '操作',
+    'actions' => '操作',
     'data' => '数据',
+
     'log_level' => '等级',
+    'log_level_1' => '普通',
+    'log_level_2' => '中等',
+    'log_level_3' => '重要',
+
 ];

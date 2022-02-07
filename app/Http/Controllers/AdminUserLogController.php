@@ -12,11 +12,23 @@ class AdminUserLogController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-      $logs = UserLog::with(['user'])
-                      ->orderBy('id', 'desc')
-                      ->cursorPaginate(15);
+      $logs = UserLog::with(['user'])->orderBy('id', 'desc');
+
+      if(isset($request->levels)){
+        $logs = $logs->whereIn('level', $request->levels);
+      }
+
+      if(isset($request->uids)){
+        $logs = $logs->whereIn('user_id', $request->uids);
+      }
+
+      if(isset($request->actions)){
+        $logs = $logs->whereIn('action_name', $request->actions);
+      }
+
+      $logs = $logs->cursorPaginate(15)->withQueryString();
       return view('admin.user_logs', [
         'logs' => $logs,
       ]);

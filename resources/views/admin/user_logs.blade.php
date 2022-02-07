@@ -5,6 +5,32 @@
 @endsection
 
 @section ('content')
+  <form method='GET' class="form-inline">
+
+    <label for="levels" class="sr-only"></label>
+    <select name="levels[]" id="levels" class="selectpicker mb-2 mr-2" title="{{trans('wzoj.log_level')}}" multiple>
+    @for ($i=1;$i<=3;$i++)
+      <option value="{{$i}}">{{trans('wzoj.log_level_'.$i)}}</option>
+    @endfor
+    </select>
+
+    <label for="uids" class="sr-only"></label>
+    <select name="uids[]" id="uids" class="selectpicker mb-2 mr-2" data-live-search="true" title="{{trans('wzoj.search_user')}}" multiple>
+    @foreach (\App\User::orderBy('id', 'asc')->get() as $user)
+      <option value="{{$user->id}}">{{$user->id}}-{{$user->name}}</option>
+    @endforeach
+    </select>
+
+    <label for="actions" class="sr-only"></label>
+    <select name="actions[]" id="actions" class="selectpicker mb-2 mr-2" data-live-search="true" title="{{trans('wzoj.actions')}}" multiple>
+    @foreach (Lang::get('log') as $key => $value)
+      <option value="{{$key}}">{{$value}}</option>
+    @endforeach
+    </select>
+
+    <button type="submit" class="btn btn-primary mb-2">{{trans('wzoj.search')}}</button>
+  </form>
+
   <table class="table">
     <thead>
       <tr>
@@ -20,7 +46,7 @@
     @foreach ($logs as $log)
       <tr>
         <td>{{$log->id}}</td>
-        <td>{{trans('log.level-'.$log->level)}}</td>
+        <td>{{trans('wzoj.log_level_'.$log->level)}}</td>
         <td>@if (isset($log->user_id)) @include ('partials.user_badge', ['user' => $log->user]) @else - @endif </td>
         <td>{{$log->request_ip}}:{{$log->request_port}}</td>
         <td>{{$log->created_at}}</td>
