@@ -15,4 +15,5 @@ return [
   'admin_problem_rejudge' => '重判题目',
   'admin_broadcast' => '发送广播',
   'admin_change_options' => '更改系统选项',
+  'admin_update_judger' => '配置评测机',
 ];

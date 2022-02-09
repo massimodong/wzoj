@@ -77,6 +77,7 @@ class AdminJudgerController extends Controller
      */
     public function update(Request $request, $id)
     {
+      logAction("admin_update_judger", ["judger_id" => $id, "name" => $request->name, "token" => $request->token, "ip_addr" => $request->ip_addr], LOG_SEVERE);
 	    Judger::where('id', $id)
 		    ->update([
 			    'name' => $request->name,

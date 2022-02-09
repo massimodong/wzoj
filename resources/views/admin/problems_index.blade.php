@@ -69,7 +69,6 @@ $(function() {
 	    { data: 'source', name: 'name' },
 	    { data: 'tags', name: 'tags.name',
 	       render: function ( data, type, row, meta) {
-			       console.log(row.problemsets);
 			       if(data.length >= 1){
 				       ret = escapeHtml(data[0].name);
 			       }else{

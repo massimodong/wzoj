@@ -134,8 +134,12 @@
   </div>
 </main><!-- /.container -->
 
+<script>
+  var socket_io_server = "{{env('SOCKET_IO_SERVER')}}";
+  var socket_io_port = {{env('SOCKET_IO_PORT')}};
+</script>
 <script src="{{ mix('/js/app.js') }}"></script>
-<script src={{ojcache("/include/js/common.js")}}></script>
+<script src={{ojcache("/js/common.js")}}></script>
 <script src={{ojcache("/include/js/datatables.min.js")}}></script>
 <script src={{ojcache("/include/js/admin.js")}}></script>
 <script src={{ojcache("/include/js/moment.min.js")}}></script>
