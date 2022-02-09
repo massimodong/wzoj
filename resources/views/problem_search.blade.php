@@ -6,7 +6,8 @@
 
 @section ('content')
 <div class="table-responsive">
- <table class="table">
+  {{$result->links()}}
+  <table class="table">
   <thead>
     <tr>
       <th>{{trans('wzoj.problemset')}}</th>
@@ -28,5 +29,6 @@
     @endforeach
   </tbody>
   </table>
+  {{$result->links()}}
 </div>
 @endsection

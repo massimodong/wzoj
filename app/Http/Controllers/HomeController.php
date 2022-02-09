@@ -17,6 +17,7 @@ use DB;
 class HomeController extends Controller
 {
   const USER_LIMIT = 100;
+  const SEARCH_PAGE_LIMIT = 20;
   public function index(Request $request){
     if(!empty(\Request::get('contests'))){
       return redirect('/contests');
@@ -165,20 +166,24 @@ class HomeController extends Controller
                ->select(DB::raw('id, problemset_id, COUNT(*) as count'))
                ->groupBy("id", 'problemset_id')
                ->orderBy("count", "desc")
-               ->get()
-               ->all();
+               ->orderBy('id', 'asc')
+               ->orderBy('problemset_id', 'asc')
+               ->paginate(self::SEARCH_PAGE_LIMIT)
+               ->withQueryString();
     }else{
       if($request->name == "") abort(400);
       $res = \App\Problem::join('problem_problemset', 'problems.id', '=', 'problem_problemset.problem_id')
                          ->whereIn('problem_problemset.problemset_id', $psids)
                          ->where('problems.name', 'like', '%'.$request->name.'%')
                          ->select('problems.id', 'problem_problemset.problemset_id')
-                         ->get()
-                         ->all();
+                         ->orderBy('problems.id', 'asc')
+                         ->orderBy('problem_problemset.problemset_id', 'asc')
+                         ->paginate(self::SEARCH_PAGE_LIMIT)
+                         ->withQueryString();
     }
 
-    $problems = \App\Problem::whereIn('id', array_map(function($key){return $key->id;}, $res))->with('tags')->get();
-    $problemsets = \App\Problemset::whereIn('id', array_map(function($key){return $key->problemset_id;}, $res))->get();
+    $problems = \App\Problem::whereIn('id', array_map(function($key){return $key->id;}, $res->all()))->with('tags')->get();
+    $problemsets = \App\Problemset::whereIn('id', array_map(function($key){return $key->problemset_id;}, $res->all()))->get();
 
     $problem_by_ids = array_by_id($problems);
     $problemset_by_ids = array_by_id($problemsets);
@@ -193,7 +198,7 @@ class HomeController extends Controller
   private function searchUser($request){
     $users = \App\User::where('name', 'like', '%'.$request->name.'%')
                       ->orWhere('nickname', 'like', '%'.$request->name.'%')
-                      ->take(20)
+                      ->take(self::SEARCH_PAGE_LIMIT)
                       ->get();
     return view('user_search', [
         "users" => $users,
