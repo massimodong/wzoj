@@ -105,6 +105,8 @@ class UserController extends Controller
       $user->save();
     }
 
+    logAction('change_user_profile', User::findOrFail($user->id), LOG_MODERATE);
+
     return redirect('/users/'.$user->id);
   }
 
