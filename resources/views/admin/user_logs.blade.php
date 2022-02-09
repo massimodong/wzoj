@@ -10,21 +10,25 @@
     <label for="levels" class="sr-only"></label>
     <select name="levels[]" id="levels" class="selectpicker mb-2 mr-2" title="{{trans('wzoj.log_level')}}" multiple>
     @for ($i=1;$i<=3;$i++)
-      <option value="{{$i}}">{{trans('wzoj.log_level_'.$i)}}</option>
+      <option value="{{$i}}" {{ (collect(old('levels'))->contains($i)) ? 'selected':'' }} >{{trans('wzoj.log_level_'.$i)}}</option>
     @endfor
     </select>
 
     <label for="uids" class="sr-only"></label>
     <select name="uids[]" id="uids" class="selectpicker mb-2 mr-2" data-live-search="true" title="{{trans('wzoj.search_user')}}" multiple>
     @foreach (\App\User::orderBy('id', 'asc')->get() as $user)
-      <option value="{{$user->id}}">{{$user->id}}-{{$user->name}}</option>
+      <option value="{{$user->id}}" {{ (collect(old('uids'))->contains($user->id)) ? 'selected':'' }} >{{$user->id}}-{{$user->name}}</option>
     @endforeach
     </select>
+
+    <label class="sr-only" for="request_ip"></label>
+    <input type="text" class="form-control mb-2 mr-2" id="request_ip" name="request_ip" value="{{old('request_ip')}}" placeholder="{{trans('wzoj.ip_address')}}">
+
 
     <label for="actions" class="sr-only"></label>
     <select name="actions[]" id="actions" class="selectpicker mb-2 mr-2" data-live-search="true" title="{{trans('wzoj.actions')}}" multiple>
     @foreach (Lang::get('log') as $key => $value)
-      <option value="{{$key}}">{{$value}}</option>
+      <option value="{{$key}}" {{ (collect(old('actions'))->contains($key)) ? 'selected':'' }} >{{$value}}</option>
     @endforeach
     </select>
 

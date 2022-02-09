@@ -14,6 +14,7 @@ class AdminUserLogController extends Controller
      */
     public function index(Request $request)
     {
+      $request->flash();
       $logs = UserLog::with(['user'])->orderBy('id', 'desc');
 
       if(isset($request->levels)){
@@ -22,6 +23,10 @@ class AdminUserLogController extends Controller
 
       if(isset($request->uids)){
         $logs = $logs->whereIn('user_id', $request->uids);
+      }
+
+      if(isset($request->request_ip) && $request->request_ip != ''){
+        $logs = $logs->where('request_ip', $request->request_ip);
       }
 
       if(isset($request->actions)){
