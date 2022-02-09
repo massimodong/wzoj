@@ -165,7 +165,8 @@ class HomeController extends Controller
                ->select(DB::raw('id, problemset_id, COUNT(*) as count'))
                ->groupBy("id", 'problemset_id')
                ->orderBy("count", "desc")
-               ->get();
+               ->get()
+               ->all();
     }else{
       if($request->name == "") abort(400);
       $res = \App\Problem::join('problem_problemset', 'problems.id', '=', 'problem_problemset.problem_id')
