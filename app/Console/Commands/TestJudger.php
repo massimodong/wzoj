@@ -56,7 +56,9 @@ class TestJudger extends Command
         }
 
         $args = new \WJudger\JudgeArgs();
-        //TODO: prepare args
+        $args->setLanguage(1);
+        $args->setCode("#include<iostream>\n#include<unistd.h>\nint main(){\nsleep(2);\nint a, b;\nstd::cin>>a>>b;\nstd::cout<<a+b<<std::endl;\n}\n");
+        $this->info($args->getCode());
 
         $call = $client->Judge($args);
         $replies = $call->responses();
