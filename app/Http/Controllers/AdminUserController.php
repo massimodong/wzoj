@@ -56,7 +56,7 @@ class AdminUserController extends Controller
             logAction('admin_change_user_password', ["user_id" => $user->id, "password" => $request->new_password], LOG_SEVERE);
         }
 
-        if(isset($request->bt)){
+        if(isset($request->bt) && $request->bt != ''){
             $user->bot_tendency = $request->bt;
             logAction('admin_change_user_bt', ["user_id" => $user->id, "bt" => $request->bt], LOG_SEVERE);
         }
