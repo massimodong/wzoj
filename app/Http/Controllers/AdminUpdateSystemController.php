@@ -83,7 +83,7 @@ class AdminUpdateSystemController extends Controller
 		system('rm -Rf storage/app/tmpfile.tar 2>&1');
 		system('rm -Rf storage/app/tmpfile.tar.gz 2>&1');
 
-		system('composer install 2>&1');
+		system('composer update 2>&1');
 		system('php artisan config:cache 2>&1');
 		system('php artisan route:cache 2>&1');
 		system('php artisan migrate 2>&1');
