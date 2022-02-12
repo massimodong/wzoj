@@ -104,8 +104,8 @@
 </footer>
 
 <script>
-  var socket_io_server = "{{env('SOCKET_IO_SERVER')}}";
-  var socket_io_port = {{env('SOCKET_IO_PORT')}};
+  var socket_io_server = "{{config('wzoj.socket_io_server')}}";
+  var socket_io_port = {{config('wzoj.socket_io_port')}};
 </script>
 <script src="{{ mix('/js/app.js') }}"></script>
 <script src="{{ ojcache('/js/common.js') }}"></script>
