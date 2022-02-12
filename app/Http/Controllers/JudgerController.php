@@ -226,6 +226,9 @@ class JudgerController extends Controller
 
 		$solution->user->update_cnt_ac();
 		Event::dispatch(new SolutionUpdated($solution));
+
+    //TODO: we can update the ranklist table, instead of forgetting it
+    Cache::tags(['problemset_ranklist'])->forget($solution->problemset_id);
 	}
 
 	public function getGetAnswer(Request $request){

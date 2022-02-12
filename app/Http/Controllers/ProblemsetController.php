@@ -164,7 +164,7 @@ class ProblemsetController extends Controller
     ]);
   }
 
-  public function getRanklistTable($problemset, $problems, $contest_running){
+  public function getRanklistTableRaw($problemset, $problems, $contest_running){
     $solutions = collect();
     switch($problemset->participate_type){
       case 0:
@@ -240,6 +240,22 @@ class ProblemsetController extends Controller
     }
 
     return $table;
+  }
+
+  public function getRanklistTable($problemset, $problems, $contest_running){
+    return Cache::tags(['problemset_ranklist'])->rememberForever($problemset->id, function() use($problemset, $problems, $contest_running){
+      $lock = Cache::lock('problemset_ranklist_'.$problemset->id, 10);
+      try {
+        $lock->block(15);
+        return Cache::tags(['problemset_ranklist'])->rememberForever($problemset->id, function() use($problemset, $problems, $contest_running){
+          return $this->getRanklistTableRaw($problemset, $problems, $contest_running);
+        });
+      } catch (LockTimeoutException $e) {
+        abort(503);
+      } finally {
+        optional($lock)->release();
+      }
+    });
   }
 
   public function getRanklist($psid, Request $request){
