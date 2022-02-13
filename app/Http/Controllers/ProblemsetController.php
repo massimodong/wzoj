@@ -392,6 +392,9 @@ class ProblemsetController extends Controller
     $problemset->update($newval);
 
     Cache::tags(['wzoj'])->forever('problemsets_last_updated_at', time());
+
+    //TODO: we can update the ranklist table, instead of forgetting it
+    Cache::tags(['problemset_ranklist'])->forget($problemset->id);
     return back();
   }
 
@@ -547,6 +550,8 @@ class ProblemsetController extends Controller
     }
     Cache::tags(['problemsets', 'cnt_problems'])->forget($psid);
     Cache::tags([$psid])->flush();
+    //TODO: we can update the ranklist table, instead of forgetting it
+    Cache::tags(['problemset_ranklist'])->forget($psid);
     return back();
   }
 
