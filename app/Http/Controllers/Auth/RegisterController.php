@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
+
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -99,5 +101,22 @@ class RegisterController extends Controller
         }
 
         return $newuser;
+    }
+
+    public function showRegistrationForm(Request $request) {
+      if(isset($request->token)){
+          $invitation = \App\Invitation::where('token', $request->token)->where('remaining' , '<>' , 0)->first();
+          if(!$invitation){
+            return back()->withErrors(trans('wzoj.invalid_token'));
+          }else{
+            return view('auth.register_form', [
+                "invitation" => $invitation,
+            ]);
+          }
+      }else{
+        return view('auth.choose_register_token', [
+            "invitations" => \App\Invitation::where('private' , false)->where('remaining' , '<>' , 0)->get(),
+        ]);
+      }
     }
 }
