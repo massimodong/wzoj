@@ -69,22 +69,22 @@
       </button>
     </form>
     @else
-    @if (count($answerfiles))
-      {{trans('wzoj.uploaded_files')}}:<br>
-      @foreach ($answerfiles as $answerfile)
-      {{$answerfile->filename}}.out<br>
-      @endforeach
-    @endif
-    <form action='/solutions' method='POST' enctype='multipart/form-data'>
-      {{csrf_field()}}
-      <input name='problemset_id' value='{{$problemset->id}}' hidden>
-      <input name='problem_id' value='{{$problem->id}}' hidden>
-      <input name='language' value='0' hidden>
-      <input name='code' value='THIS SOLUTION HAS NOT CODE' hidden>
-      
-      <input type="file" class="file" name="answerfile" id="answerfile" multiple>
-      <button type="submit" class="btn btn-primary"> {{trans('wzoj.submit_and_judge')}} </button>
-    </form>
+      @if (count($answerfiles))
+        {{trans('wzoj.uploaded_files')}}:<br>
+        @foreach ($answerfiles as $answerfile)
+        {{$answerfile->filename}}.out<br>
+        @endforeach
+      @endif
+      <form action='/solutions' method='POST' enctype='multipart/form-data'>
+        {{csrf_field()}}
+        <input name='problemset_id' value='{{$problemset->id}}' hidden>
+        <input name='problem_id' value='{{$problem->id}}' hidden>
+        <input name='language' value='0' hidden>
+        <input name='code' value='THIS SOLUTION HAS NOT CODE' hidden>
+
+        <input type="file" class="file" name="answerfile" id="answerfile" multiple>
+        <button type="submit" class="btn btn-primary"> {{trans('wzoj.submit_and_judge')}} </button>
+      </form>
     @endif
 
     <hr>
