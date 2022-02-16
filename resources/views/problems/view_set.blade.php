@@ -328,10 +328,11 @@ function progress_click(e){
 	$('#answerfile').fileinput({
 		'uploadUrl': "/solutions/answerfile",
 		'uploadExtraData': {
-			_token: csrf_token,
+			_token: '{{csrf_token()}}',
 			problemset_id: {{$problemset->id}},
 			problem_id: {{$problem->id}}
 		},
+    theme: "fa",
 		allowedFileExtensions: ["out"],
 		showUpload: false,
 		showRemove: false

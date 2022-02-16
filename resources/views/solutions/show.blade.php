@@ -85,8 +85,10 @@
         <tr>
           <th>{{trans('wzoj.testcase')}}</th>
           <th>{{trans('wzoj.score')}}</th>
+          @if ($solution->problem->type != 3)
           <th>{{trans('wzoj.time_used')}}</th>
           <th>{{trans('wzoj.memory_used')}}</th>
+          @endif
           <th>{{trans('wzoj.verdict')}}</th>
           <th>{{trans('wzoj.checklog')}}</th>
         </tr>
