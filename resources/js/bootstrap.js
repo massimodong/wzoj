@@ -17,6 +17,8 @@ window.$ = window.jQuery = require('jquery');
 //window.Popper = require('popper.js/dist/umd/popper.js').default;
 window.Popper = Popper;
 require('bootstrap');
+require('bootstrap-fileinput')
+require('bootstrap-fileinput/themes/fa/theme.min')
 require('bootstrap-select/dist/js/bootstrap-select.min');
 
 import Prism from 'prismjs';

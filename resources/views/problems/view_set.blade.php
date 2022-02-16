@@ -52,7 +52,7 @@
         </select>
       </div>
       <div class="form-group">
-        <input type="file" class="file" name="srcfile" id="srcfile">
+        <input type="file" name="srcfile" id="srcfile">
       </div>
 
       <div class="form-group">
@@ -82,7 +82,7 @@
         <input name='language' value='0' hidden>
         <input name='code' value='THIS SOLUTION HAS NOT CODE' hidden>
 
-        <input type="file" class="file" name="answerfile" id="answerfile" multiple>
+        <input type="file" name="answerfile" id="answerfile" multiple>
         <button type="submit" class="btn btn-primary"> {{trans('wzoj.submit_and_judge')}} </button>
       </form>
     @endif
@@ -318,8 +318,13 @@ function progress_click(e){
 }
 
 </script>
-@if ($problem->type == 3)
-	<script>
+<script>
+@if ($problem->type != 3)
+  $('#srcfile').fileinput({
+      theme: "fa",
+      dropZoneEnabled: false
+  });
+@else
 	$('#answerfile').fileinput({
 		'uploadUrl': "/solutions/answerfile",
 		'uploadExtraData': {
@@ -334,7 +339,7 @@ function progress_click(e){
 		// trigger upload method immediately after files are selected
 		$('#answerfile').fileinput("upload");
 	});
-	</script>
 @endif
+</script>
 
 @endsection
