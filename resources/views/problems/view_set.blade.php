@@ -216,6 +216,7 @@ function submit_solution(){
     contentType: false,
   }).done(function(data){
       new_pending_solution(data.id);
+      $('#answerfile').fileinput('clear');
       enable_submit();
     })
     .fail(function(data){
