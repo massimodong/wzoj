@@ -37,28 +37,38 @@
   <!-- problem -->
 
   <div id="submit" class="tab-pane fade" role="tabpanel" aria-labelledby="submit-tab">
-    @if ($problem->type <> 3)
     <form id='sol-form' action='/solutions' method='POST' enctype='multipart/form-data'>
       {{csrf_field()}}
       <input name='problemset_id' value='{{$problemset->id}}' hidden>
       <input name='problem_id' value='{{$problem->id}}' hidden>
+      @if ($problem->type <> 3)
+        <div class="form-group">
+          <select class="custom-select" name="language" id="language">
+            <option selected value="-1">{{trans('wzoj.language_auto')}}</option>
+            @foreach (explode(",",ojoption("allowed_languages")) as $language)
+            <option value='{{intval($language)}}'>{{trans('wzoj.programing_language_'.intval($language))}}</option>
+            @endforeach
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="file" name="srcfile" id="srcfile">
+        </div>
 
-      <div class="form-group">
-        <select class="custom-select" name="language" id="language">
-          <option selected value="-1">{{trans('wzoj.language_auto')}}</option>
-          @foreach (explode(",",ojoption("allowed_languages")) as $language)
-          <option value='{{intval($language)}}'>{{trans('wzoj.programing_language_'.intval($language))}}</option>
+        <div class="form-group">
+          <textarea class="form-control" name="code" id="code" rows="9" placeholder="{{trans('wzoj.submit_helper')}}">{{old('code')}}</textarea>
+        </div>
+      @else
+        @if (count($answerfiles))
+          {{trans('wzoj.uploaded_files')}}:<br>
+          @foreach ($answerfiles as $answerfile)
+          {{$answerfile->filename}}.out<br>
           @endforeach
-        </select>
-      </div>
-      <div class="form-group">
-        <input type="file" name="srcfile" id="srcfile">
-      </div>
+        @endif
+          <input name='language' value='0' hidden>
+          <input name='code' value='THIS SOLUTION HAS NOT CODE' hidden>
 
-      <div class="form-group">
-        <textarea class="form-control" name="code" id="code" rows="9" placeholder="{{trans('wzoj.submit_helper')}}">{{old('code')}}</textarea>
-      </div>
-
+          <input type="file" name="answerfile" id="answerfile" multiple>
+      @endif
       <button id="submit-btn" type="submit" class="btn btn-primary" onclick="submit_solution();return false;">
         <div id="submit-text">
         {{trans('wzoj.submit')}}
@@ -68,24 +78,6 @@
         </div>
       </button>
     </form>
-    @else
-      @if (count($answerfiles))
-        {{trans('wzoj.uploaded_files')}}:<br>
-        @foreach ($answerfiles as $answerfile)
-        {{$answerfile->filename}}.out<br>
-        @endforeach
-      @endif
-      <form action='/solutions' method='POST' enctype='multipart/form-data'>
-        {{csrf_field()}}
-        <input name='problemset_id' value='{{$problemset->id}}' hidden>
-        <input name='problem_id' value='{{$problem->id}}' hidden>
-        <input name='language' value='0' hidden>
-        <input name='code' value='THIS SOLUTION HAS NOT CODE' hidden>
-
-        <input type="file" name="answerfile" id="answerfile" multiple>
-        <button type="submit" class="btn btn-primary"> {{trans('wzoj.submit_and_judge')}} </button>
-      </form>
-    @endif
 
     <hr>
     <div id="pending-sol"></div>
