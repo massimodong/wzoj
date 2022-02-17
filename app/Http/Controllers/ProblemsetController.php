@@ -457,7 +457,7 @@ class ProblemsetController extends Controller
       return response()->download($storagePath.'/'.$problem->id.'/download.zip', $problem->id.'.zip');
     }
 
-    $answerfiles = NULL;
+    $answerfiles = collect();
     if($problem->type == 3 && Auth::check()){
       $answerfiles = $request->user()->answerfiles()
         ->where('problemset_id', $problemset->id)
