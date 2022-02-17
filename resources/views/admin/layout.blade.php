@@ -10,7 +10,7 @@
     <title>admin - @yield('title')</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="{{ mix('/css/app.css') }}">
+    <link rel="stylesheet" href="{{ojcache('/css/app.css')}}">
     <link rel="stylesheet" href={{ojcache("/include/css/common.css")}}>
     <link rel="stylesheet" href={{ojcache("/include/css/admin.css")}}>
     <link rel="stylesheet" href={{ojcache("/include/css/datatables.min.css")}}>
