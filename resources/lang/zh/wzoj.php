@@ -473,4 +473,5 @@ return [
     'log_level_2' => '中等',
     'log_level_3' => '重要',
 
+    'file_not_exists' => '文件不存在',
 ];

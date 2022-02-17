@@ -1,7 +1,7 @@
 <tr>
   @if ($solution->problem->type == 3)
     @can ('view_code', $solution)
-      <td><a href='#' title="{{trans('wzoj.download_answerfile')}}">{{$testcase->filename}}</a></td>
+      <td><a href='/solutions/{{$solution->id}}?answerfile={{$testcase->filename}}' title="{{trans('wzoj.download_answerfile')}}">{{$testcase->filename}}</a></td>
     @else
       <td>{{$testcase->filename}}</td>
     @endcan

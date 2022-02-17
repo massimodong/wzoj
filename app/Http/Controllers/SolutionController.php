@@ -209,7 +209,7 @@ class SolutionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $solution = \App\Solution::findOrFail($id);
 
@@ -221,6 +221,19 @@ class SolutionController extends Controller
 
         if(Auth::check()) $this->authorize('view', $solution);
         else return redirect('/auth/login');
+
+        if(isset($request->answerfile)){
+          $this->authorize('view_code', $solution);
+          $answer = $solution->answerfiles()->where('filename', $request->answerfile)->first();
+
+          if($answer){
+            return response()->streamDownload(function() use($answer){
+                echo $answer->answer;
+            }, $request->answerfile.".out");
+          }else{
+            return back()->withErrors(trans('wzoj.file_not_exists'));
+          }
+        }
 
         $testcases = $solution->testcaseByName();
         return view('solutions.show',['solution' => $solution,
