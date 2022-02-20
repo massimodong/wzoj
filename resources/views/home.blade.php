@@ -9,7 +9,7 @@ class="main-home"
 @endsection
 
 @section ('meta_description')
-<meta name="description" content="TODO">
+<meta name="description" content="{{ojoption('site_description')}}">
 @endsection
 
 @section ('content')

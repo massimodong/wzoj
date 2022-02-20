@@ -15,6 +15,12 @@
     </div>
   </div>
   <div class="form-group row">
+    <label for="site_description" class="col-sm-2 control-label">{{trans('wzoj.site_description')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="site_description" name="site_description" value="{{ojoption('site_description')}}">
+    </div>
+  </div>
+  <div class="form-group row">
     <label for="allowed_languages" class="col-sm-2 control-label">{{trans('wzoj.allowed_languages')}}:</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" id="allowed_languages" name="allowed_languages" value="{{ojoption('allowed_languages')}}">
