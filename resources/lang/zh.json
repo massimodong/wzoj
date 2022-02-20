@@ -1,0 +1,13 @@
+{
+  "Hello!": "你好！",
+  "You are receiving this email because we received a password reset request for your account.":
+    "我们收到了对你的账户进行密码重置的请求，故而向你发送此邮件。",
+  "Reset Password": "重置密码",
+  "This password reset link will expire in :count minutes.":
+    "此密码重置链接在 :count 分钟内有效。",
+  "If you did not request a password reset, no further action is required.":
+    "若你未曾请求重置密码，你无须进行任何操作。",
+  "Regards": "祝好",
+  "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "如果你不能点击\":actionText\"按钮，请复制下面的链接到你的浏览器：",
+  "All rights reserved.": "保留所有权利"
+}

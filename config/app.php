@@ -5,7 +5,7 @@ return [
     /*
     | Update to laravel 5.3
     */
-    'name' => 'WZOJ',
+    'name' => env('APP_NAME', 'WZOJ'),
 
     /*
     | Update to laravel 5.2
@@ -36,7 +36,7 @@ return [
     |
     */
 
-    'url' => 'http://localhost',
+    'url' => env('APP_URL', 'http://localhost'),
 
     /*
     |--------------------------------------------------------------------------
