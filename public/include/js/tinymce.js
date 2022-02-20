@@ -7,7 +7,7 @@ tinymce.init({
 	    toolbar: "undo redo | styleselect formatselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument ",
 	    contextmenu: "link image inserttable | cell row column deletetable | paste",
 	    paste_data_images: true,
-	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style]',
+	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style],script[language|type|src]',
       invalid_styles: 'font font-family font-size',
 	    imagetools_cors_hosts: [''],
 	    setup: function (editor) {
@@ -103,7 +103,7 @@ tinymce.init({
 	    toolbar: "undo redo | styleselect formatselect | forecolor bold italic underline strikethrough subscript superscript | alignleft aligncenter alignright alignjustify | link image media codesample table | bullist numlist outdent indent | removeformat | code searchreplace | preview | newdocument | save",
 	    contextmenu: "link image inserttable | cell row column deletetable | paste",
 	    paste_data_images: true,
-	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style]',
+	    extended_valid_elements : 'img[class=img-responsive|src|border=0|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name|style],script[language|type|src]',
       invalid_styles: 'font font-family font-size',
 	    imagetools_cors_hosts: [''],
 	    images_upload_handler: function (blobInfo, success, failure) {
