@@ -10,3 +10,4 @@ build
 dump.rdb
 server.js
 public/files
+composer.lock
