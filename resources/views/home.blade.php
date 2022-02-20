@@ -8,6 +8,10 @@
 class="main-home"
 @endsection
 
+@section ('meta_description')
+<meta name="description" content="TODO">
+@endsection
+
 @section ('content')
 <div class="row h-100">
   <div class="col-xl-9 col-md-8" style="height: min-content">
