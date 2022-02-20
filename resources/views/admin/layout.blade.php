@@ -15,7 +15,6 @@
     <link rel="stylesheet" href={{ojcache("/include/css/admin.css")}}>
     <link rel="stylesheet" href={{ojcache("/include/css/datatables.min.css")}}>
     <link rel="stylesheet" href={{ojcache("/include/css/tempusdominus-bootstrap-4.min.css")}}>
-    <link rel="stylesheet" href={{ojcache('/include/css/fileinput.min.css')}}>
 
     @show
   </head>
@@ -146,7 +145,6 @@
 <script src={{ojcache("/include/js/tempusdominus-bootstrap-4.min.js")}}></script>
 <script src={{ojcache("/include/js/tinymce/tinymce.min.js")}}></script>
 <script src={{ojcache("/include/js/tinymce.js")}}></script>
-<script src={{ojcache('/include/js/fileinput.min.js')}}></script>
 <script>
   var csrf_token = '{{csrf_token()}}';
 </script>
