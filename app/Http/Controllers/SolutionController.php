@@ -44,12 +44,6 @@ class SolutionController extends Controller
           'score_max' => 'integer|min:0|max:100',
           'language' => 'integer|in:0,1,2,4',
       ]);
-      $max_id = Solution::max('id');
-      if(isset($request->top)){
-        $top = $request->top;
-      }else{
-        $top = $max_id;
-      }
 
       $solutions = Solution::nohidden();
       // limits
