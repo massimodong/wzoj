@@ -163,8 +163,11 @@ class SolutionController extends Controller
         if($request->hasFile('srcfile') && $request->file('srcfile')->isValid()){
           $file = $request->file('srcfile');
           $content = file_get_contents($file->getRealPath());
-          $solution_meta["code"] = mb_convert_encoding($content, 'UTF-8',
-              mb_detect_encoding($content, 'UTF-8, UTF-16, GB18030, BIG5'));
+          $encoding = mb_detect_encoding($content, 'UTF-8, UTF-16, GB18030, BIG5', true);
+          if(!$encoding){
+            return response()->json(['msg' => trans('wzoj.invalid_srcfile_encoding')], 422);
+          }
+          $solution_meta["code"] = mb_convert_encoding($content, 'UTF-8', $encoding);
         }
 
         $solution_meta["code_length"] = strlen($solution_meta["code"]);

@@ -475,4 +475,5 @@ return [
     'log_level_3' => '重要',
 
     'file_not_exists' => '文件不存在',
+    'invalid_srcfile_encoding' => '读取源文件内容失败，请上传正确的程序源文件，注意不要上传可执行文件',
 ];
