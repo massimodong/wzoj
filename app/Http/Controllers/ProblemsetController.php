@@ -90,6 +90,10 @@ class ProblemsetController extends Controller
   }
 
   public function getProblemset($psid,Request $request){
+    $this->validate($request,[
+      'page' => 'integer',
+    ]);
+
     $problemset = Problemset::findOrFail($psid);
     if(!$problemset->public){
       if(Gate::denies('view', $problemset)){
