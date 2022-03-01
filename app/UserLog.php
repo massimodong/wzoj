@@ -14,9 +14,14 @@ class UserLog extends Model
     'action_payload' => 'array',
   ];
 
-  //TODO: time based on level
   public function prunable(){
-    return static::where('created_at', '<=', now()->subMonth());
+    return static::where(function($query){
+                    $query->where('created_at', '<=', now()->subMonth())
+                          ->where('level', LOG_NORMAL);
+                  })->orWhere(function($query){
+                    $query->where('created_at', '<=', now()->subYear())
+                          ->where('level', LOG_MODERATE);
+                  });
   }
 
 	public function user(){
