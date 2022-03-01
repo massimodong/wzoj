@@ -18,7 +18,7 @@
 	<div class="form-group">
 		<label for="inputEmail">Email</label>
 		<input type="email" class="form-control" id="inputEmail"
-		name="email" placeholder="Email" value="" required autofocus>
+		name="email" placeholder="Email" value="{{request()->email}}" required autofocus>
 	</div>
 	
 	<div class="form-group">

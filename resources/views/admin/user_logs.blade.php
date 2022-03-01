@@ -81,7 +81,11 @@
             @foreach ($log->action_payload as $a => $b)
               <tr>
                 <th>{{$a}}</th>
+                @if (is_string($b))
                 <td>{{$b}}</td>
+                @else
+                <td>{{json_encode($b)}}</td>
+                @endif
               </tr>
             @endforeach
             </tbody>

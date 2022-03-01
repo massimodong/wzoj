@@ -31,7 +31,7 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         Event::listen('Illuminate\Auth\Events\Registered', function ($data) {
-          logAction('registered', $data, LOG_MODERATE);
+          logAction('registered', $data->user, LOG_MODERATE);
         });
 
         Event::listen('Illuminate\Auth\Events\Login', function ($data) {
@@ -47,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
         });
 
         Event::listen('Illuminate\Auth\Events\PasswordReset', function ($data) {
-          logAction('password_reset', $data, LOG_SEVERE);
+          logAction('password_reset', $data->user, LOG_SEVERE);
         });
 
         //
