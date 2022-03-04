@@ -15,7 +15,7 @@ class AdminGroupController extends Controller
 {
 	public function getGroups(Request $request, $id = -1){
 		if($id == -1){
-			$groups = $request->user()->manage_groups;
+			$groups = $request->user()->manage_groups()->get();
 			return view('admin.groups_index',['groups' => $groups]);
 		}else{
 			$group = \App\Group::findOrFail($id);
