@@ -28,14 +28,10 @@ class RanklistUser{
   public $problem_scores;
   public $problem_corrected_scores;
   public $problem_solutions;
-  function __construct($u, $p, $score = 0){
+  function __construct($u, $score = 0){
     $this->user = $u;
     $this->score = $score;
     $this->penalty = 0;
-    foreach($p as $s){
-      $this->problem_scores[$s->id] = -1;
-      $this->problem_corrected_scores[$s->id] = -1;
-    }
   }
 }
 
@@ -197,24 +193,22 @@ class ProblemsetController extends Controller
     $users_id = [];
     foreach($solutions as $solution){
       if(!isset($users_id[$solution->user_id])){
-        array_push($table, new RanklistUser($solution->user, $problems));
+        array_push($table, new RanklistUser($solution->user));
         $users_id[$solution->user_id] = count($table)-1;
       }
       $id = $users_id[$solution->user_id];
       ++$table[$id]->penalty;
 
       if(isset($table[$id]->problem_scores[$solution->problem_id])){
-        if($table[$id]->problem_scores[$solution->problem_id] >= 0){
-          $table[$id]->score -= $table[$id]->problem_scores[$solution->problem_id];
-          $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
-          $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
-          $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
-        }else{
-          $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
-          $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
-        }
-        $table[$id]->problem_solutions[$solution->problem_id] = $solution;
+        $table[$id]->score -= $table[$id]->problem_scores[$solution->problem_id];
+        $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
+        $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
+        $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
+      }else{
+        $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
+        $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
       }
+      $table[$id]->problem_solutions[$solution->problem_id] = $solution;
     }
 
     if(!$contest_running){//ended
@@ -223,14 +217,13 @@ class ProblemsetController extends Controller
         ->get();
       foreach($solutions as $solution){
         if(!isset($users_id[$solution->user_id])){
-          array_push($table, new RanklistUser($solution->user, $problems, -1));
+          array_push($table, new RanklistUser($solution->user, -1));
           $users_id[$solution->user_id] = count($table)-1;
         }
         $id = $users_id[$solution->user_id];
-        if(isset($table[$id]->problem_corrected_scores[$solution->problem_id])){
-          if($solution->score > $table[$id]->problem_corrected_scores[$solution->problem_id])
-            $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
-        }
+        if(!isset($table[$id]->problem_corrected_scores[$solution->problem_id]) ||
+            $solution->score > $table[$id]->problem_corrected_scores[$solution->problem_id])
+          $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
       }
     }
 

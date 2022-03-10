@@ -36,14 +36,14 @@
         <td>@include ('partials.user_badge', ['user' => $record->user, 'public' => $problemset->public])</td>
           @foreach ($problems as $problem)
           <td>
-            @if ($record->problem_scores[$problem->id] >= 0)
+            @if (isset($record->problem_scores[$problem->id]))
               <a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}&problem_id={{$problem->id}}">
               {{$record->problem_scores[$problem->id]}}
               </a>
             @else
               -
             @endif
-            @if (!$contest_running && $record->problem_corrected_scores[$problem->id] > $record->problem_scores[$problem->id])
+            @if (!$contest_running && isset($record->problem_corrected_scores[$problem->id]) && (!isset($record->problem_scores[$problem->id]) || $record->problem_corrected_scores[$problem->id] > $record->problem_scores[$problem->id]))
               ({{$record->problem_corrected_scores[$problem->id]}})
             @endif
           </td>
@@ -55,7 +55,7 @@
         <td>@include ('partials.user_badge', ['user' => $record->user, 'public' => $problemset->public])</td>
           @foreach ($problems as $problem)
           <td>
-            @if (!$contest_running && $record->problem_corrected_scores[$problem->id] >= 0)
+            @if (!$contest_running && isset($record->problem_corrected_scores[$problem->id]))
             <a href="/solutions?problemset_id={{$problemset->id}}&user_name={{$record->user->name}}&problem_id={{$problem->id}}">
               ({{$record->problem_corrected_scores[$problem->id]}})
             </a>
