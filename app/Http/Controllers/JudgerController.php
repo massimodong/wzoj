@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Broadcasting\BroadcastException;
+
 use Event;
 use App\Events\SolutionUpdated;
 
@@ -121,7 +123,10 @@ class JudgerController extends Controller
 				$solution->testcases = Array();
 				$solution->sim_id = NULL;
 				$solution->judger_id = \Request::get('judger')->id;
-				Event::dispatch(new SolutionUpdated($solution));
+        try{
+          Event::dispatch(new SolutionUpdated($solution));
+        }catch(BroadcastException $e){
+        }
 				return response()->json(["ok" => true]);
 			}else{
 				return response()->json(["ok" => false]);
@@ -176,7 +181,10 @@ class JudgerController extends Controller
 		$solution->ce = $request->ce;
 		$solution->judged_at = date('Y-m-d H:i:s');
 		$solution->save();
-		Event::dispatch(new SolutionUpdated($solution));
+    try{
+		  Event::dispatch(new SolutionUpdated($solution));
+    }catch(BroadcastException $e){
+    }
 		return response()->json(["ok" => true]);
 	}
 	public function postUpdateSolution(Request $request){
@@ -193,7 +201,10 @@ class JudgerController extends Controller
 		$solution->testcases = json_decode($request->testcases);
 		$solution->cnt_testcases = $request->cnt_testcases;
 		$solution->save();
-		Event::dispatch(new SolutionUpdated($solution));
+    try{
+		  Event::dispatch(new SolutionUpdated($solution));
+    }catch(BroadcastException $e){
+    }
 
 		return response()->json(["ok" => true]);
 	}
@@ -225,7 +236,10 @@ class JudgerController extends Controller
 		}
 
 		$solution->user->update_cnt_ac();
-		Event::dispatch(new SolutionUpdated($solution));
+    try{
+		  Event::dispatch(new SolutionUpdated($solution));
+    }catch(BroadcastException $e){
+    }
 
     //TODO: we can update the ranklist table, instead of forgetting it
     Cache::tags(['problemset_ranklist'])->forget($solution->problemset_id);
