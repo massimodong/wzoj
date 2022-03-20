@@ -199,15 +199,7 @@ class ProblemsetController extends Controller
       $id = $users_id[$solution->user_id];
       ++$table[$id]->penalty;
 
-      if(isset($table[$id]->problem_scores[$solution->problem_id])){
-        $table[$id]->score -= $table[$id]->problem_scores[$solution->problem_id];
-        $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
-        $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
-        $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
-      }else{
-        $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
-        $table[$id]->score += $table[$id]->problem_scores[$solution->problem_id];
-      }
+      $table[$id]->problem_scores[$solution->problem_id] = $solution->score;
       $table[$id]->problem_solutions[$solution->problem_id] = $solution;
     }
 
@@ -221,9 +213,28 @@ class ProblemsetController extends Controller
           $users_id[$solution->user_id] = count($table)-1;
         }
         $id = $users_id[$solution->user_id];
-        if(!isset($table[$id]->problem_corrected_scores[$solution->problem_id]) ||
-            $solution->score > $table[$id]->problem_corrected_scores[$solution->problem_id])
+
+        $last_score = -1;
+
+        if(isset($table[$id]->problem_scores[$solution->problem_id]))
+          $last_score = $table[$id]->problem_scores[$solution->problem_id];
+
+        if(isset($table[$id]->problem_corrected_scores[$solution->problem_id]))
+          $last_score = $table[$id]->problem_corrected_scores[$solution->problem_id];
+
+        if($solution->score > $last_score){
           $table[$id]->problem_corrected_scores[$solution->problem_id] = $solution->score;
+        }
+      }
+    }
+
+    foreach($table as $row){
+      if($row->score == 0){
+        foreach($problems as $problem){
+          if(isset($row->problem_scores[$problem->id])){
+            $row->score += $row->problem_scores[$problem->id];
+          }
+        }
       }
     }
 
