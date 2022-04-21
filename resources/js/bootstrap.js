@@ -43,7 +43,8 @@ window.Echo = new Echo({
     key: process.env.MIX_PUSHER_APP_KEY,
     wsHost: socket_io_server,
     wsPort: socket_io_port,
-    forceTLS: false
+    forceTLS: false,
+    disableStats: true,
 });
 
 window.Echo.channel("broadcast").listen('Broadcast', (e)=>{
