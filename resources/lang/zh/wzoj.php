@@ -21,6 +21,7 @@ return [
     'close' => '关闭',
     'success' => '成功',
     'date' => '日期',
+    'remember_me' => '保持登录状态',
 
     'blocked' => '禁止访问',
 
