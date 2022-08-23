@@ -40,4 +40,8 @@ class SolutionPolicy
 	    if($user->has_role('problemset_manager') && $solution->problemset->manager_id == $user->id) return true;
 	    return false;
     }
+
+    public function destroy(User $user, Solution $solution){
+      return false;
+    }
 }

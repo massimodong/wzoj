@@ -6,6 +6,13 @@
 
 @section ('content')
 {!! Breadcrumbs::render('solution', $solution) !!}
+@can ('destroy', $solution)
+<form method='POST'>
+  {{csrf_field()}}
+  {{method_field('DELETE')}}
+  <button type="submit" class="btn btn-danger" onclick="return confirm('{{trans('wzoj.confirm_delete_solution')}}');">{{trans('wzoj.delete')}}</button>
+</form>
+@endcan
 <div class="table-responsive">
 <table class="table">
   <tbody>
@@ -71,7 +78,6 @@
   </tbody>
 </table>
 </div>
-
 @if ($solution->status == SL_JUDGED)
   @if (isset($solution->ce))
     <h3>{{trans('wzoj.compile_error')}}</h3>

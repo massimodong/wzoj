@@ -269,7 +269,12 @@ class SolutionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $solution = \App\Solution::findOrFail($id);
+        $this->authorize('destroy', $solution);
+        DB::update('UPDATE problem_statistics SET count = count - 1, score_sum = score_sum - ?, count_ac = count_ac - IF(? = 100, 1, 0) WHERE problemset_id = ? AND problem_id = ?',
+          [$solution->score, $solution->score, $solution->problemset_id, $solution->problem_id]);
+        $solution->delete();
+        return trans('wzoj.success');
     }
 
     public function postSubmitAnswerfile(Request $request){
