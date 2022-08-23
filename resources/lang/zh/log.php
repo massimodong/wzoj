@@ -7,6 +7,7 @@ return [
   'logout' => '登出',
   'password_reset' => '重置密码',
   'change_user_profile' => '修改用户信息',
+  'delete_solution' => '删除用户提交',
 
   'admin_change_user_password' => '强制修改密码',
   'admin_change_user_bt' => '封禁/解封用户',
