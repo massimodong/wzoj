@@ -11,7 +11,7 @@
 
 @section ('content')
 
-<div class="table-responsive">
+<div class="table-responsive-xl">
 <table id="homework-status-table" class="table ranklist-table">
   <thead>
     <tr>
