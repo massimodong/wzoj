@@ -235,4 +235,8 @@ class HomeController extends Controller
       abort(404);
     }
   }
+
+  public function ide(){
+    return view('ide');
+  }
 }

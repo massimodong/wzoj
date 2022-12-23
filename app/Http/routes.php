@@ -20,6 +20,8 @@ Route::group(['middleware' => ['web', 'antibot', 'contest']], function(){
     Route::get('sorry', 'HomeController@getSorry');
     Route::post('sorry', 'HomeController@postSorry');
 
+    Route::get('ide', 'HomeController@ide');
+
     Route::get('password/change', 'PasswordController@getChangePassword');
     Route::post('password/change', 'PasswordController@postChangePassword');
 
