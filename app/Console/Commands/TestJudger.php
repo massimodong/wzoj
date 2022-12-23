@@ -44,7 +44,7 @@ class TestJudger extends Command
       foreach($judgers as $judger){
         $this->info("Testing judger ".$judger->name." (".$judger->ip_addr.")");
 
-        $client = new \WJudger\WJudgerClient($judger->ip_addr, [
+        $client = new \WJudger\WJudgerClient($judger->ip_addr.":9717", [
             'credentials' => \Grpc\ChannelCredentials::createInsecure(),
         ]);
 
@@ -55,18 +55,24 @@ class TestJudger extends Command
           continue;
         }
 
-        $args = new \WJudger\JudgeArgs();
+        $args = new \WJudger\SimpleArgs();
+        $args->setToken("123456");
         $args->setLanguage(1);
-        $args->setCode("#include<iostream>\n#include<unistd.h>\nint main(){\nsleep(2);\nint a, b;\nstd::cin>>a>>b;\nstd::cout<<a+b<<std::endl;\n}\n");
+        $args->setCode("#include<iostream>\n#include<unistd.h>\nint main(){\nsleep(1);\nstd::cerr<<1<<std::endl;\nint a, b;\nstd::cin>>a>>b;\na=*((int *)0);\nstd::cout<<a+c<<std::endl;\n;\n}\n");
+        $args->setInput("4 5\n");
         $this->info($args->getCode());
 
-        $call = $client->Judge($args);
-        $replies = $call->responses();
-
-        foreach ($replies as $reply){
-          $this->info("!");
-          //TODO: check reply
+        list($reply, $status) = $client->Simple($args)->wait();
+        print "time: ".$reply->getTimeused()."\n";
+        print "memory: ".$reply->getMemoryused()."\n";
+        if($reply->getCompileError()){
+          print "ce: ".$reply->getCompileErrorMessage()."\n";
+        }else if($reply->getRuntimeError()){
+          print "re: ".$reply->getRuntimeErrorMessage()."\n";
+        }else{
+          print "output: ".$reply->getOutput()."\n";
         }
+
 
       }
       return 0;

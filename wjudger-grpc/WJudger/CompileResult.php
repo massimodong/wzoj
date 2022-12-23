@@ -14,9 +14,9 @@ use Google\Protobuf\Internal\GPBUtil;
 class CompileResult extends \Google\Protobuf\Internal\Message
 {
     /**
-     * Generated from protobuf field <code>bool compile_error = 1;</code>
+     * Generated from protobuf field <code>bool compileEror = 1;</code>
      */
-    protected $compile_error = false;
+    protected $compileEror = false;
     /**
      * Generated from protobuf field <code>repeated string testcases = 2;</code>
      */
@@ -28,8 +28,8 @@ class CompileResult extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
-     *     @type bool $compile_error
-     *     @type string[]|\Google\Protobuf\Internal\RepeatedField $testcases
+     *     @type bool $compileEror
+     *     @type array<string>|\Google\Protobuf\Internal\RepeatedField $testcases
      * }
      */
     public function __construct($data = NULL) {
@@ -38,23 +38,23 @@ class CompileResult extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>bool compile_error = 1;</code>
+     * Generated from protobuf field <code>bool compileEror = 1;</code>
      * @return bool
      */
-    public function getCompileError()
+    public function getCompileEror()
     {
-        return $this->compile_error;
+        return $this->compileEror;
     }
 
     /**
-     * Generated from protobuf field <code>bool compile_error = 1;</code>
+     * Generated from protobuf field <code>bool compileEror = 1;</code>
      * @param bool $var
      * @return $this
      */
-    public function setCompileError($var)
+    public function setCompileEror($var)
     {
         GPBUtil::checkBool($var);
-        $this->compile_error = $var;
+        $this->compileEror = $var;
 
         return $this;
     }
@@ -70,7 +70,7 @@ class CompileResult extends \Google\Protobuf\Internal\Message
 
     /**
      * Generated from protobuf field <code>repeated string testcases = 2;</code>
-     * @param string[]|\Google\Protobuf\Internal\RepeatedField $var
+     * @param array<string>|\Google\Protobuf\Internal\RepeatedField $var
      * @return $this
      */
     public function setTestcases($var)

@@ -30,4 +30,18 @@ class WJudgerClient extends \Grpc\BaseStub {
         $metadata, $options);
     }
 
+    /**
+     * @param \WJudger\SimpleArgs $argument input argument
+     * @param array $metadata metadata
+     * @param array $options call options
+     * @return \Grpc\UnaryCall
+     */
+    public function Simple(\WJudger\SimpleArgs $argument,
+      $metadata = [], $options = []) {
+        return $this->_simpleRequest('/WJudger.WJudger/Simple',
+        $argument,
+        ['\WJudger\SimpleReply', 'decode'],
+        $metadata, $options);
+    }
+
 }

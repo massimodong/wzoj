@@ -18,7 +18,7 @@ class JudgeArgs extends \Google\Protobuf\Internal\Message
      */
     protected $code = '';
     /**
-     * Generated from protobuf field <code>.WJudger.JudgeArgs.Language language = 2;</code>
+     * Generated from protobuf field <code>.WJudger.Language language = 2;</code>
      */
     protected $language = 0;
     /**
@@ -75,7 +75,7 @@ class JudgeArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>.WJudger.JudgeArgs.Language language = 2;</code>
+     * Generated from protobuf field <code>.WJudger.Language language = 2;</code>
      * @return int
      */
     public function getLanguage()
@@ -84,13 +84,13 @@ class JudgeArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>.WJudger.JudgeArgs.Language language = 2;</code>
+     * Generated from protobuf field <code>.WJudger.Language language = 2;</code>
      * @param int $var
      * @return $this
      */
     public function setLanguage($var)
     {
-        GPBUtil::checkEnum($var, \WJudger\JudgeArgs\Language::class);
+        GPBUtil::checkEnum($var, \WJudger\Language::class);
         $this->language = $var;
 
         return $this;
