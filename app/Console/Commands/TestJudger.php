@@ -32,6 +32,52 @@ class TestJudger extends Command
         parent::__construct();
     }
 
+    public function ensure($b){
+      if(!$b){
+        abort(500);
+      }
+    }
+
+    public function check_testcase($judger, $client, $testcase){
+      $this->info("checking testcase ".$testcase->srcfile);
+        $args = new \WJudger\SimpleArgs();
+        $args->setToken($judger->token);
+        $args->setLanguage($testcase->language);
+        $args->setCode(file_get_contents("tests/wjudger-testcases/".$testcase->srcfile));
+        $args->setInput($testcase->input);
+
+        list($reply, $status) = $client->Simple($args)->wait();
+        print "time: ".$reply->getTimeused()."\n";
+        print "memory: ".$reply->getMemoryused()."\n";
+
+        $this->info("output: ".$reply->getOutput());
+
+        if($reply->getCompileError()){
+            $this->info("CE: ".$reply->getCompileErrorMessage());
+        }
+
+        if($reply->getRuntimeError()){
+            $this->info("RE: ".$reply->getRuntimeErrorMessage());
+        }
+
+        switch($testcase->result){
+          case "OK":
+            $this->ensure(!$reply->getCompileError());
+            $this->ensure(!$reply->getRuntimeError());
+            $this->ensure($reply->getOutput() == $testcase->output);
+            break;
+          case "CE":
+            $this->ensure($reply->getCompileError());
+            break;
+          case "RE":
+            $this->ensure($reply->getRuntimeError());
+            break;
+          default:
+            abort(500);
+            break;
+        }
+    }
+
     /**
      * Execute the console command.
      *
@@ -39,6 +85,7 @@ class TestJudger extends Command
      */
     public function handle()
     {
+      $testcases = json_decode(file_get_contents("tests/wjudger-testcases/testcases.json"));
       $judgers = Judger::where("ip_addr", "!=", "")->get();
       $this->info("You have configured ".$judgers->count()." judger(s)");
       foreach($judgers as $judger){
@@ -55,25 +102,9 @@ class TestJudger extends Command
           continue;
         }
 
-        $args = new \WJudger\SimpleArgs();
-        $args->setToken("123456");
-        $args->setLanguage(1);
-        $args->setCode("#include<iostream>\n#include<unistd.h>\nint main(){\nsleep(1);\nstd::cerr<<1<<std::endl;\nint a, b;\nstd::cin>>a>>b;\na=*((int *)0);\nstd::cout<<a+c<<std::endl;\n;\n}\n");
-        $args->setInput("4 5\n");
-        $this->info($args->getCode());
-
-        list($reply, $status) = $client->Simple($args)->wait();
-        print "time: ".$reply->getTimeused()."\n";
-        print "memory: ".$reply->getMemoryused()."\n";
-        if($reply->getCompileError()){
-          print "ce: ".$reply->getCompileErrorMessage()."\n";
-        }else if($reply->getRuntimeError()){
-          print "re: ".$reply->getRuntimeErrorMessage()."\n";
-        }else{
-          print "output: ".$reply->getOutput()."\n";
+        foreach($testcases as $testcase){
+          $this->check_testcase($judger, $client, $testcase);
         }
-
-
       }
       return 0;
     }
