@@ -30,5 +30,17 @@
     "input": "1000000",
     "result": "OK",
     "output": "1785293664"
+  },
+  {
+    "srcfile": "tle.cpp",
+    "language": 1,
+    "input": "123456",
+    "result": "RE"
+  },
+  {
+    "srcfile": "mle.cpp",
+    "language": 1,
+    "input": "123456",
+    "result": "RE"
   }
 ]
