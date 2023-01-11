@@ -41,12 +41,14 @@ class TestJudger extends Command
     public function check_testcase($judger, $client, $testcase){
       $this->info("checking testcase ".$testcase->srcfile);
         $args = new \WJudger\SimpleArgs();
+        $args->setJudgerid(0);
         $args->setToken($judger->token);
         $args->setLanguage($testcase->language);
         $args->setCode(file_get_contents("tests/wjudger-testcases/".$testcase->srcfile));
         $args->setInput($testcase->input);
 
         list($reply, $status) = $client->Simple($args)->wait();
+        print "status: ".$reply->getStatus()."\n";
         print "time: ".$reply->getTimeused()."\n";
         print "memory: ".$reply->getMemoryused()."\n";
 
@@ -59,6 +61,8 @@ class TestJudger extends Command
         if($reply->getRuntimeError()){
             $this->info("RE: ".$reply->getRuntimeErrorMessage());
         }
+
+        $this->ensure($reply->getStatus() == 0);
 
         switch($testcase->result){
           case "OK":

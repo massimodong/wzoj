@@ -14,31 +14,35 @@ use Google\Protobuf\Internal\GPBUtil;
 class SimpleReply extends \Google\Protobuf\Internal\Message
 {
     /**
-     * Generated from protobuf field <code>bool compileError = 1;</code>
+     * Generated from protobuf field <code>.WJudger.JudgeStatus status = 1;</code>
+     */
+    protected $status = 0;
+    /**
+     * Generated from protobuf field <code>bool compileError = 2;</code>
      */
     protected $compileError = false;
     /**
-     * Generated from protobuf field <code>uint32 runtimeError = 2;</code>
+     * Generated from protobuf field <code>uint32 runtimeError = 3;</code>
      */
     protected $runtimeError = 0;
     /**
-     * Generated from protobuf field <code>string compileErrorMessage = 3;</code>
+     * Generated from protobuf field <code>string compileErrorMessage = 4;</code>
      */
     protected $compileErrorMessage = '';
     /**
-     * Generated from protobuf field <code>string runtimeErrorMessage = 4;</code>
+     * Generated from protobuf field <code>string runtimeErrorMessage = 5;</code>
      */
     protected $runtimeErrorMessage = '';
     /**
-     * Generated from protobuf field <code>uint64 timeused = 5;</code>
+     * Generated from protobuf field <code>uint64 timeused = 6;</code>
      */
     protected $timeused = 0;
     /**
-     * Generated from protobuf field <code>double memoryused = 6;</code>
+     * Generated from protobuf field <code>uint64 memoryused = 7;</code>
      */
-    protected $memoryused = 0.0;
+    protected $memoryused = 0;
     /**
-     * Generated from protobuf field <code>string output = 7;</code>
+     * Generated from protobuf field <code>string output = 8;</code>
      */
     protected $output = '';
 
@@ -48,12 +52,13 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
+     *     @type int $status
      *     @type bool $compileError
      *     @type int $runtimeError
      *     @type string $compileErrorMessage
      *     @type string $runtimeErrorMessage
      *     @type int|string $timeused
-     *     @type float $memoryused
+     *     @type int|string $memoryused
      *     @type string $output
      * }
      */
@@ -63,7 +68,29 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>bool compileError = 1;</code>
+     * Generated from protobuf field <code>.WJudger.JudgeStatus status = 1;</code>
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Generated from protobuf field <code>.WJudger.JudgeStatus status = 1;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setStatus($var)
+    {
+        GPBUtil::checkEnum($var, \WJudger\JudgeStatus::class);
+        $this->status = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>bool compileError = 2;</code>
      * @return bool
      */
     public function getCompileError()
@@ -72,7 +99,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>bool compileError = 1;</code>
+     * Generated from protobuf field <code>bool compileError = 2;</code>
      * @param bool $var
      * @return $this
      */
@@ -85,7 +112,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>uint32 runtimeError = 2;</code>
+     * Generated from protobuf field <code>uint32 runtimeError = 3;</code>
      * @return int
      */
     public function getRuntimeError()
@@ -94,7 +121,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>uint32 runtimeError = 2;</code>
+     * Generated from protobuf field <code>uint32 runtimeError = 3;</code>
      * @param int $var
      * @return $this
      */
@@ -107,7 +134,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string compileErrorMessage = 3;</code>
+     * Generated from protobuf field <code>string compileErrorMessage = 4;</code>
      * @return string
      */
     public function getCompileErrorMessage()
@@ -116,7 +143,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string compileErrorMessage = 3;</code>
+     * Generated from protobuf field <code>string compileErrorMessage = 4;</code>
      * @param string $var
      * @return $this
      */
@@ -129,7 +156,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string runtimeErrorMessage = 4;</code>
+     * Generated from protobuf field <code>string runtimeErrorMessage = 5;</code>
      * @return string
      */
     public function getRuntimeErrorMessage()
@@ -138,7 +165,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string runtimeErrorMessage = 4;</code>
+     * Generated from protobuf field <code>string runtimeErrorMessage = 5;</code>
      * @param string $var
      * @return $this
      */
@@ -151,7 +178,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>uint64 timeused = 5;</code>
+     * Generated from protobuf field <code>uint64 timeused = 6;</code>
      * @return int|string
      */
     public function getTimeused()
@@ -160,7 +187,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>uint64 timeused = 5;</code>
+     * Generated from protobuf field <code>uint64 timeused = 6;</code>
      * @param int|string $var
      * @return $this
      */
@@ -173,8 +200,8 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>double memoryused = 6;</code>
-     * @return float
+     * Generated from protobuf field <code>uint64 memoryused = 7;</code>
+     * @return int|string
      */
     public function getMemoryused()
     {
@@ -182,20 +209,20 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>double memoryused = 6;</code>
-     * @param float $var
+     * Generated from protobuf field <code>uint64 memoryused = 7;</code>
+     * @param int|string $var
      * @return $this
      */
     public function setMemoryused($var)
     {
-        GPBUtil::checkDouble($var);
+        GPBUtil::checkUint64($var);
         $this->memoryused = $var;
 
         return $this;
     }
 
     /**
-     * Generated from protobuf field <code>string output = 7;</code>
+     * Generated from protobuf field <code>string output = 8;</code>
      * @return string
      */
     public function getOutput()
@@ -204,7 +231,7 @@ class SimpleReply extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string output = 7;</code>
+     * Generated from protobuf field <code>string output = 8;</code>
      * @param string $var
      * @return $this
      */

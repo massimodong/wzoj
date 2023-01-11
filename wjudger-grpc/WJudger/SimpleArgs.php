@@ -14,19 +14,23 @@ use Google\Protobuf\Internal\GPBUtil;
 class SimpleArgs extends \Google\Protobuf\Internal\Message
 {
     /**
-     * Generated from protobuf field <code>string token = 1;</code>
+     * Generated from protobuf field <code>uint32 judgerid = 1;</code>
+     */
+    protected $judgerid = 0;
+    /**
+     * Generated from protobuf field <code>string token = 2;</code>
      */
     protected $token = '';
     /**
-     * Generated from protobuf field <code>string code = 2;</code>
+     * Generated from protobuf field <code>string code = 3;</code>
      */
     protected $code = '';
     /**
-     * Generated from protobuf field <code>.WJudger.Language language = 3;</code>
+     * Generated from protobuf field <code>.WJudger.Language language = 4;</code>
      */
     protected $language = 0;
     /**
-     * Generated from protobuf field <code>string input = 4;</code>
+     * Generated from protobuf field <code>string input = 5;</code>
      */
     protected $input = '';
 
@@ -36,6 +40,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
      * @param array $data {
      *     Optional. Data for populating the Message object.
      *
+     *     @type int $judgerid
      *     @type string $token
      *     @type string $code
      *     @type int $language
@@ -48,7 +53,29 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string token = 1;</code>
+     * Generated from protobuf field <code>uint32 judgerid = 1;</code>
+     * @return int
+     */
+    public function getJudgerid()
+    {
+        return $this->judgerid;
+    }
+
+    /**
+     * Generated from protobuf field <code>uint32 judgerid = 1;</code>
+     * @param int $var
+     * @return $this
+     */
+    public function setJudgerid($var)
+    {
+        GPBUtil::checkUint32($var);
+        $this->judgerid = $var;
+
+        return $this;
+    }
+
+    /**
+     * Generated from protobuf field <code>string token = 2;</code>
      * @return string
      */
     public function getToken()
@@ -57,7 +84,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string token = 1;</code>
+     * Generated from protobuf field <code>string token = 2;</code>
      * @param string $var
      * @return $this
      */
@@ -70,7 +97,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string code = 2;</code>
+     * Generated from protobuf field <code>string code = 3;</code>
      * @return string
      */
     public function getCode()
@@ -79,7 +106,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string code = 2;</code>
+     * Generated from protobuf field <code>string code = 3;</code>
      * @param string $var
      * @return $this
      */
@@ -92,7 +119,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>.WJudger.Language language = 3;</code>
+     * Generated from protobuf field <code>.WJudger.Language language = 4;</code>
      * @return int
      */
     public function getLanguage()
@@ -101,7 +128,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>.WJudger.Language language = 3;</code>
+     * Generated from protobuf field <code>.WJudger.Language language = 4;</code>
      * @param int $var
      * @return $this
      */
@@ -114,7 +141,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string input = 4;</code>
+     * Generated from protobuf field <code>string input = 5;</code>
      * @return string
      */
     public function getInput()
@@ -123,7 +150,7 @@ class SimpleArgs extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Generated from protobuf field <code>string input = 4;</code>
+     * Generated from protobuf field <code>string input = 5;</code>
      * @param string $var
      * @return $this
      */
