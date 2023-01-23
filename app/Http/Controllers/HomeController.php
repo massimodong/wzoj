@@ -239,4 +239,49 @@ class HomeController extends Controller
   public function ide(){
     return view('ide');
   }
+
+  public function simpleJudge(Request $request){
+    $judgers = \App\Judger::where("ip_addr", "!=", "")->get();
+    foreach($judgers as $judger){
+      $client = new \WJudger\WJudgerClient($judger->ip_addr.":9717", [
+          'credentials' => \Grpc\ChannelCredentials::createInsecure(),
+      ]);
+
+      if($client->waitForReady(1000000)){
+      }else{
+        continue;
+      }
+
+      $args = new \WJudger\SimpleArgs();
+      $args->setJudgerid(0); //TODO
+      $args->setToken($judger->token);
+      $args->setLanguage($request->language);
+      $args->setCode($request->code);
+      $args->setInput($request->input);
+
+      list($reply, $status) = $client->Simple($args)->wait();
+
+      if($status->code){
+        continue;
+      }
+
+      if($reply->getStatus() != \WJudger\JudgeStatus::OK){
+        continue;
+      }
+
+      $result = [
+        'status' => $reply->getStatus(),
+        'compileError' => $reply->getCompileError(),
+        'compileErrorMessage' => $reply->getCompileErrorMessage(),
+        'runtimeError' => $reply->getRuntimeError(),
+        'runtimeErrorMessage' => $reply->getRuntimeErrorMessage(),
+        'timeused' => $reply->getTimeused(),
+        'memoryused' => $reply->getMemoryused(),
+        'output' => $reply->getOutput(),
+      ];
+
+      return response()->json($result);
+    }
+    return response()->json(['msg' => 'no judgers found'], 422);
+  }
 }

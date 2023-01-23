@@ -34,6 +34,7 @@ class TestJudger extends Command
 
     public function ensure($b){
       if(!$b){
+        $this->error("Error");
         abort(500);
       }
     }
@@ -52,6 +53,14 @@ class TestJudger extends Command
         print "time: ".$reply->getTimeused()."\n";
         print "memory: ".$reply->getMemoryused()."\n";
 
+        while($reply->getStatus() == \WJudger\JudgeStatus::BUSY){
+          list($reply, $status) = $client->Simple($args)->wait();
+        }
+
+        print "status: ".$reply->getStatus()."\n";
+        print "time: ".$reply->getTimeused()."\n";
+        print "memory: ".$reply->getMemoryused()."\n";
+
         $this->info("output: ".$reply->getOutput());
 
         if($reply->getCompileError()){
@@ -62,7 +71,7 @@ class TestJudger extends Command
             $this->info("RE: ".$reply->getRuntimeErrorMessage());
         }
 
-        $this->ensure($reply->getStatus() == 0);
+        $this->ensure($reply->getStatus() == \WJudger\JudgeStatus::OK);
 
         switch($testcase->result){
           case "OK":
