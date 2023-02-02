@@ -66,7 +66,9 @@
           $('#time_used').html(data.timeused);
           $('#memory_used').html((data.memoryused / 1024).toFixed(2));
           $('#output').val(result);
-      })
+      }).fail(function(data){
+        $('#output').val(data.responseJSON.msg);
+      });
     }
 </script>
 @endsection

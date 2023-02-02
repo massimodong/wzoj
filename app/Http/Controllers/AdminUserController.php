@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use Auth;
 use App\User;
 
 class AdminUserController extends Controller
@@ -49,7 +50,8 @@ class AdminUserController extends Controller
         if($user->name != $request->name) 
             return back()->withErrors(trans('wzoj.msg_users_update_id_name_match'));
 
-        if($user->has_role('manager')) abort(403);
+        if($user->has_role('admin')) abort(403);
+        if($user->has_role('manager') && !Auth::user()->has_role('admin')) abort(403);
 
         if(isset($request->new_password) && $request->new_password != ''){
             $user->password = bcrypt($request->new_password);
