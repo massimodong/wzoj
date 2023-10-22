@@ -481,4 +481,5 @@ return [
     'confirm_delete_solution' => '确认删除该提交？',
 
     'code_template' => '代码模板',
+    'show_code_template' => '显示代码模板',
 ];

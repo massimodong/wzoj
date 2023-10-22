@@ -387,6 +387,7 @@ class ProblemsetController extends Controller
     if(!isset($newval['public'])) $newval['public'] = 0;
     if(!isset($newval['show_problem_tags'])) $newval['show_problem_tags'] = 0;
     if(!isset($newval['show_tutorial'])) $newval['show_tutorial'] = 0;
+    if(!isset($newval['show_code_template'])) $newval['show_code_template'] = 0;
     if(!isset($newval['contest_hide_solutions'])) $newval['contest_hide_solutions'] = 0;
     if(!isset($newval['participate_type'])) $newval['participate_type'] = 0;
     if(!isset($newval['contest_duration'])) $newval['contest_duration'] = 120;

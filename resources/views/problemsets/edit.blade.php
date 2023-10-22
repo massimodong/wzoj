@@ -95,7 +95,12 @@
           <label><input type="checkbox" name='show_tutorial' value='1' {{$problemset->show_tutorial?"checked":""}}>{{trans('wzoj.show_tutorial')}}</label>
         </div>
       </div>
-      <div class="col-sm-5">
+      <div class="col-sm-2">
+        <div class="checkbox">
+          <label><input type="checkbox" name='show_code_template' value='1' {{$problemset->show_code_template?"checked":""}}>{{trans('wzoj.show_code_template')}}</label>
+        </div>
+      </div>
+      <div class="col-sm-3">
         <div class="checkbox">
           <label><input type="checkbox" name='contest_hide_solutions' value='1' {{$problemset->contest_hide_solutions?"checked":""}}>{{trans('wzoj.contest_hide_solutions')}}</label>
         </div>

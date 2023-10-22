@@ -71,6 +71,18 @@ class ProblemsetPolicy
     }
 
     public function view_code_template(User $user, Problemset $problemset){
-      return true;
+	    $flag = false;
+	    if($problemset->public) $flag = true;
+	    else{
+		    foreach($user->problemsets() as $ps){
+			    if($problemset->id == $ps->id){
+				    $flag = true;
+				    break;
+			    }
+		    }
+	    }
+	    if(!$flag) return false;
+
+      return $problemset->show_code_template;
     }
 }

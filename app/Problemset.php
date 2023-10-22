@@ -11,7 +11,7 @@ class Problemset extends Model
 {
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
-	protected $fillable = ['name','type','public','description','contest_start_at','contest_end_at', 'tag', 'remark', 'show_problem_tags', 'show_tutorial', 'contest_hide_solutions', 'manager_id', 'participate_type', 'contest_duration'];
+	protected $fillable = ['name','type','public','description','contest_start_at','contest_end_at', 'tag', 'remark', 'show_problem_tags', 'show_tutorial', 'show_code_template', 'contest_hide_solutions', 'manager_id', 'participate_type', 'contest_duration'];
 	protected $casts = [
 		'id' => 'integer',
 		'public' => 'boolean',
