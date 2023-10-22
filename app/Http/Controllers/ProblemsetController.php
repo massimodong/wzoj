@@ -192,6 +192,7 @@ class ProblemsetController extends Controller
     $table = array();
     $users_id = [];
     foreach($solutions as $solution){
+      if($solution->user->is_not_participate_ranklist()) continue;
       if(!isset($users_id[$solution->user_id])){
         array_push($table, new RanklistUser($solution->user));
         $users_id[$solution->user_id] = count($table)-1;
@@ -208,6 +209,7 @@ class ProblemsetController extends Controller
         ->with(['user'])
         ->get();
       foreach($solutions as $solution){
+        if($solution->user->is_not_participate_ranklist()) continue;
         if(!isset($users_id[$solution->user_id])){
           array_push($table, new RanklistUser($solution->user, -1));
           $users_id[$solution->user_id] = count($table)-1;

@@ -189,6 +189,11 @@ class User extends Model implements AuthenticatableContract,
       else return mb_substr($this->name, 0, $length);
     }
 
+    public function is_not_participate_ranklist(){
+      return $this->fullname_lock && mb_substr($this->fullname, 0, 1) == '*';
+    }
+
+
     public function __get($key){
       switch($key){
         case 'manage_groups':
