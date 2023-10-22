@@ -52,6 +52,7 @@ class JudgerController extends Controller
 		$solutions_oi = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
 				->where('solutions.status', 0)
 				->where('problemsets.type', 'oi')
+        ->where('problemsets.participate_type', 0)
 				->where('problemsets.contest_end_at', '<', DB::raw('now()'))
 				->where('solutions.created_at', '>=', DB::raw('problemsets.contest_start_at'))
 				->where('solutions.created_at', '<=', DB::raw('problemsets.contest_end_at'))
@@ -59,6 +60,20 @@ class JudgerController extends Controller
 				->orderBy('solutions.user_id', 'asc')
 				->select('solutions.id');
 		$solutions = $solutions->union($solutions_oi);
+
+    $solutions_oi_virtual = Solution::leftJoin('problemsets', 'solutions.problemset_id', '=', 'problemsets.id')
+        ->leftJoin('virtual_participations', 'solutions.user_id', '=', 'virtual_participations.user_id')
+        ->whereRaw('virtual_participations.problemset_id = solutions.problemset_id')
+        ->where('solutions.status', 0)
+        ->where('problemsets.type', 'oi')
+        ->where('problemsets.participate_type', 1)
+				->where('virtual_participations.contest_end_at', '<', DB::raw('now()'))
+				->where('solutions.created_at', '>=', DB::raw('problemsets.contest_start_at'))
+				->where('solutions.created_at', '<=', DB::raw('problemsets.contest_end_at'))
+				->take(5)
+				->orderBy('solutions.user_id', 'asc')
+        ->select('solutions.id');
+		$solutions = $solutions->union($solutions_oi_virtual);
 
 		$solutions = $solutions->get();
 
