@@ -69,4 +69,8 @@ class ProblemsetPolicy
 	    return false;
       */
     }
+
+    public function view_code_template(User $user, Problemset $problemset){
+      return true;
+    }
 }

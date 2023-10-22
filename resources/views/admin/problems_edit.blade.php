@@ -202,6 +202,13 @@
     </div>
 
     <div class="form-group row">
+      <label for="code_template" class="col-sm-2 col-form-label"> {{trans('wzoj.code_template')}} </label>
+      <div class="col-sm-10">
+        <textarea class='form-control' id='code_template' name='code_template'>{{$problem->code_template}}</textarea>
+      </div>
+    </div>
+
+    <div class="form-group row">
       <label for="remark" class="col-sm-2 col-form-label"> {{trans('wzoj.remark')}} </label>
       <div class="col-sm-10">
         <textarea class='form-control' id='remark' name='remark'>{{$problem->remark}}</textarea>

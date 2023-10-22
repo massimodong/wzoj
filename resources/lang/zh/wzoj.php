@@ -479,4 +479,6 @@ return [
     'invalid_srcfile_encoding' => '读取源文件内容失败，请上传正确的程序源文件，注意不要上传可执行文件',
 
     'confirm_delete_solution' => '确认删除该提交？',
+
+    'code_template' => '代码模板',
 ];

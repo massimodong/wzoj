@@ -62,6 +62,15 @@
 {!! $problem->hint !!}
 @endif
 
+@if (isset($problemset))
+  @can ('view_code_template', $problemset)
+    @if (strlen($problem->code_template))
+      <h4><b>{{trans('wzoj.code_template')}}:</b></h4>
+      <pre><code class="language-clike">{{$problem->code_template}}</code></pre>
+    @endif
+  @endcan
+@endif
+
 {{trans('wzoj.time_limit')}}: {{$problem->timelimit}}ms<br>
 {{trans('wzoj.memory_limit')}}: {{$problem->memorylimit}}MB<br>
 
