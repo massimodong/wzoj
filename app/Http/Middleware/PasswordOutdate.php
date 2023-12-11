@@ -21,7 +21,7 @@ class PasswordOutdate
         if(Auth::check()){
           if(Auth::user()->has_role('admin')) return $next($request);
           if(Auth::user()->is_pwd_outdate){
-            if(!$request->is('password/change')){
+            if(!$request->is('password/change') && !$request->is('auth/logout')){
               return redirect('/password/change')->withErrors([trans('wzoj.password_outdate')]);
             }
           }

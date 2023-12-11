@@ -55,6 +55,7 @@ class AdminUserController extends Controller
 
         if(isset($request->new_password) && $request->new_password != ''){
             $user->password = bcrypt($request->new_password);
+            $user->is_pwd_outdate = true;
             logAction('admin_change_user_password', ["user_id" => $user->id, "password" => $request->new_password], LOG_SEVERE);
         }
 
