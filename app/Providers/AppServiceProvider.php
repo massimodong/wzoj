@@ -5,6 +5,7 @@ namespace App\Providers;
 use Validator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +16,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+      Password::defaults(function () {
+        return Password::min(8)
+                       ->mixedCase()
+                       ->uncompromised();
+      });
 	    //check if the invitation is available
 	    Validator::extend('invitation',function($attribute, $value, $parameters, $validator){
 			    $invitation = \App\Invitation::where('token',$value)->first();
