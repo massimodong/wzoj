@@ -482,4 +482,6 @@ return [
 
     'code_template' => '代码模板',
     'show_code_template' => '显示代码模板',
+
+    'password_outdate' => '密码过期，请重新设置密码！',
 ];

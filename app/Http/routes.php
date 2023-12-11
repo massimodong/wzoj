@@ -13,7 +13,7 @@
 
 Route::get('forum/ajax-get-topics', 'ForumController@getAjaxTopics');
 
-Route::group(['middleware' => ['web', 'antibot', 'contest']], function(){
+Route::group(['middleware' => ['web', 'antibot', 'contest', 'pwd_outdate']], function(){
 
     Route::get('/','HomeController@index');
     Route::get('ranklist', 'HomeController@ranklist');
