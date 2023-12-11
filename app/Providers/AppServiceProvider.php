@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
       Password::defaults(function () {
         return Password::min(8)
                        ->mixedCase()
+                       ->numbers()
+                       ->symbols()
                        ->uncompromised();
       });
 	    //check if the invitation is available
