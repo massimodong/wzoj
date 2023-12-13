@@ -21,7 +21,7 @@
     <tr>
       <td>{{$start_rank++}}</td>
       <td>@include ('partials.user_badge', ['user' => $user])</td>
-      <td><div style="overflow-y: auto;max-height: 58px">{{$user->description}}</div></td>
+      <td><div style="overflow-y: auto;max-height: 58px;line-break:anywhere">{{$user->description}}</div></td>
       <td>{{$user->cnt_ac}}</td>
     </tr>
   @endforeach
