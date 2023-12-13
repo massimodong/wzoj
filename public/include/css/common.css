@@ -22,6 +22,11 @@ body {
   }
 }
 
+.form-register {
+  padding: 15px;
+  margin: auto;
+}
+
 .form-signin {
   text-align: center!important;
   width: 100%;

@@ -5,7 +5,7 @@
 @endsection
 
 @section ('content')
-<form method="POST" action="/auth/register?token={{$invitation->token}}">
+<form method="POST" action="/auth/register?token={{$invitation->token}}" class="form-register">
   {!! csrf_field() !!}
   <div class="form-group row">
     <label for="name" class="col-sm-2 col-form-label">{{trans('wzoj.username')}}</label>
@@ -14,31 +14,23 @@
     </div>
   </div>
 
+  @if ($invitation->fullname <> '')
   <div class="form-group row">
     <label for="fullname" class="col-sm-2 col-form-label">{{trans('wzoj.fullname')}}</label>
     <div class="col-sm-10">
-      <input class="form-control" type="text" name="fullname" id="fullname" 
-      @if ($invitation->fullname <> '')
-        value="{{$invitation->fullname}}" disabled
-      @else
-        value="{{old('fullname')}}"
-      @endif
-      >
+      <input class="form-control" type="text" name="fullname" id="fullname" value="{{$invitation->fullname}}" disabled>
     </div>
   </div>
+  @endif
 
+  @if ($invitation->class <> '')
   <div class="form-group row">
     <label for="class" class="col-sm-2 col-form-label">{{trans('wzoj.class')}}</label>
     <div class="col-sm-10">
-      <input class="form-control" type="text" name="class" id="class"
-      @if ($invitation->class <> '')
-        value="{{$invitation->class}}" disabled
-      @else
-        value="{{ old('class')}}"
-      @endif
-      >
+      <input class="form-control" type="text" name="class" id="class" value="{{$invitation->class}}" disabled>
     </div>
   </div>
+  @endif
 
   <div class="form-group row">
     <label for="email" class="col-sm-2 col-form-label">{{trans('wzoj.email')}}</label>
