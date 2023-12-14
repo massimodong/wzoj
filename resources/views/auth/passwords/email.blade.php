@@ -11,11 +11,10 @@
 <div class="col-md-12">
 <form method="POST" action="/auth/password/email">
 	{!! csrf_field() !!}
-	<div class="col-md-offset-4 col-md-4">
 
 	<div class="form-group row">
-		<div class="col-md-12">
-			<label for="inputEmail">{{trans('wzoj.email')}}</label>
+	  <label for="inputEmail" class="col-sm-2 col-form-label">{{trans('wzoj.email')}}</label>
+		<div class="col-sm-10">
 			<input type="email" class="form-control" id="inputEmail"
 			name="email" placehold="{{trans('wzoj.email')}}" value="" required autofocus>
 		</div>
