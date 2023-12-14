@@ -57,7 +57,7 @@ class RegisterController extends Controller
             'class' => 'max:255',
             'token' => 'required|invitation',
             'password' => ['required', 'confirmed', Password::defaults()],
-            'captcha' => 'required|captcha',
+            captchaGetRequestName() => captchaGetValidation(),
         ]);
     }
 

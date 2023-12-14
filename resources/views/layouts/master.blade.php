@@ -11,6 +11,7 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="{{ojcache('/css/app.css')}}">
     <link rel="stylesheet" href={{ojcache("/include/css/common.css")}}>
+    @include ('partials.captcha.includejs')
 
     @show
   </head>

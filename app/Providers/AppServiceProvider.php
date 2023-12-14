@@ -56,5 +56,6 @@ class AppServiceProvider extends ServiceProvider
     {
 	    //require the app/Http/Helpers.php
 	    require_once base_path().'/app/Http/Helpers.php';
+	    require_once base_path().'/app/Http/Captcha.php';
     }
 }
