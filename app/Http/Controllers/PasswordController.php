@@ -25,6 +25,7 @@ class PasswordController extends Controller
       if(isset($request->new_password) && $request->new_password != ''){
         Auth::user()->password = bcrypt($request->new_password);
         Auth::user()->is_pwd_outdate = false;
+        Auth::user()->bot_tendency = 0;
       }
       Auth::user()->name = $request->name;
       Auth::user()->email = $request->email;

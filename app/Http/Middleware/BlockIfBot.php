@@ -26,7 +26,7 @@ class BlockIfBot
           return redirect('/');
         }
 	    }else if($user->bot_tendency >= 100){ //block request
-		    if($request->path() === 'sorry' || $request->path() === '_captcha/default') return $next($request);
+		    if($request->path() === 'sorry' || $request->path() === '_captcha/default' || $request->path() === 'password/change') return $next($request);
 		    else{
           if($request->ajax()){
             return response()->json(['msg' => trans('wzoj.blocked'), 'err_code' => 'blocked'], 422);
