@@ -85,14 +85,12 @@ class RegisterController extends Controller
           $newuser->fullname=$invitation->fullname;
           $newuser->fullname_lock = true;
         }else{
-          $newuser->fullname=$data['fullname'];
         }
 
         if($invitation->class <> ''){
           $newuser->class=$invitation->class;
           $newuser->class_lock = true;
         }else{
-          $newuser->class=$data['class'];
         }
 
         $newuser->save();
