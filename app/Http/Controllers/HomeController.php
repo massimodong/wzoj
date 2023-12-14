@@ -141,7 +141,8 @@ class HomeController extends Controller
   public function postSorry(Request $request){
     if(!(Auth::check())) return redirect('/');
     $this->validate($request,[
-      'captcha' => 'required|captcha']);
+      captchaGetRequestName() => captchaGetValidation(),
+    ]);
     \App\User::where('id', $request->user()->id)
       ->update(['bot_tendency' => 0]);
     return redirect()->intended('/');

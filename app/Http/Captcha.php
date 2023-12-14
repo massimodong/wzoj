@@ -14,7 +14,7 @@ function captchaGetRequestName(){
 function captchaGetValidation(){
   switch(config("wzoj.captcha_service")){
     case "turnstile":
-      return new Turnstile;
+      return ['required', new Turnstile];
     case "mews":
       return "required|captcha";
   }
