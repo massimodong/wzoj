@@ -20,8 +20,8 @@ class AppServiceProvider extends ServiceProvider
         return Password::min(8)
                        ->mixedCase()
                        ->numbers()
-                       ->symbols()
-                       ->uncompromised();
+                       ->symbols();
+                       //->uncompromised();
       });
 	    //check if the invitation is available
 	    Validator::extend('invitation',function($attribute, $value, $parameters, $validator){
