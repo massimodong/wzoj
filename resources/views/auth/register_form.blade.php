@@ -5,7 +5,7 @@
 @endsection
 
 @section ('content')
-<form method="POST" action="/auth/register?token={{$invitation->token}}" class="form-register">
+<form method="POST" action="/auth/register?token={{$invitation->token}}" class="form-padded">
   {!! csrf_field() !!}
   <div class="form-group row">
     <label for="name" class="col-sm-2 col-form-label">{{trans('wzoj.username')}}</label>

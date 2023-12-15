@@ -9,7 +9,7 @@
 <div class="container">
 <div class="row">
 <div class="col-md-12">
-<form method="POST" action="/auth/password/email">
+<form method="POST" action="/auth/password/email" class="form-padded">
 	{!! csrf_field() !!}
 
 	<div class="form-group row">
