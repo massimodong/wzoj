@@ -10,10 +10,10 @@
 <h2 class="form-signin-heading">{{trans('wzoj.please_login')}}</h2>
 
 <label for="name" class="sr-only">{{trans('wzoj.username')}}</label>
-<input type="text" name="name" id="name" value="{{old('name')}}" class="form-control" placeholder="{{trans('wzoj.username')}}" required autofocus>
+<input type="text" name="name" id="name" value="{{old('name')}}" class="form-control" placeholder="{{trans('wzoj.username')}}" required autofocus autocomplete="username">
 
 <label for="password" class="sr-only">{{trans('wzoj.password')}}</label>
-<input type="password" name="password" id="password" class="form-control" placeholder="{{trans('wzoj.password')}}" required>
+<input type="password" name="password" id="password" class="form-control" placeholder="{{trans('wzoj.password')}}" required autocomplete="current-password">
 
 
 <button class="btn btn-lg btn-primary btn-block" type="submit">{{trans('wzoj.login')}}</button>

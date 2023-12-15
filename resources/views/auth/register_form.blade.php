@@ -10,7 +10,7 @@
   <div class="form-group row">
     <label for="name" class="col-sm-2 col-form-label">{{trans('wzoj.username')}}</label>
     <div class="col-sm-10">
-      <input class="form-control" type="text" name="name" id="name" value="{{old('name')}}" required>
+      <input class="form-control" type="text" name="name" id="name" value="{{old('name')}}" required autocomplete="username">
     </div>
   </div>
 
@@ -35,14 +35,14 @@
   <div class="form-group row">
     <label for="email" class="col-sm-2 col-form-label">{{trans('wzoj.email')}}</label>
     <div class="col-sm-10">
-      <input class="form-control" type="email" name="email" id="email" value="{{old('email')}}" required>
+      <input class="form-control" type="email" name="email" id="email" value="{{old('email')}}" required autocomplete="email">
     </div>
   </div>
 
   <div class="form-group row">
     <label for="password" class="col-sm-2 col-form-label">{{trans('wzoj.password')}}</label>
     <div class="col-sm-10">
-      <input class="form-control" type="password" name="password" id="password" value="{{old('password')}}" required>
+      <input class="form-control" type="password" name="password" id="password" value="{{old('password')}}" required autocomplete="new-password">
     </div>
   </div>
 
