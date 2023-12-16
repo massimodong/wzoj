@@ -69,4 +69,11 @@
     "config": {
         "preferred-install": "dist",
         "optimize-autoloader": true
-    }}
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}
