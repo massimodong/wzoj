@@ -27,6 +27,12 @@
     </div>
   </div>
   <div class="form-group row">
+    <label for="ranklist_mode" class="col-sm-2 control-label">{{trans('wzoj.ranklist_mode')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="ranklist_mode" name="ranklist_mode" value="{{ojoption('ranklist_mode')}}">
+    </div>
+  </div>
+  <div class="form-group row">
     <label for="logo_url" class="col-sm-2 control-label">{{trans('wzoj.logo_url')}}:</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" id="logo_url" name="logo_url" value="{{ojoption('logo_url')}}">

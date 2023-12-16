@@ -121,6 +121,19 @@ class HomeController extends Controller
   }
 
   public function ranklist(Request $request){
+    switch(ojoption('ranklist_mode')){
+      case 0: // no conditions
+        break;
+      case 1: // require login
+        if(!Auth::check()) return redirect('/auth/login');
+        break;
+      case 2: // deny all except admin
+        if(!Auth::check()) return redirect('/auth/login');
+        if(!Auth::user()->has_role('admin')) abort(403);
+        break;
+      default:
+        abort(503);
+    }
     $users = User::orderBy('cnt_ac', 'desc')
         ->withoutAdmin()
         ->paginate(100);

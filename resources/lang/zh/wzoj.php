@@ -486,4 +486,6 @@ return [
     'password_outdate' => '密码过期，请重新设置密码！',
 
     'turnstile_error' => '未通过实人验证',
+
+    'ranklist_mode' => '排名展示策略',
 ];
