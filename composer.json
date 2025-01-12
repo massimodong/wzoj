@@ -21,7 +21,8 @@
         "beyondcode/laravel-websockets": "^1.12",
         "pusher/pusher-php-server": "^4.1",
         "google/protobuf": "^3.19",
-        "grpc/grpc": "^1.42"
+        "grpc/grpc": "^1.42",
+        "laravel/octane": "^1.5"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.0.1",
