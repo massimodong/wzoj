@@ -74,7 +74,7 @@
     "repositories": {
         "packagist": {
             "type": "composer",
-            "url": "https://packagist.phpcomposer.com"
+            "url": "https://mirrors.aliyun.com/composer/"
         }
     }
 }
