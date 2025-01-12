@@ -209,9 +209,9 @@ define('LOG_SEVERE', 3);
 
 function getRemoteAddr(){
   if(config('wzoj.use_proxy')){
-    return ['ip' => $_SERVER['HTTP_X_REAL_IP'], 'port' => $_SERVER['HTTP_X_REAL_PORT']];
+    return ['ip' => $request->header('X_REAL_IP'), 'port' => $request->header('X_REAL_PORT')];
   }else{
-    return ['ip' => $_SERVER['REMOTE_ADDR'], 'port' => $_SERVER['REMOTE_PORT']];
+    return ['ip' => $request->header('REMOTE_ADDR'), 'port' => $request->header('REMOTE_PORT')];
   }
 }
 
