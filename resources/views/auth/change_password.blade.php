@@ -24,20 +24,20 @@
   <div class="form-group">
     <label for="new_password" class="col-sm-2 control-label">{{trans('wzoj.new_password')}}</label>
     <div class="col-sm-10">
-      <input type="password" class="form-control" id="new_password" name="new_password">
+      <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="new-password">
     </div>
   </div>
   <div class="form-group">
     <label for="new_password_confirmation" class="col-sm-2 control-label">{{trans('wzoj.password_confirmation')}}</label>
     <div class="col-sm-10">
-      <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation">
+      <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" autocomplete="new-password">
     </div>
   </div>
   <hr>
   <div class="form-group">
     <label for="old_password" class="col-sm-2 control-label">{{trans('wzoj.old_password')}}</label>
     <div class="col-sm-10">
-      <input type="password" class="form-control" id="old_password" name="old_password">
+      <input type="password" class="form-control" id="old_password" name="old_password" autocomplete="current-password">
     </div>
   </div>
 
