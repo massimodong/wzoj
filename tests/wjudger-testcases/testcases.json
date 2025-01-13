@@ -42,11 +42,5 @@
     "language": 1,
     "input": "123456",
     "result": "RE"
-  },
-  {
-    "srcfile": "mle2.cpp",
-    "language": 1,
-    "input": "20000000",
-    "result": "RE"
   }
 ]

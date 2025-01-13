@@ -42,7 +42,6 @@ class TestJudger extends Command
     public function check_testcase($judger, $client, $testcase){
       $this->info("checking testcase ".$testcase->srcfile);
         $args = new \WJudger\SimpleArgs();
-        $args->setJudgerid(0);
         $args->setToken($judger->token);
         $args->setLanguage($testcase->language);
         $args->setCode(file_get_contents("tests/wjudger-testcases/".$testcase->srcfile));
