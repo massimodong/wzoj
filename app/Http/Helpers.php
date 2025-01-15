@@ -113,7 +113,12 @@ function wakeJudgers($sid = 0){
 	}
 
 	if(($sid != 0) && config('wzoj.http_judger_on')){
-		Illuminate\Support\Facades\Http::asForm()->post(config('wzoj.http_judger_url') . "?solution_id=" . strval($sid), [ ]);
+		Illuminate\Support\Facades\Http::asForm()
+			->withHeaders([
+        'X-Fc-Invocation-Type' => 'Async',
+			])
+			->post(config('wzoj.http_judger_url') . "?solution_id=" . strval($sid), [
+			]);
 	}
 }
 
