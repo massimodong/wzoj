@@ -106,9 +106,14 @@ function ojUdpSend($ip, $port, $msg){
 	}
 }
 
-function wakeJudgers(){
+//use Illuminate\Support\Facades\Http;
+function wakeJudgers($sid = 0){
 	foreach(\App\Judger::where('ip_addr', '<>', '')->get() as $judger){
 		ojUdpSend($judger->ip_addr, OJ_UDP_PORT, $judger->token);
+	}
+
+	if(($sid != 0) && config('wzoj.http_judger_on')){
+		Illuminate\Support\Facades\Http::asForm()->post(config('wzoj.http_judger_url') . "?solution_id=" . strval($sid), [ ]);
 	}
 }
 
