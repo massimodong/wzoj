@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Event;
+use Gate;
 
 use Illuminate\Http\Request;
 
@@ -217,7 +218,7 @@ class SolutionController extends Controller
         }
 
         if(Auth::check()) $this->authorize('view', $solution);
-        else return redirect('/auth/login');
+        else Gate::forUser(new \App\User)->allows('view', $solution);
 
         if(isset($request->answerfile)){
           $this->authorize('view_code', $solution);
