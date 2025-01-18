@@ -14,6 +14,8 @@ const TRANS = {
 	cnt_solutions: '提交数',
 	estimate_time: '预计时间',
 	confirm_rejudge: '确认重测',
+	rejudge_remind: '重判请求完全提交成功之前，请勿离开本页面。',
+	rejudge_complete: '重判请求提交完成',
 	problem_type_1: '传统题',
 	problem_type_2: '交互题',
 	problem_type_3: '提交答案题',
@@ -184,3 +186,5 @@ function sec2text( sec ){
 function ms2text( ms ){
 	return sec2text(ms / 1000);
 }
+
+const delay = ms => new Promise(res => setTimeout(res, ms));

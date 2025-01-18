@@ -5,7 +5,7 @@
 @endsection
 
 @section ('content')
-<form method='POST' id='problem_rejudge_form'>
+<form id='problem_rejudge_form'>
 {{csrf_field()}}
 
 <div class="form-group">
@@ -37,24 +37,33 @@
 
 <p class="text-muted">{{trans('wzoj.msg_problem_rejudge_helper')}}</p>
 
+<p><span id="rejudge_complete">0</span>/<span id="rejudge_total">0</span></p>
+
 </form>
 @endsection
 
 @section ('scripts')
 <script>
 function post_rejudge(){
-	$.get('/admin/problem-rejudge/check', $('#problem_rejudge_form').serialize()).done(function( data ){
-		var flag = true;
-		if(data.time_used >= 600000){ //10min
-			var confirm_msg = TRANS['cnt_solutions'] + ": " + data.count + "\n" +
-					  TRANS['estimate_time'] + ": " + ms2text(data.time_used) + "\n" +
-					  TRANS['confirm_rejudge'] + "?";
-			if(!confirm(confirm_msg)){
-				flag = false;
+	$.get('/admin/problem-rejudge/check', $('#problem_rejudge_form').serialize()).done(async function( data ){
+		var confirm_msg = TRANS['cnt_solutions'] + ": " + data.count + "\n" +
+				  TRANS['estimate_time'] + ": " + ms2text(data.time_used) + "\n" +
+				  TRANS['confirm_rejudge'] + "?\n" +
+				  TRANS['rejudge_remind'];
+		if(confirm(confirm_msg)){
+			$('#rejudge_total').html(data.sids.length);
+			for(var i=0; i < data.sids.length; i++){
+				sid = data.sids[i];
+
+				$.post('/admin/problem-rejudge', {
+					_token: "{{csrf_token()}}",
+					solution_id: sid,
+				});
+
+				$('#rejudge_complete').html(i+1);
+				await delay(1000);
 			}
-		}
-		if(flag){
-			$('#problem_rejudge_form').submit();
+			alert(TRANS['rejudge_complete']);
 		}
 	});
 	return false;

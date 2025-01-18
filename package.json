@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "axios": "^0.25.0",
+    "chokidar": "^4.0.3",
     "cross-env": "^7.0",
     "laravel-echo": "^1.11.0",
     "laravel-mix": "^6.0.41",

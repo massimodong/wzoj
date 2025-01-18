@@ -265,7 +265,7 @@ return [
 
     'user_description' => '个人简介',
 
-    'msg_problem_rejudge_helper' => '*提交编号为 1,2,5-7,9 表示重判第1,2,5,6,7,9 题。以上选项满足"且"关系。',
+    'msg_problem_rejudge_helper' => '*提交编号为 1,2,5-7,9 表示重判第1,2,5,6,7,9 题。以上选项满足"且"关系。重判请求完全提交成功之前，请勿离开本页面。',
 
     'recent_contests' => '近期比赛',
     'contests' => '比赛',

@@ -64,21 +64,27 @@ class AdminProblemRejudgeController extends Controller
 	}
 
 	public function postProblemRejudge(Request $request){
-    logAction('admin_problem_rejudge', ["solution_id" => $request->solution_id, "problemset_id" => $request->problemset_id, "problem_id" => $request->problem_id], LOG_MODERATE);
-		$solutions = $this->genSolutionsQuery($request);
-		$this->rejudgeSolutions($solutions);
-		wakeJudgers();
-		return back();
+		Solution::where('id', $request->solution_id)->update(['status' => SL_PENDING_REJUDGING]);
+		wakeJudgers($request->solution_id);
+		return response()->json("ok");
+		//$solutions = $this->genSolutionsQuery($request);
+		//$this->rejudgeSolutions($solutions);
+		//wakeJudgers();
+		//return back();
 	}
 
 	public function getProblemRejudgeCheck(Request $request){
+		logAction('admin_problem_rejudge', ["solution_id" => $request->solution_id, "problemset_id" => $request->problemset_id, "problem_id" => $request->problem_id], LOG_MODERATE);
 		$solutions = $this->genSolutionsQuery($request);
 		$sol2 = clone $solutions;
+		$sol3 = clone $solutions;
 
 		$count = $solutions->count();
 		$time_used = $sol2->sum(DB::raw('time_used * cnt_testcases'));
+		$sids = $sol3->orderBy('id', 'asc')->pluck("id")->all();
 
 		return response()->json([
+			'sids' => $sids,
 			'count' => $count,
 			'time_used' => $time_used,
 		]);
