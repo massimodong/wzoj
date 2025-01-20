@@ -15,6 +15,10 @@ $app = new Illuminate\Foundation\Application(
     realpath(__DIR__.'/../')
 );
 
+$app->afterLoadingEnvironment(function() use ($app) {
+    $app->useStoragePath(env('APP_STORAGE', storage_path()));
+});
+
 /*
 |--------------------------------------------------------------------------
 | Bind Important Interfaces
