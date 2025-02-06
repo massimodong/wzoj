@@ -6,6 +6,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## 5.10.9 - 2023-11-15
+
+### Changed
+- Zero width no-break space (U+FEFF) characters are removed from content passed to `setContent`, `insertContent`, and `resetContent` APIs. #TINY-10337
+- Zero width no-break space (U+FEFF) characters in initial content are not loaded into the editor upon initialization. #TINY-10337
+
+### Fixed
+- Specific HTML content containing unescaped text nodes caused mXSS when using undo/redo. #TINY-10337
+- Specific HTML content containing unescaped text nodes caused mXSS when using the `getContent` and `setContent` APIs with the `format: 'raw'` option, which also affected the `resetContent` API and the draft restoration feature of the Autosave plugin. #TINY-10337
+
+## 5.10.8 - 2023-10-19
+
+### Fixed
+- Specific HTML content caused mXSS when using undo/redo. #TINY-10215
+- Specific HTML content caused mXSS when using the `getContent` and `setContent` APIs with the `format: 'raw'` option, which also affected the `resetContent` API and the draft restoration feature of the Autosave plugin. #TINY-10236
+- Notification messages containing HTML were not properly XSS sanitized before being displayed. #TINY-10286
+
+## 5.10.7 - 2022-12-06
+
+### Fixed
+- HTML in messages for the `WindowManager.alert` and `WindowManager.confirm` APIs were not properly sanitized. #TINY-3548
+
+## 5.10.6 - 2022-10-19
+
+### Fixed
+- The `name` and `id` attributes of some elements were incorrectly removed during serialization #TINY-8773
+- Notifications would not properly reposition when toggling fullscreen mode #TINY-8701
+- Toggling fullscreen mode with the `fullscreen` plugin now also fires the `ResizeEditor` event #TINY-8701
+- The URL detection used for `autolink` and smart paste didn't work if a path segment contained valid characters such as `!` and `:` #TINY-8069
+
+## 5.10.5 - 2022-05-25
+
+### Fixed
+- Base64 data URIs were not extracted correctly during parsing when proceeded by `data:` text #TINY-8646
+- Empty lines that were formatted in a ranged selection using the `format_empty_lines` option were not kept in the serialized content #TINY-8639
+- The `s` element was missing from the default schema text inline elements #TINY-8639
+- Some text inline elements specified via the schema were not removed when empty by default #TINY-8639
+
+## 5.10.4 - 2022-04-27
+
+### Fixed
+- Inline toolbars flickered when switching between editors #TINY-8594
+- Multiple inline toolbars were shown if focused too quickly #TINY-8503
+
+## 5.10.3 - 2022-02-09
+
+### Fixed
+- Alignment would sometimes be removed on parent elements when changing alignment on certain inline nodes, such as images #TINY-8308
+- The `fullscreen` plugin would reset the scroll position when exiting fullscreen mode #TINY-8418
+
 ## 5.10.2 - 2021-11-17
 
 ### Fixed

@@ -18,10 +18,12 @@ window.$ = window.jQuery = require('jquery');
 window.Popper = Popper;
 require('bootstrap');
 require('bootstrap-fileinput')
-require('bootstrap-fileinput/themes/fa/theme.min')
+require('bootstrap-fileinput/themes/fa4/theme.min')
 require('bootstrap-select/dist/js/bootstrap-select.min');
 
 import Prism from 'prismjs';
+require('prismjs/plugins/toolbar/prism-toolbar.js')
+require('prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js')
 Prism.highlightAll();
 
 require('croppie/croppie.js');

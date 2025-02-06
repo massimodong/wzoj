@@ -129,7 +129,11 @@
 
 @if ($solution->problem->type <> 3)
   @can ('view_code', $solution)
-    <pre><code class="{{ojPrimusClass($solution->language)}}">{{$solution->code}}</code></pre>
+    <pre
+      data-prismjs-copy="{{trans('wzoj.copy_code')}}"
+      data-prismjs-copy-error="{{trans('wzoj.copy_fail')}}"
+      data-prismjs-copy-success="{{trans('wzoj.copy_success')}}"
+    ><code class="{{ojPrimusClass($solution->language)}}">{{$solution->code}}</code></pre>
   @endcan
 @endif
 

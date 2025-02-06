@@ -23,6 +23,10 @@ return [
     'date' => '日期',
     'remember_me' => '保持登录状态',
 
+    'copy_code' => '复制代码',
+    'copy_success' => '复制成功',
+    'copy_fail' => '按Ctrl+C复制',
+
     'blocked' => '禁止访问',
 
     'class' => '学校',
