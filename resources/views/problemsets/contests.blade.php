@@ -49,4 +49,6 @@
   </tbody>
   </table>
 </div>
+
+{{ $problemsets->links() }}
 @endsection
