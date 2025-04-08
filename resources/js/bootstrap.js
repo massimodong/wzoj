@@ -21,9 +21,15 @@ require('bootstrap-fileinput')
 require('bootstrap-fileinput/themes/fa4/theme.min')
 require('bootstrap-select/dist/js/bootstrap-select.min');
 
-import Prism from 'prismjs';
+//import Prism from 'prismjs';
+require('prismjs/prism.js')
 require('prismjs/plugins/toolbar/prism-toolbar.js')
 require('prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.js')
+require('prismjs/plugins/line-numbers/prism-line-numbers.js')
+require('prismjs/components/prism-clike.js')
+require('prismjs/components/prism-java.js')
+require('prismjs/components/prism-pascal.js')
+require('prismjs/components/prism-python.js')
 Prism.highlightAll();
 
 require('croppie/croppie.js');

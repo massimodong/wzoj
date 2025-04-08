@@ -129,7 +129,7 @@
 
 @if ($solution->problem->type <> 3)
   @can ('view_code', $solution)
-    <pre
+    <pre class="line-numbers"
       data-prismjs-copy="{{trans('wzoj.copy_code')}}"
       data-prismjs-copy-error="{{trans('wzoj.copy_fail')}}"
       data-prismjs-copy-success="{{trans('wzoj.copy_success')}}"
