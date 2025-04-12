@@ -22,7 +22,8 @@
         "pusher/pusher-php-server": "^4.1",
         "google/protobuf": "^3.19",
         "grpc/grpc": "^1.42",
-        "laravel/octane": "^1.5"
+        "laravel/octane": "^1.5",
+        "alibabacloud/dysmsapi-20170525": "3.1.2"
     },
     "require-dev": {
         "guzzlehttp/guzzle": "^7.0.1",

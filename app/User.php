@@ -193,6 +193,10 @@ class User extends Model implements AuthenticatableContract,
       return $this->fullname_lock && mb_substr($this->fullname, 0, 1) == '*';
     }
 
+    public function verification_codes(){
+      return $this->hasMany(VerificationCode::class);
+    }
+
 
     public function __get($key){
       switch($key){
