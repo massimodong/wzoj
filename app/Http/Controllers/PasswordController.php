@@ -23,6 +23,16 @@ class PasswordController extends Controller
         'old_password' => 'required',
     ]);
     if(Auth::attempt(['name' => Auth::user()->name, 'password' => $request->old_password])){
+      logAction('change_password', [
+        'old_name' => Auth::user()->name,
+        'new_name' => $request->name,
+        'old_email' => Auth::user()->email,
+        'new_email' => $request->email,
+        'old_phone' => Auth::user()->phone_number,
+        'new_phone' => $request->phone,
+        'password_changed' => (isset($request->new_password) && $request->new_password != ''),
+      ], LOG_SEVERE);
+
       if(isset($request->new_password) && $request->new_password != ''){
         Auth::user()->password = bcrypt($request->new_password);
         Auth::user()->is_pwd_outdate = false;

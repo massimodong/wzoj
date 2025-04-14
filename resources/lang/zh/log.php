@@ -8,6 +8,7 @@ return [
   'password_reset' => '重置密码',
   'change_user_profile' => '修改用户信息',
   'delete_solution' => '删除用户提交',
+  'change_password' => '修改用户安全信息',
 
   'admin_change_user_password' => '强制修改密码',
   'admin_change_user_bt' => '封禁/解封用户',
