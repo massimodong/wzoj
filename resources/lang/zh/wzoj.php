@@ -492,4 +492,10 @@ return [
     'turnstile_error' => '未通过实人验证',
 
     'ranklist_mode' => '排名展示策略',
+
+    'phone' => '手机号',
+    'verify_phone' => '验证手机号',
+    'phone_verified' => '手机号已验证',
+    'verification_code' => '验证码',
+    'send_verification_code' => '发送验证码',
 ];

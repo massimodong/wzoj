@@ -18,6 +18,7 @@ class PasswordController extends Controller
     $this->validate($request, [
         'name' => 'required|username|unique:users,name,'.Auth::user()->id,
         'email' => 'required|email|max:255|unique:users,email,'.Auth::user()->id,
+        'phone' => 'size:11',
         'new_password' => ['confirmed', Password::defaults()],
         'old_password' => 'required',
     ]);
@@ -29,8 +30,13 @@ class PasswordController extends Controller
       }
       Auth::user()->name = $request->name;
       Auth::user()->email = $request->email;
+      if(Auth::user()->phone_number != $request->phone){
+        Auth::user()->phone_number = $request->phone;
+        Auth::user()->phone_number_verified = false;
+      }
       Auth::user()->save();
-      return redirect('/users/'.Auth::user()->id);
+      return back();
+      //return redirect('/users/'.Auth::user()->id);
     }else{
       return back()
         ->withErrors(['old_password' => trans('wzoj.password_incorrect')]);

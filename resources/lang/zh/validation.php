@@ -68,9 +68,9 @@ return [
     'required_without_all' => 'The :attribute field is required when none of :values are present.',
     'same'                 => ':attribute 和 :other 必须相同.',
     'size'                 => [
-        'numeric' => 'The :attribute must be :size.',
+        'numeric' => ':attribute 的长度需为 :size.',
         'file'    => 'The :attribute must be :size kilobytes.',
-        'string'  => 'The :attribute must be :size characters.',
+        'string'  => ':attribute 的长度需为 :size.',
         'array'   => 'The :attribute must contain :size items.',
     ],
     'string'               => ':attribute 应为一个字符串.',
@@ -120,6 +120,7 @@ return [
 	    'email' => '邮箱',
 	    'fullname' => '姓名',
 	    'class' => '班级',
+      'phone' => '手机号',
     ],
 
 ];
