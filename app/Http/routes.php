@@ -74,6 +74,8 @@ Route::group(['middleware' => ['web', 'antibot', 'contest', 'pwd_outdate']], fun
 
     Route::get('source-compare', 'HomeController@sourceCompare')->middleware('admin');
 
+    Route::post('verification-code/send', 'VerificationCodeController@send')->middleware('auth');
+
     //forum
     Route::group(['prefix' => 'forum', 'middleware' => 'forum'], function(){
       Route::get('/', 'ForumController@getIndex');

@@ -498,4 +498,7 @@ return [
     'phone_verified' => '手机号已验证',
     'verification_code' => '验证码',
     'send_verification_code' => '发送验证码',
+    'verification_code_options' => '验证码设置',
+    'alibaba_sms_templates' => '阿里云短信模板',
+    'send_sms_failed' => '发送短信失败',
 ];

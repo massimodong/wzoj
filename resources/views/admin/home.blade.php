@@ -107,5 +107,14 @@
       <button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
     </div>
   </div>
+
+  <h3>{{trans('wzoj.verification_code_options')}}</h3>
+  <div class="form-group row">
+    <label for="forum_enabled" class="col-sm-2 control-label">{{trans('wzoj.alibaba_sms_templates')}}:</label>
+    <div class="col-sm-10">
+      <textarea type="text" class="form-control" id="sms_templates" name="sms_templates">{{ojoption('sms_templates')}}</textarea>
+    </div>
+  </div>
+
 </form>
 @endsection

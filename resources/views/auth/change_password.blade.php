@@ -16,12 +16,21 @@
         </button>
       </div>
       <div class="modal-body">
-        <form class="form-inline">
+        <form id="send-sms-form" class="form-inline" action="/verification-code/send" method="POST">
+          {{csrf_field()}}
+          <input style="display: none" name="task" value="link-phone">
           <label class="sr-only" for="phone_number_verify2">{{trans('wzoj.phone')}}</label>
           <input type="text" class="form-control mb-2 mr-sm-2" id="phone_number_verify2" value="{{Auth::user()->phone_number}}" readonly>
-          <button type="submit" class="btn btn-primary mb-2">{{trans('wzoj.send_verification_code')}}</button>
+          <button id="send_sms_btn" type="button" class="btn btn-primary mb-2" onclick="send_sms(); return false;">
+            <div id="submit-text">
+            {{trans('wzoj.send_verification_code')}}
+            </div>
+            <div id="submit-count-down" style="display:none">
+            </div>
+          </button>
         </form>
         <form class="form-inline">
+          {{csrf_field()}}
           <label class="sr-only" for="verification_code">{{trans('wzoj.verification_code')}}</label>
           <input type="text" class="form-control mb-2 mr-sm-2" id="verification_code" placeholder="">
           <button type="submit" class="btn btn-primary mb-2">{{trans('wzoj.verify_phone')}}</button>
@@ -92,4 +101,56 @@
 </form>
 
 </div>
+@endsection
+
+@section ('scripts')
+<script>
+
+function disable_send_sms(){
+  $('#send-sms-btn').attr('disabled', true);
+  $('#submit-count-down').html("60");
+  document.getElementById('submit-text').style.display = 'none';
+  document.getElementById('submit-count-down').style.display = 'block';
+}
+
+function enable_send_sms(){
+  $('#send-sms-btn').attr('disabled', false);
+  document.getElementById('submit-text').style.display = 'block';
+  document.getElementById('submit-count-down').style.display = 'none';
+}
+
+function start_count_down(){
+  $('#submit-count-down').attr('disabled', false);
+  $('#submit-count-down').html('60');
+  var count_down_timer = setInterval(function(){
+    let cur = parseInt($('#submit-count-down').html());
+    if (cur == 0){
+      clearInterval(count_down_timer);
+      enable_send_sms();
+    }
+    cur = cur - 1;
+    $('#submit-count-down').html(cur);
+  }, 1000);
+}
+
+function send_sms(){
+  disable_send_sms();
+
+  $.post({
+    url: '/verification-code/send',
+    data: new FormData($('#send-sms-form')[0]),
+    processData: false,
+    contentType: false,
+  }).done(function(data){
+      start_count_down();
+  }).fail(function(data){
+      if(data.status == 401){
+        window.location.href = '/auth/login';
+      }
+      addAlertWarning(data.responseJSON['msg']);
+      start_count_down();
+  });
+}
+</script>
+
 @endsection
