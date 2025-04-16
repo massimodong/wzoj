@@ -102,12 +102,6 @@
     </div>
   </div>
 
-  <div class="form-group row">
-    <div class="col-sm-offset-2 col-sm-10">
-      <button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
-    </div>
-  </div>
-
   <h3>{{trans('wzoj.verification_code_options')}}</h3>
   <div class="form-group row">
     <label for="forum_enabled" class="col-sm-2 control-label">{{trans('wzoj.alibaba_sms_templates')}}:</label>
@@ -116,5 +110,10 @@
     </div>
   </div>
 
+  <div class="form-group row">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">{{trans('wzoj.submit')}}</button>
+    </div>
+  </div>
 </form>
 @endsection

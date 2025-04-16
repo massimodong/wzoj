@@ -61,7 +61,8 @@ class VerificationCodeController extends Controller
         "templateParam" => "{\"code\":\"".$code."\",\"time\":\"".strval(self::SMS_TTL)."\"}",
     ]);
     try {
-        $client->sendSms($sendSmsRequest);
+        $res = $client->sendSms($sendSmsRequest)->toArray()["body"];
+        if($res["Code"] !== "OK") return response()->json(["ok" => false, 'msg' => $res["Message"]], 500);
     }
     catch (Exception $error) {
         if (!($error instanceof TeaError)) {
