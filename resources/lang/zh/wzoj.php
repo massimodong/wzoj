@@ -501,4 +501,5 @@ return [
     'verification_code_options' => '验证码设置',
     'alibaba_sms_templates' => '阿里云短信模板',
     'send_sms_failed' => '发送短信失败',
+    'invalid_verification_code' => '验证码错误',
 ];

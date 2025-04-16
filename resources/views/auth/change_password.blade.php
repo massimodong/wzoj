@@ -29,10 +29,10 @@
             </div>
           </button>
         </form>
-        <form class="form-inline">
+        <form class="form-inline" action="/password/link-phone" method="POST">
           {{csrf_field()}}
           <label class="sr-only" for="verification_code">{{trans('wzoj.verification_code')}}</label>
-          <input type="text" class="form-control mb-2 mr-sm-2" id="verification_code" placeholder="">
+          <input type="text" class="form-control mb-2 mr-sm-2" id="verification_code" name="verification_code" placeholder="">
           <button type="submit" class="btn btn-primary mb-2">{{trans('wzoj.verify_phone')}}</button>
         </form>
       </div>

@@ -18,7 +18,7 @@ class PasswordController extends Controller
     $this->validate($request, [
         'name' => 'required|username|unique:users,name,'.Auth::user()->id,
         'email' => 'required|email|max:255|unique:users,email,'.Auth::user()->id,
-        'phone' => 'size:11',
+        'phone' => 'digits:11',
         'new_password' => ['confirmed', Password::defaults()],
         'old_password' => 'required',
     ]);
@@ -51,5 +51,19 @@ class PasswordController extends Controller
       return back()
         ->withErrors(['old_password' => trans('wzoj.password_incorrect')]);
     }
+  }
+
+  public function postLinkPhone(Request $request){
+    if(is_null(Auth::user()->phone_number) || empty(Auth::user()->phone_number)){
+      return back();
+    }
+
+    $this->validate($request, [
+        'verification_code' => ['required', new \App\Rules\VerificationCode('link-phone')],
+    ]);
+
+    Auth::user()->phone_number_verified = true;
+    Auth::user()->save();
+    return back();
   }
 }

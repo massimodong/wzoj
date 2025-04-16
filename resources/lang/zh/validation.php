@@ -121,6 +121,7 @@ return [
 	    'fullname' => '姓名',
 	    'class' => '班级',
       'phone' => '手机号',
+      'verification_code' => '验证码',
     ],
 
 ];

@@ -27,6 +27,8 @@ Route::group(['middleware' => ['web', 'antibot', 'contest', 'pwd_outdate']], fun
     Route::get('password/change', 'PasswordController@getChangePassword');
     Route::post('password/change', 'PasswordController@postChangePassword');
 
+    Route::post('password/link-phone', 'PasswordController@postLinkPhone');
+
     Route::group(['prefix' => 'auth'], function(){
       Route::get('logout', 'Auth\LoginController@getLogout');
       Auth::routes();
