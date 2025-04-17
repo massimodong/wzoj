@@ -31,7 +31,7 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         Event::listen('Illuminate\Auth\Events\Registered', function ($data) {
-          logAction('registered', $data->user, LOG_MODERATE);
+          logAction('registered', $data->user, LOG_MODERATE, $data->user->id);
         });
 
         Event::listen('Illuminate\Auth\Events\Login', function ($data) {
@@ -39,7 +39,9 @@ class EventServiceProvider extends ServiceProvider
         });
 
         Event::listen('Illuminate\Auth\Events\Failed', function ($data) {
-          logAction('failed_login', $data->credentials, LOG_MODERATE);
+          $user = \App\User::where('name', $data->credentials["name"])->first();
+          if(is_null($user)) logAction('failed_login', $data->credentials, LOG_MODERATE);
+          else logAction('failed_login', $data->credentials, LOG_MODERATE, $user->id);
         });
 
         Event::listen('Illuminate\Auth\Events\Logout', function ($data) {
@@ -47,7 +49,7 @@ class EventServiceProvider extends ServiceProvider
         });
 
         Event::listen('Illuminate\Auth\Events\PasswordReset', function ($data) {
-          logAction('password_reset', $data->user, LOG_SEVERE);
+          logAction('password_reset', $data->user, LOG_SEVERE, $data->user->id);
         });
 
         //

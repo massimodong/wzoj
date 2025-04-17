@@ -225,8 +225,7 @@ function getRemoteAddr(){
   }
 }
 
-function logAction($action_name, $action_payload, $level){
-  $user_id = null;
+function logAction($action_name, $action_payload, $level, $user_id = null){
   if(Auth::check()) $user_id = Auth::user()->id;
 
   $remote = getRemoteAddr();
