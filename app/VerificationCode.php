@@ -9,7 +9,12 @@ class VerificationCode extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['code', 'task', 'verified'];
+    protected $fillable = ['code', 'task', 'verified', 'params', 'targets'];
+
+    protected $casts = [
+      "params" => "array",
+      "targets" => "array",
+    ];
 
     public function user(){
       return $this->belongsTo(\App\User);

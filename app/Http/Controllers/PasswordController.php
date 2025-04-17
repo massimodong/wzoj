@@ -18,7 +18,6 @@ class PasswordController extends Controller
     $this->validate($request, [
         'name' => 'required|username|unique:users,name,'.Auth::user()->id,
         'email' => 'required|email|max:255|unique:users,email,'.Auth::user()->id,
-        'phone' => 'digits:11',
         'new_password' => ['confirmed', Password::defaults()],
         'old_password' => 'required',
     ]);
@@ -28,8 +27,7 @@ class PasswordController extends Controller
         'new_name' => $request->name,
         'old_email' => Auth::user()->email,
         'new_email' => $request->email,
-        'old_phone' => Auth::user()->phone_number,
-        'new_phone' => $request->phone,
+        'phone' => Auth::user()->phone_number,
         'password_changed' => (isset($request->new_password) && $request->new_password != ''),
       ], LOG_SEVERE);
 
@@ -40,10 +38,6 @@ class PasswordController extends Controller
       }
       Auth::user()->name = $request->name;
       Auth::user()->email = $request->email;
-      if(Auth::user()->phone_number != $request->phone){
-        Auth::user()->phone_number = $request->phone;
-        Auth::user()->phone_number_verified = false;
-      }
       Auth::user()->save();
       return back();
       //return redirect('/users/'.Auth::user()->id);
@@ -54,15 +48,11 @@ class PasswordController extends Controller
   }
 
   public function postLinkPhone(Request $request){
-    if(is_null(Auth::user()->phone_number) || empty(Auth::user()->phone_number)){
-      return back();
-    }
-
     $this->validate($request, [
-        'verification_code' => ['required', new \App\Rules\VerificationCode('link-phone')],
+        'verification_code' => ['required', new \App\Rules\VerificationCode(Auth::user(), 'link-phone', $request)],
     ]);
 
-    Auth::user()->phone_number_verified = true;
+    Auth::user()->phone_number = $request->phone;
     Auth::user()->save();
     return back();
   }

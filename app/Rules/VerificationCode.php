@@ -12,9 +12,11 @@ class VerificationCode implements Rule
      *
      * @return void
      */
-    public function __construct($action)
+    public function __construct($user, $action, $req)
     {
+        $this->user = $user;
         $this->action = $action;
+        $this->req = $req;
     }
 
     /**
@@ -26,8 +28,7 @@ class VerificationCode implements Rule
      */
     public function passes($attribute, $value)
     {
-      if(!Auth::check()) return false;
-      $verification = Auth::user()->verification_codes()
+      $verification = $this->user->verification_codes()
         ->where('task', $this->action)
         ->where('verified', false)
         ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-10 minute')))
@@ -36,7 +37,11 @@ class VerificationCode implements Rule
 
       if(is_null($verification)) return false;
 
+      foreach($verification->params as $key => $val){
+        if($this->req[$key] !== $val) return false;
+      }
       if($verification->code !== $value) return false;
+
       $verification->verified = true;
       $verification->save();
       return true;

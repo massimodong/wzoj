@@ -20,7 +20,7 @@
           {{csrf_field()}}
           <input style="display: none" name="task" value="link-phone">
           <label class="sr-only" for="phone_number_verify2">{{trans('wzoj.phone')}}</label>
-          <input type="text" class="form-control mb-2 mr-sm-2" id="phone_number_verify2" value="{{Auth::user()->phone_number}}" readonly>
+          <input type="text" class="form-control mb-2 mr-sm-2" id="phone_number_verify2" name="phone" placeholder="{{trans('wzoj.phone')}}">
           <button id="send_sms_btn" type="button" class="btn btn-primary mb-2" onclick="send_sms(); return false;">
             <div id="submit-text">
             {{trans('wzoj.send_verification_code')}}
@@ -31,6 +31,7 @@
         </form>
         <form class="form-inline" action="/password/link-phone" method="POST">
           {{csrf_field()}}
+          <input style="display: none" id="phone_number_link_hidden" name="phone">
           <label class="sr-only" for="verification_code">{{trans('wzoj.verification_code')}}</label>
           <input type="text" class="form-control mb-2 mr-sm-2" id="verification_code" name="verification_code" placeholder="">
           <button type="submit" class="btn btn-primary mb-2">{{trans('wzoj.verify_phone')}}</button>
@@ -60,17 +61,12 @@
   <div class="form-group row">
     <label for="phone" class="col-sm-2 col-form-label">{{trans('wzoj.phone')}}</label>
     <div class="col-sm-8">
-      <input type="text" class="form-control" id="phone" name="phone" value="{{Auth::user()->phone_number}}">
+      <input type="text" class="form-control" id="phone" name="phone" value="{{Auth::user()->phone_number}}" readonly>
     </div>
     <div class="col-sm-2">
-      @if (is_null(Auth::user()->phone_number) || empty(Auth::user()->phone_number))
-      @elseif (Auth::user()->phone_number_verified)
-        <span class="form-control-plaintext" style="color:green;">{{trans('wzoj.phone_verified')}}</span>
-      @else
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#verifyPhoneModal">
           {{trans('wzoj.verify_phone')}}
         </button>
-      @endif
     </div>
   </div>
   <div class="form-group row">
@@ -134,6 +130,7 @@ function start_count_down(){
 }
 
 function send_sms(){
+  $('#phone_number_link_hidden').val($('#phone_number_verify2').val());
   disable_send_sms();
 
   $.post({

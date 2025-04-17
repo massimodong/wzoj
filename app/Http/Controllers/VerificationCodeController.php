@@ -29,13 +29,32 @@ class VerificationCodeController extends Controller
   }
 
   public function send(Request $request){
-    if(is_null(Auth::user()->phone_number) || empty(Auth::user()->phone_number)){
-      return response()->json(["ok" => false], 400);
-    }
-
     $this->validate($request, [
         'task' => 'required',
     ]);
+
+    $target_phone = 0;
+
+    if($request->task === 'link-phone'){
+      $this->validate($request, [
+          'phone' => 'digits:11',
+      ]);
+      $target_phone = $request->phone;
+    }else{
+      if(is_null(Auth::user()->phone_number) || empty(Auth::user()->phone_number)){
+        return response()->json(["ok" => false, "msg" => "Error!"], 400);
+      }
+      $target_phone = Auth::user()->phone_number;
+    }
+
+    $params = [];
+    switch($request->task){
+      case 'link-phone':
+        $params["phone"] = $target_phone;
+        break;
+      default:
+        return response()->json(["ok" => false, "msg" => "Error!"], 400);
+    }
 
     //we use redit to implement a `send lock` for each user, which automatically expires in 60 seconds
     $res = Redis::set('wzoj.sms_send_lock.'.Auth::user()->id, '1', 'ex', 60, 'nx');
@@ -55,7 +74,7 @@ class VerificationCodeController extends Controller
 
     $client = self::createAlibabaClient();
     $sendSmsRequest = new SendSmsRequest([
-        "phoneNumbers" => Auth::user()->phone_number,
+        "phoneNumbers" => $target_phone,
         "signName" => getenv("ALIBABA_SMS_SIGNNAME"),
         "templateCode" => $template_name,
         "templateParam" => "{\"code\":\"".$code."\",\"time\":\"".strval(self::SMS_TTL)."\"}",
@@ -76,6 +95,10 @@ class VerificationCodeController extends Controller
       'code' => $code,
       'task' => $request->task,
       'verified' => false,
+      'params' => $params,
+      'targets' => [
+        "phone" => $target_phone,
+      ],
     ]);
 
     return response()->json(["ok" => true]);
