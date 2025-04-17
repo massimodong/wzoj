@@ -20,7 +20,7 @@
           {{csrf_field()}}
           <input style="display: none" name="task" value="link-phone">
           <label class="sr-only" for="phone_number_verify2">{{trans('wzoj.phone')}}</label>
-          <input type="text" class="form-control mb-2 mr-sm-2" id="phone_number_verify2" name="phone" placeholder="{{trans('wzoj.phone')}}">
+          <input type="text" class="form-control mb-2 mr-sm-2" id="phone_number_verify2" name="phone" placeholder="{{trans('wzoj.phone')}}" required>
           <button id="send_sms_btn" type="button" class="btn btn-primary mb-2" onclick="send_sms(); return false;">
             <div id="submit-text">
             {{trans('wzoj.send_verification_code')}}
@@ -33,7 +33,7 @@
           {{csrf_field()}}
           <input style="display: none" id="phone_number_link_hidden" name="phone">
           <label class="sr-only" for="verification_code">{{trans('wzoj.verification_code')}}</label>
-          <input type="text" class="form-control mb-2 mr-sm-2" id="verification_code" name="verification_code" placeholder="">
+          <input type="text" class="form-control mb-2 mr-sm-2" id="verification_code" name="verification_code" placeholder="" required>
           <button type="submit" class="btn btn-primary mb-2">{{trans('wzoj.verify_phone')}}</button>
         </form>
       </div>
@@ -144,8 +144,15 @@ function send_sms(){
       if(data.status == 401){
         window.location.href = '/auth/login';
       }
-      addAlertWarning(data.responseJSON['msg']);
-      start_count_down();
+      if(data.responseJSON['msg'] != null){
+        addAlertWarning(data.responseJSON['msg']);
+        start_count_down();
+      }else{
+        for (var msg in data.responseJSON["errors"]){
+          addAlertWarning(data.responseJSON["errors"][msg]);
+        }
+        enable_send_sms();
+      }
   });
 }
 </script>

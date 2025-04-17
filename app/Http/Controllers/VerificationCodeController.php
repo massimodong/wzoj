@@ -37,7 +37,7 @@ class VerificationCodeController extends Controller
 
     if($request->task === 'link-phone'){
       $this->validate($request, [
-          'phone' => 'digits:11',
+          'phone' => 'required|digits:11',
       ]);
       $target_phone = $request->phone;
     }else{
