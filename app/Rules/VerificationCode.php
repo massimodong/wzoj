@@ -40,10 +40,12 @@ class VerificationCode implements Rule
       foreach($verification->params as $key => $val){
         if($this->req[$key] !== $val) return false;
       }
-      if($verification->code !== $value) return false;
 
       $verification->verified = true;
       $verification->save();
+
+      if($verification->code !== $value) return false;
+
       return true;
     }
 
