@@ -4,6 +4,11 @@
 {{trans('wzoj.contests')}} @if (isset($tag))- {{$tag}}@endif
 @endsection
 
+@section ('head')
+@parent
+<link rel="stylesheet" href={{ojcache("/include/css/datatables.min.css")}}>
+@endsection
+
 @section ('content')
 {!! Breadcrumbs::render('contests') !!}
 
@@ -16,7 +21,7 @@
 @endcan
 
 <div class="table-responsive">
-  <table class="table">
+  <table id="contests-table" class="table">
   <thead>
     <tr>
       <th>{{trans('wzoj.id')}}</th>
@@ -50,5 +55,15 @@
   </table>
 </div>
 
-{{ $problemsets->links() }}
+@endsection
+
+@section ('scripts')
+<script src={{ojcache("/include/js/datatables.min.js")}}></script>
+<script>
+$('#contests-table').DataTable({
+	searching: true,
+	paging: true,
+	order: [[3, "desc"], [0, "desc"]],
+});
+</script>
 @endsection

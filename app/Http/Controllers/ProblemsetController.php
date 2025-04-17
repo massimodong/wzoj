@@ -80,10 +80,8 @@ class ProblemsetController extends Controller
       }
     }
 
-    $paginated_contests = paginate_collection($contests, 10, null, ['path' => 'contests']);
-
     return view('problemsets.contests',[
-        'problemsets' => $paginated_contests,
+        'problemsets' => $contests,
         'tag' => $tag,
     ]);
   }
