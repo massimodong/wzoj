@@ -15,7 +15,7 @@ class FixLogUserIdBug extends Migration
      */
     public function up()
     {
-      UserLog::chunk(100, function($userlogs){
+      UserLog::whereNull('user_id')->chunkById(100, function($userlogs){
         foreach ($userlogs as $userlog){
           switch($userlog->action_name){
             case "registered":
