@@ -142,6 +142,11 @@
     <div class="card">
       <div class="card-header">
         {{trans('wzoj.user_description')}}
+        @can ('change_description', $user)
+          @if (ojoption('user_display_require_phone') && (is_null($user->phone_number) || empty($user->phone_number)))
+            <span style="color: red;">{{trans('wzoj.not_displayed_for_phone')}}</span>
+          @endif
+        @endcan
       </div>
       <div class="card-body">
         {{$user->description}}

@@ -94,11 +94,17 @@
     </div>
   </div>
 
-  <h3>{{trans('wzoj.forum_options')}}</h3>
+  <h3>{{trans('wzoj.user_interact_options')}}</h3>
   <div class="form-group row">
     <label for="forum_enabled" class="col-sm-2 control-label">{{trans('wzoj.forum_enabled')}}:</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" id="forum_enabled" name="forum_enabled" value="{{ojoption('forum_enabled')}}">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="forum_enabled" class="col-sm-2 control-label">{{trans('wzoj.user_display_require_phone')}}:</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="user_display_require_phone" name="user_display_require_phone" value="{{ojoption('user_display_require_phone')}}">
     </div>
   </div>
 

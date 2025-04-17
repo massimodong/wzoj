@@ -169,6 +169,7 @@ class User extends Model implements AuthenticatableContract,
       if(Auth::check() && (Auth::user()->id == $this->id || Auth::user()->has_role('admin'))){
         return $this->new_description;
       }else{
+        if(!$this->is_display()) return "";
         if(strtotime('-6 hours') > strtotime($this->description_changed_at)){
           if($this->stored_description != $this->new_description){
             $this->stored_description = $this->new_description;
@@ -180,7 +181,8 @@ class User extends Model implements AuthenticatableContract,
     }
 
     public function avatar_url($size){
-      if($this->avatar_token) return '/files/avatar/'.$this->id.'/avatar-'.$size.'.png?t='.$this->avatar_token;
+      if($this->is_display() && $this->avatar_token)
+        return '/files/avatar/'.$this->id.'/avatar-'.$size.'.png?t='.$this->avatar_token;
       else return '/files/avatar/default/avatar-'.$size.'.png';
     }
 
@@ -195,6 +197,13 @@ class User extends Model implements AuthenticatableContract,
 
     public function verification_codes(){
       return $this->hasMany(VerificationCode::class);
+    }
+
+    public function is_display(){
+      if(Auth::check() && Auth::user()->has_role('admin')) return true;
+      if(Auth::check() && Auth::user()->id == $this->id) return true;
+      if(ojoption('user_display_require_phone') && (is_null($this->phone_number) || empty($this->phone_number))) return false;
+      return true;
     }
 
 

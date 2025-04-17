@@ -249,7 +249,7 @@ return [
     'current_version_id' => '版本id',
     'msg_release_help' => '版本信息随系统更新自动同步，不需要手动设置',
 
-    'change_password' => '修改密码/用户名/邮箱',
+    'change_password' => '安全设置',
     'old_password' => '旧密码',
     'new_password' => '新密码',
     'password_incorrect' => '密码不正确',
@@ -502,4 +502,8 @@ return [
     'alibaba_sms_templates' => '阿里云短信模板',
     'send_sms_failed' => '发送短信失败',
     'invalid_verification_code' => '验证码错误',
+
+    'user_interact_options' => '用户交互设置',
+    'user_display_require_phone' => '仅展示手机认证用户',
+    'not_displayed_for_phone' => '未手机验证的用户不对外展示个人信息',
 ];
