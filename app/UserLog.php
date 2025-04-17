@@ -16,10 +16,10 @@ class UserLog extends Model
 
   public function prunable(){
     return static::where(function($query){
-                    $query->where('created_at', '<=', now()->subMonth())
+                    $query->where('created_at', '<=', now()->subYear())
                           ->where('level', LOG_NORMAL);
                   })->orWhere(function($query){
-                    $query->where('created_at', '<=', now()->subYear())
+                    $query->where('created_at', '<=', now()->subYears(5))
                           ->where('level', LOG_MODERATE);
                   });
   }
