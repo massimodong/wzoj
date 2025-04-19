@@ -26,10 +26,17 @@ class UserController extends Controller
 		});
 		$cnt_submissions = $user->solutions()->count();
 
-		return view('user.profile',['user' => $user,
-                                'cnt_submissions' => $cnt_submissions,
-                                'groups' => $groups,
-		]);
+    if($user->is_display()){
+      return view('user.profile',[
+        'user' => $user,
+        'cnt_submissions' => $cnt_submissions,
+        'groups' => $groups,
+      ]);
+    }else{
+      return view('user.profile-blocked',[
+        'user' => $user,
+      ]);
+    }
 	}
 
   public function postId($id,Request $request){
