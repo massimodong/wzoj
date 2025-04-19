@@ -13,7 +13,6 @@
         </div>
         <div class="col-md-10">
           <div class="card-body">
-            <h4 class="card-title">{{$user->nickname}}</h4>
             <h6>{{$user->name}}</h6>
             <div>
               {{$user->description}}
