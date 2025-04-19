@@ -29,6 +29,10 @@ class AdminUserLogController extends Controller
         $logs = $logs->where('request_ip', $request->request_ip);
       }
 
+      if(isset($request->before_at) && $request->before_at != ''){
+        $logs = $logs->where('created_at', '<=', $request->before_at);
+      }
+
       if(isset($request->actions)){
         $logs = $logs->whereIn('action_name', $request->actions);
       }

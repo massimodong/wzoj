@@ -24,6 +24,10 @@
     <label class="sr-only" for="request_ip"></label>
     <input type="text" class="form-control mb-2 mr-2" id="request_ip" name="request_ip" value="{{old('request_ip')}}" placeholder="{{trans('wzoj.ip_address')}}">
 
+    <label class="sr-only" for="before_at"></label>
+    <div style="position: relative">
+      <input type="text" class="form-control mb-2 mr-2 datetimepicker-input" name='before_at' id="before_at" placeholder="{{trans('wzoj.date')}}" value="{{old('before_at')}}" data-toggle="datetimepicker" data-target="#before_at" data-date-format="YYYY-MM-DD HH:mm:ss">
+    </div>
 
     <label for="actions" class="sr-only"></label>
     <select name="actions[]" id="actions" class="selectpicker mb-2 mr-2" data-live-search="true" title="{{trans('wzoj.actions')}}" multiple>
@@ -96,4 +100,12 @@
   </div>
   @endforeach
 
+@endsection
+
+@section ('scripts')
+<script>
+jQuery(document).ready(function($) {
+  $('#before_at').datetimepicker();
+});
+</script>
 @endsection
