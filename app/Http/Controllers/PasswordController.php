@@ -53,6 +53,7 @@ class PasswordController extends Controller
     ]);
 
     Auth::user()->phone_number = $request->phone;
+    Auth::user()->bot_tendency = 0;
     Auth::user()->save();
 
     logAction('link_phone', [
