@@ -54,6 +54,11 @@ class PasswordController extends Controller
 
     Auth::user()->phone_number = $request->phone;
     Auth::user()->save();
+
+    logAction('link_phone', [
+      "phone_number" => $request->phone,
+    ], LOG_SEVERE);
+
     return back();
   }
 }

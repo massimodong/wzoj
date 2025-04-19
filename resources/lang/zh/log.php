@@ -9,6 +9,9 @@ return [
   'change_user_profile' => '修改用户信息',
   'delete_solution' => '删除用户提交',
   'change_password' => '修改用户安全信息',
+  'send_sms_request' => '请求发送验证短信',
+  'send_sms_success' => '成功发送验证短信',
+  'link_phone' => '验证手机号码',
 
   'admin_change_user_password' => '强制修改密码',
   'admin_change_user_bt' => '封禁/解封用户',

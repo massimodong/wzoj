@@ -56,6 +56,8 @@ class VerificationCodeController extends Controller
         return response()->json(["ok" => false, "msg" => "Error!"], 400);
     }
 
+    logAction('send_sms_request', array_merge(["action_code" => $request->task], $params), LOG_MODERATE);
+
     //we use redit to implement a `send lock` for each user, which automatically expires in 60 seconds
     $res = Redis::set('wzoj.sms_send_lock.'.Auth::user()->id, '1', 'ex', 60, 'nx');
     if($res != 'OK')
@@ -100,6 +102,8 @@ class VerificationCodeController extends Controller
         "phone" => $target_phone,
       ],
     ]);
+
+    logAction('send_sms_success', array_merge(["action_code" => $request->task], $params), LOG_MODERATE);
 
     return response()->json(["ok" => true]);
   }
