@@ -21,8 +21,8 @@ class VerificationCodeController extends Controller
   const SMS_TTL = 10; // 10 minutes
   public static function createAlibabaClient(){
       $config = new Config([
-          "accessKeyId" => getenv("ALIBABA_CLOUD_ACCESS_KEY_ID"),
-          "accessKeySecret" => getenv("ALIBABA_CLOUD_ACCESS_KEY_SECRET")
+          "accessKeyId" => config("wzoj.alibaba_cloud_access_key_id"),
+          "accessKeySecret" => config("wzoj.alibaba_cloud_access_key_secret")
       ]);
       $config->endpoint = "dysmsapi.aliyuncs.com";
       return new Dysmsapi($config);
@@ -77,7 +77,7 @@ class VerificationCodeController extends Controller
     $client = self::createAlibabaClient();
     $sendSmsRequest = new SendSmsRequest([
         "phoneNumbers" => $target_phone,
-        "signName" => getenv("ALIBABA_SMS_SIGNNAME"),
+        "signName" => config("wzoj.alibaba_sms_signname"),
         "templateCode" => $template_name,
         "templateParam" => "{\"code\":\"".$code."\",\"time\":\"".strval(self::SMS_TTL)."\"}",
     ]);
