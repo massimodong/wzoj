@@ -145,11 +145,11 @@ function send_sms(){
         window.location.href = '/auth/login';
       }
       if(data.responseJSON['msg'] != null){
-        addAlertWarning(data.responseJSON['msg']);
+        alert(data.responseJSON['msg']);
         start_count_down();
       }else{
         for (var msg in data.responseJSON["errors"]){
-          addAlertWarning(data.responseJSON["errors"][msg]);
+          alert(data.responseJSON["errors"][msg]);
         }
         enable_send_sms();
       }
