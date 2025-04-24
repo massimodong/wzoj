@@ -44,7 +44,10 @@ class VerificationCode implements Rule
       $verification->verified = true;
       $verification->save();
 
-      if($verification->code !== $value) return false;
+      if($verification->code !== $value){
+        $this->user->isbot(30);
+        return false;
+      }
 
       return true;
     }
