@@ -21,7 +21,7 @@
           <input style="display: none" name="task" value="link-phone">
           <label class="sr-only" for="phone_number_verify2">{{trans('wzoj.phone')}}</label>
           <input type="text" class="form-control mb-2 mr-sm-2" id="phone_number_verify2" name="phone" placeholder="{{trans('wzoj.phone')}}" required>
-          <button id="send_sms_btn" type="button" class="btn btn-primary mb-2" onclick="send_sms(); return false;">
+          <button id="send-sms-btn" type="button" class="btn btn-primary mb-2" onclick="send_sms(); return false;">
             <div id="submit-text">
             {{trans('wzoj.send_verification_code')}}
             </div>
