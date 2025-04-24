@@ -17,9 +17,16 @@ class AdminUserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-      return view('admin.users');
+      if(isset($request->uid)){
+        $user = User::findOrFail($request->uid);
+        return view('admin.users', [
+          'search_user' => $user,
+        ]);
+      }else{
+        return view('admin.users');
+      }
     }
 
     /**
@@ -42,7 +49,8 @@ class AdminUserController extends Controller
     {
         $this->validate($request,[
             'id' => 'required|integer|exists:users',
-            'name' => 'required|username',
+            'name' => 'required',
+            'phone' => 'digits:11',
             'bt' => 'integer',
         ]);
 
@@ -52,6 +60,11 @@ class AdminUserController extends Controller
 
         if($user->has_role('admin')) abort(403);
         if($user->has_role('manager') && !Auth::user()->has_role('admin')) abort(403);
+
+        if(isset($request->phone) && $request->phone != ''){
+            $user->phone_number = $request->phone;
+            logAction('admin_change_user_phone', ["user_id" => $user->id, "phone" => $request->phone], LOG_SEVERE);
+        }
 
         if(isset($request->new_password) && $request->new_password != ''){
             $user->password = bcrypt($request->new_password);
