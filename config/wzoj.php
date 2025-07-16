@@ -11,5 +11,6 @@ return [
   'http_judger_url' => env('HTTP_JUDGER_URL', ''),
   'alibaba_cloud_access_key_id' => env('ALIBABA_CLOUD_ACCESS_KEY_ID',''),
   'alibaba_cloud_access_key_secret' => env('ALIBABA_CLOUD_ACCESS_KEY_SECRET',''),
-  'alibaba_sms_signname' => env('ALIBABA_SMS_SIGNNAME','')
+  'alibaba_sms_signname' => env('ALIBABA_SMS_SIGNNAME',''),
+  'sms_engine' => env('SMS_ENGINE')
 ];

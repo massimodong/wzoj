@@ -16,6 +16,9 @@ use AlibabaCloud\Tea\Utils\Utils;
 use Darabonba\OpenApi\Models\Config;
 use AlibabaCloud\SDK\Dysmsapi\V20170525\Models\SendSmsRequest;
 
+use AlibabaCloud\SDK\Dypnsapi\V20170525\Dypnsapi;
+use AlibabaCloud\SDK\Dypnsapi\V20170525\Models\SendSmsVerifyCodeRequest;
+
 class VerificationCodeController extends Controller
 {
   const SMS_TTL = 10; // 10 minutes
@@ -69,29 +72,61 @@ class VerificationCodeController extends Controller
 
     $code = sprintf("%06d", random_int(0,999999));
 
+    // send sms by engine
+    switch(config("wzoj.sms_engine")){
+      case "alidysms":
+      // Alibaba sms
+      $sms_templates = json_decode(ojoption("sms_templates"), true);
+      $template_name = $sms_templates[$request->task];
 
-    // Alibaba sms
-    $sms_templates = json_decode(ojoption("sms_templates"), true);
-    $template_name = $sms_templates[$request->task];
+      $client = self::createAlibabaClient();
+      $sendSmsRequest = new SendSmsRequest([
+          "phoneNumbers" => $target_phone,
+          "signName" => config("wzoj.alibaba_sms_signname"),
+          "templateCode" => $template_name,
+          "templateParam" => "{\"code\":\"".$code."\",\"time\":\"".strval(self::SMS_TTL)."\"}",
+      ]);
+      try {
+          $res = $client->sendSms($sendSmsRequest)->toArray()["body"];
+          if($res["Code"] !== "OK") return response()->json(["ok" => false, 'msg' => $res["Message"]], 500);
+      }
+      catch (Exception $error) {
+          if (!($error instanceof TeaError)) {
+              $error = new TeaError([], $error->getMessage(), $error->getCode(), $error);
+          }
+          return response()->json(["ok" => false, 'msg' => trans('wzoj.send_sms_failed')], 500);
+      }
+      break;
+      // Alibaba sms end
+      case "alidypns":
+      // Alibaba dypns sms
+      $config = new Config([
+         "accessKeyId" => config("wzoj.alibaba_cloud_access_key_id"),
+         "accessKeySecret" => config("wzoj.alibaba_cloud_access_key_secret")
+      ]);
+      $config->endpoint = "dypnsapi.aliyuncs.com";
+      $client = new Dypnsapi($config);
 
-    $client = self::createAlibabaClient();
-    $sendSmsRequest = new SendSmsRequest([
-        "phoneNumbers" => $target_phone,
-        "signName" => config("wzoj.alibaba_sms_signname"),
-        "templateCode" => $template_name,
-        "templateParam" => "{\"code\":\"".$code."\",\"time\":\"".strval(self::SMS_TTL)."\"}",
-    ]);
-    try {
-        $res = $client->sendSms($sendSmsRequest)->toArray()["body"];
-        if($res["Code"] !== "OK") return response()->json(["ok" => false, 'msg' => $res["Message"]], 500);
+      $sendSmsVerifyCodeRequest = new SendSmsVerifyCodeRequest([
+          "signName" => "速通互联验证服务",
+          "templateCode" => "100004",
+          "phoneNumber" => $target_phone,
+          "templateParam" => "{\"code\":\"".$code."\",\"min\":".strval(self::SMS_TTL)."}",
+          "codeLength" => 6
+      ]);
+      try {
+          $res = $client->sendSmsVerifyCode($sendSmsVerifyCodeRequest);
+          #if($res["Code"] !== "OK" || false) return response()->json(["ok" => false, 'msg' => $res["Message"]], 500);
+      }
+      catch (Exception $error) {
+          if (!($error instanceof TeaError)) {
+              $error = new TeaError([], $error->getMessage(), $error->getCode(), $error);
+          }
+          return response()->json(["ok" => false, 'msg' => trans('wzoj.send_sms_failed')], 500);
+      }
+      break;
+      // Alibaba dypns sms end
     }
-    catch (Exception $error) {
-        if (!($error instanceof TeaError)) {
-            $error = new TeaError([], $error->getMessage(), $error->getCode(), $error);
-        }
-        return response()->json(["ok" => false, 'msg' => trans('wzoj.send_sms_failed')], 500);
-    }
-    // Alibaba sms end
 
     Auth::user()->verification_codes()->create([
       'code' => $code,
