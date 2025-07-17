@@ -84,4 +84,14 @@ $(function () {
     template: '<div class="popover"><div class="arrow"></div><div class="popover-body"></div></div>',
     html: true,
   });
+
+  $('.sample_io').dblclick(function(data){
+    let target = data.target;
+    navigator.clipboard.writeText(target.innerHTML);
+
+    let range = document.createRange(), selection = window.getSelection();
+    range.selectNodeContents(target);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  });
 })

@@ -40,14 +40,16 @@
 @endif
 
 @if (strlen($problem->sampleinput))
-<h4><b>{{trans('wzoj.sample_input')}}:</b></h4>
+<h4 style="display: inline"><b>{{trans('wzoj.sample_input')}}:</b></h4>
+<small class="text-muted">({{trans('wzoj.double_click_copy')}})</small>
 <pre class="sample_io">
 {{$problem->sampleinput}}
 </pre>
 @endif
 
 @if (strlen($problem->sampleoutput))
-<h4><b>{{trans('wzoj.sample_output')}}:</b></h4>
+<h4 style="display: inline"><b>{{trans('wzoj.sample_output')}}:</b></h4>
+<small class="text-muted">({{trans('wzoj.double_click_copy')}})</small>
 <pre class="sample_io">
 {{$problem->sampleoutput}}
 </pre>

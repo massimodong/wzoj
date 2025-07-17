@@ -27,6 +27,8 @@ return [
     'copy_success' => '复制成功',
     'copy_fail' => '按Ctrl+C复制',
 
+    'double_click_copy' => '双击复制',
+
     'blocked' => '禁止访问',
 
     'class' => '学校',
