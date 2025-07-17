@@ -16,7 +16,7 @@
 
     <label for="uids" class="sr-only"></label>
     <select name="uids[]" id="uids" class="selectpicker mb-2 mr-2" data-live-search="true" title="{{trans('wzoj.search_user')}}" multiple>
-    @foreach (\App\User::orderBy('id', 'asc')->get() as $user)
+    @foreach (\App\User::orderBy('id', 'asc')->get(["id", "name"]) as $user)
       <option value="{{$user->id}}" {{ (collect(old('uids'))->contains($user->id)) ? 'selected':'' }} >{{$user->id}}-{{$user->name}}</option>
     @endforeach
     </select>

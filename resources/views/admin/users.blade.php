@@ -37,7 +37,7 @@
 <form method='GET' class="form-inline">
   <label for="uid" class="sr-only"></label>
   <select name="uid" id="uid" class="selectpicker mb-2 mr-2" data-live-search="true" title="{{trans('wzoj.search_user')}}">
-  @foreach (\App\User::orderBy('id', 'asc')->get() as $user)
+  @foreach (\App\User::orderBy('id', 'asc')->get(['id', 'name']) as $user)
     <option value="{{$user->id}}">{{$user->id}}-{{$user->name}}</option>
   @endforeach
   </select>
