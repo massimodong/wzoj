@@ -7,6 +7,8 @@ return [
   'captcha_service' => env('CAPTCHA_SERVICE', 'mews'),
   'captcha_sitekey' => env('CAPTCHA_SITEKEY', ''),
   'captcha_secretkey' => env('CAPTCHA_SECRETKEY', ''),
+  'captcha_scene_id' => env('CAPTCHA_SCENE_ID'),
+  'captcha_prefix' => env('CAPTCHA_PREFIX'),
   'http_judger_on' => env('HTTP_JUDGER_ON', false),
   'http_judger_url' => env('HTTP_JUDGER_URL', ''),
   'alibaba_cloud_access_key_id' => env('ALIBABA_CLOUD_ACCESS_KEY_ID',''),

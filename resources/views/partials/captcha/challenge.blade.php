@@ -15,4 +15,29 @@
       </div>
     </div>
     @break
+  @case ('ali')
+    <div id="ali-captcha-element"></div>
+    <input style="display:none" id="ali-captcha-input" type="text" name="captcha">
+    <script type="text/javascript">
+      var captcha;
+      window.initAliyunCaptcha({
+        SceneId: "{{config('wzoj.captcha_scene_id')}}",
+        mode: "embed",
+        element: "#ali-captcha-element",
+        success: function (captchaVerifyParam) {
+          $('#ali-captcha-input').val(captchaVerifyParam);
+        },
+        fail: function (result) {
+          console.error(result);
+        },
+        getInstance: function (instance) {
+          captcha = instance;
+        },
+        slideStyle: {
+          width: 360,
+          height: 40,
+        },
+      });
+    </script>
+    @break
 @endswitch
