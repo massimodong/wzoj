@@ -108,7 +108,7 @@ class VerificationCodeController extends Controller
       $client = new Dypnsapi($config);
 
       $sendSmsVerifyCodeRequest = new SendSmsVerifyCodeRequest([
-          "signName" => "速通互联验证服务",
+          "signName" => config("wzoj.alibaba_sms_signname"),
           "templateCode" => "100004",
           "phoneNumber" => $target_phone,
           "templateParam" => "{\"code\":\"".$code."\",\"min\":".strval(self::SMS_TTL)."}",
