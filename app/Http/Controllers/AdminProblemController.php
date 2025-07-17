@@ -25,7 +25,9 @@ class AdminProblemController extends Controller
 			'top' => 'integer',
 		]);
 		if($id == -1){
+      $problems = \App\Problem::with(['tags', 'problemsets'])->get();
 			return view('admin.problems_index', [
+        'problems' => $problems,
 			]);
 		}else{
 			$problem = \App\Problem::findOrFail($id);
@@ -44,11 +46,6 @@ class AdminProblemController extends Controller
 				]);
 			}
 		}
-	}
-
-	public function getDataTablesAjax(Request $request){
-		$query = $request->user()->manage_problems()->with(['tags', 'problemsets']);
-		return Datatables::of($query)->make(true);
 	}
 
 	public function getProblemsData(Request $request, $id){
