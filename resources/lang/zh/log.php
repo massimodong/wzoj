@@ -1,7 +1,8 @@
 <?php
 
 return [
-  'registered' => '注册',
+  'register_attempt' => '注册请求',
+  'registered' => '注册成功',
   'login' => '登录',
   'failed_login' => '登录失败',
   'logout' => '登出',

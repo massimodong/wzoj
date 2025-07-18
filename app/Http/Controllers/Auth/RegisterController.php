@@ -50,6 +50,17 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $token_name = "";
+        $invitation = \App\Invitation::where('token',$data["token"])->first();
+        if($invitation != NULL) $token_name = $invitation->description;
+
+        $logdata = [
+          "name" => $data["name"],
+          "email" => $data["email"],
+          "token" => $data["token"],
+          "token_name" => $token_name,
+        ];
+        logAction('register_attempt', $logdata, LOG_MODERATE);
         return Validator::make($data, [
             'name' => 'required|username|unique:users',
             'email' => 'required|email|max:255|unique:users',
