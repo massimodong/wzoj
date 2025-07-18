@@ -39,9 +39,13 @@ class EventServiceProvider extends ServiceProvider
         });
 
         Event::listen('Illuminate\Auth\Events\Failed', function ($data) {
-          $user = \App\User::where('name', $data->credentials["name"])->first();
-          if(is_null($user)) logAction('failed_login', $data->credentials, LOG_MODERATE);
-          else logAction('failed_login', $data->credentials, LOG_MODERATE, $user->id);
+          $name = $data->credentials["name"];
+          $user = \App\User::where('name', $name)->first();
+          $logdata = [
+            "name" => $name,
+          ];
+          if(is_null($user)) logAction('failed_login', $logdata, LOG_MODERATE);
+          else logAction('failed_login', $logdata, LOG_MODERATE, $user->id);
         });
 
         Event::listen('Illuminate\Auth\Events\Logout', function ($data) {
