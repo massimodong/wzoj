@@ -3,8 +3,10 @@
   <head>
     @section ('head')
     <meta charset="utf-8">
+    @if (ojoption('logo_url'))
     <link rel="apple-touch-icon" sizes="76x76" href="{{ojoption('logo_url')}}">
     <link rel="icon" href="{{ojoption('logo_url')}}">
+    @endif
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
