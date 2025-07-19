@@ -196,7 +196,7 @@ class SolutionController extends Controller
 
         $this->bot_check($request->user());
 
-        wakeJudgers($solution->id);
+        if($problemset->type != "oi") wakeJudgers($solution->id);
 
         return response()->json(['id' => $solution->id]);
     }
