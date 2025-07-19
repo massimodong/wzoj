@@ -92,7 +92,7 @@
 <footer class="mt-auto">
   <div class="container text-center">
     <span>
-      <a class="text-muted" href="https://github.com/massimodong/wzoj" target="_blank">wzoj project</a>
+      <a class="text-muted" href="https://github.com/massimodong/wzoj" target="_blank"><span class="fa fa-github"></span> WZOJ</a>
       <a class="text-muted" href="https://github.com/massimodong/wzoj/releases/tag/{{ojoption('current_version_tag')}}" target="_blank">{{ojoption('current_version_tag')}}</a>
     </span>
     <span>
