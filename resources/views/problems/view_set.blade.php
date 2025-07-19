@@ -136,7 +136,7 @@
 @endsection
 
 @section ('scripts')
-<script type="text/javascript" src="{{ojoption('mathjax_url')}}"></script>
+@include ('partials.mathjax')
 
 <script>
 function detectLanguage(){

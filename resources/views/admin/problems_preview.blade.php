@@ -9,3 +9,8 @@ preview {{$problem->name}}
 @include ('partials.showproblem')
 
 @endsection
+
+
+@section ('scripts')
+@include ('partials.mathjax')
+@endsection
