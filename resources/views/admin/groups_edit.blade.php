@@ -139,7 +139,7 @@
         <label for="psid" class="sr-only"></label>
         <select name="psid" id="psid" class="selectpicker" data-live-search="true" title="{{trans('wzoj.problemset')}}">
         @foreach (Auth::user()->problemsets() as $problemset)
-          <option value="{{$problemset->id}}">{{$problemset->id}} - {{$problemset->name}}</option>
+          <option value="{{$problemset->id}}">[{{$problemset->id}}] - {{$problemset->name}}</option>
         @endforeach
         </select>
 
@@ -197,7 +197,7 @@ $('#psid').on('changed.bs.select', function (e) {
         $.get("/admin/ajax/problemset-problems", {problemset_id: psid}).done(function(data){
                 $('#pids').html("");
                 data.forEach(function(value, index, ar){
-                        $('#pids').append("<option value='" + value.id + "'>" + value.id + "-" + escapeHtml(value.name) + "</option>");
+                        $('#pids').append("<option value='" + value.id + "'>[" + value.id + "] - " + escapeHtml(value.name) + "</option>");
                 });
                 $('#pids').selectpicker('refresh');
         });
